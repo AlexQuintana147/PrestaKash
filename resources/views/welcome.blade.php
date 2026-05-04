@@ -73,16 +73,17 @@
 @include('partials.header')
 
 <section id="calculadora" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
-    <!-- Gradiente de fondo -->
-    <div class="absolute inset-0 bg-gradient-to-r from-black via-green-600 to-pink-500"></div>
 
-    <!-- Imagen de fondo con overlay -->
-    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80');"></div>
+    <!-- Imagen de fondo con overlay - Izquierda -->
+    <div class="absolute inset-0 bg-contain bg-left bg-no-repeat opacity-20" style="background-image: url('/images/fondo.png');"></div>
+
+    <!-- Imagen de fondo con overlay - Derecha -->
+    <div class="absolute inset-0 bg-contain bg-no-repeat opacity-20" style="background-image: url('/images/fondo.png'); background-position: right -800px center;"></div>
 
     <div class="relative max-w-7xl mx-auto px-3 sm:px-6 w-full grid lg:grid-cols-2 gap-4 lg:gap-8 items-center py-8 lg:py-12">
 
         <!-- Columna izquierda: Contenido hero -->
-        <div class="text-white space-y-2 sm:space-y-3 lg:space-y-6 text-center lg:text-left mb-4 lg:mb-0">
+        <div class="text-black space-y-2 sm:space-y-3 lg:space-y-6 text-center lg:text-left mb-4 lg:mb-0">
             <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight drop-shadow-lg">
                 Tu dinero en<br>menos de 24 horas
             </h1>
