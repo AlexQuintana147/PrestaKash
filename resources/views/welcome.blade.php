@@ -269,59 +269,77 @@
     </div>
 </section>
 
-<section id="beneficios" class="py-16 sm:py-20 bg-black">
+<!-- Sección de requisitos -->
+<section class="py-16 sm:py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="text-center mb-12 sm:mb-16">
-            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">¿Por qué PrestaKash?</h2>
-            <p class="text-gray-400 text-base sm:text-lg">Transparencia y rapidez en cada préstamo</p>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <!-- Beneficio 1 -->
-            <div class="group bg-gray-900/50 backdrop-blur border border-gray-800 rounded-2xl p-6 hover:bg-gray-900 hover:border-green-500/50 transition-all duration-300">
-                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-12">
+            ¿Qué requisitos debes cumplir?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <!-- Requisito 1: Cuenta bancaria -->
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2,8.5h20v2H2V8.5z M2,13.5h20v2H2V13.5z M12,2L2,6v1.5h20V6L12,2z M2,17.5h20V19H4v2h16v1H2V17.5z"/>
+                        </svg>
+                    </div>
                 </div>
-                <h3 class="text-white font-bold text-lg mb-2">Aprobación rápida</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Respuesta en menos de 24 horas. Sin esperas innecesarias.</p>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tener cuenta bancaria</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Necesitas una cuenta bancaria activa para recibir el préstamo.</p>
+                </div>
             </div>
 
-            <!-- Beneficio 2 -->
-            <div class="group bg-gray-900/50 backdrop-blur border border-gray-800 rounded-2xl p-6 hover:bg-gray-900 hover:border-pink-500/50 transition-all duration-300">
-                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
+            <!-- Requisito 2: Más de 21 años -->
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z M12.5,7H11v6l5.25,3.15l0.75-1.23l-4.5-2.67V7z"/>
+                        </svg>
+                    </div>
                 </div>
-                <h3 class="text-white font-bold text-lg mb-2">100% seguro</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Tus datos protegidos con encriptación de nivel bancario.</p>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tener más de 21 años</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Debes ser mayor de edad y tener al menos 21 años cumplidos.</p>
+                </div>
             </div>
 
-            <!-- Beneficio 3 -->
-            <div class="group bg-gradient-to-br from-green-900/30 to-gray-900/50 backdrop-blur border-2 border-green-500/50 rounded-2xl p-6 hover:border-green-500 transition-all duration-300 shadow-lg shadow-green-500/10">
-                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-green-500/50">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
+            <!-- Requisito 3: Ser peruano y tener DNI -->
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,18H4V6h16V18z M6,10h4v2H6V10z M6,14h8v2H6V14z M14,10h4v4h-4V10z"/>
+                        </svg>
+                    </div>
                 </div>
-                <h3 class="text-white font-bold text-lg mb-2">Tasa fija 20%</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Sin tasas variables ni cargos ocultos. Siempre sabes cuánto pagas.</p>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Ser peruano y tener DNI</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Debes contar con tu Documento Nacional de Identidad vigente.</p>
+                </div>
             </div>
 
-            <!-- Beneficio 4 -->
-            <div class="group bg-gray-900/50 backdrop-blur border border-gray-800 rounded-2xl p-6 hover:bg-gray-900 hover:border-pink-500/50 transition-all duration-300">
-                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
+            <!-- Requisito 4: Correo electrónico y celular -->
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20,4H4C2.9,4,2.01,4.9,2.01,6L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,8l-8,5L4,8V6l8,5l8-5V8z"/>
+                        </svg>
+                    </div>
                 </div>
-                <h3 class="text-white font-bold text-lg mb-2">Hasta 6 meses</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Elige el plazo que mejor se ajuste a tu presupuesto.</p>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tener correo electrónico y celular</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Necesitamos tu correo y número de celular para comunicarnos contigo.</p>
+                </div>
             </div>
+
         </div>
     </div>
 </section>
+
 
 @include('partials.footer')
 
