@@ -72,14 +72,19 @@
 
 @include('partials.header')
 
-<section id="calculadora" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+<section id="calculadora" class="relative flex items-center overflow-hidden" style="min-height: 100vh;">
 
-    <!-- Gradiente de fondo para profundidad -->
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-green-950"></div>
-    <!-- Brillo sutil en la parte superior -->
+    <!-- Imagen de fondo desde Unsplash - ciudad/fintech -->
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=1600&q=80');"></div>
+
+    <!-- Overlay oscuro para legibilidad -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-950/95 via-gray-900/90 to-green-950/90"></div>
+
+    <!-- Brillo sutil verde arriba -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-green-500 opacity-10 blur-3xl rounded-full pointer-events-none"></div>
 
-    <div class="relative max-w-7xl mx-auto px-3 sm:px-6 w-full grid lg:grid-cols-2 gap-4 lg:gap-8 items-center py-8 lg:py-12">
+    <!-- Contenido centrado respetando el header de 64px -->
+    <div class="relative w-full max-w-7xl mx-auto px-3 sm:px-6 grid lg:grid-cols-2 gap-4 lg:gap-8 items-center" style="padding-top: calc(64px + 2rem); padding-bottom: 2rem; min-height: 100vh;">
 
         <!-- Columna izquierda: Contenido hero -->
         <div class="text-white space-y-2 sm:space-y-3 lg:space-y-6 text-center lg:text-left mb-4 lg:mb-0">
@@ -99,6 +104,12 @@
                 <a href="#calculadora" class="inline-block bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-green-900/40 transition-all text-sm sm:text-base">
                     Solicítalo ahora
                 </a>
+                <!-- Señales de confianza -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-4 text-[11px] text-gray-400">
+                    <span class="flex items-center gap-1"><span class="text-green-400">✓</span> Sin comisiones ocultas</span>
+                    <span class="flex items-center gap-1"><span class="text-green-400">✓</span> 100% seguro</span>
+                    <span class="flex items-center gap-1"><span class="text-green-400">✓</span> Respuesta en 24h</span>
+                </div>
             </div>
         </div>
 
