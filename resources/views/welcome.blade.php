@@ -81,16 +81,16 @@
         <!-- Columna izquierda: Contenido hero -->
         <div class="text-white space-y-2 sm:space-y-4 lg:space-y-6 hidden lg:block">
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-lg">
-                Préstamos personales
+                Tu dinero en<br>menos de 24 horas
             </h1>
             <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none drop-shadow-2xl">
-                50%
+                100%
             </div>
             <p class="text-lg sm:text-xl md:text-2xl font-semibold drop-shadow-md">
-                De descuento en intereses en tu primer<br class="hidden sm:block">préstamo online
+                Todo Digital.<br class="hidden sm:block">Sin visitas al banco.
             </p>
             <p class="text-xs sm:text-sm opacity-90 max-w-md">
-                *El descuento se aplica a la tasa de interés después de la fecha de desembolso.
+                Aprobación en menos de 24 horas. Tasa fija garantizada. Cero comisiones ocultas.
             </p>
         </div>
 
