@@ -175,6 +175,15 @@
                     <span class="text-gray-600">Fecha de Pago Primera Cuota</span>
                     <span id="fechaPrimeraCuota" class="font-bold text-gray-900">03/06/2026</span>
                 </div>
+
+                <!-- Total a Pagar por Mes (solo en modo cuotas) -->
+                <div class="border-t border-pink-200 pt-1.5 mt-1.5" id="rowTotalMensual">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700 font-bold text-xs sm:text-sm">Total a Pagar por Mes</span>
+                        <span id="totalMensual" class="text-base sm:text-lg font-bold text-pink-600">S/ 219.67</span>
+                    </div>
+                </div>
+
                 <div class="border-t border-gray-300 pt-1.5 mt-1.5">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-700 font-bold text-xs sm:text-sm">Total a Pagar</span>
@@ -269,6 +278,7 @@
     const plazoDisplay = document.getElementById('plazoDisplay');
     const resumenMonto = document.getElementById('resumenMonto');
     const resumenTotal = document.getElementById('resumenTotal');
+    const totalMensual = document.getElementById('totalMensual');
     const cuotaDigital = document.getElementById('cuotaDigital');
     const tarifaTecnologia = document.getElementById('tarifaTecnologia');
     const importeTotal = document.getElementById('importeTotal');
@@ -279,6 +289,7 @@
     const btnCuotas = document.getElementById('btnCuotas');
     const btnUnico = document.getElementById('btnUnico');
     const rowCuotaDigital = document.getElementById('rowCuotaDigital');
+    const rowTotalMensual = document.getElementById('rowTotalMensual');
 
     let plazo = 3;
     let tipoPago = 'cuotas'; // 'cuotas' o 'unico'
@@ -327,9 +338,12 @@
         if (tipoPago === 'cuotas') {
             cuotaDigital.textContent = fmt(cuotaMensual);
             valorPrimeraCuota.textContent = fmt(cuotaMensual);
+            totalMensual.textContent = fmt(cuotaMensual);
             rowCuotaDigital.style.display = 'flex';
+            rowTotalMensual.style.display = 'block';
         } else {
             rowCuotaDigital.style.display = 'none';
+            rowTotalMensual.style.display = 'none';
             valorPrimeraCuota.textContent = fmt(totalAPagar);
         }
 
