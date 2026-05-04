@@ -59,7 +59,7 @@
                         Regulado por SBS
                     </span>
                     <span>•</span>
-                    <span>Hecho con ❤️ en Perú</span>
+                    <span>Hecho por <a href="https://llamatech.vercel.app/" target="_blank" class="text-pink-500 hover:text-pink-400 transition-colors">LlamaTech</a></span>
                 </div>
             </div>
         </div>

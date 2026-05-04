@@ -15,15 +15,18 @@
                         'primary-light': '#3B82F6',
                         accent: '#60A5FA',
                     },
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                    fontFamily: { sans: ['Roboto', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         html { scroll-behavior: smooth; }
-        body { overflow-x: hidden; }
+        body {
+            overflow-x: hidden;
+            font-family: 'Roboto', sans-serif;
+        }
 
         /* Slider custom con gradiente rosa */
         input[type=range] {
