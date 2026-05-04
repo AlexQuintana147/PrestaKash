@@ -1,17 +1,17 @@
-<nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary flex items-center justify-center">
-                <span class="text-white font-bold text-lg">P</span>
+<nav class="fixed top-0 w-full z-50 bg-gray-900 border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded flex items-center justify-center">
+                <span class="text-white font-bold text-base">P</span>
             </div>
-            <span class="text-2xl font-bold text-gray-900">PrestaKash</span>
+            <span class="text-xl font-bold text-white tracking-tight">PrestaKash</span>
         </div>
-        <div class="hidden md:flex items-center gap-10 text-sm font-medium text-gray-600">
-            <a href="#como-funciona" class="hover:text-gray-900">¿Cómo funciona?</a>
-            <a href="#beneficios" class="hover:text-gray-900">Beneficios</a>
-            <a href="#calculadora" class="hover:text-gray-900">Calculadora</a>
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+            <a href="#como-funciona" class="hover:text-white transition-colors">¿Cómo funciona?</a>
+            <a href="#beneficios" class="hover:text-white transition-colors">Beneficios</a>
+            <a href="#calculadora" class="hover:text-white transition-colors">Calculadora</a>
         </div>
-        <a href="#calculadora" class="bg-gray-900 text-white text-sm font-semibold px-6 py-3 hover:bg-gray-800">
+        <a href="#calculadora" class="bg-gradient-to-r from-pink-500 to-pink-600 text-white text-sm font-semibold px-5 py-2 rounded hover:from-pink-600 hover:to-pink-700 transition-all shadow-lg shadow-pink-500/20">
             Solicitar préstamo
         </a>
     </div>

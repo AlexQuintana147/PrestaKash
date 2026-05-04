@@ -69,7 +69,7 @@
 
 @include('partials.header')
 
-<section id="calculadora" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+<section id="calculadora" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
     <!-- Gradiente de fondo -->
     <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400"></div>
 
