@@ -69,17 +69,17 @@
 
 @include('partials.header')
 
-<section id="calculadora" class="relative h-screen flex items-center pt-16 pb-8 overflow-hidden">
+<section id="calculadora" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
     <!-- Gradiente de fondo -->
     <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400"></div>
 
     <!-- Imagen de fondo con overlay -->
     <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80');"></div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-6 lg:gap-8 items-center h-full">
+    <div class="relative max-w-7xl mx-auto px-3 sm:px-6 w-full grid lg:grid-cols-2 gap-4 lg:gap-8 items-center py-8 lg:py-12">
 
         <!-- Columna izquierda: Contenido hero -->
-        <div class="text-white space-y-3 sm:space-y-4 lg:space-y-6">
+        <div class="text-white space-y-2 sm:space-y-4 lg:space-y-6 hidden lg:block">
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-lg">
                 Préstamos personales
             </h1>
@@ -95,58 +95,47 @@
         </div>
 
         <!-- Columna derecha: Calculadora -->
-        <div class="bg-white rounded-lg shadow-2xl p-3 sm:p-4 max-w-xl w-full max-h-[calc(100vh-8rem)] overflow-y-auto">
-
-            <!-- Encabezado con flecha -->
-            <div class="mb-2 text-center">
-                <div class="inline-flex items-center gap-1 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold animate-bounce">
-                    <span>↓</span>
-                    <span class="hidden sm:inline">Elige aquí el tipo de préstamo que necesitas</span>
-                    <span class="sm:hidden">Elige tu préstamo</span>
-                    <span>↓</span>
-                </div>
-            </div>
-
+        <div class="bg-white rounded-lg shadow-2xl p-2.5 sm:p-4 max-w-xl w-full lg:max-w-xl mx-auto">
             <!-- Tabs de tipo de préstamo -->
-            <div class="grid grid-cols-2 gap-1.5 mb-3">
-                <button id="btnCuotas" class="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg shadow-md transition-all">
+            <div class="grid grid-cols-2 gap-1.5 mb-2">
+                <button id="btnCuotas" class="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all">
                     Pago a Cuotas
                 </button>
-                <button id="btnUnico" class="bg-gray-100 text-gray-700 font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all">
+                <button id="btnUnico" class="bg-gray-100 text-gray-700 font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all">
                     Pago Único
                 </button>
             </div>
 
             <!-- Slider monto -->
-            <div class="mb-3">
-                <div class="flex justify-between items-baseline mb-1.5">
-                    <label class="text-[11px] sm:text-xs font-bold text-gray-700">¿Cuánto necesitas?</label>
+            <div class="mb-2">
+                <div class="flex justify-between items-baseline mb-1">
+                    <label class="text-[10px] sm:text-xs font-bold text-gray-700">¿Cuánto necesitas?</label>
                     <div class="text-right">
-                        <span id="montoDisplay" class="text-lg sm:text-xl font-bold text-gray-900 tabular-nums">S/ 500.00</span>
+                        <span id="montoDisplay" class="text-base sm:text-xl font-bold text-gray-900 tabular-nums">S/ 500.00</span>
                     </div>
                 </div>
                 <div class="relative">
                     <input id="montoSlider" type="range" min="200" max="20000" step="100" value="500" class="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer">
                 </div>
-                <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <div class="flex justify-between text-[9px] text-gray-500 mt-0.5">
                     <span>S/ 200</span>
                     <span>S/ 20,000</span>
                 </div>
             </div>
 
             <!-- Selector de plazo -->
-            <div class="mb-3">
-                <label class="text-[11px] sm:text-xs font-bold text-gray-700 block mb-1.5">Plazo</label>
-                <div class="bg-pink-50 rounded-lg p-2 mb-1.5">
+            <div class="mb-2">
+                <label class="text-[10px] sm:text-xs font-bold text-gray-700 block mb-1">Plazo</label>
+                <div class="bg-pink-50 rounded-lg p-1.5 mb-1">
                     <div class="text-center">
-                        <div class="text-lg sm:text-xl font-bold text-pink-600" id="plazoDisplay">3 cuotas (90 días)</div>
+                        <div class="text-base sm:text-xl font-bold text-pink-600" id="plazoDisplay">3 cuotas (90 días)</div>
                     </div>
                 </div>
                 <div id="plazoButtons" class="grid grid-cols-3 gap-1"></div>
             </div>
 
             <!-- Desglose de pago -->
-            <div class="bg-gray-50 rounded-lg p-2.5 sm:p-3 mb-3 space-y-1.5 text-[10px] sm:text-xs">
+            <div class="bg-gray-50 rounded-lg p-2 sm:p-3 mb-2 space-y-1 text-[9px] sm:text-xs">
                 <div class="flex justify-between">
                     <span class="text-gray-600">Cantidad Solicitada</span>
                     <span id="resumenMonto" class="font-bold text-gray-900">S/ 500.00</span>
@@ -177,28 +166,28 @@
                 </div>
 
                 <!-- Total a Pagar por Mes (solo en modo cuotas) -->
-                <div class="border-t border-pink-200 pt-1.5 mt-1.5" id="rowTotalMensual">
+                <div class="border-t border-pink-200 pt-1 mt-1" id="rowTotalMensual">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-700 font-bold text-xs sm:text-sm">Total a Pagar por Mes</span>
-                        <span id="totalMensual" class="text-base sm:text-lg font-bold text-pink-600">S/ 219.67</span>
+                        <span class="text-gray-700 font-bold text-[10px] sm:text-sm">Total a Pagar por Mes</span>
+                        <span id="totalMensual" class="text-sm sm:text-lg font-bold text-pink-600">S/ 219.67</span>
                     </div>
                 </div>
 
-                <div class="border-t border-gray-300 pt-1.5 mt-1.5">
+                <div class="border-t border-gray-300 pt-1 mt-1">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-700 font-bold text-xs sm:text-sm">Total a Pagar</span>
-                        <span id="resumenTotal" class="text-base sm:text-lg font-bold text-pink-600">S/ 600.00</span>
+                        <span class="text-gray-700 font-bold text-[10px] sm:text-sm">Total a Pagar</span>
+                        <span id="resumenTotal" class="text-sm sm:text-lg font-bold text-pink-600">S/ 600.00</span>
                     </div>
                 </div>
-                <div class="border-t border-pink-200 pt-1.5 mt-1.5">
+                <div class="border-t border-pink-200 pt-1 mt-1">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-700 font-bold text-[10px] sm:text-xs">Fecha de Último Pago</span>
-                        <span id="fechaUltimoPago" class="font-bold text-gray-900 text-[10px] sm:text-xs">03/06/2026</span>
+                        <span class="text-gray-700 font-bold text-[9px] sm:text-xs">Fecha de Último Pago</span>
+                        <span id="fechaUltimoPago" class="font-bold text-gray-900 text-[9px] sm:text-xs">03/06/2026</span>
                     </div>
                 </div>
             </div>
 
-            <button class="w-full bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold py-2.5 text-xs sm:text-sm rounded-lg hover:from-purple-800 hover:to-purple-950 shadow-lg transition-all">
+            <button class="w-full bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold py-2 text-xs sm:text-sm rounded-lg hover:from-purple-800 hover:to-purple-950 shadow-lg transition-all">
                 Solicítalo Ahora
             </button>
         </div>
@@ -363,7 +352,7 @@
         plazosData.forEach(p => {
             const btn = document.createElement('button');
             btn.textContent = p.meses + (p.meses === 1 ? ' mes' : ' m');
-            btn.className = 'py-1.5 text-[11px] sm:text-xs font-bold rounded-lg transition-all ' + (
+            btn.className = 'py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold rounded-lg transition-all ' + (
                 p.meses === plazo
                     ? 'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-md'
                     : 'bg-white text-gray-700 border border-gray-200 hover:border-pink-400'
@@ -381,11 +370,11 @@
         tipoPago = tipo;
 
         if (tipo === 'cuotas') {
-            btnCuotas.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg shadow-md transition-all';
-            btnUnico.className = 'bg-gray-100 text-gray-700 font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
+            btnCuotas.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all';
+            btnUnico.className = 'bg-gray-100 text-gray-700 font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
         } else {
-            btnUnico.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg shadow-md transition-all';
-            btnCuotas.className = 'bg-gray-100 text-gray-700 font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
+            btnUnico.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all';
+            btnCuotas.className = 'bg-gray-100 text-gray-700 font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
         }
 
         calcular();
