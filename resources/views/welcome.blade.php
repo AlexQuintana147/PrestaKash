@@ -179,12 +179,6 @@
                         <span id="resumenTotal" class="text-sm sm:text-lg font-bold text-pink-600">S/ 600.00</span>
                     </div>
                 </div>
-                <div class="border-t border-pink-200 pt-1 mt-1">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-700 font-bold text-[9px] sm:text-xs">Fecha de Último Pago</span>
-                        <span id="fechaUltimoPago" class="font-bold text-gray-900 text-[9px] sm:text-xs">03/06/2026</span>
-                    </div>
-                </div>
             </div>
 
             <button class="w-full bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold py-2 text-xs sm:text-sm rounded-lg hover:from-purple-800 hover:to-purple-950 shadow-lg transition-all">
@@ -324,6 +318,7 @@
         importeTotal.textContent = fmt(importeTotalMonto);
         resumenTotal.textContent = fmt(totalAPagar);
 
+        // Actualizar según tipo de pago
         if (tipoPago === 'cuotas') {
             cuotaDigital.textContent = fmt(cuotaMensual);
             valorPrimeraCuota.textContent = fmt(cuotaMensual);
@@ -336,9 +331,11 @@
             valorPrimeraCuota.textContent = fmt(totalAPagar);
         }
 
-        fechaPrimeraCuota.textContent = getFecha(1);
-        fechaUltimoPago.textContent = getFecha(tipoPago === 'cuotas' ? plazo : 1);
+        // Actualizar fechas
+        const fechaPrimera = getFecha(1);
+        fechaPrimeraCuota.textContent = fechaPrimera;
 
+        // Actualizar display de plazo
         const plazoInfo = plazosData.find(p => p.meses === plazo);
         if (plazoInfo) {
             plazoDisplay.textContent = tipoPago === 'cuotas'
