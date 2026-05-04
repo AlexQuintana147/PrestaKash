@@ -191,43 +191,44 @@
 <!-- Sección de características destacadas -->
 <section class="py-16 sm:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <!-- Característica 1 -->
-            <div>
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-                <div class="relative">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                        <svg class="w-7 h-7" fill="#ec4899" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="#ec4899" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                             <path d="m473.6,256.6c0-99.3-67.1-185.9-163.3-210.6-9.2-2.4-18.6,3.2-20.9,12.4-2.4,9.2 3.2,18.6 12.4,20.9 80.9,20.7 137.4,93.7 137.4,177.3 0,73.7-43.9,139-109.6,167.7l15.9-37c3.7-8.7-0.3-18.8-9-22.6-8.7-3.7-18.8,0.3-22.6,9l-31,72.2c-3.7,8.7 0.3,18.8 9,22.6l72.2,31c10.8,3.8 19.8-2.5 22.6-9 3.7-8.7-0.3-18.8-9-22.6l-31.4-13.5c76.5-34.6 127.3-111.4 127.3-197.8z"/>
                             <path d="m210.4,433.9c-80.9-20.8-137.4-93.7-137.4-177.3 0-72.7 42.7-137.2 106.9-166.5l-14.9,34.6c-3.7,8.7 0.1,19.2 9,22.6 10.4,3.9 19.2-0.8 22.6-9l31-72.3c3-7 2.9-17.5-9-22.6l-72.2-31c-8.7-3.7-18.8,0.3-22.6,9-3.7,8.7 0.3,18.8 9,22.6l33.6,14.4c-76.8,34.7-127.8,111.6-127.8,198.2 7.10543e-15,99.3 67.2,185.8 163.3,210.6 11.6,3 18.9-4.6 20.9-12.4 2.3-9.2-3.2-18.5-12.4-20.9z"/>
                             <path d="m296.6,321.4c8.8-9.2 13.2-20.8 13.2-34.6 0-6.3-1.1-12.1-3.2-17.5-2.1-5.4-5.1-10-9-14-3.9-3.9-9-7.2-15.2-10-3.3-1.4-9.9-3.4-20-5.9v-57.4c6.5,1.3 11.6,4.1 15.4,8.3 3.7,4.2 6.2,10.2 7.4,18l20.6-3.1c-1.8-12.6-7-22.6-15.7-29.8-6.8-5.7-16-9.1-27.6-10.2v-9.5h-11.8v9.5c-13.2,1.3-23.2,5-29.9,10.9-10.1,8.8-15.1,20.3-15.1,34.5 0,8 1.7,15.1 5.2,21.4 3.4,6.3 8.3,11.2 14.7,14.7 8.6,4.8 17,8 25.2,9.5v63.5c-7.8-0.8-14.6-4.8-20.2-11.9-3.9-5-6.7-12.9-8.2-23.6l-20.1,3.8c0.7,10.3 3.4,19.1 7.9,26.3 4.5,7.2 9.9,12.4 16.2,15.6 6.2,3.2 14.4,5.4 24.3,6.7v19.9h11.8v-20.2c14-0.7 25.4-5.7 34.1-14.9zm-45.8-84.5c-9.1-2.7-15.5-6.4-19.3-11-3.8-4.6-5.7-10.3-5.7-17.1 0-6.9 2.2-12.8 6.7-17.8 4.5-5 10.6-8.1 18.3-9.3v55.2zm30.9,72.6c-5.1,5.8-11.5,9.1-19.2,10.1v-60.7c10.7,3.5 17.9,7.4 21.5,11.8 3.6,4.4 5.4,10.2 5.4,17.5-0.1,8.4-2.6,15.6-7.7,21.3z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Tasa fija 20%</h3>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tasa fija 20%</h3>
                     <p class="text-sm text-gray-600 leading-relaxed">Sin sorpresas. Sabes exactamente cuánto pagarás desde el inicio.</p>
                 </div>
             </div>
 
             <!-- Característica 2 -->
-            <div>
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-                <div class="relative">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                        <svg fill="#ec4899" width="28px" height="28px" viewBox="-2 -2 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-clock">
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="-2 -2 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-clock">
                             <path d='M11 9h4a1 1 0 0 1 0 2h-5a1 1 0 0 1-1-1V4a1 1 0 1 1 2 0v5zm-1 11C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z'/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Menos de 24 horas</h3>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Menos de 24 horas</h3>
                     <p class="text-sm text-gray-600 leading-relaxed">100% digitales. Sin muchos papeles para aprobar tu préstamo online.</p>
                 </div>
             </div>
 
             <!-- Característica 3 -->
-            <div>
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-                <div class="relative">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                        <svg width="28px" height="28px" viewBox="0 0 1800 1800" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg width="32px" height="32px" viewBox="0 0 1800 1800" xmlns="http://www.w3.org/2000/svg">
                             <g>
                                 <g>
                                     <path fill="#ec4899" d="M872.831,1326.446c-1.999,0.113-3.853-0.183-5.733-0.53c-6.064-1.076-11.863-3.945-16.53-8.611l-514.859-514.86c-5.852-5.855-9.138-13.792-9.138-22.068c0-8.275,3.287-16.212,9.142-22.067L455.5,638.535c12.189-12.185,31.954-12.185,44.126,0l373.109,373.1l727.884-727.89c12.189-12.185,31.949-12.185,44.131,0l119.788,119.784c5.855,5.851,9.142,13.792,9.142,22.067s-3.286,16.212-9.137,22.063l-869.649,869.645C889.043,1323.155,881.106,1326.446,872.831,1326.446z M401.905,780.377l470.825,470.83l825.614-825.61l-75.657-75.653l-727.885,727.889c-12.19,12.186-31.95,12.186-44.13,0L477.563,704.729L401.905,780.377z"/>
@@ -240,21 +241,24 @@
                             </g>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">¿Por qué elegirnos?</h3>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">¿Por qué elegirnos?</h3>
                     <p class="text-sm text-gray-600 leading-relaxed">Nos preocupamos por ti y te ofrecemos el préstamo perfecto para tus necesidades.</p>
                 </div>
             </div>
 
             <!-- Característica 4 -->
-            <div>
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-                <div class="relative">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                        <svg fill="#ec4899" width="28px" height="28px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex items-center gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M19,8H14.724l3.144-5.5A1,1,0,0,0,17,1H10a1,1,0,0,0-.895.553l-5,10A1,1,0,0,0,5,13H9.656L7.042,21.713a1,1,0,0,0,1.722.933l11-13A1,1,0,0,0,19,8Zm-8.663,9.689,1.621-5.4A1,1,0,0,0,11,11H6.618l4-8h4.658L12.132,8.5A1,1,0,0,0,13,10h3.844Z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">Respuesta inmediata</h3>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Respuesta inmediata</h3>
                     <p class="text-sm text-gray-600 leading-relaxed">El mismo día sabrás si tu préstamo fue aprobado o no.</p>
                 </div>
             </div>
