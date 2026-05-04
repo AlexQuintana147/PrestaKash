@@ -4,9 +4,6 @@
             <!-- Logo y descripción -->
             <div class="col-span-2 md:col-span-2">
                 <div class="flex items-center gap-2.5 mb-4">
-                    <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded flex items-center justify-center">
-                        <span class="text-white font-bold text-base">P</span>
-                    </div>
                     <span class="text-xl font-bold tracking-tight">PrestaKash</span>
                 </div>
                 <p class="text-gray-400 text-sm leading-relaxed max-w-sm mb-6">
