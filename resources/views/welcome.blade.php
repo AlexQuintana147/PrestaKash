@@ -10,10 +10,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1D4ED8',
-                        'primary-dark': '#1E3A8A',
-                        'primary-light': '#3B82F6',
-                        accent: '#60A5FA',
+                        primary: '#10b981',
+                        'primary-dark': '#059669',
+                        'primary-light': '#34d399',
+                        accent: '#ec4899',
                     },
                     fontFamily: { sans: ['Roboto', 'sans-serif'] }
                 }
@@ -74,7 +74,7 @@
 
 <section id="calculadora" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
     <!-- Gradiente de fondo -->
-    <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-green-600 to-pink-500"></div>
 
     <!-- Imagen de fondo con overlay -->
     <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80');"></div>
@@ -101,7 +101,7 @@
         <div class="bg-white rounded-lg shadow-2xl p-2.5 sm:p-4 max-w-xl w-full lg:max-w-xl mx-auto">
             <!-- Tabs de tipo de préstamo -->
             <div class="grid grid-cols-2 gap-1.5 mb-2">
-                <button id="btnCuotas" class="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all">
+                <button id="btnCuotas" class="bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all">
                     Pago a Cuotas
                 </button>
                 <button id="btnUnico" class="bg-gray-100 text-gray-700 font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all">
@@ -129,9 +129,9 @@
             <!-- Selector de plazo -->
             <div class="mb-2">
                 <label class="text-[10px] sm:text-xs font-bold text-gray-700 block mb-1">Plazo</label>
-                <div class="bg-pink-50 rounded-lg p-1.5 mb-1">
+                <div class="bg-green-50 rounded-lg p-1.5 mb-1">
                     <div class="text-center">
-                        <div class="text-base sm:text-xl font-bold text-pink-600" id="plazoDisplay">3 cuotas (90 días)</div>
+                        <div class="text-base sm:text-xl font-bold text-green-600" id="plazoDisplay">3 cuotas (90 días)</div>
                     </div>
                 </div>
                 <div id="plazoButtons" class="grid grid-cols-3 gap-1"></div>
@@ -169,7 +169,7 @@
                 </div>
 
                 <!-- Total a Pagar por Mes (solo en modo cuotas) -->
-                <div class="border-t border-pink-200 pt-1 mt-1" id="rowTotalMensual">
+                <div class="border-t border-green-200 pt-1 mt-1" id="rowTotalMensual">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-700 font-bold text-[10px] sm:text-sm">Total a Pagar por Mes</span>
                         <span id="totalMensual" class="text-sm sm:text-lg font-bold text-pink-600">S/ 219.67</span>
@@ -184,7 +184,7 @@
                 </div>
             </div>
 
-            <button class="w-full bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold py-2 text-xs sm:text-sm rounded-lg hover:from-purple-800 hover:to-purple-950 shadow-lg transition-all">
+            <button class="w-full bg-gradient-to-r from-black to-gray-900 text-white font-bold py-2 text-xs sm:text-sm rounded-lg hover:from-gray-900 hover:to-black shadow-lg transition-all">
                 Solicítalo Ahora
             </button>
         </div>
@@ -269,7 +269,7 @@
     </div>
 </section>
 
-<section id="beneficios" class="py-16 sm:py-20 bg-gray-900">
+<section id="beneficios" class="py-16 sm:py-20 bg-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="text-center mb-12 sm:mb-16">
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">¿Por qué PrestaKash?</h2>
@@ -277,8 +277,8 @@
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <!-- Beneficio 1 -->
-            <div class="group bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6 hover:bg-gray-800 hover:border-pink-500/50 transition-all duration-300">
-                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="group bg-gray-900/50 backdrop-blur border border-gray-800 rounded-2xl p-6 hover:bg-gray-900 hover:border-green-500/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
@@ -288,7 +288,7 @@
             </div>
 
             <!-- Beneficio 2 -->
-            <div class="group bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6 hover:bg-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <div class="group bg-gray-900/50 backdrop-blur border border-gray-800 rounded-2xl p-6 hover:bg-gray-900 hover:border-pink-500/50 transition-all duration-300">
                 <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -299,8 +299,8 @@
             </div>
 
             <!-- Beneficio 3 -->
-            <div class="group bg-gradient-to-br from-pink-900/30 to-gray-800/50 backdrop-blur border-2 border-pink-500/50 rounded-2xl p-6 hover:border-pink-500 transition-all duration-300 shadow-lg shadow-pink-500/10">
-                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-pink-500/50">
+            <div class="group bg-gradient-to-br from-green-900/30 to-gray-900/50 backdrop-blur border-2 border-green-500/50 rounded-2xl p-6 hover:border-green-500 transition-all duration-300 shadow-lg shadow-green-500/10">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-green-500/50">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
@@ -310,7 +310,7 @@
             </div>
 
             <!-- Beneficio 4 -->
-            <div class="group bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6 hover:bg-gray-800 hover:border-pink-500/50 transition-all duration-300">
+            <div class="group bg-gray-900/50 backdrop-blur border border-gray-800 rounded-2xl p-6 hover:bg-gray-900 hover:border-pink-500/50 transition-all duration-300">
                 <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -423,8 +423,8 @@
             btn.textContent = p.meses + (p.meses === 1 ? ' mes' : ' m');
             btn.className = 'py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold rounded-lg transition-all ' + (
                 p.meses === plazo
-                    ? 'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:border-pink-400'
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:border-green-400'
             );
             btn.onclick = () => {
                 plazo = p.meses;
@@ -439,10 +439,10 @@
         tipoPago = tipo;
 
         if (tipo === 'cuotas') {
-            btnCuotas.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all';
+            btnCuotas.className = 'bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all';
             btnUnico.className = 'bg-gray-100 text-gray-700 font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
         } else {
-            btnUnico.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all';
+            btnUnico.className = 'bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg shadow-md transition-all';
             btnCuotas.className = 'bg-gray-100 text-gray-700 font-bold py-1.5 px-2 text-[10px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
         }
 
