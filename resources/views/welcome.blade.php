@@ -74,11 +74,14 @@
 
 <section id="calculadora" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
 
-    <!-- Imagen de fondo con overlay - Izquierda -->
-    <div class="absolute inset-0 bg-contain bg-left bg-no-repeat opacity-20" style="background-image: url('/images/fondo.png');"></div>
+    <!-- Imagen de fondo con overlay - Izquierda (solo desktop) -->
+    <div class="absolute inset-0 bg-contain bg-left bg-no-repeat opacity-20 hidden lg:block" style="background-image: url('/images/fondo.png');"></div>
 
-    <!-- Imagen de fondo con overlay - Derecha -->
-    <div class="absolute inset-0 bg-contain bg-no-repeat opacity-20" style="background-image: url('/images/fondo.png'); background-position: right -800px center;"></div>
+    <!-- Imagen de fondo con overlay - Derecha (solo desktop) -->
+    <div class="absolute inset-0 bg-contain bg-no-repeat opacity-20 hidden lg:block" style="background-image: url('/images/fondo.png'); background-position: right -800px center;"></div>
+
+    <!-- Imagen de fondo con overlay - Top (solo móvil) -->
+    <div class="absolute inset-0 bg-contain bg-top bg-no-repeat opacity-20 block lg:hidden" style="background-image: url('/images/fondo.png');"></div>
 
     <div class="relative max-w-7xl mx-auto px-3 sm:px-6 w-full grid lg:grid-cols-2 gap-4 lg:gap-8 items-center py-8 lg:py-12">
 
