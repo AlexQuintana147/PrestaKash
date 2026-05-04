@@ -25,90 +25,172 @@
         html { scroll-behavior: smooth; }
         body { overflow-x: hidden; }
 
-        /* Slider custom */
-        input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; background: #D1D5DB; outline: none; cursor: pointer; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: #1D4ED8; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        /* Slider custom con gradiente rosa */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: linear-gradient(to right, #ec4899 0%, #f97316 100%);
+            outline: none;
+            cursor: pointer;
+            border-radius: 999px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            cursor: pointer;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+            border-radius: 50%;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            cursor: pointer;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+            border-radius: 50%;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce {
+            animation: bounce 2s infinite;
+        }
     </style>
 </head>
 <body class="font-sans text-gray-900 bg-white antialiased">
 
 @include('partials.header')
 
-<section id="calculadora" class="bg-white min-h-screen flex flex-col justify-center pt-20">
-    <div class="max-w-7xl mx-auto px-6 w-full py-16 flex flex-col gap-16">
+<section id="calculadora" class="relative h-screen flex items-center pt-16 pb-8 overflow-hidden">
+    <!-- Gradiente de fondo -->
+    <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-pink-400 to-orange-400"></div>
 
-        <div class="text-center space-y-6">
-            <h1 class="text-6xl md:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
-                Préstamos desde<br>
-                <span class="text-primary">S/ 200 hasta más de S/ 20,000</span>
+    <!-- Imagen de fondo con overlay -->
+    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80');"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-6 lg:gap-8 items-center h-full">
+
+        <!-- Columna izquierda: Contenido hero -->
+        <div class="text-white space-y-3 sm:space-y-4 lg:space-y-6">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-lg">
+                Préstamos personales
             </h1>
-            <p class="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
-                Tasa fija del <span class="font-bold text-gray-900 text-2xl">20%</span> anual.
-                Sin comisiones ocultas. Paga en cuotas mensuales de 1 o a más 6 meses.
+            <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none drop-shadow-2xl">
+                50%
+            </div>
+            <p class="text-lg sm:text-xl md:text-2xl font-semibold drop-shadow-md">
+                De descuento en intereses en tu primer<br class="hidden sm:block">préstamo online
+            </p>
+            <p class="text-xs sm:text-sm opacity-90 max-w-md">
+                *El descuento se aplica a la tasa de interés después de la fecha de desembolso.
             </p>
         </div>
 
-        <div class="bg-gray-50 border-2 border-gray-900 p-10 md:p-12 max-w-4xl mx-auto w-full">
+        <!-- Columna derecha: Calculadora -->
+        <div class="bg-white rounded-lg shadow-2xl p-3 sm:p-4 max-w-xl w-full max-h-[calc(100vh-8rem)] overflow-y-auto">
 
-            <div class="mb-10">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Calcula tu préstamo</h2>
-                <p class="text-gray-600">Ajusta el monto y plazo para ver tu cuota mensual</p>
+            <!-- Encabezado con flecha -->
+            <div class="mb-2 text-center">
+                <div class="inline-flex items-center gap-1 bg-gradient-to-r from-pink-500 to-pink-600 text-white px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold animate-bounce">
+                    <span>↓</span>
+                    <span class="hidden sm:inline">Elige aquí el tipo de préstamo que necesitas</span>
+                    <span class="sm:hidden">Elige tu préstamo</span>
+                    <span>↓</span>
+                </div>
+            </div>
+
+            <!-- Tabs de tipo de préstamo -->
+            <div class="grid grid-cols-2 gap-1.5 mb-3">
+                <button id="btnCuotas" class="bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg shadow-md transition-all">
+                    Pago a Cuotas
+                </button>
+                <button id="btnUnico" class="bg-gray-100 text-gray-700 font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all">
+                    Pago Único
+                </button>
             </div>
 
             <!-- Slider monto -->
-            <div class="mb-10">
-                <div class="flex justify-between items-baseline mb-4">
-                    <label class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Monto a solicitar</label>
+            <div class="mb-3">
+                <div class="flex justify-between items-baseline mb-1.5">
+                    <label class="text-[11px] sm:text-xs font-bold text-gray-700">¿Cuánto necesitas?</label>
                     <div class="text-right">
-                        <span id="montoDisplay" class="text-5xl font-bold text-gray-900 tabular-nums">S/ 1,000</span>
+                        <span id="montoDisplay" class="text-lg sm:text-xl font-bold text-gray-900 tabular-nums">S/ 500.00</span>
                     </div>
                 </div>
-                <input id="montoSlider" type="range" min="200" max="20000" step="100" value="1000" class="w-full h-2 bg-gray-300">
-                <div class="flex justify-between text-sm text-gray-500 mt-3 font-medium">
+                <div class="relative">
+                    <input id="montoSlider" type="range" min="200" max="20000" step="100" value="500" class="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer">
+                </div>
+                <div class="flex justify-between text-[10px] text-gray-500 mt-1">
                     <span>S/ 200</span>
                     <span>S/ 20,000</span>
                 </div>
             </div>
 
             <!-- Selector de plazo -->
-            <div class="mb-10">
-                <label class="text-sm font-semibold text-gray-700 uppercase tracking-wide block mb-4">Plazo de pago</label>
-                <div id="plazoButtons" class="grid grid-cols-6 gap-3"></div>
-            </div>
-
-            <!-- Resumen destacado -->
-            <div class="bg-white border-2 border-gray-900 p-8 mb-8">
-                <div class="grid md:grid-cols-3 gap-8 mb-6">
-                    <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Monto solicitado</p>
-                        <p id="resumenMonto" class="text-2xl font-bold text-gray-900 tabular-nums">S/ 1,000.00</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Interés total (20%)</p>
-                        <p id="resumenInteres" class="text-2xl font-bold text-gray-900 tabular-nums">S/ 200.00</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Total a pagar</p>
-                        <p id="resumenTotal" class="text-2xl font-bold text-gray-900 tabular-nums">S/ 1,200.00</p>
+            <div class="mb-3">
+                <label class="text-[11px] sm:text-xs font-bold text-gray-700 block mb-1.5">Plazo</label>
+                <div class="bg-pink-50 rounded-lg p-2 mb-1.5">
+                    <div class="text-center">
+                        <div class="text-lg sm:text-xl font-bold text-pink-600" id="plazoDisplay">3 cuotas (90 días)</div>
                     </div>
                 </div>
+                <div id="plazoButtons" class="grid grid-cols-3 gap-1"></div>
+            </div>
 
-                <div class="pt-6 border-t-2 border-gray-200">
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Tu cuota mensual</span>
-                        <span id="resumenCuota" class="text-4xl font-bold text-primary tabular-nums">S/ 200.00</span>
+            <!-- Desglose de pago -->
+            <div class="bg-gray-50 rounded-lg p-2.5 sm:p-3 mb-3 space-y-1.5 text-[10px] sm:text-xs">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Cantidad Solicitada</span>
+                    <span id="resumenMonto" class="font-bold text-gray-900">S/ 500.00</span>
+                </div>
+                <div class="flex justify-between" id="rowCuotaDigital">
+                    <span class="text-gray-600">Cuota que se pagará digital</span>
+                    <span id="cuotaDigital" class="font-bold text-gray-900">S/ 100.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Tarifa Tecnología</span>
+                    <span id="tarifaTecnologia" class="font-bold text-gray-900">S/ 50.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Importe Total</span>
+                    <span id="importeTotal" class="font-bold text-gray-900">S/ 60.33</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">IGV</span>
+                    <span id="igv" class="font-bold text-gray-900">S/ 24.88</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Valor Primera Cuota</span>
+                    <span id="valorPrimeraCuota" class="font-bold text-gray-900">S/ 228.28</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Fecha de Pago Primera Cuota</span>
+                    <span id="fechaPrimeraCuota" class="font-bold text-gray-900">03/06/2026</span>
+                </div>
+                <div class="border-t border-gray-300 pt-1.5 mt-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700 font-bold text-xs sm:text-sm">Total a Pagar</span>
+                        <span id="resumenTotal" class="text-base sm:text-lg font-bold text-pink-600">S/ 600.00</span>
+                    </div>
+                </div>
+                <div class="border-t border-pink-200 pt-1.5 mt-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700 font-bold text-[10px] sm:text-xs">Fecha de Último Pago</span>
+                        <span id="fechaUltimoPago" class="font-bold text-gray-900 text-[10px] sm:text-xs">03/06/2026</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Cronograma de pagos -->
-            <div class="mb-8">
-                <p class="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-4">Cronograma de pagos</p>
-                <div id="cuotasTabla" class="space-y-2 bg-white border border-gray-200 p-4"></div>
-            </div>
-
-            <button class="w-full bg-gray-900 text-white font-bold py-5 text-lg hover:bg-gray-800">
-                Solicitar préstamo ahora →
+            <button class="w-full bg-gradient-to-r from-purple-700 to-purple-900 text-white font-bold py-2.5 text-xs sm:text-sm rounded-lg hover:from-purple-800 hover:to-purple-950 shadow-lg transition-all">
+                Solicítalo Ahora
             </button>
         </div>
     </div>
@@ -181,89 +263,126 @@
 
 
 <script>
-    const montoSlider    = document.getElementById('montoSlider');
-    const montoDisplay   = document.getElementById('montoDisplay');
-    const plazoButtons   = document.getElementById('plazoButtons');
-    const cuotasTabla    = document.getElementById('cuotasTabla');
-    const resumenMonto   = document.getElementById('resumenMonto');
-    const resumenInteres = document.getElementById('resumenInteres');
-    const resumenTotal   = document.getElementById('resumenTotal');
-    const resumenCuota   = document.getElementById('resumenCuota');
+    const montoSlider = document.getElementById('montoSlider');
+    const montoDisplay = document.getElementById('montoDisplay');
+    const plazoButtons = document.getElementById('plazoButtons');
+    const plazoDisplay = document.getElementById('plazoDisplay');
+    const resumenMonto = document.getElementById('resumenMonto');
+    const resumenTotal = document.getElementById('resumenTotal');
+    const cuotaDigital = document.getElementById('cuotaDigital');
+    const tarifaTecnologia = document.getElementById('tarifaTecnologia');
+    const importeTotal = document.getElementById('importeTotal');
+    const igv = document.getElementById('igv');
+    const valorPrimeraCuota = document.getElementById('valorPrimeraCuota');
+    const fechaPrimeraCuota = document.getElementById('fechaPrimeraCuota');
+    const fechaUltimoPago = document.getElementById('fechaUltimoPago');
+    const btnCuotas = document.getElementById('btnCuotas');
+    const btnUnico = document.getElementById('btnUnico');
+    const rowCuotaDigital = document.getElementById('rowCuotaDigital');
 
     let plazo = 3;
+    let tipoPago = 'cuotas'; // 'cuotas' o 'unico'
 
     const fmt = n => 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const plazosData = [
+        { meses: 1, dias: 30 },
+        { meses: 2, dias: 60 },
+        { meses: 3, dias: 90 },
+        { meses: 4, dias: 120 },
+        { meses: 5, dias: 150 },
+        { meses: 6, dias: 180 }
+    ];
 
-    function mesLabel(offset) {
+    function getFecha(offsetMeses) {
         const d = new Date();
-        d.setMonth(d.getMonth() + offset);
-        return MESES[d.getMonth()] + ' ' + d.getFullYear();
+        d.setMonth(d.getMonth() + offsetMeses);
+        const dia = String(d.getDate()).padStart(2, '0');
+        const mes = String(d.getMonth() + 1).padStart(2, '0');
+        const año = d.getFullYear();
+        return `${dia}/${mes}/${año}`;
     }
 
     function calcular() {
-        const monto   = parseFloat(montoSlider.value);
-        const interes = monto * 0.20;
-        const total   = monto + interes;
-        const cuota   = total / plazo;
+        const monto = parseFloat(montoSlider.value);
+        const tasaInteres = 0.20; // 20% anual
+        const interes = monto * tasaInteres;
 
-        montoDisplay.textContent    = fmt(monto);
-        resumenMonto.textContent    = fmt(monto);
-        resumenInteres.textContent  = fmt(interes);
-        resumenTotal.textContent    = fmt(total);
-        resumenCuota.textContent    = fmt(cuota);
+        // Tarifa de tecnología (ejemplo: 10% del monto)
+        const tarifa = monto * 0.10;
+        const igvMonto = tarifa * 0.18; // IGV 18%
+        const importeTotalMonto = tarifa + igvMonto;
 
-        renderCronograma(cuota);
-    }
+        const totalAPagar = monto + interes + importeTotalMonto;
+        const cuotaMensual = totalAPagar / plazo;
 
-    function renderCronograma(cuota) {
-        cuotasTabla.innerHTML = '';
+        // Actualizar displays
+        montoDisplay.textContent = fmt(monto);
+        resumenMonto.textContent = fmt(monto);
+        tarifaTecnologia.textContent = fmt(tarifa);
+        igv.textContent = fmt(igvMonto);
+        importeTotal.textContent = fmt(importeTotalMonto);
+        resumenTotal.textContent = fmt(totalAPagar);
 
-        for (let i = 1; i <= plazo; i++) {
-            const row = document.createElement('div');
-            row.className = 'flex items-center justify-between py-3 border-b border-gray-200 last:border-0';
+        if (tipoPago === 'cuotas') {
+            cuotaDigital.textContent = fmt(cuotaMensual);
+            valorPrimeraCuota.textContent = fmt(cuotaMensual);
+            rowCuotaDigital.style.display = 'flex';
+        } else {
+            rowCuotaDigital.style.display = 'none';
+            valorPrimeraCuota.textContent = fmt(totalAPagar);
+        }
 
-            const info = document.createElement('div');
-            info.className = 'flex items-center gap-4';
+        fechaPrimeraCuota.textContent = getFecha(1);
+        fechaUltimoPago.textContent = getFecha(tipoPago === 'cuotas' ? plazo : 1);
 
-            const num = document.createElement('span');
-            num.className = 'w-8 h-8 bg-gray-900 text-white text-sm font-bold flex items-center justify-center';
-            num.textContent = i;
-
-            const fecha = document.createElement('span');
-            fecha.className = 'text-sm font-medium text-gray-700';
-            fecha.textContent = mesLabel(i);
-
-            info.appendChild(num);
-            info.appendChild(fecha);
-
-            const monto = document.createElement('span');
-            monto.className = 'text-base font-bold text-gray-900 tabular-nums';
-            monto.textContent = fmt(cuota);
-
-            row.appendChild(info);
-            row.appendChild(monto);
-            cuotasTabla.appendChild(row);
+        const plazoInfo = plazosData.find(p => p.meses === plazo);
+        if (plazoInfo) {
+            plazoDisplay.textContent = tipoPago === 'cuotas'
+                ? `${plazo} cuotas (${plazoInfo.dias} días)`
+                : `Pago único (${plazoInfo.dias} días)`;
         }
     }
 
     function renderPlazo() {
         plazoButtons.innerHTML = '';
-        for (let i = 1; i <= 6; i++) {
+        plazosData.forEach(p => {
             const btn = document.createElement('button');
-            btn.textContent = i + (i === 1 ? ' mes' : ' m');
-            btn.className = 'py-3 text-sm font-bold border-2 ' + (
-                i === plazo
-                    ? 'bg-gray-900 text-white border-gray-900'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-900'
+            btn.textContent = p.meses + (p.meses === 1 ? ' mes' : ' m');
+            btn.className = 'py-1.5 text-[11px] sm:text-xs font-bold rounded-lg transition-all ' + (
+                p.meses === plazo
+                    ? 'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:border-pink-400'
             );
-            btn.onclick = () => { plazo = i; renderPlazo(); calcular(); };
+            btn.onclick = () => {
+                plazo = p.meses;
+                renderPlazo();
+                calcular();
+            };
             plazoButtons.appendChild(btn);
-        }
+        });
     }
 
+    function cambiarTipoPago(tipo) {
+        tipoPago = tipo;
+
+        if (tipo === 'cuotas') {
+            btnCuotas.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg shadow-md transition-all';
+            btnUnico.className = 'bg-gray-100 text-gray-700 font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
+        } else {
+            btnUnico.className = 'bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg shadow-md transition-all';
+            btnCuotas.className = 'bg-gray-100 text-gray-700 font-bold py-2 px-2 text-[11px] sm:text-xs rounded-lg hover:bg-gray-200 transition-all';
+        }
+
+        calcular();
+    }
+
+    // Event listeners
     montoSlider.addEventListener('input', calcular);
+    btnCuotas.addEventListener('click', () => cambiarTipoPago('cuotas'));
+    btnUnico.addEventListener('click', () => cambiarTipoPago('unico'));
+
+    // Inicializar
     renderPlazo();
     calcular();
 </script>
