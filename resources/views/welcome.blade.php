@@ -79,17 +79,17 @@
     <div class="relative max-w-7xl mx-auto px-3 sm:px-6 w-full grid lg:grid-cols-2 gap-4 lg:gap-8 items-center py-8 lg:py-12">
 
         <!-- Columna izquierda: Contenido hero -->
-        <div class="text-white space-y-2 sm:space-y-4 lg:space-y-6 hidden lg:block">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-lg">
+        <div class="text-white space-y-2 sm:space-y-3 lg:space-y-6 text-center lg:text-left mb-4 lg:mb-0">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight drop-shadow-lg">
                 Tu dinero en<br>menos de 24 horas
             </h1>
-            <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-none drop-shadow-2xl">
+            <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none drop-shadow-2xl">
                 100%
             </div>
-            <p class="text-lg sm:text-xl md:text-2xl font-semibold drop-shadow-md">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold drop-shadow-md">
                 Todo Digital.<br class="hidden sm:block">Sin visitas al banco.
             </p>
-            <p class="text-xs sm:text-sm opacity-90 max-w-md">
+            <p class="text-xs sm:text-sm opacity-90 max-w-md mx-auto lg:mx-0">
                 Aprobación en menos de 24 horas. Tasa fija garantizada. Cero comisiones ocultas.
             </p>
         </div>
