@@ -188,64 +188,110 @@
     </div>
 </section>
 
-<section id="como-funciona" class="py-24 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-20">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Obtén tu préstamo en 3 pasos</h2>
-            <p class="text-gray-600 text-lg">Proceso simple y rápido, sin complicaciones</p>
+<section id="como-funciona" class="py-16 sm:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12 sm:mb-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3">Obtén tu préstamo en 3 pasos</h2>
+            <p class="text-gray-600 text-base sm:text-lg">Simple, rápido y sin complicaciones</p>
         </div>
-        <div class="grid md:grid-cols-3 gap-12">
-            <div class="text-center space-y-4">
-                <div class="w-16 h-16 bg-gray-900 text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
-                    01
+        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+            <!-- Paso 1 -->
+            <div class="group relative">
+                <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-xl hover:border-pink-200 transition-all duration-300">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30">
+                            <span class="text-white font-bold text-xl">1</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Calcula y elige</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Usa nuestra calculadora para elegir el monto y plazo que mejor se adapte a ti.</p>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900">Calcula y elige</h3>
-                <p class="text-gray-600 leading-relaxed">Usa nuestra calculadora para elegir el monto y plazo que mejor se adapte a tus necesidades.</p>
             </div>
-            <div class="text-center space-y-4">
-                <div class="w-16 h-16 bg-gray-900 text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
-                    02
+
+            <!-- Paso 2 -->
+            <div class="group relative">
+                <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-xl hover:border-pink-200 transition-all duration-300">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30">
+                            <span class="text-white font-bold text-xl">2</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Completa tu solicitud</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Llena el formulario con tu información. Solo toma 5 minutos.</p>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900">Completa tu solicitud</h3>
-                <p class="text-gray-600 leading-relaxed">Llena el formulario con tu información personal. Solo toma 5 minutos.</p>
             </div>
-            <div class="text-center space-y-4">
-                <div class="w-16 h-16 bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
-                    03
+
+            <!-- Paso 3 -->
+            <div class="group relative">
+                <div class="bg-gradient-to-br from-pink-50 to-white border-2 border-pink-200 rounded-2xl p-6 sm:p-8 shadow-lg shadow-pink-500/10 hover:shadow-xl hover:border-pink-300 transition-all duration-300">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/40">
+                            <span class="text-white font-bold text-xl">3</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Recibe tu dinero</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Aprobación en menos de 24 horas. Depósito directo en tu cuenta.</p>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900">Recibe tu dinero</h3>
-                <p class="text-gray-600 leading-relaxed">Aprobación en menos de 24 horas. El dinero se deposita directo en tu cuenta.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section id="beneficios" class="py-24 bg-gray-900">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-20">
-            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">¿Por qué PrestaKash?</h2>
-            <p class="text-gray-400 text-lg">Transparencia y rapidez en cada préstamo</p>
+<section id="beneficios" class="py-16 sm:py-20 bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12 sm:mb-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">¿Por qué PrestaKash?</h2>
+            <p class="text-gray-400 text-base sm:text-lg">Transparencia y rapidez en cada préstamo</p>
         </div>
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="bg-gray-800 border-2 border-gray-700 p-8">
-                <div class="text-4xl mb-4">⚡</div>
-                <h3 class="text-white font-bold text-lg mb-3">Aprobación rápida</h3>
-                <p class="text-gray-400 leading-relaxed">Respuesta en menos de 24 horas hábiles. Sin esperas innecesarias.</p>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Beneficio 1 -->
+            <div class="group bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6 hover:bg-gray-800 hover:border-pink-500/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-bold text-lg mb-2">Aprobación rápida</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Respuesta en menos de 24 horas. Sin esperas innecesarias.</p>
             </div>
-            <div class="bg-gray-800 border-2 border-gray-700 p-8">
-                <div class="text-4xl mb-4">🔒</div>
-                <h3 class="text-white font-bold text-lg mb-3">100% seguro</h3>
-                <p class="text-gray-400 leading-relaxed">Tus datos protegidos con encriptación de nivel bancario.</p>
+
+            <!-- Beneficio 2 -->
+            <div class="group bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6 hover:bg-gray-800 hover:border-pink-500/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-bold text-lg mb-2">100% seguro</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Tus datos protegidos con encriptación de nivel bancario.</p>
             </div>
-            <div class="bg-gray-800 border-2 border-primary p-8">
-                <div class="text-4xl mb-4">📊</div>
-                <h3 class="text-white font-bold text-lg mb-3">Tasa fija 20%</h3>
-                <p class="text-gray-400 leading-relaxed">Sin tasas variables ni cargos ocultos. Siempre sabes cuánto pagas.</p>
+
+            <!-- Beneficio 3 -->
+            <div class="group bg-gradient-to-br from-pink-900/30 to-gray-800/50 backdrop-blur border-2 border-pink-500/50 rounded-2xl p-6 hover:border-pink-500 transition-all duration-300 shadow-lg shadow-pink-500/10">
+                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-pink-500/50">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-bold text-lg mb-2">Tasa fija 20%</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Sin tasas variables ni cargos ocultos. Siempre sabes cuánto pagas.</p>
             </div>
-            <div class="bg-gray-800 border-2 border-gray-700 p-8">
-                <div class="text-4xl mb-4">📅</div>
-                <h3 class="text-white font-bold text-lg mb-3">Hasta 6 meses</h3>
-                <p class="text-gray-400 leading-relaxed">Elige el plazo que mejor se ajuste a tu presupuesto.</p>
+
+            <!-- Beneficio 4 -->
+            <div class="group bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-6 hover:bg-gray-800 hover:border-pink-500/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-bold text-lg mb-2">Hasta 6 meses</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Elige el plazo que mejor se ajuste a tu presupuesto.</p>
             </div>
         </div>
     </div>
