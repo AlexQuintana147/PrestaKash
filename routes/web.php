@@ -16,6 +16,8 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name
 Route::middleware('auth')->group(function () {
     Route::get('/onboarding/step1',  [OnboardingController::class, 'step1'])->name('onboarding.step1');
     Route::post('/onboarding/step1', [OnboardingController::class, 'step1Store'])->name('onboarding.step1.store');
-    Route::get('/onboarding/step2',  [OnboardingController::class, 'step2'])->name('onboarding.step2');
-    Route::post('/onboarding/step2', [OnboardingController::class, 'step2Store'])->name('onboarding.step2.store');
+
+    // Step 2 solo accesible si el paso 1 está completo
+    Route::get('/onboarding/step2',  [OnboardingController::class, 'step2'])->name('onboarding.step2')->middleware('onboarding.step1');
+    Route::post('/onboarding/step2', [OnboardingController::class, 'step2Store'])->name('onboarding.step2.store')->middleware('onboarding.step1');
 });

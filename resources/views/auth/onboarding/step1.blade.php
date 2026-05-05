@@ -36,6 +36,12 @@
         <h2 class="text-xl font-bold text-white mb-1">Datos personales</h2>
         <p class="text-gray-400 text-sm mb-6">Tu correo viene de Google. Solo necesitamos tu nombre completo y teléfono.</p>
 
+        @if(session('error'))
+            <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-5">
+                <p class="text-red-400 text-sm">{{ session('error') }}</p>
+            </div>
+        @endif
+
         @if($errors->any())
             <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-5">
                 @foreach($errors->all() as $error)

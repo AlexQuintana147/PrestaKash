@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'onboarding.step1' => \App\Http\Middleware\OnboardingStep1Completed::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
