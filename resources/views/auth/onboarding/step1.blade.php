@@ -24,6 +24,70 @@
         .input-field:disabled { color: #4b5563; cursor: not-allowed; }
         select.input-field option { background: #111827; color: white; }
         select.input-field:disabled { opacity: 0.4; }
+
+        /* Custom select */
+        .custom-select { position: relative; }
+        .custom-select-trigger {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #374151;
+            color: white;
+            padding: 10px 24px 10px 0;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .custom-select-trigger:focus { outline: none; border-bottom-color: #10b981; }
+        .custom-select-trigger.open { border-bottom-color: #10b981; }
+        .custom-select-trigger.disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+        .custom-select-trigger .placeholder { color: #4b5563; }
+        .custom-select-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0; right: 0;
+            background: #0f172a;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .custom-select-dropdown.open { display: block; }
+        .custom-select-search {
+            padding: 10px 14px;
+            border-bottom: 1px solid #1f2937;
+            position: sticky;
+            top: 0;
+            background: #0f172a;
+        }
+        .custom-select-search input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.8rem;
+            outline: none;
+        }
+        .custom-select-search input::placeholder { color: #4b5563; }
+        .custom-select-option {
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s;
+        }
+        .custom-select-option:hover { background: #1f2937; color: white; }
+        .custom-select-option.selected { color: #10b981; }
+        .custom-select-dropdown::-webkit-scrollbar { width: 4px; }
+        .custom-select-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .custom-select-dropdown::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-12">
@@ -101,21 +165,45 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Departamento</label>
-                <select name="department" id="department" required class="input-field">
-                    <option value="">Seleccionar</option>
-                </select>
+                <div class="custom-select" id="cs-department">
+                    <button type="button" class="custom-select-trigger disabled" id="cs-department-trigger">
+                        <span class="placeholder">Seleccionar</span>
+                        <svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="custom-select-dropdown" id="cs-department-dropdown">
+                        <div class="custom-select-search"><input type="text" placeholder="Buscar..." id="cs-department-search"></div>
+                        <div id="cs-department-options"></div>
+                    </div>
+                    <input type="hidden" name="department" id="department" value="{{ old('department') }}">
+                </div>
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Provincia</label>
-                <select name="province" id="province" required disabled class="input-field">
-                    <option value="">Seleccionar</option>
-                </select>
+                <div class="custom-select" id="cs-province">
+                    <button type="button" class="custom-select-trigger disabled" id="cs-province-trigger">
+                        <span class="placeholder">Seleccionar</span>
+                        <svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="custom-select-dropdown" id="cs-province-dropdown">
+                        <div class="custom-select-search"><input type="text" placeholder="Buscar..." id="cs-province-search"></div>
+                        <div id="cs-province-options"></div>
+                    </div>
+                    <input type="hidden" name="province" id="province" value="{{ old('province') }}">
+                </div>
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Distrito</label>
-                <select name="district" id="district" required disabled class="input-field">
-                    <option value="">Seleccionar</option>
-                </select>
+                <div class="custom-select" id="cs-district">
+                    <button type="button" class="custom-select-trigger disabled" id="cs-district-trigger">
+                        <span class="placeholder">Seleccionar</span>
+                        <svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="custom-select-dropdown" id="cs-district-dropdown">
+                        <div class="custom-select-search"><input type="text" placeholder="Buscar..." id="cs-district-search"></div>
+                        <div id="cs-district-options"></div>
+                    </div>
+                    <input type="hidden" name="district" id="district" value="{{ old('district') }}">
+                </div>
             </div>
         </div>
 
@@ -141,51 +229,136 @@
 </div>
 
 <script>
-const deptSelect = document.getElementById('department');
-const provSelect = document.getElementById('province');
-const distSelect = document.getElementById('district');
+// ── Custom Select Helper ──────────────────────────────────────────
+function buildCustomSelect({ triggerId, dropdownId, optionsId, searchId, hiddenId, onSelect }) {
+    const trigger  = document.getElementById(triggerId);
+    const dropdown = document.getElementById(dropdownId);
+    const optsCont = document.getElementById(optionsId);
+    const search   = document.getElementById(searchId);
+    const hidden   = document.getElementById(hiddenId);
 
-fetch('/ubigeo/departments')
-    .then(r => r.json())
-    .then(data => {
-        data.forEach(d => deptSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`);
-        @if(old('department'))
-            deptSelect.value = '{{ old('department') }}';
-            deptSelect.dispatchEvent(new Event('change'));
-        @endif
+    function renderOptions(items) {
+        optsCont.innerHTML = '';
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'custom-select-option' + (hidden.value == item.id ? ' selected' : '');
+            div.textContent = item.name;
+            div.dataset.id = item.id;
+            div.addEventListener('click', () => {
+                hidden.value = item.id;
+                trigger.innerHTML = `<span>${item.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                dropdown.classList.remove('open');
+                trigger.classList.remove('open');
+                if (onSelect) onSelect(item.id);
+            });
+            optsCont.appendChild(div);
+        });
+    }
+
+    trigger.addEventListener('click', () => {
+        if (trigger.classList.contains('disabled')) return;
+        const isOpen = dropdown.classList.toggle('open');
+        trigger.classList.toggle('open', isOpen);
+        if (isOpen) { search.value = ''; search.focus(); renderOptions(trigger._items || []); }
     });
 
-deptSelect.addEventListener('change', function () {
-    provSelect.innerHTML = '<option value="">Seleccionar</option>';
-    distSelect.innerHTML = '<option value="">Seleccionar</option>';
-    provSelect.disabled = true;
-    distSelect.disabled = true;
-    if (!this.value) return;
-    fetch(`/ubigeo/provinces/${this.value}`)
-        .then(r => r.json())
-        .then(data => {
-            data.forEach(p => provSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`);
-            provSelect.disabled = false;
+    search.addEventListener('input', () => {
+        const q = search.value.toLowerCase();
+        const filtered = (trigger._items || []).filter(i => i.name.toLowerCase().includes(q));
+        renderOptions(filtered);
+    });
+
+    document.addEventListener('click', e => {
+        if (!trigger.closest('.custom-select').contains(e.target)) {
+            dropdown.classList.remove('open');
+            trigger.classList.remove('open');
+        }
+    });
+
+    return { trigger, renderOptions, hidden };
+}
+
+// ── Instanciar los 3 selects ──────────────────────────────────────
+const deptCS = buildCustomSelect({
+    triggerId: 'cs-department-trigger', dropdownId: 'cs-department-dropdown',
+    optionsId: 'cs-department-options', searchId: 'cs-department-search',
+    hiddenId: 'department',
+    onSelect: (id) => {
+        // Reset provincia y distrito
+        provCS.trigger._items = [];
+        provCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+        provCS.hidden.value = '';
+        provCS.trigger.classList.add('disabled');
+        distCS.trigger._items = [];
+        distCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+        distCS.hidden.value = '';
+        distCS.trigger.classList.add('disabled');
+
+        fetch(`/ubigeo/provinces/${id}`).then(r => r.json()).then(data => {
+            provCS.trigger._items = data;
+            provCS.trigger.classList.remove('disabled');
             @if(old('province'))
-                provSelect.value = '{{ old('province') }}';
-                provSelect.dispatchEvent(new Event('change'));
+            const old = '{{ old('province') }}';
+            const found = data.find(p => p.id == old);
+            if (found) {
+                provCS.hidden.value = found.id;
+                provCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                provCS.trigger._onSelect && provCS.trigger._onSelect(found.id);
+            }
             @endif
         });
+    }
 });
 
-provSelect.addEventListener('change', function () {
-    distSelect.innerHTML = '<option value="">Seleccionar</option>';
-    distSelect.disabled = true;
-    if (!this.value) return;
-    fetch(`/ubigeo/districts/${this.value}`)
-        .then(r => r.json())
-        .then(data => {
-            data.forEach(d => distSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`);
-            distSelect.disabled = false;
+const provCS = buildCustomSelect({
+    triggerId: 'cs-province-trigger', dropdownId: 'cs-province-dropdown',
+    optionsId: 'cs-province-options', searchId: 'cs-province-search',
+    hiddenId: 'province',
+    onSelect: (id) => {
+        distCS.trigger._items = [];
+        distCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+        distCS.hidden.value = '';
+        distCS.trigger.classList.add('disabled');
+
+        fetch(`/ubigeo/districts/${id}`).then(r => r.json()).then(data => {
+            distCS.trigger._items = data;
+            distCS.trigger.classList.remove('disabled');
             @if(old('district'))
-                distSelect.value = '{{ old('district') }}';
+            const old = '{{ old('district') }}';
+            const found = data.find(d => d.id == old);
+            if (found) {
+                distCS.hidden.value = found.id;
+                distCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+            }
             @endif
         });
+    }
+});
+
+const distCS = buildCustomSelect({
+    triggerId: 'cs-district-trigger', dropdownId: 'cs-district-dropdown',
+    optionsId: 'cs-district-options', searchId: 'cs-district-search',
+    hiddenId: 'district'
+});
+
+// ── Cargar departamentos ──────────────────────────────────────────
+fetch('/ubigeo/departments').then(r => r.json()).then(data => {
+    deptCS.trigger._items = data;
+    deptCS.trigger.classList.remove('disabled');
+    @if(old('department'))
+    const old = '{{ old('department') }}';
+    const found = data.find(d => d.id == old);
+    if (found) {
+        deptCS.hidden.value = found.id;
+        deptCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+        // Trigger cascade
+        document.getElementById('cs-department-trigger').dispatchEvent(new CustomEvent('_select', { detail: found.id }));
+        fetch(`/ubigeo/provinces/${found.id}`).then(r => r.json()).then(provs => {
+            provCS.trigger._items = provs;
+            provCS.trigger.classList.remove('disabled');
+        });
+    }
+    @endif
 });
 </script>
 </body>
