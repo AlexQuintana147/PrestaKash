@@ -21,6 +21,14 @@ Route::prefix('ubigeo')->name('ubigeo.')->group(function () {
     Route::get('/districts/{province}',   [UbigeoController::class, 'districts'])->name('districts');
 });
 
+// Logout
+Route::post('/logout', function () {
+    \Illuminate\Support\Facades\Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout')->middleware('auth');
+
 // Google OAuth
 Route::get('/auth/google',          [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');

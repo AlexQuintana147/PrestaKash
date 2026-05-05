@@ -212,7 +212,11 @@
 
         <!-- Submit -->
         <div class="pt-4 flex items-center justify-between">
-            <span class="text-xs text-gray-600">Todos los campos son obligatorios</span>
+            <button type="submit" form="form-logout"
+                class="flex items-center gap-2 text-red-500 hover:text-red-400 font-medium text-sm px-4 py-2 border-b border-red-500 hover:border-red-400 transition-colors bg-transparent">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Volver
+            </button>
             <button type="submit"
                 class="flex items-center gap-2 text-white font-medium text-sm px-4 py-2 border-b border-green-500 hover:text-green-400 hover:border-green-400 transition-colors bg-transparent">
                 Siguiente
@@ -220,6 +224,11 @@
             </button>
         </div>
 
+    </form>
+
+    <!-- Form logout independiente -->
+    <form id="form-logout" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
     </form>
 </div>
 
@@ -352,6 +361,12 @@ fetch('/ubigeo/departments').then(r => r.json()).then(data => {
         });
     }
     @endif
+});
+
+// Bloquear botón atrás del navegador
+history.pushState(null, '', location.href);
+window.addEventListener('popstate', () => {
+    history.pushState(null, '', location.href);
 });
 </script>
 </body>
