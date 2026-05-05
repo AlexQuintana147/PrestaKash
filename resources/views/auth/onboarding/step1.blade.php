@@ -363,10 +363,10 @@ fetch('/ubigeo/departments').then(r => r.json()).then(data => {
     @endif
 });
 
-// Bloquear botón atrás del navegador
+// Bloquear botón atrás del navegador — redirige siempre al paso 1
 history.pushState(null, '', location.href);
 window.addEventListener('popstate', () => {
-    history.pushState(null, '', location.href);
+    window.location.replace('{{ route('onboarding.step1') }}');
 });
 </script>
 </body>
