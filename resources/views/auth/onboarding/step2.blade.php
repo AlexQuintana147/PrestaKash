@@ -5,95 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrestaKash — Sube tus documentos</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Roboto', sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        .upload-zone {
+            border-bottom: 1px solid #374151;
+            padding: 20px 0;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .upload-zone:hover { border-bottom-color: #10b981; }
+        .upload-zone.has-file { border-bottom-color: #10b981; }
+        .upload-zone input[type=file] { display: none; }
+    </style>
 </head>
-<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-10">
+<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-12">
+<div class="w-full max-w-xl">
 
-<div class="w-full max-w-md">
+    <!-- Header -->
+    <div class="mb-10">
+        <p class="text-xs font-semibold text-green-400 uppercase tracking-widest mb-1">PrestaKash</p>
+        <h1 class="text-2xl font-bold text-white">Verifica tu identidad</h1>
+        <p class="text-gray-500 text-sm mt-1">Paso 2 de 2 — Documentos</p>
 
-    <!-- Logo -->
-    <div class="text-center mb-8">
-        <span class="text-3xl font-extrabold text-white">PrestaKash</span>
-        <p class="text-gray-400 text-sm mt-1">Paso 2 de 2</p>
-    </div>
-
-    <!-- Pasos -->
-    <div class="flex items-center justify-center gap-3 mb-8">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-green-500/30 border border-green-500 flex items-center justify-center text-green-400 text-sm font-bold">✓</div>
-            <span class="text-gray-400 text-sm">Datos personales</span>
-        </div>
-        <div class="w-8 h-px bg-gray-700"></div>
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">2</div>
-            <span class="text-white text-sm font-medium">Documentos</span>
+        <!-- Barra de progreso -->
+        <div class="mt-4 h-0.5 bg-gray-800 rounded-full">
+            <div class="h-0.5 bg-green-500 rounded-full w-full"></div>
         </div>
     </div>
 
-    <!-- Card -->
-    <div class="bg-gray-900 rounded-2xl p-8 shadow-2xl">
-        <h2 class="text-xl font-bold text-white mb-1">Sube tus documentos</h2>
-        <p class="text-gray-400 text-sm mb-6">Necesitamos verificar tu identidad. Las imágenes se guardan de forma segura.</p>
+    @if($errors->any())
+    <div class="mb-6 p-4 border-l-2 border-red-500 bg-red-500/5 rounded-r-lg">
+        @foreach($errors->all() as $error)
+            <p class="text-red-400 text-sm">{{ $error }}</p>
+        @endforeach
+    </div>
+    @endif
 
-        @if($errors->any())
-            <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-5">
-                @foreach($errors->all() as $error)
-                    <p class="text-red-400 text-sm">{{ $error }}</p>
-                @endforeach
-            </div>
-        @endif
+    <form action="{{ route('onboarding.step2.store') }}" method="POST" enctype="multipart/form-data" class="space-y-2">
+    @csrf
 
-        <form action="{{ route('onboarding.step2.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-            @csrf
+        <!-- DNI Frontal -->
+        <div>
+            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">DNI — Parte frontal</label>
+            <label class="upload-zone" id="zone-dni-front">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-500" id="icon-dni-front" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                    <p class="text-sm text-white" id="text-dni-front">Seleccionar imagen</p>
+                    <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
+                </div>
+                <input type="file" name="dni_front" accept="image/*" onchange="handleFile(this,'zone-dni-front','text-dni-front','icon-dni-front')">
+            </label>
+        </div>
 
-            <!-- DNI Frontal -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1.5">DNI — Parte frontal</label>
-                <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-green-500 transition-colors bg-gray-800/50" id="label-dni-front">
-                    <svg class="w-7 h-7 text-gray-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    <span class="text-gray-400 text-xs" id="text-dni-front">Haz clic o arrastra la imagen</span>
-                    <input type="file" name="dni_front" accept="image/*" class="hidden" onchange="previewFile(this, 'text-dni-front')">
-                </label>
-            </div>
+        <!-- DNI Trasera -->
+        <div>
+            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">DNI — Parte trasera</label>
+            <label class="upload-zone" id="zone-dni-back">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-500" id="icon-dni-back" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                    <p class="text-sm text-white" id="text-dni-back">Seleccionar imagen</p>
+                    <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
+                </div>
+                <input type="file" name="dni_back" accept="image/*" onchange="handleFile(this,'zone-dni-back','text-dni-back','icon-dni-back')">
+            </label>
+        </div>
 
-            <!-- DNI Trasera -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1.5">DNI — Parte trasera</label>
-                <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-green-500 transition-colors bg-gray-800/50">
-                    <svg class="w-7 h-7 text-gray-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    <span class="text-gray-400 text-xs" id="text-dni-back">Haz clic o arrastra la imagen</span>
-                    <input type="file" name="dni_back" accept="image/*" class="hidden" onchange="previewFile(this, 'text-dni-back')">
-                </label>
-            </div>
+        <!-- Recibo -->
+        <div>
+            <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Recibo de luz o agua</label>
+            <label class="upload-zone" id="zone-utility">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-gray-500" id="icon-utility" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div>
+                    <p class="text-sm text-white" id="text-utility">Seleccionar imagen</p>
+                    <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
+                </div>
+                <input type="file" name="utility_bill" accept="image/*" onchange="handleFile(this,'zone-utility','text-utility','icon-utility')">
+            </label>
+        </div>
 
-            <!-- Recibo de luz o agua -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1.5">Recibo de luz o agua</label>
-                <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-green-500 transition-colors bg-gray-800/50">
-                    <svg class="w-7 h-7 text-gray-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span class="text-gray-400 text-xs" id="text-utility">Haz clic o arrastra la imagen</span>
-                    <input type="file" name="utility_bill" accept="image/*" class="hidden" onchange="previewFile(this, 'text-utility')">
-                </label>
-            </div>
-
+        <!-- Botones -->
+        <div class="pt-8 flex items-center justify-between">
+            <a href="{{ route('onboarding.step1') }}"
+                class="flex items-center gap-2 text-red-500 hover:text-red-400 font-medium text-sm px-4 py-2 border-b border-red-500 hover:border-red-400 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Atrás
+            </a>
             <button type="submit"
-                class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold py-3 rounded-xl transition-all text-sm mt-2">
-                Finalizar registro
+                class="flex items-center gap-2 text-white font-medium text-sm px-4 py-2 border-b border-green-500 hover:text-green-400 hover:border-green-400 transition-colors bg-transparent">
+                Finalizar
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
-        </form>
-    </div>
+        </div>
+
+    </form>
 </div>
 
 <script>
-    function previewFile(input, textId) {
-        const el = document.getElementById(textId);
-        if (input.files && input.files[0]) {
-            el.textContent = input.files[0].name;
-            el.classList.add('text-green-400');
-        }
-    }
-</script>
+function handleFile(input, zoneId, textId, iconId) {
+    if (!input.files || !input.files[0]) return;
+    const name = input.files[0].name;
+    document.getElementById(textId).textContent = name;
+    document.getElementById(textId).classList.add('text-green-400');
+    document.getElementById(zoneId).classList.add('has-file');
+    // Cambiar icono a check
+    document.getElementById(iconId).innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
+    document.getElementById(iconId).classList.remove('text-gray-500');
+    document.getElementById(iconId).classList.add('text-green-400');
+}
 
+// Bloquear botón atrás del navegador
+history.pushState(null, '', location.href);
+window.addEventListener('popstate', () => {
+    window.location.replace('{{ route('onboarding.step2') }}');
+});
+</script>
 </body>
 </html>
