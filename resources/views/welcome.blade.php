@@ -210,6 +210,7 @@
 <!-- Sección de características destacadas -->
 <section class="py-16 sm:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-12">¿Por qué PrestaKash?</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <!-- Característica 1 -->
             <div class="flex items-center gap-4">
@@ -286,7 +287,7 @@
 </section>
 
 <!-- Sección de requisitos -->
-<section class="py-16 sm:py-20 bg-gray-50">
+<section class="py-16 sm:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-12">
             ¿Qué requisitos debes cumplir?
@@ -296,8 +297,9 @@
             <div class="flex items-center gap-4">
                 <div class="flex-shrink-0">
                     <div class="w-16 h-16 flex items-center justify-center">
-                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2,8.5h20v2H2V8.5z M2,13.5h20v2H2V13.5z M12,2L2,6v1.5h20V6L12,2z M2,17.5h20V19H4v2h16v1H2V17.5z"/>
+                        <svg fill="#ec4899" width="32px" height="32px" viewBox="0 0 36 36" version="1.1" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.5,13.56,5,12.68V16H31V12.71l1.48.85a1,1,0,0,0,1-1.73L18,2.92,2.5,11.83a1,1,0,1,0,1,1.73ZM17.85,7.11a.8.8,0,0,1,.8,0L25.37,11H22.15l-3.9-2.24L14.35,11H11.14Z"/>
+                            <path d="M32.85,27H32v-.85A1.15,1.15,0,0,0,30.85,25H28V17.63H24V25H20V17.63H16V25H12V17.63H8V25H5.15A1.15,1.15,0,0,0,4,26.15V27H3.15A1.15,1.15,0,0,0,2,28.15V31H34V28.15A1.15,1.15,0,0,0,32.85,27Z"/>
                         </svg>
                     </div>
                 </div>
