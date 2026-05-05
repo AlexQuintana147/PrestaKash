@@ -210,7 +210,10 @@
 <!-- Franja SBS -->
 <section style="background: linear-gradient(90deg, #003294 0%, #4ab8d8 100%);">
     <div class="flex items-stretch">
-        <img src="/images/SBS.png" alt="SBS" class="h-16 object-contain object-left bg-[#003294] px-6 py-2 flex-shrink-0">
+        <div class="relative flex-shrink-0">
+            <img src="/images/SBS.png" alt="SBS" class="h-16 object-contain object-left bg-[#003294] px-6 py-2"
+                style="-webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%); mask-image: linear-gradient(to right, black 80%, transparent 100%);">
+        </div>
         <div class="flex items-center px-6 py-4">
             <p class="text-white text-sm font-medium">
                 Supervisado y regulado por la Superintendencia de Banca, Seguros y AFP del Perú (SBS). Tu dinero y datos están protegidos.
