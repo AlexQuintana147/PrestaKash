@@ -22,7 +22,7 @@
         .upload-zone input[type=file] { display: none; }
     </style>
 </head>
-<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-12">
+<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-12" onload="noBack();" onpageshow="if(event.persisted) noBack();">
 <div class="w-full max-w-xl">
 
     <!-- Header -->
@@ -124,9 +124,13 @@ function handleFile(input, zoneId, textId, iconId) {
 }
 
 // Bloquear botón atrás del navegador
-history.pushState(null, '', location.href);
+function noBack() { window.history.forward(); }
+// Llenar el historial con entradas de esta misma página para que no haya "atrás" disponible
+for (let i = 0; i < 20; i++) {
+    history.pushState(null, '', location.href);
+}
 window.addEventListener('popstate', () => {
-    window.location.replace('{{ route('onboarding.step2') }}');
+    history.pushState(null, '', location.href);
 });
 </script>
 </body>

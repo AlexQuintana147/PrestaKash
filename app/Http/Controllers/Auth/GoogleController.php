@@ -16,7 +16,11 @@ class GoogleController extends Controller
 
     public function callback()
     {
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            return redirect('/')->with('error', 'El inicio de sesión falló. Intenta de nuevo.');
+        }
 
         $user = User::firstOrCreate(
             ['email' => $googleUser->getEmail()],

@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'onboarding.step1' => \App\Http\Middleware\OnboardingStep1Completed::class,
+            'incomplete'       => \App\Http\Middleware\RedirectIfIncomplete::class,
+        ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\RedirectIfIncomplete::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
