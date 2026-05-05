@@ -27,31 +27,19 @@ class OnboardingController extends Controller
             'phone' => $request->phone,
         ]);
 
+        // Flag de sesión para permitir acceso al paso 2
+        session(['onboarding_step1_done' => true]);
+
         return redirect()->route('onboarding.step2');
     }
 
     public function step2()
     {
-        $user = Auth::user();
-
-        // Bloquear si el paso 1 no está completo
-        if (!$user->phone || !$user->name) {
-            return redirect()->route('onboarding.step1')
-                ->with('error', 'Debes completar tus datos personales primero.');
-        }
-
         return view('auth.onboarding.step2');
     }
 
     public function step2Store(Request $request, ImageService $imageService)
     {
-        $user = Auth::user();
-
-        // Bloquear si el paso 1 no está completo
-        if (!$user->phone || !$user->name) {
-            return redirect()->route('onboarding.step1')
-                ->with('error', 'Debes completar tus datos personales primero.');
-        }
         $request->validate([
             'dni_front'    => 'required|image|max:5120',
             'dni_back'     => 'required|image|max:5120',
