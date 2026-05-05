@@ -214,13 +214,36 @@
             <img src="/images/SBS.png" alt="SBS" class="h-16 object-contain object-left bg-[#003294] px-6 py-2"
                 style="-webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%); mask-image: linear-gradient(to right, black 80%, transparent 100%);">
         </div>
-        <div class="flex items-center px-6 py-4">
-            <p class="text-white text-sm font-medium">
+
+        <!-- Texto desktop -->
+        <div class="hidden sm:flex items-center flex-1 px-4 py-4">
+            <p class="text-white text-sm font-medium w-full">
                 Supervisado y regulado por la Superintendencia de Banca, Seguros y AFP del Perú (SBS). Tu dinero y datos están protegidos.
             </p>
         </div>
+
+        <!-- Carrusel móvil -->
+        <div class="flex sm:hidden items-center justify-center flex-1 px-4 py-4">
+            <span id="sbs-carousel" class="text-white text-xl font-bold tracking-wide text-center" style="transition: opacity 0.5s;">Supervisado</span>
+        </div>
     </div>
 </section>
+
+<script>
+    const sbsWords = ['Supervisado', 'Regulado', 'Seguridad'];
+    let sbsIndex = 0;
+    const sbsEl = document.getElementById('sbs-carousel');
+    if (sbsEl) {
+        setInterval(() => {
+            sbsEl.style.opacity = '0';
+            setTimeout(() => {
+                sbsIndex = (sbsIndex + 1) % sbsWords.length;
+                sbsEl.textContent = sbsWords[sbsIndex];
+                sbsEl.style.opacity = '1';
+            }, 600);
+        }, 3000);
+    }
+</script>
 
 <!-- Sección de características destacadas -->
 <section class="py-16 sm:py-20 bg-white">
