@@ -9,6 +9,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Ruta login requerida por el middleware auth de Laravel
+Route::get('/login', function () {
+    return redirect('/');
+})->name('login');
+
 // Ubigeo (público para el formulario)
 Route::prefix('ubigeo')->name('ubigeo.')->group(function () {
     Route::get('/departments',           [UbigeoController::class, 'departments'])->name('departments');
