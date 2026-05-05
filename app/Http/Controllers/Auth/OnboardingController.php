@@ -18,16 +18,37 @@ class OnboardingController extends Controller
     public function step1Store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string|max:100',
-            'phone' => 'required|string|max:20',
+            'first_name' => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
+            'last_name'  => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
+            'dni'        => ['required', 'digits:8', 'unique:users,dni,' . auth()->id()],
+            'phone'      => ['required', 'digits_between:9,9', 'regex:/^9\d{8}$/'],
+            'department' => ['required', 'string', 'max:100'],
+            'province'   => ['required', 'string', 'max:100'],
+            'district'   => ['required', 'string', 'max:100'],
+            'address'    => ['required', 'string', 'max:200'],
+        ], [
+            'first_name.regex'   => 'El nombre solo debe contener letras.',
+            'last_name.regex'    => 'Los apellidos solo deben contener letras.',
+            'dni.digits'         => 'El DNI debe tener exactamente 8 dígitos.',
+            'dni.unique'         => 'Este DNI ya está registrado.',
+            'phone.digits_between' => 'El teléfono debe tener 9 dígitos.',
+            'phone.regex'        => 'El número debe empezar con 9 (celular peruano).',
         ]);
+
+        $fullName = $request->first_name . ' ' . $request->last_name;
 
         Auth::user()->update([
-            'name'  => $request->name,
-            'phone' => $request->phone,
+            'name'        => $fullName,
+            'first_name'  => $request->first_name,
+            'last_name'   => $request->last_name,
+            'dni'         => $request->dni,
+            'phone'       => $request->phone,
+            'department'  => $request->department,
+            'province'    => $request->province,
+            'district'    => $request->district,
+            'address'     => $request->address,
         ]);
 
-        // Flag de sesión para permitir acceso al paso 2
         session(['onboarding_step1_done' => true]);
 
         return redirect()->route('onboarding.step2');
