@@ -24,7 +24,7 @@
 <div class="w-full max-w-xl fade-in">
 
     <div class="mb-10 text-center">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-6 pulse">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-6">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
             </svg>
@@ -33,7 +33,7 @@
         <p class="text-gray-500 text-sm">Tu información ha sido recibida correctamente</p>
     </div>
 
-    <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 mb-8 space-y-4">
+    <div class="p-6 mb-8 space-y-4">
         <div class="flex gap-3">
             <div class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5">
                 <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
