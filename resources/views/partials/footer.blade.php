@@ -32,9 +32,9 @@
                 </ul>
             </div>
 
-            <div class="flex flex-col gap-4">
-                <a href="#">
-                    <img src="/images/libro.png" alt="Libro de Reclamaciones" class="h-20 object-contain">
+            <div class="flex items-start">
+                <a href="#" class="inline-block">
+                    <img src="/images/libro.png" alt="Libro de Reclamaciones" class="h-32 object-contain brightness-0 invert">
                 </a>
             </div>
 
