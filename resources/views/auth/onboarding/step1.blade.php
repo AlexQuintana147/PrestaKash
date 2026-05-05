@@ -138,3 +138,68 @@
         </form>
     </div>
 </div>
+
+<script>
+const deptSelect = document.getElementById('department');
+const provSelect = document.getElementById('province');
+const distSelect = document.getElementById('district');
+
+// Cargar departamentos al iniciar
+fetch('/ubigeo/departments')
+    .then(r => r.json())
+    .then(data => {
+        data.forEach(d => {
+            deptSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+        });
+        // Restaurar valor si hubo error de validación
+        @if(old('department'))
+            deptSelect.value = '{{ old('department') }}';
+            deptSelect.dispatchEvent(new Event('change'));
+        @endif
+    });
+
+// Al cambiar departamento, cargar provincias
+deptSelect.addEventListener('change', function () {
+    provSelect.innerHTML = '<option value="">Selecciona una provincia</option>';
+    distSelect.innerHTML = '<option value="">Selecciona un distrito</option>';
+    provSelect.disabled = true;
+    distSelect.disabled = true;
+
+    if (!this.value) return;
+
+    fetch(`/ubigeo/provinces/${this.value}`)
+        .then(r => r.json())
+        .then(data => {
+            data.forEach(p => {
+                provSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+            });
+            provSelect.disabled = false;
+            @if(old('province'))
+                provSelect.value = '{{ old('province') }}';
+                provSelect.dispatchEvent(new Event('change'));
+            @endif
+        });
+});
+
+// Al cambiar provincia, cargar distritos
+provSelect.addEventListener('change', function () {
+    distSelect.innerHTML = '<option value="">Selecciona un distrito</option>';
+    distSelect.disabled = true;
+
+    if (!this.value) return;
+
+    fetch(`/ubigeo/districts/${this.value}`)
+        .then(r => r.json())
+        .then(data => {
+            data.forEach(d => {
+                distSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            });
+            distSelect.disabled = false;
+            @if(old('district'))
+                distSelect.value = '{{ old('district') }}';
+            @endif
+        });
+});
+</script>
+</body>
+</html>

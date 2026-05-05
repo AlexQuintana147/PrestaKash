@@ -2,10 +2,18 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\OnboardingController;
+use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Ubigeo (público para el formulario)
+Route::prefix('ubigeo')->name('ubigeo.')->group(function () {
+    Route::get('/departments',           [UbigeoController::class, 'departments'])->name('departments');
+    Route::get('/provinces/{department}', [UbigeoController::class, 'provinces'])->name('provinces');
+    Route::get('/districts/{province}',   [UbigeoController::class, 'districts'])->name('districts');
 });
 
 // Google OAuth
