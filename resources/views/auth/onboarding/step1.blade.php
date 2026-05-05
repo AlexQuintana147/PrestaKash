@@ -93,13 +93,11 @@
 <body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-12">
 <div class="w-full max-w-xl">
 
-    <!-- Logo + stepper -->
     <div class="mb-10">
         <p class="text-xs font-semibold text-green-400 uppercase tracking-widest mb-1">PrestaKash</p>
         <h1 class="text-2xl font-bold text-white">Cuéntanos sobre ti</h1>
         <p class="text-gray-500 text-sm mt-1">Paso 1 de 2 — Datos personales</p>
 
-        <!-- Barra de progreso -->
         <div class="mt-4 h-0.5 bg-gray-800 rounded-full">
             <div class="h-0.5 bg-green-500 rounded-full w-1/2"></div>
         </div>
@@ -119,13 +117,11 @@
     <form action="{{ route('onboarding.step1.store') }}" method="POST" class="space-y-8">
     @csrf
 
-        <!-- Correo -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Correo electrónico</label>
             <input type="email" value="{{ Auth::user()->email }}" disabled class="input-field">
         </div>
 
-        <!-- Nombres y Apellidos -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nombres</label>
@@ -143,7 +139,6 @@
             </div>
         </div>
 
-        <!-- DNI y Teléfono -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nro. DNI</label>
@@ -229,7 +224,6 @@
 </div>
 
 <script>
-// ── Custom Select Helper ──────────────────────────────────────────
 function buildCustomSelect({ triggerId, dropdownId, optionsId, searchId, hiddenId, onSelect }) {
     const trigger  = document.getElementById(triggerId);
     const dropdown = document.getElementById(dropdownId);
@@ -341,7 +335,6 @@ const distCS = buildCustomSelect({
     hiddenId: 'district'
 });
 
-// ── Cargar departamentos ──────────────────────────────────────────
 fetch('/ubigeo/departments').then(r => r.json()).then(data => {
     deptCS.trigger._items = data;
     deptCS.trigger.classList.remove('disabled');
