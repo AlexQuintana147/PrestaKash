@@ -130,14 +130,14 @@
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nombres</label>
                 <input type="text" name="first_name" value="{{ old('first_name') }}" required
-                    placeholder="Juan Carlos"
+                    placeholder="Mateo Pedro"
                     oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                     class="input-field">
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Apellidos</label>
                 <input type="text" name="last_name" value="{{ old('last_name') }}" required
-                    placeholder="Pérez García"
+                    placeholder="Castillo Villa"
                     oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                     class="input-field">
             </div>
@@ -219,7 +219,7 @@
         <div class="pt-4 flex items-center justify-between">
             <span class="text-xs text-gray-600">Todos los campos son obligatorios</span>
             <button type="submit"
-                class="flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold px-8 py-3 rounded-xl transition-all text-sm">
+                class="flex items-center gap-2 text-white font-medium text-sm px-4 py-2 border-b border-green-500 hover:text-green-400 hover:border-green-400 transition-colors bg-transparent">
                 Siguiente
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
