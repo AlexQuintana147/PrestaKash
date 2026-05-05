@@ -38,18 +38,17 @@ class OnboardingController extends Controller
         $fullName = $request->first_name . ' ' . $request->last_name;
 
         Auth::user()->update([
-            'name'        => $fullName,
-            'first_name'  => $request->first_name,
-            'last_name'   => $request->last_name,
-            'dni'         => $request->dni,
-            'phone'       => $request->phone,
-            'department'  => $request->department,
-            'province'    => $request->province,
-            'district'    => $request->district,
-            'address'     => $request->address,
+            'name'            => $fullName,
+            'first_name'      => $request->first_name,
+            'last_name'       => $request->last_name,
+            'dni'             => $request->dni,
+            'phone'           => $request->phone,
+            'department'      => $request->department,
+            'province'        => $request->province,
+            'district'        => $request->district,
+            'address'         => $request->address,
+            'step1_completed' => true,
         ]);
-
-        session(['onboarding_step1_done' => true]);
 
         return redirect()->route('onboarding.step2');
     }
@@ -85,6 +84,6 @@ class OnboardingController extends Controller
 
         $user->update(['profile_completed' => true]);
 
-        return redirect('/')->with('success', '¡Registro completado! Tu información está en revisión.');
+        return view('auth.onboarding.pending');
     }
 }

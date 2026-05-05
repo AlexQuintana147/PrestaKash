@@ -29,6 +29,11 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout')->middleware('auth');
 
+// Validation pending
+Route::get('/validation-pending', function () {
+    return view('auth.validation-pending');
+})->name('validation.pending')->middleware('auth');
+
 // Google OAuth
 Route::get('/auth/google',          [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');

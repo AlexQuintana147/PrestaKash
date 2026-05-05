@@ -24,6 +24,7 @@ class User extends Authenticatable
         'google_id',
         'avatar',
         'profile_completed',
+        'step1_completed',
         'password',
     ];
 
@@ -35,6 +36,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'profile_completed' => 'boolean',
+            'step1_completed'   => 'boolean',
         ];
     }
 
