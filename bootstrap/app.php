@@ -14,9 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'onboarding.step1' => \App\Http\Middleware\OnboardingStep1Completed::class,
             'incomplete'       => \App\Http\Middleware\RedirectIfIncomplete::class,
+            'prevent.back'     => \App\Http\Middleware\PreventBackHistory::class,
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\RedirectIfIncomplete::class,
+            \App\Http\Middleware\PreventBackHistory::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

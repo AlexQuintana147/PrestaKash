@@ -27,12 +27,12 @@ class RedirectIfIncomplete
             ];
 
             if (!in_array($request->route()->getName(), $allowed)) {
-                // Si tiene teléfono (paso 1 completado), ir al paso 2
-                if ($user->phone) {
-                    session(['onboarding_step1_done' => true]);
-                    return redirect()->route('onboarding.step2');
+                // Si no ha completado el paso 1, siempre ir al paso 1
+                if (!$user->step1_completed) {
+                    return redirect()->route('onboarding.step1');
                 }
-                return redirect()->route('onboarding.step1');
+                // Si completó el paso 1 pero no el perfil completo, ir al paso 2
+                return redirect()->route('onboarding.step2');
             }
         }
 
