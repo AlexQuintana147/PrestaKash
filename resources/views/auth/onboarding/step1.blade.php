@@ -32,7 +32,7 @@
     </div>
 
     <!-- Card -->
-    <div class="bg-gray-900 rounded-2xl p-8 shadow-2xl">
+    <div>
         <h2 class="text-xl font-bold text-white mb-1">Datos personales</h2>
         <p class="text-gray-400 text-sm mb-6">Tu correo viene de Google. Solo necesitamos tu nombre completo y teléfono.</p>
 
