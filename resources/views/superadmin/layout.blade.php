@@ -29,7 +29,7 @@ window.addEventListener('popstate', () => { history.pushState(null, '', location
 
 <!-- Mobile topbar -->
 <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
-    <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto">
+    <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
     <button onclick="toggleSidebar()" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
         <svg id="menuOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
