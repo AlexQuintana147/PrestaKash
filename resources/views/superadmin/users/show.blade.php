@@ -124,7 +124,7 @@
                 <div>
                     <p class="text-xs text-gray-400 dark:text-gray-600 mb-2">{{ $label }}</p>
                     @if($path)
-                        <a href="{{ Storage::url($path) }}" target="_blank" class="block group">
+                        <button onclick="openLightbox('{{ Storage::url($path) }}', '{{ $label }}')" class="block w-full group text-left">
                             <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900" style="aspect-ratio: 4/3;">
                                 <img src="{{ Storage::url($path) }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -134,7 +134,7 @@
                                     </svg>
                                 </div>
                             </div>
-                        </a>
+                        </button>
                     @else
                         <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-700 text-xs" style="aspect-ratio: 4/3;">
                             Sin imagen
@@ -150,4 +150,97 @@
 
     </div>
 </div>
+
+<!-- Lightbox modal -->
+<div id="lightbox" onclick="closeLightbox(event)"
+     class="hidden fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between w-full max-w-4xl mb-3 flex-shrink-0">
+        <p id="lightboxLabel" class="text-sm text-gray-400"></p>
+        <div class="flex items-center gap-3">
+            <!-- Zoom out -->
+            <button onclick="zoom(-0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/>
+                </svg>
+            </button>
+            <!-- Zoom level -->
+            <span id="zoomLevel" class="text-xs text-gray-500 w-10 text-center">100%</span>
+            <!-- Zoom in -->
+            <button onclick="zoom(0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                </svg>
+            </button>
+            <!-- Reset -->
+            <button onclick="resetZoom()" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </button>
+            <!-- Cerrar -->
+            <button onclick="closeLightbox()" class="p-2 text-gray-400 hover:text-white transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Imagen con scroll si hace zoom -->
+    <div class="overflow-auto w-full max-w-4xl flex items-center justify-center" style="max-height: 80vh;">
+        <img id="lightboxImg" src="" alt=""
+             class="transition-transform duration-200 rounded-lg select-none"
+             style="transform-origin: center; max-width: 100%;">
+    </div>
+</div>
+
+<script>
+let currentScale = 1;
+
+function openLightbox(src, label) {
+    currentScale = 1;
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxImg').style.transform = 'scale(1)';
+    document.getElementById('lightboxLabel').textContent = label;
+    document.getElementById('zoomLevel').textContent = '100%';
+    document.getElementById('lightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+    if (e && e.target !== document.getElementById('lightbox')) return;
+    document.getElementById('lightbox').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function zoom(delta) {
+    currentScale = Math.min(4, Math.max(0.25, currentScale + delta));
+    document.getElementById('lightboxImg').style.transform = `scale(${currentScale})`;
+    document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%';
+}
+
+function resetZoom() {
+    currentScale = 1;
+    document.getElementById('lightboxImg').style.transform = 'scale(1)';
+    document.getElementById('zoomLevel').textContent = '100%';
+}
+
+// Cerrar con Escape
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.getElementById('lightbox').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    if (e.key === '+' || e.key === '=') zoom(0.25);
+    if (e.key === '-') zoom(-0.25);
+});
+
+// Zoom con rueda del mouse
+document.getElementById('lightboxImg').addEventListener('wheel', e => {
+    e.preventDefault();
+    zoom(e.deltaY < 0 ? 0.15 : -0.15);
+}, { passive: false });
+</script>
 @endsection
