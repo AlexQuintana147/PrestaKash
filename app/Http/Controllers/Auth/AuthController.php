@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlockedUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,11 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
+        // Verificar si está bloqueado
+        if (BlockedUser::where('email', $request->email)->exists()) {
+            return back()->withErrors(['email' => 'Esta cuenta ha sido bloqueada. Contacta al soporte.'])->withInput();
+        }
 
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
@@ -49,6 +55,11 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        // Verificar si está bloqueado
+        if (BlockedUser::where('email', $request->email)->exists()) {
+            return back()->withErrors(['email' => 'Este correo no puede ser usado para registrarse.'])->withInput();
+        }
 
         $user = User::create([
             'name' => $request->name,

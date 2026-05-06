@@ -25,24 +25,25 @@
 
     <!-- Filtros -->
     <div class="flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
-        @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
+        @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'blocked' => 'Bloqueados'] as $key => $label)
             <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
                class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
                       {{ $filter === $key
-                          ? 'text-gray-900 dark:text-white'
+                          ? ($key === 'blocked' ? 'text-red-500' : 'text-gray-900 dark:text-white')
                           : 'text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400' }}">
                 {{ $label }}
                 @if($counts[$key] > 0)
-                    <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-700' }}">{{ $counts[$key] }}</span>
+                    <span class="ml-1.5 text-xs {{ $filter === $key ? ($key === 'blocked' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400') : 'text-gray-300 dark:text-gray-700' }}">{{ $counts[$key] }}</span>
                 @endif
                 @if($filter === $key)
-                    <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                    <span class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'blocked' ? 'bg-red-500' : 'bg-gray-900 dark:bg-white' }}"></span>
                 @endif
             </a>
         @endforeach
     </div>
 
     <!-- Cabecera de columnas (solo desktop) -->
+    @if($filter !== 'blocked')
     <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center" style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
         <span>Usuario</span>
         <span class="text-center">DNI</span>
@@ -51,8 +52,53 @@
         <span class="text-center">Estado</span>
         <span></span>
     </div>
+    @endif
 
-    <!-- Lista -->
+    @if($filter === 'blocked')
+    <!-- Lista de bloqueados -->
+    <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center" style="grid-template-columns: 1fr 120px 130px 120px 24px;">
+        <span>Usuario</span>
+        <span class="text-center">DNI</span>
+        <span class="text-center">Teléfono</span>
+        <span class="text-center">Bloqueado</span>
+        <span></span>
+    </div>
+
+    @forelse($blockedUsers as $blocked)
+    <div class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 -mx-2 px-2"
+         style="grid-template-columns: 1fr 120px 130px 120px 24px;">
+
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $blocked->name }}</p>
+                <p class="text-xs text-gray-400 dark:text-gray-600 truncate">{{ $blocked->email }}</p>
+                @if($blocked->reason)
+                    <p class="text-xs text-red-400 truncate mt-0.5">{{ $blocked->reason }}</p>
+                @endif
+            </div>
+        </div>
+
+        <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $blocked->dni ?? '—' }}</span>
+        <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $blocked->phone ?? '—' }}</span>
+        <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $blocked->created_at->format('d/m/Y') }}</span>
+
+        <div class="ml-auto md:ml-0 flex justify-center">
+            <span class="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-600"></span>
+        </div>
+    </div>
+    @empty
+    <div class="py-20 text-center">
+        <p class="text-gray-400 dark:text-gray-700 text-sm">No hay usuarios bloqueados.</p>
+    </div>
+    @endforelse
+
+    @else
+    <!-- Lista normal -->
     @forelse($users as $user)
     @php $status = $user->documents?->status @endphp
     <a href="{{ route('superadmin.users.show', $user) }}"
@@ -100,8 +146,10 @@
     </div>
     @endforelse
 
+    @endif
+
     <!-- Paginación -->
-    @if($users->hasPages())
+    @if($filter !== 'blocked' && $users->hasPages())
     <div class="mt-8 flex items-center justify-between text-xs text-gray-400 dark:text-gray-600">
         <span>{{ $users->firstItem() }}–{{ $users->lastItem() }} de {{ $users->total() }}</span>
         <div class="flex items-center gap-5">

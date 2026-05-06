@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlockedUser;
 use App\Models\User;
 use App\Models\UserDocument;
 use App\Models\UbigeoDepartment;
@@ -16,28 +17,36 @@ class UsersController extends Controller
     {
         $filter = $request->get('filter', 'all');
 
-        $query = User::with(['documents', 'role'])
-            ->whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))
-            ->where('profile_completed', true);
+        $blockedUsers = collect();
 
-        if ($filter === 'pending') {
-            $query->whereHas('documents', fn($q) => $q->where('status', 'pending'));
-        } elseif ($filter === 'approved') {
-            $query->whereHas('documents', fn($q) => $q->where('status', 'approved'));
-        } elseif ($filter === 'rejected') {
-            $query->whereHas('documents', fn($q) => $q->where('status', 'rejected'));
+        if ($filter === 'blocked') {
+            $users = collect(); // no hay paginación para bloqueados por ahora
+            $blockedUsers = BlockedUser::latest()->get();
+        } else {
+            $query = User::with(['documents', 'role'])
+                ->whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))
+                ->where('profile_completed', true);
+
+            if ($filter === 'pending') {
+                $query->whereHas('documents', fn($q) => $q->where('status', 'pending'));
+            } elseif ($filter === 'approved') {
+                $query->whereHas('documents', fn($q) => $q->where('status', 'approved'));
+            } elseif ($filter === 'rejected') {
+                $query->whereHas('documents', fn($q) => $q->where('status', 'rejected'));
+            }
+
+            $users = $query->latest()->paginate(15)->withQueryString();
         }
-
-        $users = $query->latest()->paginate(15)->withQueryString();
 
         $counts = [
             'all'      => User::whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))->where('profile_completed', true)->count(),
             'pending'  => UserDocument::where('status', 'pending')->count(),
             'approved' => UserDocument::where('status', 'approved')->count(),
             'rejected' => UserDocument::where('status', 'rejected')->count(),
+            'blocked'  => BlockedUser::count(),
         ];
 
-        return view('superadmin.users.index', compact('users', 'filter', 'counts'));
+        return view('superadmin.users.index', compact('users', 'filter', 'counts', 'blockedUsers'));
     }
 
     public function show(User $user)
@@ -89,5 +98,39 @@ class UsersController extends Controller
     {
         $user->documents()->update(['status' => 'pending']);
         return back()->with('success', 'Aprobación revertida.');
+    }
+
+    public function block(User $user)
+    {
+        request()->validate(['reason' => 'nullable|string|max:255']);
+
+        // Guardar en lista negra
+        \App\Models\BlockedUser::updateOrCreate(
+            ['email' => $user->email],
+            [
+                'name'       => $user->name,
+                'first_name' => $user->first_name,
+                'last_name'  => $user->last_name,
+                'phone'      => $user->phone,
+                'dni'        => $user->dni,
+                'reason'     => request('reason'),
+            ]
+        );
+
+        // Eliminar imágenes
+        if ($doc = $user->documents) {
+            foreach (['selfie', 'dni_front', 'dni_back', 'utility_bill'] as $field) {
+                if ($doc->$field) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($doc->$field);
+                }
+            }
+            \Illuminate\Support\Facades\Storage::disk('public')->deleteDirectory('documents/' . $user->id);
+            $doc->delete();
+        }
+
+        // Eliminar usuario (datos personales quedan en blocked_users)
+        $user->delete();
+
+        return redirect()->route('superadmin.users.index')->with('success', 'Usuario bloqueado correctamente.');
     }
 }

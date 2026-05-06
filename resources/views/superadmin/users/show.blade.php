@@ -143,6 +143,17 @@
                         @endif
                     @endif
                 </div>
+
+                {{-- Bloquear: disponible para pending y approved --}}
+                @if(in_array($user->documents->status, ['pending', 'approved']))
+                <button type="button" onclick="openBlockModal()"
+                        class="mt-2 w-full py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-500 hover:border-gray-900 dark:hover:border-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                    </svg>
+                    Bloquear usuario
+                </button>
+                @endif
             </div>
             @endif
 
@@ -187,6 +198,40 @@
             @endif
         </div>
 
+    </div>
+</div>
+
+<!-- Modal bloquear usuario -->
+<div id="blockModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 mx-auto mb-4">
+            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+            </svg>
+        </div>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-1">Bloquear usuario</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-5">
+            Se eliminarán sus documentos y no podrá volver a registrarse con sus datos.
+        </p>
+
+        <form action="{{ route('superadmin.users.block', $user) }}" method="POST">
+            @csrf
+            <div class="mb-5">
+                <label class="block text-xs text-gray-500 dark:text-gray-500 mb-2">Motivo <span class="text-gray-400">(opcional)</span></label>
+                <input type="text" name="reason" placeholder="Ej: Actividad sospechosa..."
+                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 py-2 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors">
+            </div>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeBlockModal()"
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
+                    Bloquear
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -320,6 +365,20 @@
 
 <script>
 let currentScale = 1;
+
+function openBlockModal() {
+    document.getElementById('blockModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBlockModal() {
+    document.getElementById('blockModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('blockModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('blockModal')) closeBlockModal();
+});
 
 function openRejectModal() {
     document.getElementById('rejectModal').classList.remove('hidden');

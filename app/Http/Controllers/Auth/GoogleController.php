@@ -33,6 +33,11 @@ class GoogleController extends Controller
             ]
         );
 
+        // Verificar si está bloqueado
+        if (\App\Models\BlockedUser::where('email', $googleUser->getEmail())->exists()) {
+            return redirect('/')->with('error', 'Esta cuenta ha sido bloqueada. Contacta al soporte.');
+        }
+
         // Si ya existía pero no tenía google_id, lo actualizamos
         if (!$user->google_id) {
             $user->update([
