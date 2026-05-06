@@ -246,7 +246,7 @@
 </script>
 
 <!-- Sección de características destacadas -->
-<section class="py-16 sm:py-20 bg-white">
+<section id="beneficios" class="py-16 sm:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-12">¿Por qué PrestaKash?</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -325,7 +325,7 @@
 </section>
 
 <!-- Sección de requisitos -->
-<section class="py-16 sm:py-20 bg-white">
+<section id="requisitos" class="py-16 sm:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 mb-12">
             ¿Qué requisitos debes cumplir?
