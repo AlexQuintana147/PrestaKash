@@ -8,6 +8,7 @@ class UserDocument extends Model
 {
     protected $fillable = [
         'user_id',
+        'selfie',
         'dni_front',
         'dni_back',
         'utility_bill',

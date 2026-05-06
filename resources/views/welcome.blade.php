@@ -134,11 +134,11 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <input id="montoSlider" type="range" min="200" max="20000" step="100" value="500" class="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer">
+                    <input id="montoSlider" type="range" min="200" max="500" step="50" value="500" class="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer">
                 </div>
                 <div class="flex justify-between text-[9px] text-gray-500 mt-0.5">
                     <span>S/ 200</span>
-                    <span>S/ 20,000</span>
+                    <span>S/ 500</span>
                 </div>
             </div>
 

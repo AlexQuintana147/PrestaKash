@@ -21,18 +21,19 @@ class OnboardingController extends Controller
             'first_name' => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
             'last_name'  => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
             'dni'        => ['required', 'digits:8', 'unique:users,dni,' . auth()->id()],
-            'phone'      => ['required', 'digits_between:9,9', 'regex:/^9\d{8}$/'],
+            'phone'      => ['required', 'digits_between:9,9', 'regex:/^9\d{8}$/', 'unique:users,phone,' . auth()->id()],
             'department' => ['required', 'string', 'max:100'],
             'province'   => ['required', 'string', 'max:100'],
             'district'   => ['required', 'string', 'max:100'],
             'address'    => ['required', 'string', 'max:200'],
         ], [
-            'first_name.regex'   => 'El nombre solo debe contener letras.',
-            'last_name.regex'    => 'Los apellidos solo deben contener letras.',
-            'dni.digits'         => 'El DNI debe tener exactamente 8 dígitos.',
-            'dni.unique'         => 'Este DNI ya está registrado.',
+            'first_name.regex'     => 'El nombre solo debe contener letras.',
+            'last_name.regex'      => 'Los apellidos solo deben contener letras.',
+            'dni.digits'           => 'El DNI debe tener exactamente 8 dígitos.',
+            'dni.unique'           => 'Este DNI ya está registrado.',
             'phone.digits_between' => 'El teléfono debe tener 9 dígitos.',
-            'phone.regex'        => 'El número debe empezar con 9 (celular peruano).',
+            'phone.regex'          => 'El número debe empezar con 9 (celular peruano).',
+            'phone.unique'         => 'Este número de teléfono ya está registrado.',
         ]);
 
         $fullName = $request->first_name . ' ' . $request->last_name;
@@ -61,12 +62,24 @@ class OnboardingController extends Controller
     public function step2Store(Request $request, ImageService $imageService)
     {
         $request->validate([
+            'selfie'       => 'required|string',
             'dni_front'    => 'required|image|max:5120',
             'dni_back'     => 'required|image|max:5120',
             'utility_bill' => 'required|image|max:5120',
+        ], [
+            'selfie.required' => 'Debes tomar una foto selfie.',
         ]);
 
         $user = Auth::user();
+
+        // Procesar selfie desde base64
+        $selfieData = $request->input('selfie');
+        $selfieData = str_replace('data:image/jpeg;base64,', '', $selfieData);
+        $selfieData = str_replace(' ', '+', $selfieData);
+        $selfieDecoded = base64_decode($selfieData);
+
+        $selfiePath = 'documents/' . $user->id . '/selfie_' . time() . '.jpg';
+        \Storage::disk('public')->put($selfiePath, $selfieDecoded);
 
         $dniFront    = $imageService->storeAsWebp($request->file('dni_front'),    'documents/' . $user->id, 1200);
         $dniBack     = $imageService->storeAsWebp($request->file('dni_back'),     'documents/' . $user->id, 1200);
@@ -75,6 +88,7 @@ class OnboardingController extends Controller
         UserDocument::updateOrCreate(
             ['user_id' => $user->id],
             [
+                'selfie'       => $selfiePath,
                 'dni_front'    => $dniFront,
                 'dni_back'     => $dniBack,
                 'utility_bill' => $utilityBill,
