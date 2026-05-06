@@ -48,7 +48,7 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed inset-y-0 left-0 w-full bg-black z-40 md:hidden overflow-y-auto transform -translate-x-full transition-transform duration-300 ease-in-out">
+    <div id="mobileMenu" class="fixed inset-y-0 right-0 w-full bg-black z-40 md:hidden overflow-y-auto transform translate-x-full transition-transform duration-300 ease-in-out">
         <div class="min-h-screen p-6 flex flex-col">
             <!-- Close Button -->
             <div class="flex justify-end mb-8">
@@ -81,10 +81,10 @@
             <!-- Auth Section -->
             @guest
                 <div class="space-y-4">
-                    <button onclick="openRegisterModal(); toggleMobileMenu();" class="block w-full text-left text-xl font-medium text-gray-300 hover:text-green-400 transition-colors py-3">
+                    <button onclick="openRegisterModal(); toggleMobileMenu();" class="block text-left text-xl font-medium text-white hover:text-green-400 transition-colors py-3">
                         Registrarse
                     </button>
-                    <button onclick="openLoginModal(); toggleMobileMenu();" class="block w-full px-6 py-4 text-lg font-semibold text-black bg-white hover:bg-gray-100 rounded-xl transition-all text-center">
+                    <button onclick="openLoginModal(); toggleMobileMenu();" class="block text-left text-xl font-medium text-white hover:text-green-400 transition-colors py-3">
                         Iniciar sesión
                     </button>
                 </div>
@@ -113,15 +113,15 @@ function toggleMobileMenu() {
     const menuIcon = document.getElementById('menuIcon');
     const closeIcon = document.getElementById('closeIcon');
 
-    if (menu.classList.contains('-translate-x-full')) {
-        // Abrir menú
-        menu.classList.remove('-translate-x-full');
+    if (menu.classList.contains('translate-x-full')) {
+        // Abrir menú (de derecha a izquierda)
+        menu.classList.remove('translate-x-full');
         menu.classList.add('translate-x-0');
         overlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     } else {
-        // Cerrar menú
-        menu.classList.add('-translate-x-full');
+        // Cerrar menú (de izquierda a derecha)
+        menu.classList.add('translate-x-full');
         menu.classList.remove('translate-x-0');
         overlay.classList.add('hidden');
         document.body.style.overflow = 'auto';
@@ -133,12 +133,11 @@ function toggleMobileMenu() {
 </script>
 
 <!-- Modal de Inicio de Sesión -->
-<div id="loginModal" class="hidden fixed inset-0 bg-gray-950/95 backdrop-blur-lg z-50 flex items-center justify-center p-4">
-    <div class="bg-gray-950 border border-gray-800/50 rounded-2xl max-w-md w-full relative shadow-2xl overflow-hidden">
-        <!-- Header con gradiente sutil -->
+<div id="loginModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-lg z-50 flex items-center justify-center p-4">
+    <div class="bg-black max-w-md w-full relative overflow-hidden">
+        <!-- Header -->
         <div class="relative px-8 pt-8 pb-6">
-            <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-green-500/5 to-transparent"></div>
-            <button onclick="closeLoginModal()" class="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all z-10">
+            <button onclick="closeLoginModal()" class="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white transition-all z-10">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -168,7 +167,7 @@ function toggleMobileMenu() {
                     <div class="w-full border-t border-gray-800"></div>
                 </div>
                 <div class="relative flex justify-center text-xs">
-                    <span class="px-3 bg-gray-950 text-gray-600 uppercase tracking-wider">O</span>
+                    <span class="px-3 bg-black text-gray-600 uppercase tracking-wider">O</span>
                 </div>
             </div>
 
@@ -198,12 +197,11 @@ function toggleMobileMenu() {
 </div>
 
 <!-- Modal de Registro -->
-<div id="registerModal" class="hidden fixed inset-0 bg-gray-950/95 backdrop-blur-lg z-50 flex items-center justify-center p-4">
-    <div class="bg-gray-950 border border-gray-800/50 rounded-2xl max-w-md w-full relative shadow-2xl overflow-hidden">
-        <!-- Header con gradiente sutil -->
+<div id="registerModal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-lg z-50 flex items-center justify-center p-4">
+    <div class="bg-black max-w-md w-full relative overflow-hidden">
+        <!-- Header -->
         <div class="relative px-8 pt-8 pb-6">
-            <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-green-500/5 to-transparent"></div>
-            <button onclick="closeRegisterModal()" class="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all z-10">
+            <button onclick="closeRegisterModal()" class="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white transition-all z-10">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -233,7 +231,7 @@ function toggleMobileMenu() {
                     <div class="w-full border-t border-gray-800"></div>
                 </div>
                 <div class="relative flex justify-center text-xs">
-                    <span class="px-3 bg-gray-950 text-gray-600 uppercase tracking-wider">O</span>
+                    <span class="px-3 bg-black text-gray-600 uppercase tracking-wider">O</span>
                 </div>
             </div>
 
