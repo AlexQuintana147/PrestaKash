@@ -38,6 +38,10 @@ Route::get('/validation-pending', function () {
 Route::get('/auth/google',          [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 
+// Auth manual
+Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'login'])->name('login.post');
+Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->name('register');
+
 // Onboarding (requiere estar autenticado)
 Route::middleware('auth')->group(function () {
     Route::get('/onboarding/step1',  [OnboardingController::class, 'step1'])->name('onboarding.step1');
