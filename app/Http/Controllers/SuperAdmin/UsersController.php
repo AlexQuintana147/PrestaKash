@@ -71,12 +71,18 @@ class UsersController extends Controller
         $request = request();
         $request->validate(['reason' => 'required|string|max:255']);
 
+        $now = now();
+
         $user->documents()->update([
             'status'           => 'rejected',
             'rejection_reason' => $request->reason,
+            'rejected_at'      => $now,
         ]);
 
-        return back()->with('success', 'Usuario rechazado.');
+        // Eliminar al usuario en 60 segundos
+        \App\Jobs\DeleteRejectedUser::dispatch($user->id)->delay($now->addSeconds(60));
+
+        return back()->with('success', 'Usuario rechazado. Será eliminado en 60 segundos.');
     }
 
     public function unapprove(User $user)

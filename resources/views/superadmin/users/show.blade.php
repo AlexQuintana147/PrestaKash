@@ -87,6 +87,37 @@
                 <div class="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 mb-3">
                     <p class="text-xs font-medium text-red-500 mb-1">Motivo de rechazo</p>
                     <p class="text-xs text-red-400">{{ $user->documents->rejection_reason ?? '—' }}</p>
+
+                    @if($user->documents->rejected_at)
+                    @php
+                        $deleteAt = $user->documents->rejected_at->addSeconds(60);
+                        $secondsLeft = max(0, now()->diffInSeconds($deleteAt, false));
+                    @endphp
+                    @if($secondsLeft > 0)
+                    <div class="mt-3 pt-3 border-t border-red-200 dark:border-red-500/20">
+                        <p class="text-xs text-red-400 mb-1">El usuario será eliminado en:</p>
+                        <p id="countdown" class="text-2xl font-bold text-red-500 tabular-nums">{{ $secondsLeft }}s</p>
+                    </div>
+                    <script>
+                        (function() {
+                            let seconds = {{ $secondsLeft }};
+                            const el = document.getElementById('countdown');
+                            const timer = setInterval(() => {
+                                seconds--;
+                                if (seconds <= 0) {
+                                    clearInterval(timer);
+                                    el.textContent = 'Eliminado';
+                                    setTimeout(() => window.location.href = '{{ route('superadmin.users.index') }}', 1500);
+                                } else {
+                                    el.textContent = seconds + 's';
+                                }
+                            }, 1000);
+                        })();
+                    </script>
+                    @else
+                    <p class="text-xs text-red-400 mt-2 opacity-60">Usuario pendiente de eliminación.</p>
+                    @endif
+                    @endif
                 </div>
                 @endif
                 <div class="flex gap-2">

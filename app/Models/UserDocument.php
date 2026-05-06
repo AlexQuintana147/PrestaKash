@@ -14,6 +14,11 @@ class UserDocument extends Model
         'utility_bill',
         'status',
         'rejection_reason',
+        'rejected_at',
+    ];
+
+    protected $casts = [
+        'rejected_at' => 'datetime',
     ];
 
     public function user()
