@@ -237,8 +237,9 @@ document.addEventListener('keydown', e => {
     if (e.key === '-') zoom(-0.25);
 });
 
-// Zoom con rueda del mouse
-document.getElementById('lightboxImg').addEventListener('wheel', e => {
+// Zoom con rueda del mouse (en todo el modal)
+document.getElementById('lightbox').addEventListener('wheel', e => {
+    if (document.getElementById('lightbox').classList.contains('hidden')) return;
     e.preventDefault();
     zoom(e.deltaY < 0 ? 0.15 : -0.15);
 }, { passive: false });
