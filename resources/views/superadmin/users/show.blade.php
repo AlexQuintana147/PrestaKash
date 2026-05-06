@@ -3,40 +3,40 @@
 @section('title', $user->name)
 
 @section('content')
-<div class="min-h-screen px-10 py-10">
+<div class="min-h-screen px-5 md:px-10 py-8">
 
     <!-- Header -->
-    <div class="flex items-center gap-4 mb-10">
+    <div class="flex items-center gap-3 mb-8">
         <a href="{{ route('superadmin.users.index') }}"
-           class="text-gray-600 hover:text-white transition-colors">
+           class="text-gray-600 hover:text-white transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="flex items-center gap-3">
-            <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=111827&color=6b7280&size=64' }}"
-                 class="w-10 h-10 rounded-full object-cover bg-gray-900">
-            <div>
-                <h1 class="text-xl font-bold text-white leading-tight">{{ $user->name }}</h1>
-                <p class="text-xs text-gray-600">{{ $user->email }}</p>
-            </div>
+        <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=111827&color=6b7280&size=64' }}"
+             class="w-9 h-9 rounded-full object-cover bg-gray-900 flex-shrink-0">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-lg md:text-xl font-bold text-white leading-tight truncate">{{ $user->name }}</h1>
+            <p class="text-xs text-gray-600 truncate">{{ $user->email }}</p>
         </div>
 
-        <!-- Badge estado -->
         @if($user->documents)
         @php $status = $user->documents->status @endphp
-        <div class="ml-auto">
+        <div class="flex-shrink-0">
             @if($status === 'pending')
                 <span class="flex items-center gap-1.5 text-xs text-yellow-500">
-                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pendiente de revisión
+                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                    <span class="hidden sm:inline">Pendiente</span>
                 </span>
             @elseif($status === 'approved')
                 <span class="flex items-center gap-1.5 text-xs text-green-500">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Aprobado
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                    <span class="hidden sm:inline">Aprobado</span>
                 </span>
             @elseif($status === 'rejected')
                 <span class="flex items-center gap-1.5 text-xs text-red-500">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rechazado
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span class="hidden sm:inline">Rechazado</span>
                 </span>
             @endif
         </div>
@@ -44,7 +44,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-8 flex items-center gap-3 text-sm text-green-400">
+        <div class="mb-6 flex items-center gap-3 text-sm text-green-400">
             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
@@ -52,12 +52,12 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-12 gap-10">
+    <!-- Layout: stack en mobile, grid en desktop -->
+    <div class="flex flex-col md:grid md:grid-cols-12 gap-8 md:gap-10">
 
-        <!-- Columna izquierda: datos + acciones -->
-        <div class="col-span-4 space-y-8">
+        <!-- Datos + acciones -->
+        <div class="md:col-span-4 space-y-8">
 
-            <!-- Datos personales -->
             <div>
                 <p class="text-xs text-gray-600 uppercase tracking-widest mb-4">Datos personales</p>
                 <div class="space-y-3">
@@ -71,18 +71,17 @@
                         'Registro'     => $user->created_at->format('d/m/Y'),
                     ] as $label => $value)
                     <div class="flex justify-between items-start border-b border-gray-900 pb-3">
-                        <span class="text-xs text-gray-600">{{ $label }}</span>
-                        <span class="text-xs text-white text-right max-w-[200px]">{{ $value ?? '—' }}</span>
+                        <span class="text-xs text-gray-600 flex-shrink-0">{{ $label }}</span>
+                        <span class="text-xs text-white text-right ml-4">{{ $value ?? '—' }}</span>
                     </div>
                     @endforeach
                 </div>
             </div>
 
-            <!-- Acciones -->
             @if($user->documents)
             <div>
                 <p class="text-xs text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
-                <div class="space-y-2">
+                <div class="flex flex-col gap-2">
                     @if($user->documents->status !== 'approved')
                     <form action="{{ route('superadmin.users.approve', $user) }}" method="POST">
                         @csrf
@@ -109,18 +108,17 @@
 
         </div>
 
-        <!-- Columna derecha: documentos -->
-        <div class="col-span-8">
-            <p class="text-xs text-gray-600 uppercase tracking-widest mb-6">Documentos</p>
+        <!-- Documentos -->
+        <div class="md:col-span-8">
+            <p class="text-xs text-gray-600 uppercase tracking-widest mb-5">Documentos</p>
 
             @if($user->documents)
-            <div class="grid grid-cols-2 gap-5">
-
+            <div class="grid grid-cols-2 gap-3 md:gap-5">
                 @foreach([
-                    'Selfie'             => $user->documents->selfie,
-                    'DNI — Frontal'      => $user->documents->dni_front,
-                    'DNI — Posterior'    => $user->documents->dni_back,
-                    'Recibo de servicios'=> $user->documents->utility_bill,
+                    'Selfie'              => $user->documents->selfie,
+                    'DNI — Frontal'       => $user->documents->dni_front,
+                    'DNI — Posterior'     => $user->documents->dni_back,
+                    'Recibo de servicios' => $user->documents->utility_bill,
                 ] as $label => $path)
                 <div>
                     <p class="text-xs text-gray-600 mb-2">{{ $label }}</p>
@@ -130,8 +128,8 @@
                                 <img src="{{ Storage::url($path) }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                    <svg class="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                     </svg>
                                 </div>
                             </div>
@@ -143,7 +141,6 @@
                     @endif
                 </div>
                 @endforeach
-
             </div>
             @else
                 <p class="text-sm text-gray-700">Este usuario no ha subido documentos.</p>
