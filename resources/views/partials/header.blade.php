@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <div class="flex items-center gap-2.5">
-                <img src="/images/logo.png" alt="PrestaKash" class="h-9 w-auto">
+                <img src="/images/logo.webp" alt="PrestaKash" class="h-20 w-auto">
             </div>
 
             <!-- Navigation Links + Auth - Desktop (centrado) -->
