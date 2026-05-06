@@ -21,7 +21,19 @@ class DeleteRejectedUser implements ShouldQueue
 
         // Solo eliminar si sigue rechazado
         if ($user && $user->documents?->status === 'rejected') {
-            $user->documents()->delete();
+            $doc = $user->documents;
+
+            // Eliminar archivos del storage
+            foreach (['selfie', 'dni_front', 'dni_back', 'utility_bill'] as $field) {
+                if ($doc->$field) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($doc->$field);
+                }
+            }
+
+            // Eliminar la carpeta del usuario si quedó vacía
+            \Illuminate\Support\Facades\Storage::disk('public')->deleteDirectory('documents/' . $user->id);
+
+            $doc->delete();
             $user->delete();
         }
     }
