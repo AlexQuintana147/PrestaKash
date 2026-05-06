@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\OnboardingController;
+use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,3 +55,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/onboarding/step2',  [OnboardingController::class, 'step2'])->name('onboarding.step2')->middleware('onboarding.step1');
     Route::post('/onboarding/step2', [OnboardingController::class, 'step2Store'])->name('onboarding.step2.store')->middleware('onboarding.step1');
 });
+
+// SuperAdmin (ruta secreta)
+Route::middleware(['auth', 'superadmin'])->prefix('gestion-interna')->name('superadmin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+// SuperAdmin registro único
+Route::prefix('registro-maestro/{token}')->name('superadmin.register.')->group(function () {
+    Route::get('/',         [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'show'])->name('show');
+    Route::post('/',        [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'register'])->name('store');
+    Route::get('/google',   function (string $token) {
+        session(['superadmin_register_token' => $token]);
+        return \Laravel\Socialite\Facades\Socialite::driver('google')
+            ->redirectUrl(route('superadmin.register.google.callback'))
+            ->redirect();
+    })->name('google');
+});
+
+// Callback de Google para superadmin (sin token en URL, viene de sesión)
+Route::get('/auth/google/superadmin-callback', [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'googleCallback'])
+    ->name('superadmin.register.google.callback');

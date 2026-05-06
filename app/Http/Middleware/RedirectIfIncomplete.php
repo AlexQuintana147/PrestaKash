@@ -13,6 +13,11 @@ class RedirectIfIncomplete
         $user = Auth::user();
 
         if ($user) {
+            // Superadmin no pasa por el flujo de onboarding
+            if ($user->isSuperAdmin()) {
+                return $next($request);
+            }
+
             // Si el perfil está completo pero aún en validación, mostrar pantalla de espera
             if ($user->profile_completed && $user->documents && $user->documents->status === 'pending') {
                 $allowed = ['validation.pending', 'logout'];

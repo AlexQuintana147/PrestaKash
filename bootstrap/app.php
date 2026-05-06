@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'onboarding.step1' => \App\Http\Middleware\OnboardingStep1Completed::class,
             'incomplete'       => \App\Http\Middleware\RedirectIfIncomplete::class,
             'prevent.back'     => \App\Http\Middleware\PreventBackHistory::class,
+            'superadmin'       => \App\Http\Middleware\SuperAdmin::class,
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\RedirectIfIncomplete::class,
