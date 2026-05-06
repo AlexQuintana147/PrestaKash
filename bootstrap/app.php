@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'incomplete'       => \App\Http\Middleware\RedirectIfIncomplete::class,
             'prevent.back'     => \App\Http\Middleware\PreventBackHistory::class,
             'superadmin'       => \App\Http\Middleware\SuperAdmin::class,
+            'cleanup.rejected' => \App\Http\Middleware\CleanupRejectedUsers::class,
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\RedirectIfIncomplete::class,

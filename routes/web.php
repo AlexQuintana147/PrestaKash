@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // SuperAdmin (ruta secreta)
-Route::middleware(['auth', 'superadmin', 'prevent.back'])->prefix('gestion-interna')->name('superadmin.')->group(function () {
+Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->prefix('gestion-interna')->name('superadmin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Gestión de usuarios

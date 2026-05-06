@@ -91,7 +91,7 @@
                     @if($user->documents->rejected_at)
                     @php
                         $deleteAt = $user->documents->rejected_at->addSeconds(60);
-                        $secondsLeft = max(0, now()->diffInSeconds($deleteAt, false));
+                        $secondsLeft = max(0, (int) now()->diffInSeconds($deleteAt, false));
                     @endphp
                     @if($secondsLeft > 0)
                     <div class="mt-3 pt-3 border-t border-red-200 dark:border-red-500/20">
@@ -131,14 +131,11 @@
                             </button>
                         </form>
                     @else
-                        @if($user->documents->status !== 'approved')
+                        @if($user->documents->status === 'pending')
                         <button type="button" onclick="openApproveModal()"
                                 class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors">
                             Aprobar
                         </button>
-                        @endif
-
-                        @if($user->documents->status !== 'rejected')
                         <button type="button" onclick="openRejectModal()"
                                 class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
                             Rechazar
