@@ -62,6 +62,12 @@ Route::middleware('auth')->group(function () {
 // SuperAdmin (ruta secreta)
 Route::middleware(['auth', 'superadmin', 'prevent.back'])->prefix('gestion-interna')->name('superadmin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Gestión de usuarios
+    Route::get('/usuarios',                    [\App\Http\Controllers\SuperAdmin\UsersController::class, 'index'])->name('users.index');
+    Route::get('/usuarios/{user}',             [\App\Http\Controllers\SuperAdmin\UsersController::class, 'show'])->name('users.show');
+    Route::post('/usuarios/{user}/aprobar',    [\App\Http\Controllers\SuperAdmin\UsersController::class, 'approve'])->name('users.approve');
+    Route::post('/usuarios/{user}/rechazar',   [\App\Http\Controllers\SuperAdmin\UsersController::class, 'reject'])->name('users.reject');
 });
 
 // SuperAdmin registro único
