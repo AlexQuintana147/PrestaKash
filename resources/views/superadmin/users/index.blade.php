@@ -9,7 +9,7 @@
     <div class="flex items-end justify-between mb-8">
         <div>
             <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-1">Panel</p>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Usuarios</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Clientes</h1>
         </div>
         <p class="hidden md:block text-sm text-gray-400 dark:text-gray-600">{{ now()->format('d M Y') }}</p>
     </div>
