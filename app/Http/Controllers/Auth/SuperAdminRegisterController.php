@@ -83,29 +83,22 @@ class SuperAdminRegisterController extends Controller
 
         $role = Role::where('name', 'superadmin')->firstOrFail();
 
-        $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name'              => $googleUser->getName(),
-                'google_id'         => $googleUser->getId(),
-                'avatar'            => $googleUser->getAvatar(),
-                'role_id'           => $role->id,
-                'profile_completed' => true,
-                'step1_completed'   => true,
-                'password'          => null,
-            ]
-        );
-
-        // Si el usuario ya existía, actualizamos su rol a superadmin
-        if (!$user->wasRecentlyCreated) {
-            $user->update([
-                'role_id'           => $role->id,
-                'google_id'         => $googleUser->getId(),
-                'avatar'            => $googleUser->getAvatar(),
-                'profile_completed' => true,
-                'step1_completed'   => true,
-            ]);
+        // Si el email ya existe en la BD, no permitir
+        if (User::where('email', $googleUser->getEmail())->exists()) {
+            return redirect()->route('superadmin.register.show', $token)
+                ->with('error', 'Este correo ya está registrado como usuario. Usa un correo diferente.');
         }
+
+        $user = User::create([
+            'name'              => $googleUser->getName(),
+            'google_id'         => $googleUser->getId(),
+            'avatar'            => $googleUser->getAvatar(),
+            'email'             => $googleUser->getEmail(),
+            'role_id'           => $role->id,
+            'profile_completed' => true,
+            'step1_completed'   => true,
+            'password'          => null,
+        ]);
 
         session()->forget('superadmin_register_token');
         Auth::login($user);
