@@ -100,4 +100,20 @@ class OnboardingController extends Controller
 
         return view('auth.onboarding.pending');
     }
+
+    public function checkDni(Request $request)
+    {
+        $exists = \App\Models\User::where('dni', $request->dni)
+            ->where('id', '!=', auth()->id())
+            ->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function checkPhone(Request $request)
+    {
+        $exists = \App\Models\User::where('phone', $request->phone)
+            ->where('id', '!=', auth()->id())
+            ->exists();
+        return response()->json(['exists' => $exists]);
+    }
 }

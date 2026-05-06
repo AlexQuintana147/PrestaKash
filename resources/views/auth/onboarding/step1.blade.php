@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>PrestaKash — Completa tu perfil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -142,17 +143,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nro. DNI</label>
-                <input type="text" name="dni" value="{{ old('dni') }}" required
+                <input type="text" id="dniInput" name="dni" value="{{ old('dni') }}" required
                     placeholder="12345678" maxlength="8"
                     oninput="this.value=this.value.replace(/\D/g,'')"
                     class="input-field">
+                <p id="dniError" class="text-red-500 text-xs mt-1 hidden">Este DNI ya está registrado</p>
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Teléfono celular</label>
-                <input type="text" name="phone" value="{{ old('phone') }}" required
+                <input type="text" id="phoneInput" name="phone" value="{{ old('phone') }}" required
                     placeholder="987654321" maxlength="9"
                     oninput="this.value=this.value.replace(/\D/g,'')"
                     class="input-field">
+                <p id="phoneError" class="text-red-500 text-xs mt-1 hidden">Este celular ya está registrado</p>
             </div>
         </div>
 
@@ -217,7 +220,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 Volver
             </button>
-            <button type="submit"
+            <button type="submit" id="submitBtn"
                 class="flex items-center gap-2 text-white font-medium text-sm px-4 py-2 border-b border-green-500 hover:text-green-400 hover:border-green-400 transition-colors bg-transparent">
                 Siguiente
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -372,6 +375,105 @@ for (let i = 0; i < 20; i++) {
 window.addEventListener('popstate', () => {
     history.pushState(null, '', location.href);
 });
+
+// Validación en tiempo real de DNI y Celular
+let dniCheckTimeout, phoneCheckTimeout;
+const dniInput = document.getElementById('dniInput');
+const phoneInput = document.getElementById('phoneInput');
+const dniError = document.getElementById('dniError');
+const phoneError = document.getElementById('phoneError');
+const submitBtn = document.getElementById('submitBtn');
+
+let dniValid = true;
+let phoneValid = true;
+
+function updateSubmitButton() {
+    if (!dniValid || !phoneValid) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+if (dniInput) {
+    dniInput.addEventListener('input', function() {
+        clearTimeout(dniCheckTimeout);
+        const dni = this.value;
+
+        if (dni.length !== 8) {
+            dniError.classList.add('hidden');
+            dniValid = true;
+            updateSubmitButton();
+            return;
+        }
+
+        dniCheckTimeout = setTimeout(() => {
+            fetch('{{ route("check.dni") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ dni: dni })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    dniError.classList.remove('hidden');
+                    dniValid = false;
+                } else {
+                    dniError.classList.add('hidden');
+                    dniValid = true;
+                }
+                updateSubmitButton();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }, 500);
+    });
+}
+
+if (phoneInput) {
+    phoneInput.addEventListener('input', function() {
+        clearTimeout(phoneCheckTimeout);
+        const phone = this.value;
+
+        if (phone.length !== 9) {
+            phoneError.classList.add('hidden');
+            phoneValid = true;
+            updateSubmitButton();
+            return;
+        }
+
+        phoneCheckTimeout = setTimeout(() => {
+            fetch('{{ route("check.phone") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ phone: phone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    phoneError.classList.remove('hidden');
+                    phoneValid = false;
+                } else {
+                    phoneError.classList.add('hidden');
+                    phoneValid = true;
+                }
+                updateSubmitButton();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }, 500);
+    });
+}
 </script>
 </body>
 </html>
