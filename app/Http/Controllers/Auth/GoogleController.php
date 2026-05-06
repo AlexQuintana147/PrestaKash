@@ -52,6 +52,11 @@ class GoogleController extends Controller
             return redirect()->route('superadmin.dashboard');
         }
 
+        // Cliente aprobado
+        if ($user->profile_completed && $user->documents?->status === 'approved') {
+            return redirect()->route('client.dashboard');
+        }
+
         // Si el perfil no está completo, redirigir al onboarding
         if (!$user->profile_completed) {
             return redirect()->route('onboarding.step1');

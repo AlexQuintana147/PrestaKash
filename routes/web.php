@@ -77,7 +77,10 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/configuracion/contrasena',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updatePassword'])->name('settings.password');
 });
 
-// SuperAdmin registro único
+// Panel Cliente (usuarios aprobados)
+Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])->name('dashboard');
+});
 Route::prefix('registro-maestro/{token}')->name('superadmin.register.')->group(function () {
     Route::get('/',         [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'show'])->name('show');
     Route::post('/',        [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'register'])->name('store');

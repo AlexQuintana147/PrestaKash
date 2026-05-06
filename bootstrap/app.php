@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\RedirectIfIncomplete::class,
             \App\Http\Middleware\PreventBackHistory::class,
             \App\Http\Middleware\RedirectSuperAdmin::class,
+            \App\Http\Middleware\RedirectClient::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

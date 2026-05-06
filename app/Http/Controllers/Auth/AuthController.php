@@ -32,6 +32,11 @@ class AuthController extends Controller
                 return redirect()->route('superadmin.dashboard');
             }
 
+            // Cliente aprobado
+            if ($user->profile_completed && $user->documents?->status === 'approved') {
+                return redirect()->route('client.dashboard');
+            }
+
             // Redirigir según el estado del perfil
             if (!$user->profile_completed) {
                 if (!$user->step1_completed) {
