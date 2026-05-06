@@ -7,6 +7,9 @@ use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    if (auth()->check() && auth()->user()->isSuperAdmin()) {
+        return redirect()->route('superadmin.dashboard');
+    }
     return view('welcome');
 });
 

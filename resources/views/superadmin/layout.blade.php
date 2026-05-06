@@ -7,14 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>body { font-family: 'Roboto', sans-serif; }</style>
-    <script>
-        history.pushState(null, null, location.href);
-        window.addEventListener('popstate', function () {
-            history.pushState(null, null, location.href);
-        });
-    </script>
 </head>
-<body class="h-full bg-gray-950 text-white flex">
+<body class="h-full bg-gray-950 text-white flex" onload="noBack();" onpageshow="if(event.persisted) noBack();">
+
+<script>
+function noBack() { window.history.forward(); }
+for (let i = 0; i < 20; i++) { history.pushState(null, '', location.href); }
+window.addEventListener('popstate', () => { history.pushState(null, '', location.href); });
+</script>
 
     <!-- Sidebar -->
     <aside class="w-60 min-h-screen bg-black border-r border-gray-900 flex flex-col flex-shrink-0">
