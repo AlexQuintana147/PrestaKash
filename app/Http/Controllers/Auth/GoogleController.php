@@ -43,6 +43,10 @@ class GoogleController extends Controller
 
         Auth::login($user);
 
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('superadmin.dashboard');
+        }
+
         // Si el perfil no está completo, redirigir al onboarding
         if (!$user->profile_completed) {
             return redirect()->route('onboarding.step1');

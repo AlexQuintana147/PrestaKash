@@ -22,6 +22,10 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            if ($user->isSuperAdmin()) {
+                return redirect()->route('superadmin.dashboard');
+            }
+
             // Redirigir según el estado del perfil
             if (!$user->profile_completed) {
                 if (!$user->step1_completed) {
