@@ -72,14 +72,12 @@ class OnboardingController extends Controller
 
         $user = Auth::user();
 
-        // Procesar selfie desde base64
-        $selfieData = $request->input('selfie');
-        $selfieData = str_replace('data:image/jpeg;base64,', '', $selfieData);
-        $selfieData = str_replace(' ', '+', $selfieData);
-        $selfieDecoded = base64_decode($selfieData);
-
-        $selfiePath = 'documents/' . $user->id . '/selfie_' . time() . '.jpg';
-        \Storage::disk('public')->put($selfiePath, $selfieDecoded);
+        // Procesar selfie desde base64 y guardar como WebP
+        $selfiePath = $imageService->storeBase64AsWebp(
+            $request->input('selfie'),
+            'documents/' . $user->id,
+            1200
+        );
 
         $dniFront    = $imageService->storeAsWebp($request->file('dni_front'),    'documents/' . $user->id, 1200);
         $dniBack     = $imageService->storeAsWebp($request->file('dni_back'),     'documents/' . $user->id, 1200);
