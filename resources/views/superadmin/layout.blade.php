@@ -91,7 +91,7 @@ window.addEventListener('popstate', () => { history.pushState(null, '', location
                 Clientes
             </a>
 
-            <a href="#" onclick="closeSidebar()"
+            <a href="{{ route('superadmin.settings') }}" onclick="closeSidebar()"
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                       {{ request()->routeIs('superadmin.settings*')
                           ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white'

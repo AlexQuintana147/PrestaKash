@@ -70,6 +70,11 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/usuarios/{user}/rechazar',   [\App\Http\Controllers\SuperAdmin\UsersController::class, 'reject'])->name('users.reject');
     Route::post('/usuarios/{user}/desaprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'unapprove'])->name('users.unapprove');
     Route::post('/usuarios/{user}/bloquear',   [\App\Http\Controllers\SuperAdmin\UsersController::class, 'block'])->name('users.block');
+
+    // Configuración
+    Route::get('/configuracion',              [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
+    Route::post('/configuracion/nombre',      [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
+    Route::post('/configuracion/contrasena',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updatePassword'])->name('settings.password');
 });
 
 // SuperAdmin registro único
