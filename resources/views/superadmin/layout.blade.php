@@ -57,14 +57,14 @@ window.addEventListener('popstate', () => { history.pushState(null, '', location
 
         <!-- Logo (desktop) -->
         <div class="hidden md:block px-6 py-5 border-b border-gray-200 dark:border-gray-900">
-            <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto">
-            <p class="text-xs text-gray-400 dark:text-gray-600 mt-1 uppercase tracking-widest">Super Admin</p>
+            <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+            <p class="text-xs text-black dark:text-gray-600 mt-1 uppercase tracking-widest font-medium">Super Admin</p>
         </div>
 
         <!-- Logo (mobile) -->
         <div class="md:hidden px-6 py-5 border-b border-gray-200 dark:border-gray-900 flex-shrink-0">
-            <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto">
-            <p class="text-xs text-gray-400 dark:text-gray-600 mt-1 uppercase tracking-widest">Super Admin</p>
+            <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+            <p class="text-xs text-black dark:text-gray-600 mt-1 uppercase tracking-widest font-medium">Super Admin</p>
         </div>
 
         <!-- Nav -->
