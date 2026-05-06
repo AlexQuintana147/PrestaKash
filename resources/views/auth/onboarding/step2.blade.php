@@ -56,6 +56,17 @@
         <!-- Selfie -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Foto Selfie</label>
+
+            <!-- Preview de selfie -->
+            <div id="preview-selfie" class="hidden mb-2">
+                <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
+                    <img id="img-selfie" class="w-full h-auto" style="transform: scaleX(-1);">
+                    <button type="button" onclick="changeSelfie()" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                        Cambiar
+                    </button>
+                </div>
+            </div>
+
             <button type="button" onclick="openCamera()" class="upload-zone w-full text-left" id="zone-selfie">
                 <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-500" id="icon-selfie" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,6 +85,17 @@
         <!-- DNI Frontal -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">DNI — Parte frontal</label>
+
+            <!-- Preview DNI frontal -->
+            <div id="preview-dni-front" class="hidden mb-2">
+                <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
+                    <img id="img-dni-front" class="w-full h-auto">
+                    <button type="button" onclick="changeImage('dni_front')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                        Cambiar
+                    </button>
+                </div>
+            </div>
+
             <label class="upload-zone" id="zone-dni-front">
                 <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-500" id="icon-dni-front" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -82,13 +104,24 @@
                     <p class="text-sm text-white" id="text-dni-front">Seleccionar imagen</p>
                     <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
                 </div>
-                <input type="file" name="dni_front" accept="image/*" onchange="handleFile(this,'zone-dni-front','text-dni-front','icon-dni-front')">
+                <input type="file" name="dni_front" id="input-dni-front" accept="image/*" onchange="handleFile(this,'zone-dni-front','text-dni-front','icon-dni-front','preview-dni-front','img-dni-front')">
             </label>
         </div>
 
         <!-- DNI Trasera -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">DNI — Parte trasera</label>
+
+            <!-- Preview DNI trasera -->
+            <div id="preview-dni-back" class="hidden mb-2">
+                <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
+                    <img id="img-dni-back" class="w-full h-auto">
+                    <button type="button" onclick="changeImage('dni_back')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                        Cambiar
+                    </button>
+                </div>
+            </div>
+
             <label class="upload-zone" id="zone-dni-back">
                 <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-500" id="icon-dni-back" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -97,13 +130,24 @@
                     <p class="text-sm text-white" id="text-dni-back">Seleccionar imagen</p>
                     <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
                 </div>
-                <input type="file" name="dni_back" accept="image/*" onchange="handleFile(this,'zone-dni-back','text-dni-back','icon-dni-back')">
+                <input type="file" name="dni_back" id="input-dni-back" accept="image/*" onchange="handleFile(this,'zone-dni-back','text-dni-back','icon-dni-back','preview-dni-back','img-dni-back')">
             </label>
         </div>
 
         <!-- Recibo -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Recibo de luz o agua</label>
+
+            <!-- Preview recibo -->
+            <div id="preview-utility" class="hidden mb-2">
+                <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
+                    <img id="img-utility" class="w-full h-auto">
+                    <button type="button" onclick="changeImage('utility_bill')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                        Cambiar
+                    </button>
+                </div>
+            </div>
+
             <label class="upload-zone" id="zone-utility">
                 <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-500" id="icon-utility" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -112,7 +156,7 @@
                     <p class="text-sm text-white" id="text-utility">Seleccionar imagen</p>
                     <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
                 </div>
-                <input type="file" name="utility_bill" accept="image/*" onchange="handleFile(this,'zone-utility','text-utility','icon-utility')">
+                <input type="file" name="utility_bill" id="input-utility" accept="image/*" onchange="handleFile(this,'zone-utility','text-utility','icon-utility','preview-utility','img-utility')">
             </label>
         </div>
 
@@ -134,35 +178,51 @@
 </div>
 
 <!-- Modal de cámara -->
-<div id="cameraModal" class="fixed inset-0 bg-black bg-opacity-90 items-center justify-center z-50 p-4">
-    <div class="bg-gray-900 rounded-2xl max-w-2xl w-full p-6">
+<div id="cameraModal" class="fixed inset-0 bg-gray-950/95 backdrop-blur-sm items-center justify-center z-50 p-4">
+    <div class="max-w-sm w-full">
+        <!-- Header minimalista -->
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-white">Tomar Selfie</h3>
-            <button type="button" onclick="closeCamera()" class="text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div>
+                <h3 class="text-lg font-bold text-white">Selfie</h3>
+                <p class="text-xs text-gray-500">Centra tu rostro</p>
+            </div>
+            <button type="button" onclick="closeCamera()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800/50 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
 
-        <div class="relative bg-black rounded-lg overflow-hidden mb-4" style="aspect-ratio: 4/3;">
+        <!-- Preview de cámara compacto -->
+        <div class="relative bg-black rounded-xl overflow-hidden mb-4" style="aspect-ratio: 3/4;">
             <video id="videoPreview" autoplay playsinline class="w-full h-full object-cover"></video>
             <canvas id="capturedImage" class="w-full h-full object-cover hidden"></canvas>
+
+            <!-- Overlay guía circular minimalista -->
+            <div class="absolute inset-0 pointer-events-none" id="faceGuide">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-60 rounded-full border-2 border-green-500/60"></div>
+            </div>
         </div>
 
-        <div class="flex gap-3">
-            <button type="button" id="captureBtn" onclick="capturePhoto()" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors">
-                <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+        <!-- Botones compactos -->
+        <div class="space-y-2">
+            <!-- Botón capturar -->
+            <button type="button" id="captureBtn" onclick="capturePhoto()" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-all flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3" stroke-width="2"/>
                 </svg>
+                Capturar
             </button>
-            <button type="button" id="retakeBtn" onclick="retakePhoto()" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-colors hidden">
-                Repetir
-            </button>
-            <button type="button" id="confirmBtn" onclick="confirmPhoto()" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors hidden">
-                Confirmar
-            </button>
+
+            <!-- Botones repetir y confirmar -->
+            <div id="actionButtons" class="hidden grid grid-cols-2 gap-2">
+                <button type="button" onclick="retakePhoto()" class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 rounded-lg transition-colors text-sm">
+                    Repetir
+                </button>
+                <button type="button" onclick="confirmPhoto()" class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors text-sm">
+                    Confirmar
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -171,15 +231,56 @@
 let stream = null;
 let capturedBlob = null;
 
-function handleFile(input, zoneId, textId, iconId) {
+function handleFile(input, zoneId, textId, iconId, previewId, imgId) {
     if (!input.files || !input.files[0]) return;
-    const name = input.files[0].name;
+
+    const file = input.files[0];
+    const name = file.name;
+
+    // Actualizar texto e icono
     document.getElementById(textId).textContent = name;
     document.getElementById(textId).classList.add('text-green-400');
     document.getElementById(zoneId).classList.add('has-file');
     document.getElementById(iconId).innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
     document.getElementById(iconId).classList.remove('text-gray-500');
     document.getElementById(iconId).classList.add('text-green-400');
+
+    // Mostrar preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById(imgId).src = e.target.result;
+        document.getElementById(previewId).classList.remove('hidden');
+        document.getElementById(zoneId).classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+}
+
+function changeImage(inputName) {
+    const input = document.querySelector(`input[name="${inputName}"]`);
+    const zoneId = 'zone-' + inputName.replace('_', '-');
+    const previewId = 'preview-' + inputName.replace('_', '-');
+
+    // Ocultar preview y mostrar zona de carga
+    document.getElementById(previewId).classList.add('hidden');
+    document.getElementById(zoneId).classList.remove('hidden');
+
+    // Limpiar input
+    input.value = '';
+}
+
+function changeSelfie() {
+    document.getElementById('preview-selfie').classList.add('hidden');
+    document.getElementById('zone-selfie').classList.remove('hidden');
+    document.getElementById('selfieInput').value = '';
+
+    // Resetear UI
+    document.getElementById('text-selfie').textContent = 'Tomar foto con cámara';
+    document.getElementById('text-selfie').classList.remove('text-green-400');
+    document.getElementById('zone-selfie').classList.remove('has-file');
+    const iconSelfie = document.getElementById('icon-selfie');
+    iconSelfie.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>';
+    iconSelfie.classList.remove('text-green-400');
+    iconSelfie.classList.add('text-gray-500');
 }
 
 async function openCamera() {
@@ -217,6 +318,7 @@ function capturePhoto() {
     const video = document.getElementById('videoPreview');
     const canvas = document.getElementById('capturedImage');
     const ctx = canvas.getContext('2d');
+    const faceGuide = document.getElementById('faceGuide');
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -224,22 +326,23 @@ function capturePhoto() {
 
     video.classList.add('hidden');
     canvas.classList.remove('hidden');
+    faceGuide.classList.add('hidden');
 
     document.getElementById('captureBtn').classList.add('hidden');
-    document.getElementById('retakeBtn').classList.remove('hidden');
-    document.getElementById('confirmBtn').classList.remove('hidden');
+    document.getElementById('actionButtons').classList.remove('hidden');
 }
 
 function retakePhoto() {
     const video = document.getElementById('videoPreview');
     const canvas = document.getElementById('capturedImage');
+    const faceGuide = document.getElementById('faceGuide');
 
     video.classList.remove('hidden');
     canvas.classList.add('hidden');
+    faceGuide.classList.remove('hidden');
 
     document.getElementById('captureBtn').classList.remove('hidden');
-    document.getElementById('retakeBtn').classList.add('hidden');
-    document.getElementById('confirmBtn').classList.add('hidden');
+    document.getElementById('actionButtons').classList.add('hidden');
 }
 
 function confirmPhoto() {
@@ -252,6 +355,11 @@ function confirmPhoto() {
         const reader = new FileReader();
         reader.onloadend = () => {
             document.getElementById('selfieInput').value = reader.result;
+
+            // Mostrar preview
+            document.getElementById('img-selfie').src = reader.result;
+            document.getElementById('preview-selfie').classList.remove('hidden');
+            document.getElementById('zone-selfie').classList.add('hidden');
 
             // Actualizar UI
             document.getElementById('text-selfie').textContent = 'Selfie capturada';
@@ -271,13 +379,14 @@ function confirmPhoto() {
 function resetCameraUI() {
     const video = document.getElementById('videoPreview');
     const canvas = document.getElementById('capturedImage');
+    const faceGuide = document.getElementById('faceGuide');
 
     video.classList.remove('hidden');
     canvas.classList.add('hidden');
+    faceGuide.classList.remove('hidden');
 
     document.getElementById('captureBtn').classList.remove('hidden');
-    document.getElementById('retakeBtn').classList.add('hidden');
-    document.getElementById('confirmBtn').classList.add('hidden');
+    document.getElementById('actionButtons').classList.add('hidden');
 }
 
 // Bloquear botón atrás del navegador
