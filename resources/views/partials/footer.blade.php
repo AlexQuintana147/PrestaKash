@@ -4,8 +4,8 @@
 
             <!-- Marca y descripción -->
             <div class="md:col-span-1">
-                <div class="flex items-center gap-2.5 mb-3">
-                    <img src="/images/logo.webp" alt="PrestaKash" class="h-20">
+                <div class="mb-6">
+                    <img src="/images/logo.webp" alt="PrestaKash" class="h-20 w-auto object-contain">
                 </div>
                 <p class="text-gray-400 text-sm leading-relaxed mt-3 max-w-xs">
                     Préstamos personales 100% digitales. Tasa fija del 20%, sin sorpresas ni letra pequeña.
