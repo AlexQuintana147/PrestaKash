@@ -48,8 +48,11 @@ window.addEventListener('popstate', () => { history.pushState(null, '', location
             <p class="text-xs text-gray-600 mt-1 uppercase tracking-widest">Super Admin</p>
         </div>
 
-        <!-- Logo (mobile, spacer for topbar) -->
-        <div class="md:hidden h-14 flex-shrink-0"></div>
+        <!-- Logo (mobile) -->
+        <div class="md:hidden px-6 py-5 border-b border-gray-900 flex-shrink-0">
+            <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto">
+            <p class="text-xs text-gray-600 mt-1 uppercase tracking-widest">Super Admin</p>
+        </div>
 
         <!-- Nav -->
         <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
