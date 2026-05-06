@@ -40,59 +40,56 @@
         @endforeach
     </div>
 
+    <!-- Cabecera de columnas (solo desktop) -->
+    <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-white uppercase tracking-wider" style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
+        <span>Usuario</span>
+        <span>DNI</span>
+        <span>Teléfono</span>
+        <span>Registro</span>
+        <span>Estado</span>
+        <span></span>
+    </div>
+
     <!-- Lista -->
     @forelse($users as $user)
     @php $status = $user->documents?->status @endphp
     <a href="{{ route('superadmin.users.show', $user) }}"
-       class="flex items-center justify-between py-4 border-b border-gray-900 hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group">
+       class="flex md:grid items-center py-4 border-b border-gray-900 hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
+       style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
 
         <div class="flex items-center gap-3 min-w-0">
             <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=111827&color=6b7280&size=64' }}"
                  class="w-9 h-9 rounded-full object-cover flex-shrink-0 bg-gray-900">
             <div class="min-w-0">
                 <p class="text-sm font-medium text-white truncate">{{ $user->name }}</p>
-                <p class="text-xs text-gray-600 truncate">
-                    <span class="md:hidden">{{ $user->dni ?? $user->email }}</span>
-                    <span class="hidden md:inline">{{ $user->email }}</span>
-                </p>
+                <p class="text-xs text-gray-600 truncate">{{ $user->email }}</p>
             </div>
         </div>
 
-        <div class="flex items-center gap-4 flex-shrink-0 ml-3">
-            <!-- Info extra solo desktop -->
-            <div class="hidden md:flex items-center gap-8 text-xs text-gray-600">
-                <span>{{ $user->dni ?? '—' }}</span>
-                <span>{{ $user->phone ?? '—' }}</span>
-                <span>{{ $user->created_at->format('d/m/Y') }}</span>
-            </div>
+        <span class="hidden md:block text-xs text-white">{{ $user->dni ?? '—' }}</span>
+        <span class="hidden md:block text-xs text-white">{{ $user->phone ?? '—' }}</span>
+        <span class="hidden md:block text-xs text-white">{{ $user->created_at->format('d/m/Y') }}</span>
 
-            <!-- Estado -->
+        <!-- Estado -->
+        <div class="flex items-center gap-1.5 ml-auto md:ml-0">
             @if($status === 'pending')
-                <span class="flex items-center gap-1.5 text-xs text-yellow-500 flex-shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                    <span class="hidden sm:inline">Pendiente</span>
-                </span>
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></span>
+                <span class="text-xs text-yellow-500 hidden sm:inline">Pendiente</span>
             @elseif($status === 'approved')
-                <span class="flex items-center gap-1.5 text-xs text-green-500 flex-shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                    <span class="hidden sm:inline">Aprobado</span>
-                </span>
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                <span class="text-xs text-green-500 hidden sm:inline">Aprobado</span>
             @elseif($status === 'rejected')
-                <span class="flex items-center gap-1.5 text-xs text-red-500 flex-shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                    <span class="hidden sm:inline">Rechazado</span>
-                </span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></span>
+                <span class="text-xs text-red-500 hidden sm:inline">Rechazado</span>
             @else
-                <span class="flex items-center gap-1.5 text-xs text-gray-600 flex-shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-gray-700"></span>
-                    <span class="hidden sm:inline">Sin docs</span>
-                </span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gray-700 flex-shrink-0"></span>
+                <span class="text-xs text-gray-600 hidden sm:inline">Sin docs</span>
             @endif
-
-            <svg class="w-3.5 h-3.5 text-gray-700 group-hover:text-gray-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
         </div>
+
+        <svg class="w-3.5 h-3.5 text-gray-700 group-hover:text-gray-400 transition-colors hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
 
     </a>
     @empty
