@@ -58,9 +58,9 @@
             <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-5">Dirección</p>
             <div class="space-y-3">
                 @foreach([
-                    'Departamento' => $user->department,
-                    'Provincia'    => $user->province,
-                    'Distrito'     => $user->district,
+                    'Departamento' => $department,
+                    'Provincia'    => $province,
+                    'Distrito'     => $district,
                     'Dirección'    => $user->address,
                 ] as $label => $value)
                 <div class="flex justify-between items-center border-b border-gray-50 dark:border-gray-800 pb-3">
