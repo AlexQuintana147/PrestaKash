@@ -71,4 +71,10 @@ class UsersController extends Controller
         $user->documents()->update(['status' => 'rejected']);
         return back()->with('success', 'Usuario rechazado.');
     }
+
+    public function unapprove(User $user)
+    {
+        $user->documents()->update(['status' => 'pending']);
+        return back()->with('success', 'Aprobación revertida.');
+    }
 }

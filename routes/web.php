@@ -68,6 +68,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back'])->prefix('gestion-inter
     Route::get('/usuarios/{user}',             [\App\Http\Controllers\SuperAdmin\UsersController::class, 'show'])->name('users.show');
     Route::post('/usuarios/{user}/aprobar',    [\App\Http\Controllers\SuperAdmin\UsersController::class, 'approve'])->name('users.approve');
     Route::post('/usuarios/{user}/rechazar',   [\App\Http\Controllers\SuperAdmin\UsersController::class, 'reject'])->name('users.reject');
+    Route::post('/usuarios/{user}/desaprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'unapprove'])->name('users.unapprove');
 });
 
 // SuperAdmin registro único

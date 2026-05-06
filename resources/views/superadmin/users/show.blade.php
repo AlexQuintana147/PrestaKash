@@ -82,26 +82,34 @@
             @if($user->documents)
             <div>
                 <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
-                <div class="flex flex-col gap-2">
-                    @if($user->documents->status !== 'approved')
-                    <form action="{{ route('superadmin.users.approve', $user) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                                class="w-full py-2.5 text-sm font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
+                <div class="flex gap-2">
+                    @if($user->documents->status === 'approved')
+                        {{-- Ya aprobado: solo mostrar desaprobar --}}
+                        <form action="{{ route('superadmin.users.unapprove', $user) }}" method="POST" class="flex-1">
+                            @csrf
+                            <button type="submit"
+                                    class="w-full py-2.5 text-sm font-semibold rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors">
+                                Desaprobar
+                            </button>
+                        </form>
+                    @else
+                        @if($user->documents->status !== 'approved')
+                        <button type="button" onclick="openApproveModal()"
+                                class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors">
                             Aprobar
                         </button>
-                    </form>
-                    @endif
+                        @endif
 
-                    @if($user->documents->status !== 'rejected')
-                    <form action="{{ route('superadmin.users.reject', $user) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                                onclick="return confirm('¿Rechazar a este usuario?')"
-                                class="w-full py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-500 hover:border-red-300 dark:hover:border-red-900 hover:text-red-500 transition-colors">
-                            Rechazar
-                        </button>
-                    </form>
+                        @if($user->documents->status !== 'rejected')
+                        <form action="{{ route('superadmin.users.reject', $user) }}" method="POST" class="flex-1">
+                            @csrf
+                            <button type="submit"
+                                    onclick="return confirm('¿Rechazar a este usuario?')"
+                                    class="w-full py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
+                                Rechazar
+                            </button>
+                        </form>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -148,6 +156,34 @@
             @endif
         </div>
 
+    </div>
+</div>
+
+<!-- Modal confirmar aprobación -->
+<div id="approveModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 dark:bg-green-500/10 mx-auto mb-4">
+            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-1">Aprobar usuario</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
+            ¿Confirmas que quieres aprobar a <span class="font-medium text-gray-900 dark:text-white">{{ $user->name }}</span>?
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeApproveModal()"
+                    class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                Cancelar
+            </button>
+            <form action="{{ route('superadmin.users.approve', $user) }}" method="POST" class="flex-1">
+                @csrf
+                <button type="submit"
+                        class="w-full py-2.5 text-sm font-semibold rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors">
+                    Sí, aprobar
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -198,6 +234,20 @@
 
 <script>
 let currentScale = 1;
+
+function openApproveModal() {
+    document.getElementById('approveModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeApproveModal() {
+    document.getElementById('approveModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('approveModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('approveModal')) closeApproveModal();
+});
 
 function openLightbox(src, label) {
     currentScale = 1;
