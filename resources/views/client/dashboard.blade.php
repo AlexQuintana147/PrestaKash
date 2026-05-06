@@ -7,57 +7,55 @@
 
     <!-- Saludo -->
     <div class="mb-8">
-        <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Bienvenido</p>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+        <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-1">Bienvenido</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
             Hola, {{ $user->first_name ?? $user->name }} 👋
         </h1>
-        <p class="text-sm text-gray-400 mt-1">Tu cuenta está activa y verificada.</p>
+        <p class="text-sm text-gray-400 dark:text-gray-600 mt-1">Tu cuenta está activa y verificada.</p>
     </div>
 
-    <!-- Estado de cuenta -->
+    <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div class="bg-white rounded-2xl border border-gray-100 p-5">
-            <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">Estado</p>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+            <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-wider mb-3">Estado</p>
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                <span class="text-sm font-semibold text-green-600">Verificado</span>
+                <span class="text-sm font-semibold text-green-600 dark:text-green-400">Verificado</span>
             </div>
         </div>
-        <div class="bg-white rounded-2xl border border-gray-100 p-5">
-            <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">Préstamos activos</p>
-            <p class="text-2xl font-bold text-gray-900">0</p>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+            <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-wider mb-3">Préstamos activos</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
         </div>
-        <div class="bg-white rounded-2xl border border-gray-100 p-5">
-            <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">Miembro desde</p>
-            <p class="text-sm font-semibold text-gray-900">{{ $user->created_at->format('d M Y') }}</p>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+            <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-wider mb-3">Miembro desde</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $user->created_at->format('d M Y') }}</p>
         </div>
     </div>
 
     <!-- Perfil -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- Datos personales -->
-        <div class="bg-white rounded-2xl border border-gray-100 p-6">
-            <p class="text-xs text-gray-400 uppercase tracking-widest mb-5">Datos personales</p>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+            <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-5">Datos personales</p>
             <div class="space-y-3">
                 @foreach([
-                    'Nombres'      => $user->first_name,
-                    'Apellidos'    => $user->last_name,
-                    'DNI'          => $user->dni,
-                    'Teléfono'     => $user->phone,
-                    'Correo'       => $user->email,
+                    'Nombres'  => $user->first_name,
+                    'Apellidos'=> $user->last_name,
+                    'DNI'      => $user->dni,
+                    'Teléfono' => $user->phone,
+                    'Correo'   => $user->email,
                 ] as $label => $value)
-                <div class="flex justify-between items-center border-b border-gray-50 pb-3">
-                    <span class="text-xs text-gray-400">{{ $label }}</span>
-                    <span class="text-xs font-medium text-gray-900">{{ $value ?? '—' }}</span>
+                <div class="flex justify-between items-center border-b border-gray-50 dark:border-gray-800 pb-3">
+                    <span class="text-xs text-gray-400 dark:text-gray-600">{{ $label }}</span>
+                    <span class="text-xs font-medium text-gray-900 dark:text-white">{{ $value ?? '—' }}</span>
                 </div>
                 @endforeach
             </div>
         </div>
 
-        <!-- Dirección -->
-        <div class="bg-white rounded-2xl border border-gray-100 p-6">
-            <p class="text-xs text-gray-400 uppercase tracking-widest mb-5">Dirección</p>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
+            <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-5">Dirección</p>
             <div class="space-y-3">
                 @foreach([
                     'Departamento' => $user->department,
@@ -65,9 +63,9 @@
                     'Distrito'     => $user->district,
                     'Dirección'    => $user->address,
                 ] as $label => $value)
-                <div class="flex justify-between items-center border-b border-gray-50 pb-3">
-                    <span class="text-xs text-gray-400">{{ $label }}</span>
-                    <span class="text-xs font-medium text-gray-900 text-right max-w-[200px]">{{ $value ?? '—' }}</span>
+                <div class="flex justify-between items-center border-b border-gray-50 dark:border-gray-800 pb-3">
+                    <span class="text-xs text-gray-400 dark:text-gray-600">{{ $label }}</span>
+                    <span class="text-xs font-medium text-gray-900 dark:text-white text-right max-w-[200px]">{{ $value ?? '—' }}</span>
                 </div>
                 @endforeach
             </div>
@@ -75,8 +73,8 @@
 
     </div>
 
-    <!-- Banner préstamos -->
-    <div class="mt-6 bg-gray-900 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <!-- Banner -->
+    <div class="mt-6 bg-gray-900 dark:bg-gray-800 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
             <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Próximamente</p>
             <h2 class="text-lg font-bold text-white">Solicita tu préstamo</h2>
