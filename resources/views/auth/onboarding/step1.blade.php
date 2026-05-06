@@ -21,7 +21,7 @@
         }
         .input-field:focus { border-bottom-color: #10b981; }
         .input-field::placeholder { color: #4b5563; }
-        .input-field:disabled { color: #4b5563; cursor: not-allowed; }
+        .input-field:disabled { color: #ffffff; cursor: not-allowed; opacity: 0.7; }
         select.input-field option { background: #111827; color: white; }
         select.input-field:disabled { opacity: 0.4; }
 
