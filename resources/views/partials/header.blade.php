@@ -48,41 +48,85 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-black border-t border-gray-900">
-        <div class="px-6 py-4 space-y-4">
-            <a href="#calculadora" onclick="toggleMobileMenu()" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors py-2">
-                Calculadora
-            </a>
-            <a href="#beneficios" onclick="toggleMobileMenu()" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors py-2">
-                Beneficios
-            </a>
-            <a href="#requisitos" onclick="toggleMobileMenu()" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors py-2">
-                Requisitos
-            </a>
+    <div id="mobileMenu" class="fixed inset-y-0 left-0 w-full bg-black z-40 md:hidden overflow-y-auto transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="min-h-screen p-6 flex flex-col">
+            <!-- Close Button -->
+            <div class="flex justify-end mb-8">
+                <button onclick="toggleMobileMenu()" class="text-white p-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Navigation Section -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-white mb-6">Navegación</h2>
+                <div class="space-y-3">
+                    <a href="#calculadora" onclick="toggleMobileMenu()" class="block text-xl font-medium text-gray-300 hover:text-green-400 transition-colors py-3">
+                        Calculadora
+                    </a>
+                    <a href="#beneficios" onclick="toggleMobileMenu()" class="block text-xl font-medium text-gray-300 hover:text-green-400 transition-colors py-3">
+                        Beneficios
+                    </a>
+                    <a href="#requisitos" onclick="toggleMobileMenu()" class="block text-xl font-medium text-gray-300 hover:text-green-400 transition-colors py-3">
+                        Requisitos
+                    </a>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-800 my-6"></div>
+
+            <!-- Auth Section -->
             @guest
-                <button onclick="openRegisterModal(); toggleMobileMenu();" class="block w-full text-left text-sm font-medium text-gray-300 hover:text-white transition-colors py-2">
-                    Registrarse
-                </button>
-                <button onclick="openLoginModal(); toggleMobileMenu();" class="block w-full px-6 py-2 text-sm font-semibold text-black bg-white hover:bg-gray-100 rounded-full transition-all text-center">
-                    Iniciar sesión
-                </button>
+                <div class="space-y-4">
+                    <button onclick="openRegisterModal(); toggleMobileMenu();" class="block w-full text-left text-xl font-medium text-gray-300 hover:text-green-400 transition-colors py-3">
+                        Registrarse
+                    </button>
+                    <button onclick="openLoginModal(); toggleMobileMenu();" class="block w-full px-6 py-4 text-lg font-semibold text-black bg-white hover:bg-gray-100 rounded-xl transition-all text-center">
+                        Iniciar sesión
+                    </button>
+                </div>
             @else
-                <div class="flex items-center gap-3 px-4 py-2 bg-gray-900 rounded-full">
-                    <img src="{{ Auth::user()->avatar }}" alt="avatar" class="w-7 h-7 rounded-full object-cover">
-                    <span class="text-sm font-medium text-white">{{ Auth::user()->name }}</span>
+                <div class="flex items-center gap-3 px-4 py-3 bg-gray-900 rounded-xl">
+                    <img src="{{ Auth::user()->avatar }}" alt="avatar" class="w-10 h-10 rounded-full object-cover">
+                    <span class="text-base font-medium text-white">{{ Auth::user()->name }}</span>
                 </div>
             @endguest
+
+            <!-- Logo at bottom -->
+            <div class="mt-auto pt-8">
+                <img src="/images/logo.webp" alt="PrestaKash" class="h-12 w-auto">
+            </div>
         </div>
     </div>
+
+    <!-- Overlay -->
+    <div id="mobileMenuOverlay" class="hidden fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
 </nav>
 
 <script>
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileMenuOverlay');
     const menuIcon = document.getElementById('menuIcon');
     const closeIcon = document.getElementById('closeIcon');
 
-    menu.classList.toggle('hidden');
+    if (menu.classList.contains('-translate-x-full')) {
+        // Abrir menú
+        menu.classList.remove('-translate-x-full');
+        menu.classList.add('translate-x-0');
+        overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    } else {
+        // Cerrar menú
+        menu.classList.add('-translate-x-full');
+        menu.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
     menuIcon.classList.toggle('hidden');
     closeIcon.classList.toggle('hidden');
 }
