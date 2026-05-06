@@ -1,193 +1,153 @@
 @extends('superadmin.layout')
 
-@section('title', 'Detalle de Usuario')
+@section('title', $user->name)
 
 @section('content')
-<div class="p-8">
+<div class="min-h-screen px-10 py-10">
 
     <!-- Header -->
-    <div class="flex items-center gap-4 mb-8">
-        <a href="{{ route('superadmin.users.index') }}" class="text-gray-500 hover:text-white transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+    <div class="flex items-center gap-4 mb-10">
+        <a href="{{ route('superadmin.users.index') }}"
+           class="text-gray-600 hover:text-white transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div>
-            <h1 class="text-2xl font-bold text-white">{{ $user->name }}</h1>
-            <p class="text-sm text-gray-500 mt-0.5">{{ $user->email }}</p>
+        <div class="flex items-center gap-3">
+            <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=111827&color=6b7280&size=64' }}"
+                 class="w-10 h-10 rounded-full object-cover bg-gray-900">
+            <div>
+                <h1 class="text-xl font-bold text-white leading-tight">{{ $user->name }}</h1>
+                <p class="text-xs text-gray-600">{{ $user->email }}</p>
+            </div>
         </div>
+
+        <!-- Badge estado -->
+        @if($user->documents)
+        @php $status = $user->documents->status @endphp
+        <div class="ml-auto">
+            @if($status === 'pending')
+                <span class="flex items-center gap-1.5 text-xs text-yellow-500">
+                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pendiente de revisión
+                </span>
+            @elseif($status === 'approved')
+                <span class="flex items-center gap-1.5 text-xs text-green-500">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Aprobado
+                </span>
+            @elseif($status === 'rejected')
+                <span class="flex items-center gap-1.5 text-xs text-red-500">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rechazado
+                </span>
+            @endif
+        </div>
+        @endif
     </div>
 
     @if(session('success'))
-        <div class="mb-6 px-4 py-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+        <div class="mb-8 flex items-center gap-3 text-sm text-green-400">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="grid grid-cols-3 gap-6">
+    <div class="grid grid-cols-12 gap-10">
 
-        <!-- Datos personales -->
-        <div class="col-span-1 space-y-4">
-            <div class="bg-gray-900 rounded-xl border border-gray-800 p-5">
-                <div class="flex items-center gap-4 mb-5">
-                    <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=1f2937&color=fff' }}"
-                         class="w-14 h-14 rounded-full object-cover bg-gray-800">
-                    <div>
-                        <p class="font-semibold text-white">{{ $user->name }}</p>
-                        <p class="text-xs text-gray-500 mt-0.5">{{ $user->email }}</p>
-                    </div>
-                </div>
+        <!-- Columna izquierda: datos + acciones -->
+        <div class="col-span-4 space-y-8">
 
-                <div class="space-y-3 text-sm">
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">DNI</span>
-                        <span class="text-white font-medium">{{ $user->dni ?? '—' }}</span>
+            <!-- Datos personales -->
+            <div>
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-4">Datos personales</p>
+                <div class="space-y-3">
+                    @foreach([
+                        'DNI'          => $user->dni,
+                        'Teléfono'     => $user->phone,
+                        'Departamento' => $user->department,
+                        'Provincia'    => $user->province,
+                        'Distrito'     => $user->district,
+                        'Dirección'    => $user->address,
+                        'Registro'     => $user->created_at->format('d/m/Y'),
+                    ] as $label => $value)
+                    <div class="flex justify-between items-start border-b border-gray-900 pb-3">
+                        <span class="text-xs text-gray-600">{{ $label }}</span>
+                        <span class="text-xs text-white text-right max-w-[200px]">{{ $value ?? '—' }}</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Teléfono</span>
-                        <span class="text-white font-medium">{{ $user->phone ?? '—' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Departamento</span>
-                        <span class="text-white font-medium">{{ $user->department ?? '—' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Provincia</span>
-                        <span class="text-white font-medium">{{ $user->province ?? '—' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Distrito</span>
-                        <span class="text-white font-medium">{{ $user->district ?? '—' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Dirección</span>
-                        <span class="text-white font-medium text-right max-w-[160px]">{{ $user->address ?? '—' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Registro</span>
-                        <span class="text-white font-medium">{{ $user->created_at->format('d/m/Y') }}</span>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
-            <!-- Estado actual + acciones -->
+            <!-- Acciones -->
             @if($user->documents)
-            <div class="bg-gray-900 rounded-xl border border-gray-800 p-5">
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Estado</p>
-
-                @php $status = $user->documents->status @endphp
-
-                <div class="mb-4">
-                    @if($status === 'pending')
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-yellow-400/10 text-yellow-400">
-                            <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Pendiente de revisión
-                        </span>
-                    @elseif($status === 'approved')
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-green-400/10 text-green-400">
-                            <span class="w-2 h-2 rounded-full bg-green-400"></span> Aprobado
-                        </span>
-                    @elseif($status === 'rejected')
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-red-400/10 text-red-400">
-                            <span class="w-2 h-2 rounded-full bg-red-400"></span> Rechazado
-                        </span>
-                    @endif
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    @if($status !== 'approved')
+            <div>
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
+                <div class="space-y-2">
+                    @if($user->documents->status !== 'approved')
                     <form action="{{ route('superadmin.users.approve', $user) }}" method="POST">
                         @csrf
                         <button type="submit"
-                                class="w-full py-2.5 rounded-lg text-sm font-semibold bg-green-500 hover:bg-green-600 text-white transition-colors">
-                            Aprobar usuario
+                                class="w-full py-2.5 text-sm font-semibold rounded-lg bg-white text-black hover:bg-gray-100 transition-colors">
+                            Aprobar
                         </button>
                     </form>
                     @endif
 
-                    @if($status !== 'rejected')
+                    @if($user->documents->status !== 'rejected')
                     <form action="{{ route('superadmin.users.reject', $user) }}" method="POST">
                         @csrf
                         <button type="submit"
-                                onclick="return confirm('¿Seguro que deseas rechazar a este usuario?')"
-                                class="w-full py-2.5 rounded-lg text-sm font-semibold bg-gray-800 hover:bg-red-500/20 text-gray-300 hover:text-red-400 border border-gray-700 hover:border-red-500/30 transition-colors">
-                            Rechazar usuario
+                                onclick="return confirm('¿Rechazar a este usuario?')"
+                                class="w-full py-2.5 text-sm font-medium rounded-lg border border-gray-800 text-gray-500 hover:border-red-900 hover:text-red-500 transition-colors">
+                            Rechazar
                         </button>
                     </form>
                     @endif
                 </div>
             </div>
             @endif
+
         </div>
 
-        <!-- Documentos -->
-        <div class="col-span-2">
-            <div class="bg-gray-900 rounded-xl border border-gray-800 p-5">
-                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-5">Documentos subidos</p>
+        <!-- Columna derecha: documentos -->
+        <div class="col-span-8">
+            <p class="text-xs text-gray-600 uppercase tracking-widest mb-6">Documentos</p>
 
-                @if($user->documents)
-                <div class="grid grid-cols-2 gap-4">
+            @if($user->documents)
+            <div class="grid grid-cols-2 gap-5">
 
-                    <!-- Selfie -->
-                    <div>
-                        <p class="text-xs text-gray-500 mb-2">Selfie</p>
-                        @if($user->documents->selfie)
-                            <a href="{{ Storage::url($user->documents->selfie) }}" target="_blank">
-                                <img src="{{ Storage::url($user->documents->selfie) }}"
-                                     class="w-full rounded-lg object-cover bg-gray-800 hover:opacity-80 transition-opacity cursor-zoom-in"
-                                     style="max-height: 200px; object-fit: cover;">
-                            </a>
-                        @else
-                            <div class="w-full h-32 rounded-lg bg-gray-800 flex items-center justify-center text-gray-600 text-xs">Sin imagen</div>
-                        @endif
-                    </div>
-
-                    <!-- DNI Frontal -->
-                    <div>
-                        <p class="text-xs text-gray-500 mb-2">DNI — Frontal</p>
-                        @if($user->documents->dni_front)
-                            <a href="{{ Storage::url($user->documents->dni_front) }}" target="_blank">
-                                <img src="{{ Storage::url($user->documents->dni_front) }}"
-                                     class="w-full rounded-lg object-cover bg-gray-800 hover:opacity-80 transition-opacity cursor-zoom-in"
-                                     style="max-height: 200px; object-fit: cover;">
-                            </a>
-                        @else
-                            <div class="w-full h-32 rounded-lg bg-gray-800 flex items-center justify-center text-gray-600 text-xs">Sin imagen</div>
-                        @endif
-                    </div>
-
-                    <!-- DNI Posterior -->
-                    <div>
-                        <p class="text-xs text-gray-500 mb-2">DNI — Posterior</p>
-                        @if($user->documents->dni_back)
-                            <a href="{{ Storage::url($user->documents->dni_back) }}" target="_blank">
-                                <img src="{{ Storage::url($user->documents->dni_back) }}"
-                                     class="w-full rounded-lg object-cover bg-gray-800 hover:opacity-80 transition-opacity cursor-zoom-in"
-                                     style="max-height: 200px; object-fit: cover;">
-                            </a>
-                        @else
-                            <div class="w-full h-32 rounded-lg bg-gray-800 flex items-center justify-center text-gray-600 text-xs">Sin imagen</div>
-                        @endif
-                    </div>
-
-                    <!-- Recibo de servicios -->
-                    <div>
-                        <p class="text-xs text-gray-500 mb-2">Recibo de servicios</p>
-                        @if($user->documents->utility_bill)
-                            <a href="{{ Storage::url($user->documents->utility_bill) }}" target="_blank">
-                                <img src="{{ Storage::url($user->documents->utility_bill) }}"
-                                     class="w-full rounded-lg object-cover bg-gray-800 hover:opacity-80 transition-opacity cursor-zoom-in"
-                                     style="max-height: 200px; object-fit: cover;">
-                            </a>
-                        @else
-                            <div class="w-full h-32 rounded-lg bg-gray-800 flex items-center justify-center text-gray-600 text-xs">Sin imagen</div>
-                        @endif
-                    </div>
-
+                @foreach([
+                    'Selfie'             => $user->documents->selfie,
+                    'DNI — Frontal'      => $user->documents->dni_front,
+                    'DNI — Posterior'    => $user->documents->dni_back,
+                    'Recibo de servicios'=> $user->documents->utility_bill,
+                ] as $label => $path)
+                <div>
+                    <p class="text-xs text-gray-600 mb-2">{{ $label }}</p>
+                    @if($path)
+                        <a href="{{ Storage::url($path) }}" target="_blank" class="block group">
+                            <div class="relative overflow-hidden rounded-lg bg-gray-900" style="aspect-ratio: 4/3;">
+                                <img src="{{ Storage::url($path) }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </a>
+                    @else
+                        <div class="rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-700 text-xs" style="aspect-ratio: 4/3;">
+                            Sin imagen
+                        </div>
+                    @endif
                 </div>
-                @else
-                    <p class="text-gray-600 text-sm">Este usuario no ha subido documentos aún.</p>
-                @endif
+                @endforeach
+
             </div>
+            @else
+                <p class="text-sm text-gray-700">Este usuario no ha subido documentos.</p>
+            @endif
         </div>
 
     </div>
