@@ -62,11 +62,13 @@
                 <p class="text-xs text-gray-600 uppercase tracking-widest mb-4">Datos personales</p>
                 <div class="space-y-3">
                     @foreach([
+                        'Nombres'      => $user->first_name,
+                        'Apellidos'    => $user->last_name,
                         'DNI'          => $user->dni,
                         'Teléfono'     => $user->phone,
-                        'Departamento' => $user->department,
-                        'Provincia'    => $user->province,
-                        'Distrito'     => $user->district,
+                        'Departamento' => $department,
+                        'Provincia'    => $province,
+                        'Distrito'     => $district,
                         'Dirección'    => $user->address,
                         'Registro'     => $user->created_at->format('d/m/Y'),
                     ] as $label => $value)

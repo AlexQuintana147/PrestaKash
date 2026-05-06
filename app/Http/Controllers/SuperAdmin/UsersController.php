@@ -5,6 +5,9 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserDocument;
+use App\Models\UbigeoDepartment;
+use App\Models\UbigeoProvince;
+use App\Models\UbigeoDistrict;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -40,7 +43,21 @@ class UsersController extends Controller
     public function show(User $user)
     {
         $user->load('documents');
-        return view('superadmin.users.show', compact('user'));
+
+        // Resolver nombres de ubigeo (IDs en BD son strings con ceros: '01', '0101', '010110')
+        $department = $user->department
+            ? UbigeoDepartment::where('id', str_pad($user->department, 2, '0', STR_PAD_LEFT))->value('name')
+            : null;
+
+        $province = $user->province
+            ? UbigeoProvince::where('id', str_pad($user->province, 4, '0', STR_PAD_LEFT))->value('name')
+            : null;
+
+        $district = $user->district
+            ? UbigeoDistrict::where('id', str_pad($user->district, 6, '0', STR_PAD_LEFT))->value('name')
+            : null;
+
+        return view('superadmin.users.show', compact('user', 'department', 'province', 'district'));
     }
 
     public function approve(User $user)

@@ -41,12 +41,12 @@
     </div>
 
     <!-- Cabecera de columnas (solo desktop) -->
-    <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-white uppercase tracking-wider" style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
+    <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-white uppercase tracking-wider items-center" style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
         <span>Usuario</span>
-        <span>DNI</span>
-        <span>Teléfono</span>
-        <span>Registro</span>
-        <span>Estado</span>
+        <span class="text-center">DNI</span>
+        <span class="text-center">Teléfono</span>
+        <span class="text-center">Registro</span>
+        <span class="text-center">Estado</span>
         <span></span>
     </div>
 
@@ -66,12 +66,12 @@
             </div>
         </div>
 
-        <span class="hidden md:block text-xs text-white">{{ $user->dni ?? '—' }}</span>
-        <span class="hidden md:block text-xs text-white">{{ $user->phone ?? '—' }}</span>
-        <span class="hidden md:block text-xs text-white">{{ $user->created_at->format('d/m/Y') }}</span>
+        <span class="hidden md:block text-xs text-white text-center">{{ $user->dni ?? '—' }}</span>
+        <span class="hidden md:block text-xs text-white text-center">{{ $user->phone ?? '—' }}</span>
+        <span class="hidden md:block text-xs text-white text-center">{{ $user->created_at->format('d/m/Y') }}</span>
 
         <!-- Estado -->
-        <div class="flex items-center gap-1.5 ml-auto md:ml-0">
+        <div class="flex items-center justify-center gap-1.5 ml-auto md:ml-0">
             @if($status === 'pending')
                 <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></span>
                 <span class="text-xs text-yellow-500 hidden sm:inline">Pendiente</span>
