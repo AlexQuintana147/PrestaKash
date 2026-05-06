@@ -24,22 +24,57 @@
     @endif
 
     <!-- Filtros -->
-    <div class="flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-6 overflow-x-auto">
-        @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'blocked' => 'Bloqueados'] as $key => $label)
-            <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
-               class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                      {{ $filter === $key
-                          ? ($key === 'blocked' ? 'text-red-500' : 'text-gray-900 dark:text-white')
-                          : 'text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                {{ $label }}
-                @if($counts[$key] > 0)
-                    <span class="ml-1.5 text-xs {{ $filter === $key ? ($key === 'blocked' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400') : 'text-gray-300 dark:text-gray-700' }}">{{ $counts[$key] }}</span>
-                @endif
-                @if($filter === $key)
-                    <span class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'blocked' ? 'bg-red-500' : 'bg-gray-900 dark:bg-white' }}"></span>
-                @endif
-            </a>
-        @endforeach
+    <div class="mb-6">
+        <!-- Mobile: grid 2 columnas -->
+        <div class="md:hidden space-y-2">
+            <div class="grid grid-cols-3 gap-2">
+                @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados'] as $key => $label)
+                    <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
+                       class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
+                              {{ $filter === $key
+                                  ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
+                                  : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
+                        {{ $label }}
+                        @if($counts[$key] > 0)
+                            <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+            <div class="grid grid-cols-2 gap-2 w-2/3 mx-auto">
+                @foreach(['rejected' => 'Rechazados', 'blocked' => 'Bloqueados'] as $key => $label)
+                    <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
+                       class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
+                              {{ $filter === $key
+                                  ? ($key === 'blocked' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white')
+                                  : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
+                        {{ $label }}
+                        @if($counts[$key] > 0)
+                            <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Desktop: tabs horizontales -->
+        <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
+            @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'blocked' => 'Bloqueados'] as $key => $label)
+                <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
+                   class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
+                          {{ $filter === $key
+                              ? ($key === 'blocked' ? 'text-red-500' : 'text-gray-900 dark:text-white')
+                              : 'text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                    {{ $label }}
+                    @if($counts[$key] > 0)
+                        <span class="ml-1.5 text-xs {{ $filter === $key ? ($key === 'blocked' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400') : 'text-gray-300 dark:text-gray-700' }}">{{ $counts[$key] }}</span>
+                    @endif
+                    @if($filter === $key)
+                        <span class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'blocked' ? 'bg-red-500' : 'bg-gray-900 dark:bg-white' }}"></span>
+                    @endif
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <!-- Cabecera de columnas (solo desktop) -->
