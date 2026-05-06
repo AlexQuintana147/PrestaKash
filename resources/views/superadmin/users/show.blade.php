@@ -189,7 +189,7 @@
     </div>
 
     <!-- Imagen con scroll si hace zoom -->
-    <div class="overflow-auto w-full max-w-4xl flex items-center justify-center" style="max-height: 80vh;">
+    <div class="overflow-hidden w-full max-w-4xl flex items-center justify-center" style="max-height: 80vh;">
         <img id="lightboxImg" src="" alt=""
              class="transition-transform duration-200 rounded-lg select-none"
              style="transform-origin: center; max-width: 100%;">
