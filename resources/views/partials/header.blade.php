@@ -244,15 +244,15 @@ function toggleMobileMenu() {
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Correo electrónico</label>
-                    <input type="email" name="email" required class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <input type="email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Por favor ingresa un correo electrónico válido" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Contraseña</label>
-                    <input type="password" name="password" required class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Contraseña <span class="text-gray-600 normal-case">(mínimo 8 caracteres)</span></label>
+                    <input type="password" name="password" required minlength="8" title="La contraseña debe tener al menos 8 caracteres" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Confirmar contraseña</label>
-                    <input type="password" name="password_confirmation" required class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <input type="password" name="password_confirmation" required minlength="8" title="La contraseña debe tener al menos 8 caracteres" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
                 </div>
                 <div class="pt-3">
                     <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg transition-all text-sm">
