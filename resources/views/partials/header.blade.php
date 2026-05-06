@@ -1,4 +1,5 @@
 <nav class="fixed top-0 w-full z-50 bg-black border-b border-gray-900">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -244,7 +245,8 @@ function toggleMobileMenu() {
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Correo electrónico</label>
-                    <input type="email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Por favor ingresa un correo electrónico válido" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <input type="email" id="registerEmail" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Por favor ingresa un correo electrónico válido" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <p id="emailError" class="text-red-500 text-xs mt-1 hidden">Este correo ya está registrado</p>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Contraseña <span class="text-gray-600 normal-case">(mínimo 8 caracteres)</span></label>
@@ -255,7 +257,7 @@ function toggleMobileMenu() {
                     <input type="password" name="password_confirmation" required minlength="8" title="La contraseña debe tener al menos 8 caracteres" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
                 </div>
                 <div class="pt-3">
-                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg transition-all text-sm">
+                    <button type="submit" id="registerSubmitBtn" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg transition-all text-sm">
                         Crear cuenta
                     </button>
                 </div>
@@ -287,6 +289,53 @@ function openRegisterModal() {
 function closeRegisterModal() {
     document.getElementById('registerModal').classList.add('hidden');
     document.body.style.overflow = 'auto';
+}
+
+// Validación de email en tiempo real
+let emailCheckTimeout;
+const registerEmailInput = document.getElementById('registerEmail');
+const emailError = document.getElementById('emailError');
+const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+
+if (registerEmailInput) {
+    registerEmailInput.addEventListener('input', function() {
+        clearTimeout(emailCheckTimeout);
+        const email = this.value;
+
+        // Validar formato de email primero
+        const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+        if (!emailPattern.test(email)) {
+            emailError.classList.add('hidden');
+            return;
+        }
+
+        // Esperar 500ms después de que el usuario deje de escribir
+        emailCheckTimeout = setTimeout(() => {
+            fetch('{{ route("check.email") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    emailError.classList.remove('hidden');
+                    registerSubmitBtn.disabled = true;
+                    registerSubmitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    emailError.classList.add('hidden');
+                    registerSubmitBtn.disabled = false;
+                    registerSubmitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }, 500);
+    });
 }
 
 // Cerrar modales al hacer clic fuera

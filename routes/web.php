@@ -41,6 +41,7 @@ Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name
 // Auth manual
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->name('register');
+Route::post('/check-email', [\App\Http\Controllers\Auth\AuthController::class, 'checkEmail'])->name('check.email');
 
 // Onboarding (requiere estar autenticado)
 Route::middleware('auth')->group(function () {

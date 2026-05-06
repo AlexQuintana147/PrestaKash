@@ -59,4 +59,10 @@ class AuthController extends Controller
 
         return redirect()->route('onboarding.step1');
     }
+
+    public function checkEmail(Request $request)
+    {
+        $exists = User::where('email', $request->email)->exists();
+        return response()->json(['exists' => $exists]);
+    }
 }
