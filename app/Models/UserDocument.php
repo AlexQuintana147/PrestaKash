@@ -13,6 +13,7 @@ class UserDocument extends Model
         'dni_back',
         'utility_bill',
         'status',
+        'rejection_reason',
     ];
 
     public function user()

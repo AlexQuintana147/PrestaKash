@@ -82,6 +82,13 @@
             @if($user->documents)
             <div>
                 <p class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
+
+                @if($user->documents->status === 'rejected')
+                <div class="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 mb-3">
+                    <p class="text-xs font-medium text-red-500 mb-1">Motivo de rechazo</p>
+                    <p class="text-xs text-red-400">{{ $user->documents->rejection_reason ?? '—' }}</p>
+                </div>
+                @endif
                 <div class="flex gap-2">
                     @if($user->documents->status === 'approved')
                         {{-- Ya aprobado: solo mostrar desaprobar --}}
@@ -101,14 +108,10 @@
                         @endif
 
                         @if($user->documents->status !== 'rejected')
-                        <form action="{{ route('superadmin.users.reject', $user) }}" method="POST" class="flex-1">
-                            @csrf
-                            <button type="submit"
-                                    onclick="return confirm('¿Rechazar a este usuario?')"
-                                    class="w-full py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
-                                Rechazar
-                            </button>
-                        </form>
+                        <button type="button" onclick="openRejectModal()"
+                                class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
+                            Rechazar
+                        </button>
                         @endif
                     @endif
                 </div>
@@ -156,6 +159,61 @@
             @endif
         </div>
 
+    </div>
+</div>
+
+<!-- Modal confirmar rechazo -->
+<div id="rejectModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 mx-auto mb-4">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </div>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-1">Rechazar usuario</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-5">
+            Esta acción es <span class="font-semibold text-red-500">irreversible</span>. Indica el motivo del rechazo.
+        </p>
+
+        <form action="{{ route('superadmin.users.reject', $user) }}" method="POST">
+            @csrf
+
+            <!-- Motivos predefinidos -->
+            <div class="space-y-2 mb-4">
+                @foreach([
+                    'El DNI no es legible o está incorrecto',
+                    'La selfie no coincide con el DNI',
+                    'El recibo de servicios no es válido',
+                    'Los datos personales no coinciden',
+                    'Documentos vencidos o alterados',
+                ] as $motivo)
+                <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors has-[:checked]:border-red-400 has-[:checked]:bg-red-50 dark:has-[:checked]:bg-red-500/10">
+                    <input type="radio" name="reason" value="{{ $motivo }}"
+                           class="accent-red-500 flex-shrink-0"
+                           onchange="document.getElementById('customReason').value = ''">
+                    <span class="text-xs text-gray-700 dark:text-gray-300">{{ $motivo }}</span>
+                </label>
+                @endforeach
+
+                <!-- Motivo personalizado -->
+                <div class="pt-1">
+                    <input type="text" id="customReason" placeholder="Otro motivo..."
+                           class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 py-2 focus:outline-none focus:border-red-400 transition-colors"
+                           oninput="uncheckRadios()">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-5">
+                <button type="button" onclick="closeRejectModal()"
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit" onclick="return setCustomReason()"
+                        class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
+                    Rechazar
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -234,6 +292,48 @@
 
 <script>
 let currentScale = 1;
+
+function openRejectModal() {
+    document.getElementById('rejectModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeRejectModal() {
+    document.getElementById('rejectModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function uncheckRadios() {
+    document.querySelectorAll('#rejectModal input[type=radio]').forEach(r => r.checked = false);
+}
+
+function setCustomReason() {
+    const custom = document.getElementById('customReason').value.trim();
+    const checked = document.querySelector('#rejectModal input[type=radio]:checked');
+    if (!custom && !checked) {
+        alert('Debes seleccionar o escribir un motivo de rechazo.');
+        return false;
+    }
+    if (custom) {
+        // Inyectar el valor custom en un hidden input
+        const form = document.querySelector('#rejectModal form');
+        let hidden = form.querySelector('input[name=reason][type=hidden]');
+        if (!hidden) {
+            hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'reason';
+            form.appendChild(hidden);
+        }
+        // Desmarcar radios para que no compitan
+        document.querySelectorAll('#rejectModal input[type=radio]').forEach(r => r.disabled = true);
+        hidden.value = custom;
+    }
+    return true;
+}
+
+document.getElementById('rejectModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('rejectModal')) closeRejectModal();
+});
 
 function openApproveModal() {
     document.getElementById('approveModal').classList.remove('hidden');

@@ -68,7 +68,14 @@ class UsersController extends Controller
 
     public function reject(User $user)
     {
-        $user->documents()->update(['status' => 'rejected']);
+        $request = request();
+        $request->validate(['reason' => 'required|string|max:255']);
+
+        $user->documents()->update([
+            'status'           => 'rejected',
+            'rejection_reason' => $request->reason,
+        ]);
+
         return back()->with('success', 'Usuario rechazado.');
     }
 
