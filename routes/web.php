@@ -94,6 +94,8 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::put('/prestamos/perfil',       [\App\Http\Controllers\Client\LoanController::class, 'updateProfile'])->name('loans.profile.update');
     Route::get('/referidos',              [\App\Http\Controllers\Client\ReferralController::class, 'index'])->name('referidos');
     Route::get('/invertir',               [\App\Http\Controllers\Client\DashboardController::class, 'invest'])->name('invertir');
+    Route::get('/invertir/postular',      [\App\Http\Controllers\Client\InvestorApplicationController::class, 'create'])->name('invest.apply');
+    Route::post('/invertir/postular',     [\App\Http\Controllers\Client\InvestorApplicationController::class, 'store'])->name('invest.store');
 });
 Route::prefix('registro-maestro/{token}')->name('superadmin.register.')->group(function () {
     Route::get('/',         [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'show'])->name('show');
