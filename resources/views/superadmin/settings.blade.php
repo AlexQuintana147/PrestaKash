@@ -3,153 +3,200 @@
 @section('title', 'Configuración')
 
 @section('content')
-<div class="min-h-screen px-5 md:px-10 py-8 max-w-xl">
+<div class="min-h-screen px-5 md:px-10 py-8">
 
-    <div class="mb-10">
-        <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel</p>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Configuración</h1>
+    <div class="mb-12">
+        <h1 class="text-3xl font-light text-gray-900 dark:text-white tracking-tight">Configuración</h1>
+        <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mt-2">Gestión de cuenta e identidad</p>
     </div>
 
-    <!-- Nombre -->
-    <div class="mb-10">
-        <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Nombre</p>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-        @if(session('success_name'))
-            <div class="mb-4 flex items-center gap-2 text-sm text-green-500">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {{ session('success_name') }}
-            </div>
-        @endif
-
-        <form action="{{ route('superadmin.settings.name') }}" method="POST" class="space-y-5">
-            @csrf
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">Nombre completo</label>
-                <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" required
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors @error('name') border-red-400 @enderror">
-                @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-            <button type="submit"
-                    class="px-5 py-2 text-sm font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
-                Guardar nombre
-            </button>
-        </form>
-    </div>
-
-    <div class="border-t border-gray-100 dark:border-gray-900 mb-10"></div>
-
-    <!-- Contraseña -->
-    <div>
-        <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Contraseña</p>
-
-        @if(session('success_password'))
-            <div class="mb-4 flex items-center gap-2 text-sm text-green-500">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {{ session('success_password') }}
-            </div>
-        @endif
-
-        <form action="{{ route('superadmin.settings.password') }}" method="POST" class="space-y-5">
-            @csrf
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">Contraseña actual</label>
-                <input type="password" name="current_password" required
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors @error('current_password') border-red-400 @enderror">
-                @error('current_password') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">Nueva contraseña</label>
-                <input type="password" name="password" required minlength="8"
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors @error('password') border-red-400 @enderror">
-                @error('password') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">Confirmar nueva contraseña</label>
-                <input type="password" name="password_confirmation" required minlength="8"
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors">
-            </div>
-            <button type="submit"
-                    class="px-5 py-2 text-sm font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
-                Actualizar contraseña
-            </button>
-        </form>
-    </div>
-
-    <div class="border-t border-gray-100 dark:border-gray-900 mb-10"></div>
-
-    <!-- Configuración de Empresa -->
-    <div>
-        <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Configuración de Empresa</p>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mb-4">Formatos recomendados: PNG, JPG o WebP</p>
-
-        @if(session('success_company'))
-            <div class="mb-4 flex items-center gap-2 text-sm text-green-500">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {{ session('success_company') }}
-            </div>
-        @endif
-
-        <form action="{{ route('superadmin.settings.company') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-            @csrf
-
-            <!-- Logo -->
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">Logo de la empresa</label>
-                <div class="flex items-center gap-4">
-                    @if($company_logo)
-                        <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-                            <img src="{{ Storage::url($company_logo) }}" alt="Logo" class="w-full h-full object-contain">
-                        </div>
-                    @endif
-                    <input type="file" name="company_logo" accept="image/png,image/jpeg,image-webp"
-                           class="text-sm text-gray-500 dark:text-gray-400
-                                  file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0
-                                  file:text-xs file:font-semibold file:bg-gray-900 file:text-white
-                                  dark:file:bg-white dark:file:text-black file:transition-colors
-                                  hover:file:bg-gray-700 hover:dark:file:bg-gray-100">
+        <!-- Perfil -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="text-gray-900 dark:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
                 </div>
-                @error('company_logo') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <!-- Firma -->
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">Firma de la empresa</label>
-                <div class="flex items-center gap-4">
-                    @if($company_signature)
-                        <div class="w-24 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-                            <img src="{{ Storage::url($company_signature) }}" alt="Firma" class="w-full h-full object-contain">
-                        </div>
-                    @endif
-                    <input type="file" name="company_signature" accept="image/png,image/jpeg,image-webp"
-                           class="text-sm text-gray-500 dark:text-gray-400
-                                  file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0
-                                  file:text-xs file:font-semibold file:bg-gray-900 file:text-white
-                                  dark:file:bg-white dark:file:text-black file:transition-colors
-                                  hover:file:bg-gray-700 hover:dark:file:bg-gray-100">
+                <div>
+                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Perfil</h2>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">Información personal</p>
                 </div>
-                @error('company_signature') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <!-- RUC -->
-            <div>
-                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1.5">RUC de la empresa</label>
-                <input type="text" name="company_ruc" value="{{ old('company_ruc', $company_ruc) }}" maxlength="20"
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors @error('company_ruc') border-red-400 @enderror">
-                @error('company_ruc') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+            <div class="space-y-6">
+                @if(session('success_name'))
+                    <div class="flex items-center gap-2 text-xs text-green-500">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {{ session('success_name') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('superadmin.settings.name') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nombre completo</label>
+                        <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" required
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('name') border-red-400 @enderror">
+                        @error('name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <button type="submit"
+                            class="inline-flex items-center text-xs font-bold text-gray-900 dark:text-white hover:opacity-70 transition-opacity border-b-2 border-gray-900 dark:border-white pb-1">
+                        GUARDAR CAMBIOS
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Seguridad -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="text-gray-900 dark:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Seguridad</h2>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">Acceso a la cuenta</p>
+                </div>
             </div>
 
-            <button type="submit"
-                    class="px-5 py-2 text-sm font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
-                Guardar configuración
-            </button>
-        </form>
+            <div class="space-y-6">
+                @if(session('success_password'))
+                    <div class="flex items-center gap-2 text-xs text-green-500">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {{ session('success_password') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('superadmin.settings.password') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Contraseña actual</label>
+                        <input type="password" name="current_password" required
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('current_password') border-red-400 @enderror"
+                               placeholder="••••••••">
+                        @error('current_password') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nueva contraseña</label>
+                        <input type="password" name="password" required minlength="8"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('password') border-red-400 @enderror"
+                               placeholder="Mínimo 8 caracteres">
+                        @error('password') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Confirmar contraseña</label>
+                        <input type="password" name="password_confirmation" required
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700"
+                               placeholder="••••••••">
+                    </div>
+                    <button type="submit"
+                            class="inline-flex items-center text-xs font-bold text-gray-900 dark:text-white hover:opacity-70 transition-opacity border-b-2 border-gray-900 dark:border-white pb-1">
+                        ACTUALIZAR CONTRASEÑA
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Empresa -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="text-gray-900 dark:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Empresa</h2>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">Identidad corporativa</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                @if(session('success_company'))
+                    <div class="flex items-center gap-2 text-xs text-green-500">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        {{ session('success_company') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('superadmin.settings.company') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-3">Logo</label>
+                        <div class="flex items-center gap-6">
+                            <div class="relative group">
+                                @if($company_logo)
+                                    <img src="{{ Storage::url($company_logo) }}" alt="Logo" class="w-14 h-14 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                @else
+                                    <div class="w-14 h-14 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                            </div>
+                            <input type="file" name="company_logo" accept="image/png,image/jpeg,image-webp"
+                                   class="text-[10px] text-gray-400
+                                          file:mr-4 file:py-1 file:px-0 file:border-0
+                                          file:text-[10px] file:font-bold file:bg-transparent file:text-gray-900 dark:file:text-white
+                                          file:cursor-pointer hover:file:opacity-70">
+                        </div>
+                        @error('company_logo') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-3">Firma digital</label>
+                        <div class="flex items-center gap-6">
+                            <div class="relative group">
+                                @if($company_signature)
+                                    <img src="{{ Storage::url($company_signature) }}" alt="Firma" class="h-10 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                @else
+                                    <div class="h-10 w-24 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                            </div>
+                            <input type="file" name="company_signature" accept="image/png,image/jpeg,image-webp"
+                                   class="text-[10px] text-gray-400
+                                          file:mr-4 file:py-1 file:px-0 file:border-0
+                                          file:text-[10px] file:font-bold file:bg-transparent file:text-gray-900 dark:file:text-white
+                                          file:cursor-pointer hover:file:opacity-70">
+                        </div>
+                        @error('company_signature') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">RUC</label>
+                        <input type="text" name="company_ruc" value="{{ old('company_ruc', $company_ruc) }}" maxlength="20"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_ruc') border-red-400 @enderror"
+                               placeholder="12345678901">
+                        @error('company_ruc') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit"
+                                class="inline-flex items-center text-xs font-bold text-gray-900 dark:text-white hover:opacity-70 transition-opacity border-b-2 border-gray-900 dark:border-white pb-1">
+                            GUARDAR CONFIGURACIÓN
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
     </div>
-
 </div>
 @endsection
