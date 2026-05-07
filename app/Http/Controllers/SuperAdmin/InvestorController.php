@@ -13,7 +13,7 @@ class InvestorController extends Controller
     {
         $filter = $request->get('filter', 'pending');
 
-        $query = InvestorApplication::with('user')->orderBy('created_at', 'desc');
+        $query = InvestorApplication::with('user.documents')->orderBy('created_at', 'desc');
 
         if ($filter !== 'all') {
             $query->where('status', $filter);
