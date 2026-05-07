@@ -23,7 +23,7 @@
         .dark nav::-webkit-scrollbar-thumb:hover, .dark main::-webkit-scrollbar-thumb:hover, .dark body::-webkit-scrollbar-thumb:hover { background: #4b5563; }
     </style>
 </head>
-<body class="h-full bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200">
+<body class="h-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200">
 
 <!-- Mobile topbar -->
 <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
