@@ -18,12 +18,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Roboto', sans-serif; }
-        nav::-webkit-scrollbar { width: 4px; }
-        nav::-webkit-scrollbar-track { background: transparent; }
-        nav::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
-        .dark nav::-webkit-scrollbar-thumb { background: #374151; }
-        nav::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-        .dark nav::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+        nav::-webkit-scrollbar, main::-webkit-scrollbar, body::-webkit-scrollbar { width: 4px; }
+        nav::-webkit-scrollbar-track, main::-webkit-scrollbar-track, body::-webkit-scrollbar-track { background: transparent; }
+        nav::-webkit-scrollbar-thumb, main::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+        .dark nav::-webkit-scrollbar-thumb, .dark main::-webkit-scrollbar-thumb, .dark body::-webkit-scrollbar-thumb { background: #374151; }
+        nav::-webkit-scrollbar-thumb:hover, main::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .dark nav::-webkit-scrollbar-thumb:hover, .dark main::-webkit-scrollbar-thumb:hover, .dark body::-webkit-scrollbar-thumb:hover { background: #4b5563; }
     </style>
 </head>
 <body class="h-full bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200"
