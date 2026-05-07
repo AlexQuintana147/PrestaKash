@@ -79,12 +79,13 @@
 
     <!-- Cabecera de columnas (solo desktop) -->
     @if($filter !== 'blocked')
-    <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center" style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
+    <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center" style="grid-template-columns: 1fr 120px 130px 100px 100px 90px 24px;">
         <span>Usuario</span>
         <span class="text-center">DNI</span>
         <span class="text-center">Teléfono</span>
         <span class="text-center">Registro</span>
         <span class="text-center">Estado</span>
+        <span class="text-center">Referidor</span>
         <span></span>
     </div>
     @endif
@@ -138,7 +139,7 @@
     @php $status = $user->documents?->status @endphp
     <a href="{{ route('superadmin.users.show', $user) }}"
        class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
-       style="grid-template-columns: 1fr 120px 130px 100px 110px 24px;">
+       style="grid-template-columns: 1fr 120px 130px 100px 100px 90px 24px;">
 
         <div class="flex items-center gap-3 min-w-0">
             @php
@@ -178,6 +179,17 @@
             @else
                 <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700 flex-shrink-0"></span>
                 <span class="text-xs text-gray-600 dark:text-gray-400 hidden sm:inline">Sin docs</span>
+            @endif
+        </div>
+
+        <!-- Referido por -->
+        <div class="hidden md:flex items-center justify-center bg-yellow-50/50 dark:bg-yellow-900/10 h-full">
+            @if($user->referrer)
+                <span class="text-xs text-yellow-700 dark:text-yellow-400 font-medium" title="{{ $user->referrer->name }}">
+                    {{ $user->referrer->first_name }} {{ Str::substr($user->referrer->last_name, 0, 1) }}.
+                </span>
+            @else
+                <span class="text-xs text-gray-400">—</span>
             @endif
         </div>
 

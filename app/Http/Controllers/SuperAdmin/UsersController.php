@@ -23,7 +23,7 @@ class UsersController extends Controller
             $users = collect(); // no hay paginación para bloqueados por ahora
             $blockedUsers = BlockedUser::latest()->get();
         } else {
-            $query = User::with(['documents', 'role'])
+            $query = User::with(['documents', 'role', 'referrer'])
                 ->whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))
                 ->where('profile_completed', true);
 
