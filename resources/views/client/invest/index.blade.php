@@ -12,16 +12,19 @@
     </div>
 
     <!-- Hero Card -->
-    <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-3xl p-8 md:p-12 mb-12 shadow-sm">
+    <div class="mb-16">
         <div class="max-w-2xl">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
+            <h2 class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
                 Haz crecer tu patrimonio <span class="text-green-600 dark:text-green-400 text-nowrap">con seguridad.</span>
             </h2>
-            <p class="text-gray-500 dark:text-gray-400 text-base leading-relaxed mb-8">
+            <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg leading-relaxed mb-8">
                 Únete como inversor y financia préstamos evaluados bajo rigurosos estándares. Obtén rentabilidades superiores y genera ingresos pasivos mes a mes.
             </p>
-            <button class="bg-gray-900 dark:bg-white text-white dark:text-black px-8 py-3.5 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <button class="group flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-green-600 dark:hover:text-green-400 transition-colors">
                 Postularme como Inversor
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
             </button>
         </div>
     </div>
