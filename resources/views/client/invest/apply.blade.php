@@ -6,87 +6,97 @@
 <div class="min-h-screen px-5 md:px-10 py-8 max-w-3xl mx-auto">
 
     <!-- Header -->
-    <div class="mb-10">
-        <a href="{{ route('client.invertir') }}" class="inline-flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6">
+    <div class="mb-12">
+        <a href="{{ route('client.invertir') }}" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hover:text-gray-900 dark:hover:text-white transition-colors mb-8">
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
             </svg>
             Volver
         </a>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Formulario de Postulación</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Completa los siguientes datos para que nuestro equipo pueda evaluar tu perfil de inversor.</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">Postulación</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">Completa tu perfil para unirte a nuestra red de inversión.</p>
     </div>
 
     <form action="{{ route('client.invest.store') }}" method="POST" class="space-y-8">
         @csrf
 
-        <!-- Sección: Información Personal y Profesional -->
-        <div class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="phone" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Teléfono de contacto</label>
-                    <input type="text" name="phone" id="phone" value="{{ old('phone', auth()->user()->phone) }}" required
-                           class="w-full bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:text-white transition-all">
-                    @error('phone') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
-                    <label for="occupation" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Ocupación / Profesión</label>
-                    <input type="text" name="occupation" id="occupation" value="{{ old('occupation') }}" placeholder="Ej: Empresario, Ingeniero..." required
-                           class="w-full bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:text-white transition-all">
-                    @error('occupation') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                </div>
+        <!-- Sección: Información -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            
+            <div class="space-y-1">
+                <label for="phone" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Contacto</label>
+                <input type="text" name="phone" id="phone" value="{{ old('phone', auth()->user()->phone) }}" required
+                       placeholder="Tu número de teléfono"
+                       class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                @error('phone') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="intended_amount" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Monto aproximado a invertir (S/)</label>
-                    <input type="number" name="intended_amount" id="intended_amount" value="{{ old('intended_amount') }}" placeholder="Mínimo S/ 100" required
-                           class="w-full bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:text-white transition-all">
-                    @error('intended_amount') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
-                    <label for="source_of_funds" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Origen de los fondos</label>
+            <div class="space-y-1">
+                <label for="occupation" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Ocupación</label>
+                <input type="text" name="occupation" id="occupation" value="{{ old('occupation') }}" required
+                       placeholder="Ej: Empresario, Ingeniero..."
+                       class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                @error('occupation') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="space-y-1">
+                <label for="intended_amount" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Monto Estimado (S/)</label>
+                <input type="number" name="intended_amount" id="intended_amount" value="{{ old('intended_amount') }}" required
+                       placeholder="Mínimo S/ 100"
+                       class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                @error('intended_amount') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="space-y-1">
+                <label for="source_of_funds" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Origen de Fondos</label>
+                <div class="relative">
                     <select name="source_of_funds" id="source_of_funds" required
-                            class="w-full bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:text-white transition-all appearance-none">
-                        <option value="">Selecciona una opción</option>
+                            class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all appearance-none cursor-pointer">
+                        <option value="" disabled selected>Selecciona una opción</option>
                         <option value="Ahorros personales">Ahorros personales</option>
                         <option value="Ganancias de negocio">Ganancias de negocio</option>
                         <option value="Venta de activos">Venta de activos</option>
                         <option value="Herencia">Herencia</option>
                         <option value="Otros">Otros</option>
                     </select>
-                    @error('source_of_funds') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
                 </div>
-            </div>
-
-            <div>
-                <label for="preferred_term" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Plazo preferido de inversión</label>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    @foreach(['3 meses', '6 meses', '12 meses', 'Indefinido'] as $term)
-                        <label class="relative flex items-center justify-center p-4 border border-gray-100 dark:border-gray-900 rounded-2xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-all group">
-                            <input type="radio" name="preferred_term" value="{{ $term }}" class="sr-only peer" required {{ old('preferred_term') == $term ? 'checked' : '' }}>
-                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-colors">{{ $term }}</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-green-500/50 rounded-2xl pointer-events-none transition-all"></div>
-                        </label>
-                    @endforeach
-                </div>
-                @error('preferred_term') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label for="experience" class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Experiencia previa en inversiones (Opcional)</label>
-                <textarea name="experience" id="experience" rows="4" placeholder="Cuéntanos brevemente si has invertido antes..."
-                          class="w-full bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:text-white transition-all resize-none">{{ old('experience') }}</textarea>
-                @error('experience') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                @error('source_of_funds') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
             </div>
         </div>
 
-        <div class="pt-6 border-t border-gray-100 dark:border-gray-900">
-            <button type="submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-black font-bold py-4 rounded-2xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-gray-900/10 dark:shadow-none">
-                Enviar Solicitud de Inversor
+        <div class="space-y-3">
+            <label class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Plazo de Inversión</label>
+            <div class="flex flex-wrap gap-6">
+                @foreach(['3 meses', '6 meses', '12 meses', 'Indefinido'] as $term)
+                    <label class="relative group cursor-pointer">
+                        <input type="radio" name="preferred_term" value="{{ $term }}" class="sr-only peer" required {{ old('preferred_term') == $term ? 'checked' : '' }}>
+                        <div class="text-[11px] font-bold text-gray-300 dark:text-gray-700 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all duration-300">
+                            {{ $term }}
+                        </div>
+                        <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-600 dark:bg-green-400 peer-checked:w-full transition-all duration-300"></div>
+                    </label>
+                @endforeach
+            </div>
+            @error('preferred_term') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
+        </div>
+
+        <div class="space-y-1">
+            <label for="experience" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Experiencia (Opcional)</label>
+            <textarea name="experience" id="experience" rows="2" placeholder="Cuéntanos sobre tus inversiones previas..."
+                      class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all resize-none placeholder:text-gray-200 dark:placeholder:text-gray-800">{{ old('experience') }}</textarea>
+            @error('experience') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
+        </div>
+
+        <div class="pt-4 flex flex-col items-start">
+            <button type="submit" class="group relative py-2 text-sm font-bold text-gray-900 dark:text-white transition-all">
+                Enviar Solicitud
+                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-900 dark:bg-white transform scale-x-100 group-hover:bg-green-600 dark:group-hover:bg-green-400 transition-colors"></div>
             </button>
-            <p class="text-[10px] text-center text-gray-400 dark:text-gray-600 mt-4 uppercase tracking-widest">
-                Al enviar, confirmas que la información proporcionada es verídica.
+            <p class="text-[9px] text-gray-400 dark:text-gray-600 mt-4 uppercase tracking-[0.2em] font-medium">
+                La información será tratada con confidencialidad.
             </p>
         </div>
     </form>
