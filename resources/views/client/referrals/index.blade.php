@@ -62,7 +62,26 @@
                                 <p class="text-xs text-gray-400 dark:text-gray-500">{{ $referral->email }}</p>
                             </div>
                         </div>
-                        <span class="text-xs text-gray-400 dark:text-gray-600">{{ $referral->created_at->diffForHumans() }}</span>
+                        <div class="flex items-center gap-2">
+                            @if($referral->referralStatus['color'] === 'green')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    {{ $referral->referralStatus['label'] }}
+                                </span>
+                            @elseif($referral->referralStatus['color'] === 'yellow')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                    {{ $referral->referralStatus['label'] }}
+                                </span>
+                            @elseif($referral->referralStatus['color'] === 'red')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                    {{ $referral->referralStatus['label'] }}
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                                    {{ $referral->referralStatus['label'] }}
+                                </span>
+                            @endif
+                            <span class="text-[10px] text-gray-400 dark:text-gray-600">{{ $referral->created_at->diffForHumans() }}</span>
+                        </div>
                     </div>
                 @endforeach
             </div>

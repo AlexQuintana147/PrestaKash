@@ -10,7 +10,7 @@ class ReferralController extends Controller
 {
     public function index()
     {
-        $user = Auth::user()->load('referrals');
+        $user = Auth::user()->load('referrals.documents');
 
         if (!$user->referral_code) {
             $user->referral_code = User::generateReferralCode();

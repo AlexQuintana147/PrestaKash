@@ -93,6 +93,32 @@ class User extends Authenticatable
         return $this->hasMany(Referral::class, 'referrer_id');
     }
 
+    public function getReferralStatusAttribute(): array
+    {
+        if ($this->blocked()) {
+            return ['label' => 'Bloqueado', 'color' => 'red'];
+        }
+
+        if ($this->documents?->status === 'rejected') {
+            return ['label' => 'Rechazado', 'color' => 'red'];
+        }
+
+        if ($this->profile_completed && $this->documents?->status === 'approved') {
+            return ['label' => 'Aceptado', 'color' => 'green'];
+        }
+
+        if ($this->documents?->status === 'pending' || ($this->profile_completed && !$this->documents)) {
+            return ['label' => 'Pendiente', 'color' => 'yellow'];
+        }
+
+        return ['label' => 'En proceso', 'color' => 'gray'];
+    }
+
+    public function blocked()
+    {
+        return BlockedUser::where('email', $this->email)->exists();
+    }
+
     public static function generateReferralCode(): string
     {
         return strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
