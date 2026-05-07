@@ -91,9 +91,9 @@
         </div>
 
         <div class="pt-4 flex flex-col items-start">
-            <button type="submit" class="group relative py-2 text-sm font-bold text-gray-900 dark:text-white transition-all">
+            <button type="submit" class="group relative py-2 text-sm font-bold text-gray-900 dark:text-white transition-all hover:text-green-600 dark:hover:text-green-400">
                 Enviar Solicitud
-                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-900 dark:bg-white transform scale-x-100 group-hover:bg-green-600 dark:group-hover:bg-green-400 transition-colors"></div>
+                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gray-900 dark:bg-white group-hover:bg-green-600 dark:group-hover:bg-green-400 transition-colors"></div>
             </button>
             <p class="text-[9px] text-gray-400 dark:text-gray-600 mt-4 uppercase tracking-[0.2em] font-medium">
                 La información será tratada con confidencialidad.
