@@ -33,6 +33,7 @@ class LoanController extends Controller
     {
         $request->validate([
             'amount'         => 'required|numeric|min:100',
+            'currency'       => 'required|in:PEN,USD',
             'months'         => 'required|integer|min:1|max:24',
             'type'           => 'required|in:cuotas,unico',
             'reason'         => 'required|string|min:10|max:1000',
@@ -62,6 +63,7 @@ class LoanController extends Controller
         Loan::create([
             'user_id'         => Auth::id(),
             'amount'          => $montoSolicitado,
+            'currency'        => $request->currency,
             'months'          => $plazo,
             'interest_rate'   => 20.00,
             'technology_fee'  => $tarifaTecnologia,
