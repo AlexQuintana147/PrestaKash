@@ -137,7 +137,7 @@
             </div>
 
             <!-- Columna derecha -->
-            <div>
+            <div class="mt-8 md:mt-0">
                 <p class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">Situación social</p>
                 <div class="space-y-4">
 
