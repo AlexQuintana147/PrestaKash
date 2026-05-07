@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClientProfile;
+use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,52 @@ class LoanController extends Controller
             return view('client.loans.profile-form');
         }
 
-        return view('client.loans.index', compact('profile'));
+        $loans   = $user->loans()->latest()->get();
+        return view('client.loans.index', compact('profile', 'loans'));
+    }
+
+    public function create()
+    {
+        return view('client.loans.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:200|max:500',
+            'months' => 'required|integer|min:1|max:6',
+            'type'   => 'required|in:cuotas,unico',
+        ]);
+
+        $montoSolicitado = $request->amount;
+        $plazo = $request->months;
+        $tipo = $request->type;
+
+        // Lógica de simulación (20%)
+        $tasaInteres = 0.20;
+        $interes = $montoSolicitado * $tasaInteres;
+
+        $tarifaTecnologia = $montoSolicitado * 0.10;
+        $igv = $tarifaTecnologia * 0.18;
+        $importeTotalMonto = $tarifaTecnologia + $igv;
+
+        $totalAPagar = $montoSolicitado + $interes + $importeTotalMonto;
+        $cuotaMensual = $totalAPagar / $plazo;
+
+        Loan::create([
+            'user_id'         => Auth::id(),
+            'amount'          => $montoSolicitado,
+            'months'          => $plazo,
+            'interest_rate'   => 20.00,
+            'technology_fee'  => $tarifaTecnologia,
+            'igv'             => $igv,
+            'total_amount'    => $totalAPagar,
+            'monthly_payment' => $cuotaMensual,
+            'status'          => 'pending',
+            'type'            => $tipo,
+        ]);
+
+        return redirect()->route('client.loans')->with('success', 'Tu solicitud de préstamo ha sido recibida y está en proceso de revisión.');
     }
 
     public function editProfile()

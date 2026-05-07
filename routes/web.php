@@ -81,6 +81,8 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
 Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/prestamos',              [\App\Http\Controllers\Client\LoanController::class, 'index'])->name('loans');
+    Route::get('/prestamos/pedir',        [\App\Http\Controllers\Client\LoanController::class, 'create'])->name('loans.create');
+    Route::post('/prestamos/pedir',       [\App\Http\Controllers\Client\LoanController::class, 'store'])->name('loans.store');
     Route::post('/prestamos/perfil',      [\App\Http\Controllers\Client\LoanController::class, 'storeProfile'])->name('loans.profile.store');
     Route::get('/prestamos/perfil/editar',[\App\Http\Controllers\Client\LoanController::class, 'editProfile'])->name('loans.profile.edit');
     Route::put('/prestamos/perfil',       [\App\Http\Controllers\Client\LoanController::class, 'updateProfile'])->name('loans.profile.update');

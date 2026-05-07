@@ -61,13 +61,13 @@
                         </g>
                     </g>
                 </svg>
-                <span class="text-xs text-gray-400 dark:text-gray-600">Pronto</span>
+                <span class="text-xs text-green-500 font-bold">Nuevo</span>
             </div>
             <div>
                 <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1.5">Pedir un préstamo</h2>
                 <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Solicita financiamiento rápido y seguro. Elige el monto y plazo que mejor se adapte a ti.</p>
             </div>
-            <button disabled class="self-start text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed">Disponible pronto</button>
+            <a href="{{ route('client.loans.create') }}" class="self-start text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all">Solicitar ahora</a>
         </div>
 
         <!-- Historial crediticio -->
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Perfil -->
-    <div>
+    <div class="mb-12">
         <div class="flex items-center justify-between mb-6">
             <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest">Tu perfil de préstamos</p>
             <a href="{{ route('client.loans.profile.edit') }}"
@@ -118,6 +118,53 @@
             </div>
             @endforeach
         </div>
+    </div>
+
+    <!-- Historial de préstamos -->
+    <div>
+        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-6">Tus solicitudes recientes</p>
+        
+        @if($loans->isEmpty())
+            <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-10 text-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Aún no has solicitado ningún préstamo.</p>
+                <a href="{{ route('client.loans.create') }}" class="inline-block mt-4 text-xs font-bold text-green-600 dark:text-green-400 hover:underline">Solicita el primero aquí</a>
+            </div>
+        @else
+            <div class="grid grid-cols-1 gap-4">
+                @foreach($loans as $loan)
+                    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-950 flex items-center justify-center text-green-600 dark:text-green-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-gray-900 dark:text-white">S/ {{ number_format($loan->amount, 2) }}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $loan->months }} {{ $loan->months > 1 ? 'meses' : 'mes' }} — {{ ucfirst($loan->type) }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col md:items-end gap-1">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                                {{ $loan->status === 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : '' }}
+                                {{ $loan->status === 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : '' }}
+                                {{ $loan->status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : '' }}
+                                {{ $loan->status === 'paid' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : '' }}">
+                                {{ match($loan->status) {
+                                    'approved' => 'Aprobado',
+                                    'pending'  => 'En revisión',
+                                    'rejected' => 'Rechazado',
+                                    'paid'     => 'Pagado',
+                                    default    => $loan->status
+                                } }}
+                            </span>
+                            <p class="text-[10px] text-gray-500 dark:text-gray-400">{{ $loan->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 
 </div>
