@@ -42,11 +42,12 @@ Route::get('/validation-pending', function () {
 Route::get('/auth/google',          [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 
-// Referral link
-Route::get('/ref/{code}', [\App\Http\Controllers\Auth\ReferralController::class, 'handle'])->name('referral.handle');
+// Referral link - muestra página de registro
+Route::get('/ref/{code}', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterReferral'])->name('referral.handle');
 
 // Auth manual
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'login'])->name('login.post');
+Route::get('/registro', [\App\Http\Controllers\Auth\AuthController::class, 'showRegister'])->name('register.show');
 Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->name('register');
 Route::post('/check-email', [\App\Http\Controllers\Auth\AuthController::class, 'checkEmail'])->name('check.email');
 

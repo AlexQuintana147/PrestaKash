@@ -16,6 +16,6 @@ class ReferralController extends Controller
             session(['referral_code' => $code]);
         }
 
-        return redirect()->route('login')->with('info', 'Has llegado con un código de referido.');
+        return redirect('/')->with('info', 'Has llegado con un código de referido.');
     }
 }

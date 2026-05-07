@@ -88,6 +88,11 @@ class User extends Authenticatable
         return $this->hasMany(User::class, 'referred_by');
     }
 
+    public function referralRecords()
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
     public static function generateReferralCode(): string
     {
         return strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlockedUser;
+use App\Models\Referral;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,23 +62,57 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Verificar si está bloqueado
         if (BlockedUser::where('email', $request->email)->exists()) {
             return back()->withErrors(['email' => 'Este correo no puede ser usado para registrarse.'])->withInput();
+        }
+
+        $referredBy = null;
+        if ($request->referred_by_code) {
+            $referrer = User::where('referral_code', $request->referred_by_code)->first();
+            if ($referrer) {
+                $referredBy = $referrer->id;
+            }
         }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 2, // Trabajador por defecto
+            'role_id' => 2,
             'profile_completed' => false,
             'step1_completed' => false,
+            'referred_by' => $referredBy,
+            'referral_code' => User::generateReferralCode(),
         ]);
+
+        if ($referredBy) {
+            Referral::create([
+                'referrer_id' => $referredBy,
+                'referred_id' => $user->id,
+                'referral_code' => $request->referred_by_code,
+                'status' => 'pending',
+            ]);
+        }
 
         Auth::login($user);
 
         return redirect()->route('onboarding.step1');
+    }
+
+    public function showRegisterReferral(string $code)
+    {
+        $referrer = User::where('referral_code', $code)->first();
+
+        if (!$referrer) {
+            return redirect('/')->with('error', 'Código de referido inválido.');
+        }
+
+        return view('auth.register-referral', ['referralCode' => $code]);
+    }
+
+    public function showRegister()
+    {
+        return view('auth.register-referral', ['referralCode' => null]);
     }
 
     public function checkEmail(Request $request)
