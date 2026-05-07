@@ -28,4 +28,9 @@ class DashboardController extends Controller
 
         return view('client.dashboard', compact('user', 'department', 'province', 'district'));
     }
+
+    public function invest()
+    {
+        return view('client.invest.index');
+    }
 }

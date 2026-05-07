@@ -93,6 +93,7 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/prestamos/perfil/editar',[\App\Http\Controllers\Client\LoanController::class, 'editProfile'])->name('loans.profile.edit');
     Route::put('/prestamos/perfil',       [\App\Http\Controllers\Client\LoanController::class, 'updateProfile'])->name('loans.profile.update');
     Route::get('/referidos',              [\App\Http\Controllers\Client\ReferralController::class, 'index'])->name('referidos');
+    Route::get('/invertir',               [\App\Http\Controllers\Client\DashboardController::class, 'invest'])->name('invertir');
 });
 Route::prefix('registro-maestro/{token}')->name('superadmin.register.')->group(function () {
     Route::get('/',         [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'show'])->name('show');
