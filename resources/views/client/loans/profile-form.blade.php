@@ -82,7 +82,7 @@
 
     <div class="mb-6">
         <p class="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
-        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Completa tu perfil</h1>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white">{{ isset($editing) ? 'Editar perfil' : 'Completa tu perfil' }}</h1>
         <p class="text-xs text-gray-500 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
     </div>
 
@@ -94,8 +94,9 @@
     </div>
     @endif
 
-    <form action="{{ route('client.loans.profile.store') }}" method="POST">
+    <form action="{{ isset($editing) ? route('client.loans.profile.update') : route('client.loans.profile.store') }}" method="POST">
         @csrf
+        @if(isset($editing)) @method('PUT') @endif
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-0">
 
@@ -106,13 +107,13 @@
 
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
-                        <input type="text" name="institution" value="{{ old('institution') }}" required placeholder="Ej: UNMSM"
+                        <input type="text" name="institution" value="{{ old('institution', $profile->institution ?? '') }}" required placeholder="Ej: UNMSM"
                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
 
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
-                        <input type="text" name="career" value="{{ old('career') }}" required placeholder="Ej: Ingeniería de Sistemas"
+                        <input type="text" name="career" value="{{ old('career', $profile->career ?? '') }}" required placeholder="Ej: Ingeniería de Sistemas"
                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
 
@@ -184,7 +185,7 @@
 
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Instagram <span class="text-gray-300 dark:text-gray-600">(opcional)</span></label>
-                        <input type="text" name="instagram" value="{{ old('instagram') }}" placeholder="@usuario"
+                        <input type="text" name="instagram" value="{{ old('instagram', $profile->instagram ?? '') }}" placeholder="@usuario"
                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
 
@@ -207,12 +208,12 @@
                     <div id="spouseFields" class="{{ old('marital_status') === 'casado_compartido' ? '' : 'hidden' }} grid grid-cols-2 gap-3 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">Nombre del cónyuge</label>
-                            <input type="text" name="spouse_name" value="{{ old('spouse_name') }}" placeholder="Nombres y apellidos"
+                            <input type="text" name="spouse_name" value="{{ old('spouse_name', $profile->spouse_name ?? '') }}" placeholder="Nombres y apellidos"
                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
-                            <input type="text" name="spouse_dni" value="{{ old('spouse_dni') }}" placeholder="12345678" maxlength="8"
+                            <input type="text" name="spouse_dni" value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678" maxlength="8"
                                    oninput="this.value=this.value.replace(/\D/g,'')"
                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                         </div>

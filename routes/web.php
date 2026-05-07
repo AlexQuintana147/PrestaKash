@@ -80,8 +80,10 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
 // Panel Cliente (usuarios aprobados)
 Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/prestamos',         [\App\Http\Controllers\Client\LoanController::class, 'index'])->name('loans');
-    Route::post('/prestamos/perfil', [\App\Http\Controllers\Client\LoanController::class, 'storeProfile'])->name('loans.profile.store');
+    Route::get('/prestamos',              [\App\Http\Controllers\Client\LoanController::class, 'index'])->name('loans');
+    Route::post('/prestamos/perfil',      [\App\Http\Controllers\Client\LoanController::class, 'storeProfile'])->name('loans.profile.store');
+    Route::get('/prestamos/perfil/editar',[\App\Http\Controllers\Client\LoanController::class, 'editProfile'])->name('loans.profile.edit');
+    Route::put('/prestamos/perfil',       [\App\Http\Controllers\Client\LoanController::class, 'updateProfile'])->name('loans.profile.update');
 });
 Route::prefix('registro-maestro/{token}')->name('superadmin.register.')->group(function () {
     Route::get('/',         [\App\Http\Controllers\Auth\SuperAdminRegisterController::class, 'show'])->name('show');

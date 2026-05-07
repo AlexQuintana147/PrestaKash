@@ -22,6 +22,41 @@ class LoanController extends Controller
         return view('client.loans.index', compact('profile'));
     }
 
+    public function editProfile()
+    {
+        $profile = Auth::user()->clientProfile;
+        return view('client.loans.profile-form', ['editing' => true, 'profile' => $profile]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'institution'     => 'required|string|max:200',
+            'career'          => 'required|string|max:200',
+            'academic_status' => 'required|string',
+            'has_children'    => 'required|boolean',
+            'instagram'       => 'nullable|string|max:100',
+            'is_employed'     => 'required|boolean',
+            'marital_status'  => 'required|in:soltero,casado_separado,casado_compartido',
+            'spouse_name'     => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
+            'spouse_dni'      => 'required_if:marital_status,casado_compartido|nullable|digits:8',
+        ]);
+
+        Auth::user()->clientProfile->update([
+            'institution'     => $request->institution,
+            'career'          => $request->career,
+            'academic_status' => $request->academic_status,
+            'has_children'    => $request->has_children,
+            'instagram'       => $request->instagram,
+            'is_employed'     => $request->is_employed,
+            'marital_status'  => $request->marital_status,
+            'spouse_name'     => $request->marital_status === 'casado_compartido' ? $request->spouse_name : null,
+            'spouse_dni'      => $request->marital_status === 'casado_compartido' ? $request->spouse_dni : null,
+        ]);
+
+        return redirect()->route('client.loans')->with('success', 'Perfil actualizado correctamente.');
+    }
+
     public function storeProfile(Request $request)
     {
         $request->validate([
