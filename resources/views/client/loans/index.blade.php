@@ -21,7 +21,7 @@
     @endif
 
     <!-- Acciones principales -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200 dark:bg-white rounded-2xl overflow-hidden mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white-200 dark:bg-gray-900 rounded-2xl overflow-hidden mb-12">
 
         <!-- Pedir préstamo -->
         <div class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6">
@@ -61,7 +61,6 @@
                         </g>
                     </g>
                 </svg>
-                <span class="text-xs text-green-500 font-bold">Nuevo</span>
             </div>
             <div>
                 <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1.5">Pedir un préstamo</h2>
