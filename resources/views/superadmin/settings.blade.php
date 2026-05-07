@@ -134,51 +134,57 @@
                     @csrf
 
                     <div>
-                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-3">Logo</label>
-                        <div class="flex items-center gap-6">
-                            <div class="relative group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider">Logo de la empresa</label>
+                        <div class="flex flex-col gap-4">
+                            <label for="company_logo" class="relative group cursor-pointer w-32 h-32 border-2 border-dashed border-gray-100 dark:border-gray-800 flex items-center justify-center overflow-hidden hover:border-gray-300 dark:hover:border-gray-600 transition-all">
                                 @if($company_logo)
-                                    <img src="{{ Storage::url($company_logo) }}" id="logo-preview" alt="Logo" class="w-14 h-14 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <img src="{{ Storage::url($company_logo) }}" id="logo-preview" alt="Logo" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 @else
-                                    <div class="w-14 h-14 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center overflow-hidden">
-                                        <img id="logo-preview" class="hidden w-full h-full object-contain">
-                                        <svg id="logo-placeholder" class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
+                                    <img id="logo-preview" class="hidden w-full h-full object-contain">
+                                    <svg id="logo-placeholder" class="w-8 h-8 text-gray-200 dark:text-gray-700 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
                                 @endif
+                                <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <span class="text-[8px] font-bold text-gray-900 dark:text-white uppercase tracking-tighter bg-white/80 dark:bg-black/80 px-2 py-1">Seleccionar</span>
+                                </div>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <label for="company_logo" class="text-[10px] font-bold text-gray-900 dark:text-white cursor-pointer hover:opacity-70 border-b border-gray-900 dark:border-white pb-0.5 transition-all uppercase tracking-tighter">
+                                    Cambiar imagen
+                                </label>
+                                <input type="file" name="company_logo" id="company_logo" accept="image/png,image/jpeg,image-webp"
+                                       onchange="previewImage(this, 'logo-preview', 'logo-placeholder')"
+                                       class="hidden">
                             </div>
-                            <input type="file" name="company_logo" id="company_logo" accept="image/png,image/jpeg,image-webp"
-                                   onchange="previewImage(this, 'logo-preview', 'logo-placeholder')"
-                                   class="text-[10px] text-gray-400
-                                          file:mr-4 file:py-1 file:px-0 file:border-0
-                                          file:text-[10px] file:font-bold file:bg-transparent file:text-gray-900 dark:file:text-white
-                                          file:cursor-pointer hover:file:opacity-70">
                         </div>
                         @error('company_logo') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-3">Firma digital</label>
-                        <div class="flex items-center gap-6">
-                            <div class="relative group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider">Firma digital</label>
+                        <div class="flex flex-col gap-4">
+                            <label for="company_signature" class="relative group cursor-pointer w-48 h-20 border-2 border-dashed border-gray-100 dark:border-gray-800 flex items-center justify-center overflow-hidden hover:border-gray-300 dark:hover:border-gray-600 transition-all">
                                 @if($company_signature)
-                                    <img src="{{ Storage::url($company_signature) }}" id="signature-preview" alt="Firma" class="h-10 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <img src="{{ Storage::url($company_signature) }}" id="signature-preview" alt="Firma" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 @else
-                                    <div class="h-10 w-24 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center overflow-hidden">
-                                        <img id="signature-preview" class="hidden w-full h-full object-contain">
-                                        <svg id="signature-placeholder" class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                                        </svg>
-                                    </div>
+                                    <img id="signature-preview" class="hidden w-full h-full object-contain">
+                                    <svg id="signature-placeholder" class="w-8 h-8 text-gray-200 dark:text-gray-700 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                    </svg>
                                 @endif
+                                <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <span class="text-[8px] font-bold text-gray-900 dark:text-white uppercase tracking-tighter bg-white/80 dark:bg-black/80 px-2 py-1">Seleccionar</span>
+                                </div>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <label for="company_signature" class="text-[10px] font-bold text-gray-900 dark:text-white cursor-pointer hover:opacity-70 border-b border-gray-900 dark:border-white pb-0.5 transition-all uppercase tracking-tighter">
+                                    Cambiar firma
+                                </label>
+                                <input type="file" name="company_signature" id="company_signature" accept="image/png,image/jpeg,image-webp"
+                                       onchange="previewImage(this, 'signature-preview', 'signature-placeholder')"
+                                       class="hidden">
                             </div>
-                            <input type="file" name="company_signature" id="company_signature" accept="image/png,image/jpeg,image-webp"
-                                   onchange="previewImage(this, 'signature-preview', 'signature-placeholder')"
-                                   class="text-[10px] text-gray-400
-                                          file:mr-4 file:py-1 file:px-0 file:border-0
-                                          file:text-[10px] file:font-bold file:bg-transparent file:text-gray-900 dark:file:text-white
-                                          file:cursor-pointer hover:file:opacity-70">
                         </div>
                         @error('company_signature') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>

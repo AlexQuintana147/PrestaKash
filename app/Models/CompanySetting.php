@@ -8,6 +8,8 @@ class CompanySetting extends Model
 {
     protected $table = 'company_settings';
 
+    protected $fillable = ['key', 'value'];
+
     public static function get(string $key, $default = null)
     {
         $setting = static::where('key', $key)->first();
