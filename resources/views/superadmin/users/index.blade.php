@@ -183,13 +183,13 @@
         </div>
 
         <!-- Referido por -->
-        <div class="hidden md:flex items-center justify-center bg-yellow-50/50 dark:bg-yellow-900/10 h-full">
+        <div class="hidden md:flex items-center justify-center bg-gray-900 dark:bg-white h-full">
             @if($user->referrer)
-                <span class="text-xs text-yellow-700 dark:text-yellow-400 font-medium" title="{{ $user->referrer->name }}">
+                <span class="text-xs text-white dark:text-gray-900 font-medium" title="{{ $user->referrer->name }}">
                     {{ $user->referrer->first_name }} {{ Str::substr($user->referrer->last_name, 0, 1) }}.
                 </span>
             @else
-                <span class="text-xs text-gray-400">—</span>
+                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
             @endif
         </div>
 
