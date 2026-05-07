@@ -240,7 +240,7 @@
                         </div>
                         <div class="h-px bg-gray-100 dark:bg-gray-800 my-1"></div>
                         <div class="flex justify-between text-xs">
-                            <span class="text-amber-500 dark:text-amber-400">Comisión simulada (20%)</span>
+                            <span id="simInterestLabel" class="text-amber-500 dark:text-amber-400">Comisión simulada (20%)</span>
                             <span id="simInterest" class="text-amber-500 dark:text-amber-400 font-medium tabular-nums">S/ 0.00</span>
                         </div>
                     </div>
@@ -319,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const simMonths      = document.getElementById('simMonths');
     const simType        = document.getElementById('simType');
     const simInterest    = document.getElementById('simInterest');
+    const simInterestLabel = document.getElementById('simInterestLabel');
     const simTotal       = document.getElementById('simTotal');
     const simMonthly     = document.getElementById('simMonthly');
     const simMonthlyRow  = document.getElementById('simMonthlyRow');
@@ -346,6 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
             total = a + interest;
             monthly = total / m;
             plazoText = m + (m === 1 ? ' mes' : ' meses');
+            simInterestLabel.textContent = 'Comisión simulada (20%)';
         } else {
             const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
             interestRate = days === 15 ? 0.10 : 0.15;
@@ -353,6 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
             total = a + interest;
             monthly = 0;
             plazoText = days + ' días';
+            simInterestLabel.textContent = 'Comisión simulada (' + (interestRate * 100) + '%)';
         }
 
         currencySymbol.textContent = s;
