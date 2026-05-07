@@ -8,10 +8,10 @@
     <!-- Header -->
     <div class="flex items-end justify-between mb-8">
         <div>
-            <p class="text-xs text-gray-400 dark:text-gray-400 uppercase tracking-widest mb-1">Panel</p>
+            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel</p>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Clientes</h1>
         </div>
-        <p class="hidden md:block text-sm text-gray-400 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
+        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
     </div>
 
     @if(session('success'))
@@ -64,7 +64,7 @@
                    class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
                           {{ $filter === $key
                               ? ($key === 'blocked' ? 'text-red-500' : 'text-gray-900 dark:text-white')
-                              : 'text-gray-400 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
                     {{ $label }}
                     @if($counts[$key] > 0)
                         <span class="ml-1.5 text-xs {{ $filter === $key ? ($key === 'blocked' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400') : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
@@ -105,13 +105,13 @@
 
         <div class="flex items-center gap-3 min-w-0">
             <div class="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                 </svg>
             </div>
             <div class="min-w-0">
                 <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $blocked->name }}</p>
-                <p class="text-xs text-gray-400 dark:text-gray-400 truncate">{{ $blocked->email }}</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $blocked->email }}</p>
                 @if($blocked->reason)
                     <p class="text-xs text-red-400 truncate mt-0.5">{{ $blocked->reason }}</p>
                 @endif
@@ -156,7 +156,7 @@
             </div>
             <div class="min-w-0">
                 <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $user->name }}</p>
-                <p class="text-xs text-gray-400 dark:text-gray-400 truncate">{{ $user->email }}</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
             </div>
         </div>
 
@@ -177,7 +177,7 @@
                 <span class="text-xs text-red-500 hidden sm:inline">Rechazado</span>
             @else
                 <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700 flex-shrink-0"></span>
-                <span class="text-xs text-gray-400 dark:text-gray-400 hidden sm:inline">Sin docs</span>
+                <span class="text-xs text-gray-600 dark:text-gray-400 hidden sm:inline">Sin docs</span>
             @endif
         </div>
 
@@ -196,7 +196,7 @@
 
     <!-- Paginación -->
     @if($filter !== 'blocked' && $users->hasPages())
-    <div class="mt-8 flex items-center justify-between text-xs text-gray-400 dark:text-gray-400">
+    <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
         <span>{{ $users->firstItem() }}–{{ $users->lastItem() }} de {{ $users->total() }}</span>
         <div class="flex items-center gap-5">
             @if($users->onFirstPage())

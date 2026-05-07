@@ -8,7 +8,7 @@
     <!-- Header -->
     <div class="flex items-center gap-3 mb-8">
         <a href="{{ route('superadmin.users.index') }}"
-           class="text-gray-400 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+           class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -17,7 +17,7 @@
              class="w-9 h-9 rounded-full object-cover bg-gray-200 dark:bg-gray-900 flex-shrink-0">
         <div class="min-w-0 flex-1">
             <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $user->name }}</h1>
-            <p class="text-xs text-gray-400 dark:text-gray-400 truncate">{{ $user->email }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
         </div>
 
         @if($user->documents)
@@ -58,7 +58,7 @@
         <div class="md:col-span-4 space-y-8">
 
             <div>
-                <p class="text-xs text-gray-400 dark:text-gray-400 uppercase tracking-widest mb-4">Datos personales</p>
+                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Datos personales</p>
                 <div class="space-y-3">
                     @foreach([
                         'Nombres'      => $user->first_name,
@@ -72,7 +72,7 @@
                         'Registro'     => $user->created_at->format('d/m/Y'),
                     ] as $label => $value)
                     <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-900 pb-3">
-                        <span class="text-xs text-gray-400 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
+                        <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
                         <span class="text-xs text-gray-900 dark:text-white text-right ml-4">{{ $value ?? '—' }}</span>
                     </div>
                     @endforeach
@@ -81,7 +81,7 @@
 
             @if($user->documents)
             <div>
-                <p class="text-xs text-gray-400 dark:text-gray-400 uppercase tracking-widest mb-4">Acciones</p>
+                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
 
                 @if($user->documents->status === 'rejected')
                 <div class="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 mb-3">
@@ -161,7 +161,7 @@
 
         <!-- Documentos -->
         <div class="md:col-span-8">
-            <p class="text-xs text-gray-400 dark:text-gray-400 uppercase tracking-widest mb-5">Documentos</p>
+            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Documentos</p>
 
             @if($user->documents)
             <div class="grid grid-cols-2 gap-3 md:gap-5">
@@ -172,7 +172,7 @@
                     'DNI — Posterior'     => $user->documents->dni_back,
                 ] as $label => $path)
                 <div>
-                    <p class="text-xs text-gray-400 dark:text-gray-400 mb-2">{{ $label }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $label }}</p>
                     @if($path)
                         <button onclick="openLightbox('{{ Storage::url($path) }}', '{{ $label }}')" class="block w-full group text-left">
                             <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900" style="aspect-ratio: 4/3;">
