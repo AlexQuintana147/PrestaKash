@@ -3,106 +3,135 @@
 @section('title', 'Solicitar Préstamo')
 
 @section('content')
-<div class="min-h-screen px-5 md:px-10 py-8">
-    <!-- Header -->
-    <div class="mb-12">
-        <a href="{{ route('client.loans') }}" class="text-xs text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-4 inline-block">← Volver</a>
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Solicitar nuevo préstamo</h1>
+<div class="min-h-screen px-6 md:px-12 py-12 bg-gray-50 dark:bg-gray-950 transition-colors duration-500">
+    
+    <!-- Navigation & Header -->
+    <div class="max-w-5xl mx-auto mb-16">
+        <a href="{{ route('client.loans') }}" class="group flex items-center gap-2 text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-all mb-8">
+            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Volver al panel
+        </a>
+        
+        <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
+            Solicitud de <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-400">Financiamiento</span>
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed">
+            Personaliza tu préstamo de manera flexible. Sin límites de monto y con plazos de hasta 24 meses diseñados para tu comodidad.
+        </p>
     </div>
 
-    <div class="max-w-4xl mx-auto">
-        <form action="{{ route('client.loans.store') }}" method="POST" id="loanForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="max-w-5xl mx-auto">
+        <form action="{{ route('client.loans.store') }}" method="POST" id="loanForm" class="grid lg:grid-cols-5 gap-12 items-start">
             @csrf
-            <!-- Columna Izquierda: Configuración -->
-            <div class="space-y-8">
-                <!-- Tipo de Pago -->
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-colors">
-                    <label class="text-sm font-semibold text-gray-900 dark:text-white block mb-4">Modalidad de pago</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="btnCuotas" onclick="setTipo('cuotas')" class="py-2.5 px-4 rounded-xl text-sm font-bold transition-all border-2 border-green-500 bg-green-500 text-white shadow-lg shadow-green-500/20">
-                            Pago a Cuotas
-                        </button>
-                        <button type="button" id="btnUnico" onclick="setTipo('unico')" class="py-2.5 px-4 rounded-xl text-sm font-bold transition-all border-2 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700">
-                            Pago Único
-                        </button>
-                    </div>
-                    <input type="hidden" name="type" id="typeInput" value="cuotas">
-                </div>
-
+            
+            <!-- Configurador (Izquierda) -->
+            <div class="lg:col-span-3 space-y-12">
+                
                 <!-- Monto -->
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-colors">
-                    <div class="flex justify-between items-baseline mb-4">
-                        <label class="text-sm font-semibold text-gray-900 dark:text-white">¿Cuánto necesitas?</label>
-                        <span id="montoDisplay" class="text-xl font-bold text-green-600 dark:text-green-400 tabular-nums">S/ 500.00</span>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <label class="text-xs uppercase tracking-widest font-black text-gray-400 dark:text-gray-500">¿Cuánto necesitas?</label>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">S/</span>
+                            <input type="number" name="amount" id="amountInput" value="1000" min="100" step="100"
+                                   class="bg-transparent border-none p-0 text-4xl font-black text-green-600 dark:text-green-400 focus:ring-0 w-40 tabular-nums">
+                        </div>
                     </div>
-                    <input type="range" name="amount" id="montoSlider" min="200" max="500" step="10" value="500" 
-                           class="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer accent-green-500">
-                    <div class="flex justify-between text-xs text-gray-500 mt-3 font-medium">
-                        <span>S/ 200</span>
-                        <span>S/ 500</span>
-                    </div>
+                    <div class="h-px bg-gray-200 dark:bg-gray-800 w-full"></div>
+                    <p class="text-[10px] text-gray-400">Ingresa el monto exacto que requieres. Sin límites mínimos restrictivos.</p>
                 </div>
 
                 <!-- Plazo -->
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-colors">
-                    <label class="text-sm font-semibold text-gray-900 dark:text-white block mb-4">Plazo de pago (Meses)</label>
-                    <div id="plazoButtons" class="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                        <!-- Generado por JS -->
+                <div class="space-y-6">
+                    <label class="text-xs uppercase tracking-widest font-black text-gray-400 dark:text-gray-500 block">Plazo de pago (Meses)</label>
+                    <div class="relative pt-2">
+                        <input type="range" id="monthsSlider" min="1" max="24" value="12" 
+                               class="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer accent-green-500 transition-all">
+                        <div class="flex justify-between mt-4 text-[10px] font-bold text-gray-400 dark:text-gray-600 uppercase tracking-tighter">
+                            <span>1 Mes</span>
+                            <span>12 Meses</span>
+                            <span>24 Meses</span>
+                        </div>
                     </div>
-                    <input type="hidden" name="months" id="monthsInput" value="3">
-                    <p class="text-[10px] text-gray-500 mt-4 leading-relaxed italic">
-                        * Puedes elegir pagar el total en 1 solo mes o dividirlo en hasta 6 cuotas mensuales.
-                    </p>
+                    <div class="flex items-center gap-4 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-4 rounded-2xl w-fit shadow-sm">
+                        <span class="text-xs font-bold text-gray-500">Seleccionado</span>
+                        <span id="monthsDisplay" class="text-2xl font-black text-gray-900 dark:text-white tabular-nums">12 meses</span>
+                        <input type="hidden" name="months" id="monthsHidden" value="12">
+                    </div>
+                </div>
+
+                <!-- Motivo -->
+                <div class="space-y-6">
+                    <label class="text-xs uppercase tracking-widest font-black text-gray-400 dark:text-gray-500 block">¿Para qué usarás el dinero?</label>
+                    <textarea name="reason" id="reason" rows="3" required minlength="10"
+                              placeholder="Ej: Inversión en estudios, capital de trabajo, emergencia médica..."
+                              class="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all resize-none shadow-sm"></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <div class="flex items-center gap-2 p-4 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/20 rounded-2xl">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-[11px] text-blue-600 dark:text-blue-400 leading-tight">
+                            Tu solicitud será evaluada en base a tu perfil crediticio y capacidad de pago informada.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Columna Derecha: Resumen -->
-            <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-colors h-fit lg:sticky lg:top-8">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Resumen de solicitud</h3>
-                
-                <div class="space-y-4 text-sm">
-                    <div class="flex justify-between text-gray-600 dark:text-gray-400">
-                        <span>Monto solicitado</span>
-                        <span id="resumenMonto" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
-                    </div>
-                    <div class="flex justify-between text-gray-600 dark:text-gray-400">
-                        <span>Interés estimado (20%)</span>
-                        <span id="resumenInteres" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
-                    </div>
-                    <div class="flex justify-between text-gray-600 dark:text-gray-400">
-                        <span>Tarifa de tecnología</span>
-                        <span id="resumenTarifa" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
-                    </div>
-                    <div class="flex justify-between text-gray-600 dark:text-gray-400 border-b border-gray-50 dark:border-gray-800 pb-2">
-                        <span>IGV (18%)</span>
-                        <span id="resumenIgv" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
-                    </div>
+            <!-- Resumen & Acción (Derecha) -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-10 shadow-2xl shadow-gray-200/50 dark:shadow-none transition-all sticky top-12">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-8 flex items-center justify-between">
+                        Tu Simulación
+                        <span class="text-[10px] font-black uppercase tracking-widest bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400 px-2 py-1 rounded">Referencial</span>
+                    </h3>
 
-                    <div class="pt-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-900 dark:text-white font-bold">Total a pagar</span>
-                            <span id="resumenTotal" class="text-2xl font-black text-green-600 dark:text-green-400">S/ 0.00</span>
+                    <div class="space-y-5">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">Total Intereses (20%)</span>
+                            <span id="resumenInteres" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400">Cargos Operativos</span>
+                            <span id="resumenCargos" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm border-b border-gray-50 dark:border-gray-800 pb-5">
+                            <span class="text-gray-500 dark:text-gray-400">IGV sobre cargos</span>
+                            <span id="resumenIgv" class="font-bold text-gray-900 dark:text-white">S/ 0.00</span>
+                        </div>
+
+                        <div class="pt-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs uppercase tracking-widest font-black text-gray-400">Total a devolver</span>
+                                <span id="resumenTotal" class="text-3xl font-black text-green-600 dark:text-green-400 tabular-nums">S/ 0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-3xl border border-gray-100 dark:border-gray-800">
+                            <p class="text-[10px] uppercase font-black text-gray-400 dark:text-gray-500 mb-1">Pago mensual aprox.</p>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-3xl font-black text-gray-900 dark:text-white" id="resumenCuota">S/ 0.00</span>
+                                <span class="text-xs font-bold text-gray-500">/ mes</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="cuotaContainer" class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-900/30">
-                        <div class="flex justify-between items-center">
-                            <span class="text-green-800 dark:text-green-300 font-semibold text-xs">Cuota mensual aprox.</span>
-                            <span id="resumenCuota" class="text-lg font-bold text-green-700 dark:text-green-400">S/ 0.00</span>
-                        </div>
+                    <div class="mt-10 space-y-6">
+                        <input type="hidden" name="type" value="cuotas">
+                        <button type="submit" class="group relative w-full overflow-hidden bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]">
+                            <span class="relative z-10">Confirmar Préstamo</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </button>
+                        
+                        <p class="text-[9px] text-gray-400 dark:text-gray-600 text-center leading-relaxed">
+                            Al hacer clic en confirmar, aceptas que la tasa final puede variar tras el análisis de riesgo. 
+                            <span class="block mt-1 font-bold">SUJETO A EVALUACIÓN DE LA EMPRESA.</span>
+                        </p>
                     </div>
-                </div>
-
-                <div class="mt-8 space-y-4">
-                    <button type="submit" class="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold py-4 rounded-xl hover:opacity-90 transition-all shadow-xl shadow-gray-900/10 dark:shadow-none">
-                        Confirmar solicitud
-                    </button>
-                    
-                    <p class="text-[10px] text-gray-500 dark:text-gray-500 text-center leading-relaxed font-medium">
-                        El porcentaje de interés y cargos pueden variar según la evaluación interna de la empresa. <br>
-                        <span class="text-gray-700 dark:text-gray-300 uppercase tracking-tighter">Este simulador es referencial.</span>
-                    </p>
                 </div>
             </div>
         </form>
@@ -110,112 +139,77 @@
 </div>
 
 <script>
-    const montoSlider = document.getElementById('montoSlider');
-    const montoDisplay = document.getElementById('montoDisplay');
-    const typeInput   = document.getElementById('typeInput');
-    const monthsInput = document.getElementById('monthsInput');
-    const plazoButtons = document.getElementById('plazoButtons');
+    const amountInput  = document.getElementById('amountInput');
+    const monthsSlider = document.getElementById('monthsSlider');
+    const monthsDisplay = document.getElementById('monthsDisplay');
+    const monthsHidden  = document.getElementById('monthsHidden');
 
-    const resumenMonto   = document.getElementById('resumenMonto');
     const resumenInteres = document.getElementById('resumenInteres');
-    const resumenTarifa  = document.getElementById('resumenTarifa');
+    const resumenCargos  = document.getElementById('resumenCargos');
     const resumenIgv     = document.getElementById('resumenIgv');
     const resumenTotal   = document.getElementById('resumenTotal');
     const resumenCuota   = document.getElementById('resumenCuota');
-    const cuotaContainer = document.getElementById('cuotaContainer');
-
-    let currentTipo   = 'cuotas';
-    let currentMonths = 3;
 
     const fmt = n => 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    function setTipo(tipo) {
-        currentTipo = tipo;
-        typeInput.value = tipo;
-
-        const btnC = document.getElementById('btnCuotas');
-        const btnU = document.getElementById('btnUnico');
-
-        if (tipo === 'cuotas') {
-            btnC.className = 'py-2.5 px-4 rounded-xl text-sm font-bold transition-all border-2 border-green-500 bg-green-500 text-white shadow-lg shadow-green-500/20';
-            btnU.className = 'py-2.5 px-4 rounded-xl text-sm font-bold transition-all border-2 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700';
-            cuotaContainer.classList.remove('hidden');
-        } else {
-            btnU.className = 'py-2.5 px-4 rounded-xl text-sm font-bold transition-all border-2 border-green-500 bg-green-500 text-white shadow-lg shadow-green-500/20';
-            btnC.className = 'py-2.5 px-4 rounded-xl text-sm font-bold transition-all border-2 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700';
-            cuotaContainer.classList.add('hidden');
-            currentMonths = 1;
-            renderPlazo();
-        }
-        calcular();
-    }
-
-    function renderPlazo() {
-        plazoButtons.innerHTML = '';
-        const limit = currentTipo === 'unico' ? 1 : 6;
-        for (let i = 1; i <= limit; i++) {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.textContent = i + (i === 1 ? ' mes' : ' m');
-            btn.className = `py-2 rounded-lg text-xs font-bold transition-all border ${i === currentMonths ? 'bg-green-500 border-green-500 text-white shadow-md' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-green-400'}`;
-            btn.onclick = () => {
-                currentMonths = i;
-                monthsInput.value = i;
-                renderPlazo();
-                calcular();
-            };
-            plazoButtons.appendChild(btn);
-        }
-    }
-
     function calcular() {
-        const monto = parseFloat(montoSlider.value);
+        let monto = parseFloat(amountInput.value) || 0;
+        let meses = parseInt(monthsSlider.value);
+        
+        monthsDisplay.textContent = meses + (meses === 1 ? ' mes' : ' meses');
+        monthsHidden.value = meses;
+
+        if (monto <= 0) {
+            updateResumen(0, 0, 0, 0, 0);
+            return;
+        }
+
         const tasaInteres = 0.20;
         const interes = monto * tasaInteres;
 
         const tarifa = monto * 0.10;
         const igv = tarifa * 0.18;
-        const cargos = tarifa + igv;
+        const totalCargos = tarifa + igv;
 
-        const total = monto + interes + cargos;
-        const cuota = total / currentMonths;
+        const total = monto + interes + totalCargos;
+        const cuota = total / meses;
 
-        montoDisplay.textContent = fmt(monto);
-        resumenMonto.textContent = fmt(monto);
-        resumenInteres.textContent = fmt(interes);
-        resumenTarifa.textContent = fmt(tarifa);
-        resumenIgv.textContent = fmt(igv);
-        resumenTotal.textContent = fmt(total);
-        resumenCuota.textContent = fmt(cuota);
+        updateResumen(interes, tarifa, igv, total, cuota);
     }
 
-    montoSlider.addEventListener('input', calcular);
+    function updateResumen(interes, tarifa, igv, total, cuota) {
+        resumenInteres.textContent = fmt(interes);
+        resumenCargos.textContent   = fmt(tarifa);
+        resumenIgv.textContent      = fmt(igv);
+        resumenTotal.textContent    = fmt(total);
+        resumenCuota.textContent    = fmt(cuota);
+    }
+
+    amountInput.addEventListener('input', calcular);
+    monthsSlider.addEventListener('input', calcular);
 
     // Init
-    renderPlazo();
     calcular();
 </script>
 
 <style>
+    /* Slider minimalista */
     input[type=range]::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 18px;
-        height: 18px;
+        width: 24px;
+        height: 24px;
         background: #10b981;
         cursor: pointer;
         border-radius: 50%;
-        border: 3px solid white;
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        border: 4px solid white;
+        transition: transform 0.2s;
     }
     .dark input[type=range]::-webkit-slider-thumb {
         border-color: #000;
     }
-    input[type=range] {
-        background: #e5e7eb;
-    }
-    .dark input[type=range] {
-        background: #1f2937;
+    input[type=range]::-webkit-slider-thumb:hover {
+        transform: scale(1.15);
     }
 </style>
 @endsection

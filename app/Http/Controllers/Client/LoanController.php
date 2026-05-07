@@ -32,14 +32,16 @@ class LoanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'amount' => 'required|numeric|min:200|max:500',
-            'months' => 'required|integer|min:1|max:6',
+            'amount' => 'required|numeric|min:100',
+            'months' => 'required|integer|min:1|max:24',
             'type'   => 'required|in:cuotas,unico',
+            'reason' => 'required|string|min:10|max:1000',
         ]);
 
         $montoSolicitado = $request->amount;
         $plazo = $request->months;
         $tipo = $request->type;
+        $reason = $request->reason;
 
         // Lógica de simulación (20%)
         $tasaInteres = 0.20;
@@ -63,6 +65,7 @@ class LoanController extends Controller
             'monthly_payment' => $cuotaMensual,
             'status'          => 'pending',
             'type'            => $tipo,
+            'reason'          => $reason,
         ]);
 
         return redirect()->route('client.loans')->with('success', 'Tu solicitud de préstamo ha sido recibida y está en proceso de revisión.');

@@ -17,6 +17,7 @@ class Loan extends Model
         'monthly_payment',
         'status',
         'type',
+        'reason',
     ];
 
     public function user()
