@@ -58,17 +58,19 @@ class GoogleController extends Controller
             ]);
         }
 
-        if (session('referral_code') && !$user->referred_by) {
+        if (session('referral_code')) {
             $referrer = User::where('referral_code', session('referral_code'))->first();
             if ($referrer) {
-                $user->update(['referred_by' => $referrer->id]);
+                if ($user->wasRecentlyCreated && !$user->referred_by) {
+                    $user->update(['referred_by' => $referrer->id]);
 
-                Referral::create([
-                    'referrer_id' => $referrer->id,
-                    'referred_id' => $user->id,
-                    'referral_code' => session('referral_code'),
-                    'status' => 'pending',
-                ]);
+                    Referral::create([
+                        'referrer_id' => $referrer->id,
+                        'referred_id' => $user->id,
+                        'referral_code' => session('referral_code'),
+                        'status' => 'pending',
+                    ]);
+                }
             }
             session()->forget('referral_code');
         }
