@@ -85,79 +85,98 @@
         <!-- DNI Frontal -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">DNI — Parte frontal</label>
+            <input type="file" name="dni_front" id="input-dni-front" accept="image/*" class="hidden" onchange="handleFile(this,'front')">
 
-            <!-- Preview DNI frontal -->
             <div id="preview-dni-front" class="hidden mb-2">
                 <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
                     <img id="img-dni-front" class="w-full h-auto">
-                    <button type="button" onclick="changeImage('dni_front')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                    <button type="button" onclick="resetDni('front')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
                         Cambiar
                     </button>
                 </div>
             </div>
 
-            <label class="upload-zone" id="zone-dni-front">
-                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-gray-500" id="icon-dni-front" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                </div>
-                <div>
-                    <p class="text-sm text-white" id="text-dni-front">Seleccionar imagen</p>
-                    <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
-                </div>
-                <input type="file" name="dni_front" id="input-dni-front" accept="image/*" onchange="handleFile(this,'zone-dni-front','text-dni-front','icon-dni-front','preview-dni-front','img-dni-front')">
-            </label>
+            <div id="method-dni-front" class="flex gap-3">
+                <button type="button" onclick="document.getElementById('input-dni-front').click()" class="upload-zone flex-1 text-left">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-white">Subir imagen</p>
+                        <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP</p>
+                    </div>
+                </button>
+                <button type="button" onclick="openDniCamera('front')" class="upload-zone flex-1 text-left">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-white">Usar cámara</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Tomar foto ahora</p>
+                    </div>
+                </button>
+            </div>
         </div>
 
         <!-- DNI Trasera -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">DNI — Parte trasera</label>
+            <input type="file" name="dni_back" id="input-dni-back" accept="image/*" class="hidden" onchange="handleFile(this,'back')">
 
-            <!-- Preview DNI trasera -->
             <div id="preview-dni-back" class="hidden mb-2">
                 <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
                     <img id="img-dni-back" class="w-full h-auto">
-                    <button type="button" onclick="changeImage('dni_back')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                    <button type="button" onclick="resetDni('back')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
                         Cambiar
                     </button>
                 </div>
             </div>
 
-            <label class="upload-zone" id="zone-dni-back">
-                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-gray-500" id="icon-dni-back" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                </div>
-                <div>
-                    <p class="text-sm text-white" id="text-dni-back">Seleccionar imagen</p>
-                    <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
-                </div>
-                <input type="file" name="dni_back" id="input-dni-back" accept="image/*" onchange="handleFile(this,'zone-dni-back','text-dni-back','icon-dni-back','preview-dni-back','img-dni-back')">
-            </label>
+            <div id="method-dni-back" class="flex gap-3">
+                <button type="button" onclick="document.getElementById('input-dni-back').click()" class="upload-zone flex-1 text-left">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-white">Subir imagen</p>
+                        <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP</p>
+                    </div>
+                </button>
+                <button type="button" onclick="openDniCamera('back')" class="upload-zone flex-1 text-left">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-white">Usar cámara</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Tomar foto ahora</p>
+                    </div>
+                </button>
+            </div>
         </div>
 
         <!-- Recibo -->
         <div>
             <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Recibo de luz o agua</label>
+            <input type="file" name="utility_bill" id="input-utility" accept="image/*" class="hidden" onchange="handleUtility(this)">
 
-            <!-- Preview recibo -->
             <div id="preview-utility" class="hidden mb-2">
                 <div class="relative rounded-lg overflow-hidden bg-gray-900" style="max-width: 200px;">
                     <img id="img-utility" class="w-full h-auto">
-                    <button type="button" onclick="changeImage('utility_bill')" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
+                    <button type="button" onclick="resetUtility()" class="absolute bottom-2 right-2 bg-gray-800/90 hover:bg-gray-700 text-white text-xs px-3 py-1.5 rounded-md transition-colors">
                         Cambiar
                     </button>
                 </div>
             </div>
 
-            <label class="upload-zone" id="zone-utility">
+            <button type="button" onclick="document.getElementById('input-utility').click()" class="upload-zone w-full text-left" id="zone-utility">
                 <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-gray-500" id="icon-utility" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div>
-                    <p class="text-sm text-white" id="text-utility">Seleccionar imagen</p>
+                    <p class="text-sm text-white">Seleccionar imagen</p>
                     <p class="text-xs text-gray-500 mt-0.5">JPG, PNG o WEBP — máx. 5MB</p>
                 </div>
-                <input type="file" name="utility_bill" id="input-utility" accept="image/*" onchange="handleFile(this,'zone-utility','text-utility','icon-utility','preview-utility','img-utility')">
-            </label>
+            </button>
         </div>
 
         <!-- Botones -->
@@ -175,6 +194,43 @@
         </div>
 
     </form>
+</div>
+
+<!-- Modal cámara DNI -->
+<div id="dniCameraModal" class="fixed inset-0 bg-gray-950/95 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="max-w-sm w-full">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h3 class="text-lg font-bold text-white" id="dniCameraTitle">DNI — Frontal</h3>
+                <p class="text-xs text-gray-500">Encuadra bien el documento</p>
+            </div>
+            <button type="button" onclick="closeDniCamera()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800/50 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="relative bg-black rounded-xl overflow-hidden mb-4" style="aspect-ratio: 4/3;">
+            <video id="dniVideoPreview" autoplay playsinline class="w-full h-full object-cover"></video>
+            <canvas id="dniCapturedImage" class="w-full h-full object-cover hidden"></canvas>
+            <!-- Guía rectangular para DNI -->
+            <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <div class="border-2 border-green-500/60 rounded-lg" style="width:85%;height:75%;"></div>
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <button type="button" id="dniCaptureBtn" onclick="captureDniPhoto()" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-all flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                Capturar
+            </button>
+            <div id="dniActionButtons" class="hidden grid grid-cols-2 gap-2">
+                <button type="button" onclick="retakeDniPhoto()" class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 rounded-lg transition-colors text-sm">Repetir</button>
+                <button type="button" onclick="confirmDniPhoto()" class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors text-sm">Confirmar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal de cámara -->
@@ -230,42 +286,110 @@
 <script>
 let stream = null;
 let capturedBlob = null;
+let dniStream = null;
+let currentDniSide = null; // 'front' | 'back'
 
-function handleFile(input, zoneId, textId, iconId, previewId, imgId) {
+function handleFile(input, side) {
     if (!input.files || !input.files[0]) return;
-
     const file = input.files[0];
-    const name = file.name;
-
-    // Actualizar texto e icono
-    document.getElementById(textId).textContent = name;
-    document.getElementById(textId).classList.add('text-green-400');
-    document.getElementById(zoneId).classList.add('has-file');
-    document.getElementById(iconId).innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
-    document.getElementById(iconId).classList.remove('text-gray-500');
-    document.getElementById(iconId).classList.add('text-green-400');
-
-    // Mostrar preview
     const reader = new FileReader();
     reader.onload = (e) => {
-        document.getElementById(imgId).src = e.target.result;
-        document.getElementById(previewId).classList.remove('hidden');
-        document.getElementById(zoneId).classList.add('hidden');
+        document.getElementById('img-dni-' + side).src = e.target.result;
+        document.getElementById('preview-dni-' + side).classList.remove('hidden');
+        document.getElementById('method-dni-' + side).classList.add('hidden');
     };
     reader.readAsDataURL(file);
 }
 
-function changeImage(inputName) {
-    const input = document.querySelector(`input[name="${inputName}"]`);
-    const zoneId = 'zone-' + inputName.replace('_', '-');
-    const previewId = 'preview-' + inputName.replace('_', '-');
+function resetDni(side) {
+    document.getElementById('preview-dni-' + side).classList.add('hidden');
+    document.getElementById('method-dni-' + side).classList.remove('hidden');
+    document.getElementById('input-dni-' + side).value = '';
+}
 
-    // Ocultar preview y mostrar zona de carga
-    document.getElementById(previewId).classList.add('hidden');
-    document.getElementById(zoneId).classList.remove('hidden');
+function handleUtility(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('img-utility').src = e.target.result;
+        document.getElementById('preview-utility').classList.remove('hidden');
+        document.getElementById('zone-utility').classList.add('hidden');
+    };
+    reader.readAsDataURL(input.files[0]);
+}
 
-    // Limpiar input
-    input.value = '';
+function resetUtility() {
+    document.getElementById('preview-utility').classList.add('hidden');
+    document.getElementById('zone-utility').classList.remove('hidden');
+    document.getElementById('input-utility').value = '';
+}
+
+// --- Cámara DNI ---
+async function openDniCamera(side) {
+    currentDniSide = side;
+    document.getElementById('dniCameraTitle').textContent = side === 'front' ? 'DNI — Frontal' : 'DNI — Trasera';
+    const modal = document.getElementById('dniCameraModal');
+    const video = document.getElementById('dniVideoPreview');
+    try {
+        dniStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' }, width: 1280, height: 960 },
+            audio: false
+        });
+        video.srcObject = dniStream;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    } catch (err) {
+        alert('No se pudo acceder a la cámara.');
+    }
+}
+
+function closeDniCamera() {
+    if (dniStream) { dniStream.getTracks().forEach(t => t.stop()); dniStream = null; }
+    document.getElementById('dniCameraModal').classList.add('hidden');
+    document.getElementById('dniCameraModal').classList.remove('flex');
+    document.getElementById('dniVideoPreview').classList.remove('hidden');
+    document.getElementById('dniCapturedImage').classList.add('hidden');
+    document.getElementById('dniCaptureBtn').classList.remove('hidden');
+    document.getElementById('dniActionButtons').classList.add('hidden');
+}
+
+function captureDniPhoto() {
+    const video = document.getElementById('dniVideoPreview');
+    const canvas = document.getElementById('dniCapturedImage');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    video.classList.add('hidden');
+    canvas.classList.remove('hidden');
+    document.getElementById('dniCaptureBtn').classList.add('hidden');
+    document.getElementById('dniActionButtons').classList.remove('hidden');
+}
+
+function retakeDniPhoto() {
+    document.getElementById('dniVideoPreview').classList.remove('hidden');
+    document.getElementById('dniCapturedImage').classList.add('hidden');
+    document.getElementById('dniCaptureBtn').classList.remove('hidden');
+    document.getElementById('dniActionButtons').classList.add('hidden');
+}
+
+function confirmDniPhoto() {
+    const canvas = document.getElementById('dniCapturedImage');
+    canvas.toBlob((blob) => {
+        const file = new File([blob], 'dni-' + currentDniSide + '.jpg', { type: 'image/jpeg' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        const input = document.getElementById('input-dni-' + currentDniSide);
+        input.files = dt.files;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('img-dni-' + currentDniSide).src = e.target.result;
+            document.getElementById('preview-dni-' + currentDniSide).classList.remove('hidden');
+            document.getElementById('method-dni-' + currentDniSide).classList.add('hidden');
+        };
+        reader.readAsDataURL(blob);
+        closeDniCamera();
+    }, 'image/jpeg', 0.9);
 }
 
 function changeSelfie() {
