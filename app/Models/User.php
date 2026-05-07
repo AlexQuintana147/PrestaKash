@@ -27,6 +27,8 @@ class User extends Authenticatable
         'profile_completed',
         'step1_completed',
         'password',
+        'referred_by',
+        'referral_code',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -74,5 +76,20 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->role?->name === 'superadmin';
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by');
+    }
+
+    public static function generateReferralCode(): string
+    {
+        return strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
     }
 }

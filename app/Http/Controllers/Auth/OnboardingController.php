@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserDocument;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
@@ -49,7 +50,16 @@ class OnboardingController extends Controller
             'district'        => $request->district,
             'address'         => $request->address,
             'step1_completed' => true,
+            'referral_code'   => Auth::user()->referral_code ?? User::generateReferralCode(),
         ]);
+
+        if (session('referral_code') && !Auth::user()->referred_by) {
+            $referrer = User::where('referral_code', session('referral_code'))->first();
+            if ($referrer) {
+                Auth::user()->update(['referred_by' => $referrer->id]);
+            }
+            session()->forget('referral_code');
+        }
 
         return redirect()->route('onboarding.step2');
     }
