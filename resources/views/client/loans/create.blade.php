@@ -3,7 +3,7 @@
 @section('title', 'Solicitar Préstamo')
 
 @section('content')
-<div class="min-h-screen px-5 md:px-10 py-8 max-w-6xl">
+<div class="min-h-screen px-4 md:px-10 py-6 md:py-8 max-w-6xl pb-36 md:pb-8">
 
     <!-- Header -->
     <div class="mb-10">
@@ -144,7 +144,7 @@
                             <select name="bank_name" id="bank_name"
                                     class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
                                 <option value="" class="dark:bg-gray-950">Seleccionar</option>
-                                @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa', 'Otro'] as $bank)
+                                @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa'] as $bank)
                                     <option value="{{ $bank }}" class="dark:bg-gray-950" {{ old('bank_name') === $bank ? 'selected' : '' }}>{{ $bank }}</option>
                                 @endforeach
                             </select>
@@ -189,39 +189,39 @@
                               class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('reason') }}</textarea>
                     <p class="text-[10px] text-gray-300 dark:text-gray-700 mt-1 text-right tabular-nums"><span id="charCount">0</span>/1000</p>
                 </section>
-
-                <!-- Submit mobile -->
-                <div class="lg:hidden pt-2">
-                    <button type="submit"
-                            class="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
-                        Enviar solicitud
-                    </button>
-                </div>
             </div>
 
             <!-- ══ RIGHT: SIMULATION ══ -->
             <div class="lg:col-span-2">
-                <div class="lg:sticky lg:top-8 space-y-6">
+                <div id="simulationPanel" class="md:sticky md:top-8 space-y-4 md:space-y-6 fixed bottom-0 left-0 right-0 md:relative bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 md:border-0 p-4 md:p-0 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] md:shadow-none z-50 transition-all duration-300">
 
-                    <div>
-                        <div class="flex items-center gap-2 mb-5">
+                    <!-- Toggle button mobile -->
+                    <div class="md:hidden flex items-center justify-between">
+                        <div class="flex items-center gap-2">
                             <div class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></div>
                             <span class="text-[10px] text-amber-500 dark:text-amber-400 font-bold uppercase tracking-widest">Simulación</span>
                         </div>
+                        <button type="button" id="toggleSim" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                            </svg>
+                        </button>
+                    </div>
 
+                    <div id="simContent">
                         <!-- Main number -->
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 mb-1">Total a devolver</p>
-                        <p id="simTotal" class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight tabular-nums">S/ 0.00</p>
+                        <p id="simTotal" class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight tabular-nums">S/ 0.00</p>
 
-                        <div id="simMonthlyRow" class="mt-2">
+                        <div id="simMonthlyRow" class="mt-1.5 md:mt-2">
                             <p class="text-xs text-green-600 dark:text-green-400 font-medium tabular-nums">
                                 <span id="simMonthly">S/ 0.00</span> <span class="text-gray-400 dark:text-gray-600 font-normal">/ mes</span>
                             </p>
                         </div>
                     </div>
 
-                    <!-- Breakdown -->
-                    <div class="space-y-3 pt-2">
+                    <!-- Breakdown (desktop only) -->
+                    <div id="simBreakdown" class="hidden md:block space-y-3 pt-2">
                         <div class="flex justify-between text-xs">
                             <span class="text-gray-400 dark:text-gray-500">Monto solicitado</span>
                             <span id="simAmount" class="text-gray-700 dark:text-gray-300 tabular-nums">S/ 0.00</span>
@@ -245,14 +245,20 @@
                         </div>
                     </div>
 
-                    <!-- Disclaimer -->
-                    <p class="text-[10px] text-gray-400 dark:text-gray-600 leading-relaxed border-l-2 border-amber-300 dark:border-amber-800 pl-3">
+                    <!-- Disclaimer (desktop only) -->
+                    <p class="hidden md:block text-[10px] text-gray-400 dark:text-gray-600 leading-relaxed border-l-2 border-amber-300 dark:border-amber-800 pl-3">
                         Esto es solo una simulación. La <strong class="text-gray-500 dark:text-gray-400">aprobación final</strong> y la <strong class="text-gray-500 dark:text-gray-400">comisión definitiva</strong> son determinadas exclusivamente por la empresa.
                     </p>
 
+                    <!-- Submit mobile -->
+                    <button type="submit" id="submitMobile"
+                            class="md:hidden w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
+                        Enviar solicitud
+                    </button>
+
                     <!-- Submit desktop -->
                     <button type="submit"
-                            class="hidden lg:block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
+                            class="hidden md:block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
                         Enviar solicitud
                     </button>
 
@@ -381,6 +387,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     paymentDaysRadios.forEach(r => r.addEventListener('change', update));
     reason.addEventListener('input', () => charCount.textContent = reason.value.length);
+
+    const toggleSim = document.getElementById('toggleSim');
+    const simContent = document.getElementById('simContent');
+    if (toggleSim && simContent) {
+        let simExpanded = true;
+        toggleSim.addEventListener('click', () => {
+            simExpanded = !simExpanded;
+            simContent.classList.toggle('hidden', !simExpanded);
+            toggleSim.querySelector('svg').style.transform = simExpanded ? '' : 'rotate(180deg)';
+        });
+    }
 
     toggleBlocks();
     update();
