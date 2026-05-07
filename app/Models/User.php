@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\ClientProfile;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -48,6 +49,11 @@ class User extends Authenticatable
     public function documents()
     {
         return $this->hasOne(UserDocument::class);
+    }
+
+    public function clientProfile()
+    {
+        return $this->hasOne(ClientProfile::class);
     }
 
     public function isAdmin(): bool
