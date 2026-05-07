@@ -78,13 +78,13 @@
                     ] as $label => $data)
                         @php $value = is_array($data) ? $data['value'] : $data; @endphp
                         @if(is_array($data) && isset($data['is_referrer']))
-                            <div class="flex justify-between items-start py-3 px-3 -mx-3 rounded-lg bg-gray-900 dark:bg-white mb-2">
+                            <a href="{{ $data['link'] }}"
+                               class="flex justify-between items-start py-3 px-3 -mx-3 rounded-lg bg-gray-900 dark:bg-white mb-2 hover:opacity-90 transition-opacity cursor-pointer">
                                 <span class="text-xs text-white dark:text-gray-900 flex-shrink-0">Referido por</span>
-                                <a href="{{ $data['link'] }}"
-                                   class="text-xs font-semibold text-white dark:text-gray-900 hover:text-gray-300 dark:hover:text-gray-600 text-right ml-4 transition-colors">
+                                <span class="text-xs font-semibold text-white dark:text-gray-900 text-right ml-4">
                                     {{ $value }}
-                                </a>
-                            </div>
+                                </span>
+                            </a>
                         @else
                             <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-900 pb-3">
                                 <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
