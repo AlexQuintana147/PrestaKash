@@ -225,7 +225,7 @@
 
         <div class="mt-6 flex justify-end">
             <button type="submit"
-                    class="px-8 py-2.5 text-sm font-semibold rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors">
+                    class="text-sm font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400 transition-colors pb-0.5 bg-transparent">
                 Guardar y continuar →
             </button>
         </div>
