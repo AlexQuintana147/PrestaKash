@@ -160,19 +160,22 @@
         </div>
 
         <!-- Acciones -->
-        <div class="flex items-center justify-end gap-2 w-full md:w-auto">
+        <div class="flex items-center justify-end gap-2 w-full md:w-auto" onclick="event.stopPropagation()">
             @if($app->status === 'pending')
-                <form action="{{ route('superadmin.investors.approve', $app) }}" method="POST" onsubmit="return confirm('¿Aprobar esta solicitud?')">
-                    @csrf
-                    <button type="submit" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    </button>
-                </form>
-                <button onclick="toggleRejectModal({{ $app->id }})" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors" title="Rechazar">
+                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </button>
+                <button onclick="openConfirmModal('reject', {{ $app->id }})" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors" title="Rechazar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
+            @elseif($app->status === 'approved')
+                <button onclick="openConfirmModal('unapprove', {{ $app->id }})" class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-xl transition-colors" title="Desaprobar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </button>
             @else
-                <span class="text-[10px] text-gray-400 dark:text-gray-600 font-bold uppercase md:pr-2">Procesado</span>
+                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar (Revertir)">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </button>
             @endif
         </div>
 
@@ -204,19 +207,19 @@
 
 </div>
 
-<!-- Modal Rechazo -->
-<div id="rejectModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-md rounded-3xl p-8 shadow-2xl">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Rechazar Solicitud</h2>
-        <form id="rejectForm" method="POST">
+<!-- Modal Acción Genérico -->
+<div id="actionModal" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-[2rem] p-8 shadow-2xl relative">
+        <div id="actionIcon" class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6"></div>
+        <h2 id="actionTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-2"></h2>
+        <p id="actionDescription" class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-8"></p>
+        
+        <form id="actionForm" method="POST" class="space-y-4">
             @csrf
-            <div class="mb-6">
-                <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Motivo del rechazo</label>
-                <textarea name="reason" rows="3" required class="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-500/20 dark:text-white transition-all resize-none"></textarea>
-            </div>
+            <div id="actionExtraFields"></div>
             <div class="flex gap-3">
-                <button type="button" onclick="toggleRejectModal()" class="flex-1 px-4 py-3 rounded-2xl text-sm font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all">Cancelar</button>
-                <button type="submit" class="flex-1 px-4 py-3 rounded-2xl text-sm font-bold bg-red-600 text-white hover:bg-red-500 transition-all">Confirmar</button>
+                <button type="button" onclick="closeActionModal()" class="flex-1 px-4 py-3 rounded-2xl text-xs font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all">Cancelar</button>
+                <button type="submit" id="actionConfirmBtn" class="flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white transition-all shadow-lg"></button>
             </div>
         </form>
     </div>
@@ -291,6 +294,55 @@
 </div>
 
 <script>
+function openConfirmModal(type, appId) {
+    const modal = document.getElementById('actionModal');
+    const form = document.getElementById('actionForm');
+    const title = document.getElementById('actionTitle');
+    const desc = document.getElementById('actionDescription');
+    const icon = document.getElementById('actionIcon');
+    const btn = document.getElementById('actionConfirmBtn');
+    const extra = document.getElementById('actionExtraFields');
+
+    extra.innerHTML = '';
+    
+    if (type === 'approve') {
+        form.action = `/gestion-interna/inversores/${appId}/aprobar`;
+        title.textContent = '¿Aprobar Inversor?';
+        desc.textContent = 'El usuario será notificado y podrá comenzar a operar como inversor en la plataforma.';
+        icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-green-50 dark:bg-green-500/10 text-green-600';
+        icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+        btn.textContent = 'Confirmar Aprobación';
+        btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-green-600 hover:bg-green-500 shadow-green-500/20 transition-all';
+    } else if (type === 'unapprove') {
+        form.action = `/gestion-interna/inversores/${appId}/desaprobar`;
+        title.textContent = '¿Desaprobar Inversor?';
+        desc.textContent = 'La solicitud volverá al estado pendiente y el usuario perderá sus privilegios de inversor.';
+        icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600';
+        icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+        btn.textContent = 'Confirmar Reversión';
+        btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-yellow-600 hover:bg-yellow-500 shadow-yellow-500/20 transition-all';
+    } else if (type === 'reject') {
+        form.action = `/gestion-interna/inversores/${appId}/rechazar`;
+        title.textContent = 'Rechazar Solicitud';
+        desc.textContent = 'Por favor, indica el motivo del rechazo para informar al postulante.';
+        icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-red-50 dark:bg-red-500/10 text-red-600';
+        icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
+        extra.innerHTML = `
+            <div class="mb-4">
+                <textarea name="reason" rows="3" required placeholder="Escribe el motivo..." class="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-500/20 dark:text-white transition-all resize-none"></textarea>
+            </div>
+        `;
+        btn.textContent = 'Confirmar Rechazo';
+        btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-red-600 hover:bg-red-500 shadow-red-500/20 transition-all';
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeActionModal() {
+    document.getElementById('actionModal').classList.add('hidden');
+}
+
 function openInvestorModal(data) {
     const modal = document.getElementById('investorModal');
     
@@ -314,25 +366,16 @@ function openInvestorModal(data) {
     actions.innerHTML = '';
     if (data.status === 'pending') {
         actions.innerHTML = `
-            <form action="/gestion-interna/inversores/${data.id}/aprobar" method="POST" class="flex-1">
-                @csrf
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar Inversor</button>
-            </form>
-            <button onclick="closeInvestorModal(); toggleRejectModal(${data.id})" class="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-all">Rechazar</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar Inversor</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('reject', ${data.id})" class="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-all">Rechazar</button>
         `;
     } else if (data.status === 'approved') {
         actions.innerHTML = `
-            <form action="/gestion-interna/inversores/${data.id}/desaprobar" method="POST" class="w-full" onsubmit="return confirm('¿Estás seguro de desaprobar a este inversor? Volverá al estado pendiente.')">
-                @csrf
-                <button type="submit" class="w-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:text-yellow-600 transition-all border border-transparent hover:border-yellow-200 dark:hover:border-yellow-900/50">Desaprobar Inversor</button>
-            </form>
+            <button onclick="closeInvestorModal(); openConfirmModal('unapprove', ${data.id})" class="w-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:text-yellow-600 transition-all border border-transparent hover:border-yellow-200 dark:hover:border-yellow-900/50">Desaprobar Inversor</button>
         `;
     } else if (data.status === 'rejected') {
         actions.innerHTML = `
-            <form action="/gestion-interna/inversores/${data.id}/aprobar" method="POST" class="w-full">
-                @csrf
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar (Revertir Rechazo)</button>
-            </form>
+            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar (Revertir Rechazo)</button>
         `;
     }
 
@@ -343,17 +386,6 @@ function openInvestorModal(data) {
 function closeInvestorModal() {
     document.getElementById('investorModal').classList.add('hidden');
     document.body.style.overflow = '';
-}
-
-function toggleRejectModal(appId = null) {
-    const modal = document.getElementById('rejectModal');
-    const form = document.getElementById('rejectForm');
-    if (appId) {
-        form.action = `/gestion-interna/inversores/${appId}/rechazar`;
-        modal.classList.remove('hidden');
-    } else {
-        modal.classList.add('hidden');
-    }
 }
 </script>
 @endsection
