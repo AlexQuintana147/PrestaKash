@@ -76,6 +76,11 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/usuarios/{user}/desaprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'unapprove'])->name('users.unapprove');
     Route::post('/usuarios/{user}/bloquear',   [\App\Http\Controllers\SuperAdmin\UsersController::class, 'block'])->name('users.block');
 
+    // Gestión de Inversores
+    Route::get('/inversores',                     [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'index'])->name('investors.index');
+    Route::post('/inversores/{application}/aprobar',  [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'approve'])->name('investors.approve');
+    Route::post('/inversores/{application}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'reject'])->name('investors.reject');
+
     // Configuración
     Route::get('/configuracion',              [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
     Route::post('/configuracion/nombre',      [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
