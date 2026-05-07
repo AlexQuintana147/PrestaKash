@@ -27,6 +27,8 @@
                 <label for="phone" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Contacto</label>
                 <input type="text" name="phone" id="phone" value="{{ old('phone', auth()->user()->phone) }}" required
                        placeholder="Tu número de teléfono"
+                       maxlength="9"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
                        class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
                 @error('phone') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
             </div>
@@ -35,6 +37,7 @@
                 <label for="occupation" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Ocupación</label>
                 <input type="text" name="occupation" id="occupation" value="{{ old('occupation') }}" required
                        placeholder="Ej: Empresario, Ingeniero..."
+                       oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g, '')"
                        class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
                 @error('occupation') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
             </div>
