@@ -138,16 +138,18 @@
                         <div class="flex items-center gap-6">
                             <div class="relative group">
                                 @if($company_logo)
-                                    <img src="{{ Storage::url($company_logo) }}" alt="Logo" class="w-14 h-14 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <img src="{{ Storage::url($company_logo) }}" id="logo-preview" alt="Logo" class="w-14 h-14 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 @else
-                                    <div class="w-14 h-14 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="w-14 h-14 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center overflow-hidden">
+                                        <img id="logo-preview" class="hidden w-full h-full object-contain">
+                                        <svg id="logo-placeholder" class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                         </svg>
                                     </div>
                                 @endif
                             </div>
-                            <input type="file" name="company_logo" accept="image/png,image/jpeg,image-webp"
+                            <input type="file" name="company_logo" id="company_logo" accept="image/png,image/jpeg,image-webp"
+                                   onchange="previewImage(this, 'logo-preview', 'logo-placeholder')"
                                    class="text-[10px] text-gray-400
                                           file:mr-4 file:py-1 file:px-0 file:border-0
                                           file:text-[10px] file:font-bold file:bg-transparent file:text-gray-900 dark:file:text-white
@@ -161,16 +163,18 @@
                         <div class="flex items-center gap-6">
                             <div class="relative group">
                                 @if($company_signature)
-                                    <img src="{{ Storage::url($company_signature) }}" alt="Firma" class="h-10 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <img src="{{ Storage::url($company_signature) }}" id="signature-preview" alt="Firma" class="h-10 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 @else
-                                    <div class="h-10 w-24 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="h-10 w-24 border-2 border-dashed border-gray-200 dark:border-gray-800 flex items-center justify-center overflow-hidden">
+                                        <img id="signature-preview" class="hidden w-full h-full object-contain">
+                                        <svg id="signature-placeholder" class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                         </svg>
                                     </div>
                                 @endif
                             </div>
-                            <input type="file" name="company_signature" accept="image/png,image/jpeg,image-webp"
+                            <input type="file" name="company_signature" id="company_signature" accept="image/png,image/jpeg,image-webp"
+                                   onchange="previewImage(this, 'signature-preview', 'signature-placeholder')"
                                    class="text-[10px] text-gray-400
                                           file:mr-4 file:py-1 file:px-0 file:border-0
                                           file:text-[10px] file:font-bold file:bg-transparent file:text-gray-900 dark:file:text-white
@@ -182,8 +186,9 @@
                     <div class="group">
                         <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">RUC</label>
                         <input type="text" name="company_ruc" value="{{ old('company_ruc', $company_ruc) }}" maxlength="20"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_ruc') border-red-400 @enderror"
-                               placeholder="12345678901">
+                               placeholder="Solo números">
                         @error('company_ruc') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -199,4 +204,25 @@
 
     </div>
 </div>
+
+<script>
+function previewImage(input, previewId, placeholderId) {
+    const preview = document.getElementById(previewId);
+    const placeholder = document.getElementById(placeholderId);
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) {
+                placeholder.classList.add('hidden');
+            }
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 @endsection

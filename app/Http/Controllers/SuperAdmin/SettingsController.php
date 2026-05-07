@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class SettingsController extends Controller
 {
@@ -52,20 +54,39 @@ class SettingsController extends Controller
     public function updateCompanySettings(Request $request)
     {
         $request->validate([
-            'company_ruc' => 'nullable|string|max:20',
+            'company_ruc' => 'nullable|numeric|digits_between:8,20',
             'company_logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
             'company_signature' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+        ], [
+            'company_ruc.numeric' => 'El RUC debe contener solo números.',
+            'company_ruc.digits_between' => 'El RUC debe tener entre 8 y 20 dígitos.',
         ]);
+
+        $manager = new ImageManager(new Driver());
 
         if ($request->hasFile('company_logo')) {
             $logo = $request->file('company_logo');
-            $path = $logo->storeAs('company', 'logo.webp', 'public');
+            $img = $manager->read($logo->getRealPath())->encodeByExtension('webp');
+            $path = 'company/logo_' . time() . '.webp';
+            
+            // Delete old logo if exists
+            $oldLogo = CompanySetting::get('company_logo');
+            if ($oldLogo) Storage::disk('public')->delete($oldLogo);
+            
+            Storage::disk('public')->put($path, $img->toString());
             CompanySetting::set('company_logo', $path);
         }
 
         if ($request->hasFile('company_signature')) {
             $signature = $request->file('company_signature');
-            $path = $signature->storeAs('company', 'signature.webp', 'public');
+            $img = $manager->read($signature->getRealPath())->encodeByExtension('webp');
+            $path = 'company/signature_' . time() . '.webp';
+
+            // Delete old signature if exists
+            $oldSignature = CompanySetting::get('company_signature');
+            if ($oldSignature) Storage::disk('public')->delete($oldSignature);
+
+            Storage::disk('public')->put($path, $img->toString());
             CompanySetting::set('company_signature', $path);
         }
 
