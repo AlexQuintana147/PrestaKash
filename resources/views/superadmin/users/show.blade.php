@@ -167,9 +167,9 @@
             <div class="grid grid-cols-2 gap-3 md:gap-5">
                 @foreach([
                     'Selfie'              => $user->documents->selfie,
+                    'Recibo de servicios' => $user->documents->utility_bill,
                     'DNI — Frontal'       => $user->documents->dni_front,
                     'DNI — Posterior'     => $user->documents->dni_back,
-                    'Recibo de servicios' => $user->documents->utility_bill,
                 ] as $label => $path)
                 <div>
                     <p class="text-xs text-gray-400 dark:text-gray-600 mb-2">{{ $label }}</p>
