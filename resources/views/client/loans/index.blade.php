@@ -24,7 +24,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white-200 dark:bg-gray-900 rounded-2xl overflow-hidden mb-12">
 
         <!-- Pedir préstamo -->
-        <div class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6">
+        <a href="{{ route('client.loans.create') }}" class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
             <div class="flex items-center justify-between">
                 <svg class="w-5 h-5 text-gray-400 dark:text-gray-500" viewBox="0 0 297.085 297.085" fill="currentColor">
                     <g>
@@ -66,8 +66,8 @@
                 <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1.5">Pedir un préstamo</h2>
                 <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Solicita financiamiento rápido y seguro. Elige el monto y plazo que mejor se adapte a ti.</p>
             </div>
-            <a href="{{ route('client.loans.create') }}" class="self-start text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all">Solicitar ahora</a>
-        </div>
+            <span class="self-start text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all">Solicitar ahora</span>
+        </a>
 
         <!-- Historial crediticio -->
         <div class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6">
