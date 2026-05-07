@@ -9,12 +9,12 @@
     align-items: center;
     gap: 8px;
     padding: 7px 12px;
-    border: 1px solid #e5e7eb;
+    border: 1.5px solid #d1d5db;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s;
     font-size: 0.75rem;
-    color: #374151;
+    color: #111827;
     user-select: none;
 }
 .dark .option-card {
@@ -22,7 +22,7 @@
     color: #d1d5db;
 }
 .option-card:hover {
-    border-color: #9ca3af;
+    border-color: #6b7280;
 }
 .dark .option-card:hover {
     border-color: #6b7280;
@@ -32,7 +32,7 @@
 .option-card .check-box {
     width: 16px;
     height: 16px;
-    border: 1.5px solid #d1d5db;
+    border: 1.5px solid #9ca3af;
     border-radius: 4px;
     flex-shrink: 0;
     display: flex;
@@ -83,7 +83,7 @@
     <div class="mb-6">
         <p class="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
         <h1 class="text-xl font-bold text-gray-900 dark:text-white">Completa tu perfil</h1>
-        <p class="text-xs text-gray-400 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
+        <p class="text-xs text-gray-500 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
     </div>
 
     @if($errors->any())
@@ -101,23 +101,23 @@
 
             <!-- Columna izquierda -->
             <div>
-                <p class="text-xs text-gray-400 uppercase tracking-widest mb-4 pb-2 border-b border-gray-100 dark:border-gray-800">Información académica</p>
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">Información académica</p>
                 <div class="space-y-4">
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Universidad o instituto</label>
+                        <label class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
                         <input type="text" name="institution" value="{{ old('institution') }}" required placeholder="Ej: UNMSM"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-300 dark:placeholder-gray-600">
+                               class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Carrera profesional</label>
+                        <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
                         <input type="text" name="career" value="{{ old('career') }}" required placeholder="Ej: Ingeniería de Sistemas"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-300 dark:placeholder-gray-600">
+                               class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-2">Situación académica</label>
+                        <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
                         <div class="grid grid-cols-2 gap-2">
                             @foreach(['Estudiante activo', 'Egresado', 'Titulado', 'Bachiller'] as $opt)
                             <label class="option-card {{ old('academic_status') === $opt ? 'selected' : '' }}">
@@ -138,12 +138,12 @@
 
             <!-- Columna derecha -->
             <div>
-                <p class="text-xs text-gray-400 uppercase tracking-widest mb-4 pb-2 border-b border-gray-100 dark:border-gray-800">Situación social</p>
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">Situación social</p>
                 <div class="space-y-4">
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-2">¿Tiene hijos?</label>
+                            <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
                             <div class="flex gap-2">
                                 <label class="option-card {{ old('has_children') == '1' ? 'selected' : '' }}">
                                     <input type="radio" name="has_children" value="1" {{ old('has_children') == '1' ? 'checked' : '' }} required onchange="syncCards(this)">
@@ -162,7 +162,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-2">¿Trabaja actualmente?</label>
+                            <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
                             <div class="flex gap-2">
                                 <label class="option-card {{ old('is_employed') == '1' ? 'selected' : '' }}">
                                     <input type="radio" name="is_employed" value="1" {{ old('is_employed') == '1' ? 'checked' : '' }} required onchange="syncCards(this)">
@@ -183,13 +183,13 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Instagram <span class="text-gray-300 dark:text-gray-600">(opcional)</span></label>
+                        <label class="block text-xs text-gray-600 mb-1">Instagram <span class="text-gray-300 dark:text-gray-600">(opcional)</span></label>
                         <input type="text" name="instagram" value="{{ old('instagram') }}" placeholder="@usuario"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-300 dark:placeholder-gray-600">
+                               class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-2">Estado civil</label>
+                        <label class="block text-xs text-gray-600 mb-2">Estado civil</label>
                         <div class="space-y-1.5">
                             @foreach(['soltero' => 'Soltero/a', 'casado_separado' => 'Casado/a — bienes separados', 'casado_compartido' => 'Casado/a — bienes compartidos'] as $val => $label)
                             <label class="option-card w-full {{ old('marital_status') === $val ? 'selected' : '' }}">
@@ -204,17 +204,17 @@
                     </div>
 
                     <!-- Campos cónyuge -->
-                    <div id="spouseFields" class="{{ old('marital_status') === 'casado_compartido' ? '' : 'hidden' }} grid grid-cols-2 gap-3 pl-3 border-l-2 border-gray-200 dark:border-gray-700">
+                    <div id="spouseFields" class="{{ old('marital_status') === 'casado_compartido' ? '' : 'hidden' }} grid grid-cols-2 gap-3 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Nombre del cónyuge</label>
+                            <label class="block text-xs text-gray-600 mb-1">Nombre del cónyuge</label>
                             <input type="text" name="spouse_name" value="{{ old('spouse_name') }}" placeholder="Nombres y apellidos"
-                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-300 dark:placeholder-gray-600">
+                                   class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">DNI del cónyuge</label>
+                            <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
                             <input type="text" name="spouse_dni" value="{{ old('spouse_dni') }}" placeholder="12345678" maxlength="8"
                                    oninput="this.value=this.value.replace(/\D/g,'')"
-                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-300 dark:placeholder-gray-600">
+                                   class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                         </div>
                     </div>
 
