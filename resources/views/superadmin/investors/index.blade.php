@@ -320,6 +320,20 @@ function openInvestorModal(data) {
             </form>
             <button onclick="closeInvestorModal(); toggleRejectModal(${data.id})" class="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-all">Rechazar</button>
         `;
+    } else if (data.status === 'approved') {
+        actions.innerHTML = `
+            <form action="/gestion-interna/inversores/${data.id}/desaprobar" method="POST" class="w-full" onsubmit="return confirm('¿Estás seguro de desaprobar a este inversor? Volverá al estado pendiente.')">
+                @csrf
+                <button type="submit" class="w-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:text-yellow-600 transition-all border border-transparent hover:border-yellow-200 dark:hover:border-yellow-900/50">Desaprobar Inversor</button>
+            </form>
+        `;
+    } else if (data.status === 'rejected') {
+        actions.innerHTML = `
+            <form action="/gestion-interna/inversores/${data.id}/aprobar" method="POST" class="w-full">
+                @csrf
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar (Revertir Rechazo)</button>
+            </form>
+        `;
     }
 
     modal.classList.remove('hidden');

@@ -41,6 +41,16 @@ class InvestorController extends Controller
         return back()->with('success', 'Solicitud aprobada con éxito. El usuario ahora es un inversor.');
     }
 
+    public function unapprove(InvestorApplication $application)
+    {
+        $application->update(['status' => 'pending']);
+        
+        // Quitar marca de inversor al usuario
+        $application->user->update(['is_investor' => false]);
+
+        return back()->with('success', 'Solicitud desaprobada. El usuario ya no figura como inversor.');
+    }
+
     public function reject(Request $request, InvestorApplication $application)
     {
         $application->update([

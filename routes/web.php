@@ -79,6 +79,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     // Gestión de Inversores
     Route::get('/inversores',                     [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'index'])->name('investors.index');
     Route::post('/inversores/{application}/aprobar',  [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'approve'])->name('investors.approve');
+    Route::post('/inversores/{application}/desaprobar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'unapprove'])->name('investors.unapprove');
     Route::post('/inversores/{application}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'reject'])->name('investors.reject');
 
     // Configuración
