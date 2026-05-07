@@ -41,21 +41,43 @@
         </div>
     </section>
 
+    <!-- Filtros -->
+    <section class="mb-6">
+        <div class="flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
+            @foreach(['all' => 'Todos', 'approved' => 'Aprobados', 'pending' => 'Pendientes', 'rejected' => 'Rechazados'] as $key => $label)
+                <a href="{{ route('client.referidos', ['filter' => $key]) }}"
+                   class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
+                          {{ $filter === $key
+                              ? 'text-gray-900 dark:text-white'
+                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                    {{ $label }}
+                    @if(isset($counts[$key]) && $counts[$key] > 0)
+                        <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                    @endif
+                    @if($filter === $key)
+                        <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                    @endif
+                </a>
+            @endforeach
+        </div>
+    </section>
+
     <!-- Lista -->
     <section>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Referidos</p>
-
-        @if($user->referrals->isEmpty())
+        @if($referrals->isEmpty())
             <div class="py-12 text-center">
-                <p class="text-sm text-gray-400 dark:text-gray-600">Aún no tienes referidos</p>
+                <p class="text-sm text-gray-400 dark:text-gray-600">No hay referidos con este filtro</p>
             </div>
         @else
             <div class="space-y-0">
-                @foreach($user->referrals as $referral)
+                @foreach($referrals as $referral)
+                    @php $status = $referral->documents?->status; @endphp
                     <div class="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-800 last:border-0">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ strtoupper(substr($referral->name, 0, 1)) }}</span>
+                            <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: {{ match($status) { 'approved' => '#dcfce7', 'rejected' => '#fee2e2', 'pending' => '#fef9c3', default => '#f3f4f6' } }};">
+                                <svg class="w-4 h-4" style="color: {{ match($status) { 'approved' => '#22c55e', 'rejected' => '#ef4444', 'pending' => '#eab308', default => '#9ca3af' } }};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $referral->name }}</p>
