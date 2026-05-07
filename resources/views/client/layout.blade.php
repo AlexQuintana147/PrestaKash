@@ -13,7 +13,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Roboto', sans-serif; }</style>
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        nav::-webkit-scrollbar { width: 4px; }
+        nav::-webkit-scrollbar-track { background: transparent; }
+        nav::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+        .dark nav::-webkit-scrollbar-thumb { background: #374151; }
+        nav::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .dark nav::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    </style>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200">
 
