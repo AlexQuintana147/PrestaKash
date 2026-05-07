@@ -107,12 +107,18 @@ class AuthController extends Controller
             return redirect('/')->with('error', 'Código de referido inválido.');
         }
 
-        return view('auth.register-referral', ['referralCode' => $code]);
+        return view('auth.register-referral', [
+            'referralCode' => $code,
+            'referrerName' => $referrer->name,
+        ]);
     }
 
     public function showRegister()
     {
-        return view('auth.register-referral', ['referralCode' => null]);
+        return view('auth.register-referral', [
+            'referralCode' => null,
+            'referrerName' => null,
+        ]);
     }
 
     public function checkEmail(Request $request)

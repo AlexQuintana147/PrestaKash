@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlockedUser;
+use App\Models\Referral;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -14,6 +16,17 @@ class GoogleController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
+    public function redirectWithReferral(string $code)
+    {
+        $referrer = User::where('referral_code', $code)->first();
+
+        if ($referrer) {
+            session(['referral_code' => $code]);
+        }
+
+        return Socialite::driver('google')->redirect();
+    }
+
     public function callback()
     {
         try {
@@ -22,28 +35,42 @@ class GoogleController extends Controller
             return redirect('/')->with('error', 'El inicio de sesión falló. Intenta de nuevo.');
         }
 
+        if (BlockedUser::where('email', $googleUser->getEmail())->exists()) {
+            return redirect('/')->with('error', 'Esta cuenta ha sido bloqueada. Contacta al soporte.');
+        }
+
         $user = User::firstOrCreate(
             ['email' => $googleUser->getEmail()],
             [
                 'name'      => $googleUser->getName(),
                 'google_id' => $googleUser->getId(),
                 'avatar'    => $googleUser->getAvatar(),
-                'role_id'   => 3, // usuario
+                'role_id'   => 2,
                 'password'  => null,
+                'referral_code' => User::generateReferralCode(),
             ]
         );
 
-        // Verificar si está bloqueado
-        if (\App\Models\BlockedUser::where('email', $googleUser->getEmail())->exists()) {
-            return redirect('/')->with('error', 'Esta cuenta ha sido bloqueada. Contacta al soporte.');
-        }
-
-        // Si ya existía pero no tenía google_id, lo actualizamos
         if (!$user->google_id) {
             $user->update([
                 'google_id' => $googleUser->getId(),
                 'avatar'    => $googleUser->getAvatar(),
             ]);
+        }
+
+        if (session('referral_code') && !$user->referred_by) {
+            $referrer = User::where('referral_code', session('referral_code'))->first();
+            if ($referrer) {
+                $user->update(['referred_by' => $referrer->id]);
+
+                Referral::create([
+                    'referrer_id' => $referrer->id,
+                    'referred_id' => $user->id,
+                    'referral_code' => session('referral_code'),
+                    'status' => 'pending',
+                ]);
+            }
+            session()->forget('referral_code');
         }
 
         Auth::login($user);
@@ -52,12 +79,10 @@ class GoogleController extends Controller
             return redirect()->route('superadmin.dashboard');
         }
 
-        // Cliente aprobado
         if ($user->profile_completed && $user->documents?->status === 'approved') {
             return redirect()->route('client.dashboard');
         }
 
-        // Si el perfil no está completo, redirigir al onboarding
         if (!$user->profile_completed) {
             return redirect()->route('onboarding.step1');
         }

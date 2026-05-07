@@ -38,9 +38,10 @@ Route::get('/validation-pending', function () {
     return view('auth.validation-pending');
 })->name('validation.pending')->middleware('auth');
 
-// Google OAuth
-Route::get('/auth/google',          [GoogleController::class, 'redirect'])->name('auth.google');
+// Google OAuth - el callback debe ir ANTES de {code} para evitar conflictos
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/{code}', [GoogleController::class, 'redirectWithReferral'])->name('auth.google.referral');
 
 // Referral link - muestra página de registro
 Route::get('/ref/{code}', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterReferral'])->name('referral.handle');
