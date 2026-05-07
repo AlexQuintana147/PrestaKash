@@ -39,6 +39,13 @@ class GoogleController extends Controller
             return redirect('/')->with('error', 'Esta cuenta ha sido bloqueada. Contacta al soporte.');
         }
 
+        $existingUser = User::where('email', $googleUser->getEmail())->first();
+
+        if (session('referral_code') && $existingUser) {
+            session()->forget('referral_code');
+            return redirect('/')->with('error', 'Este correo ya está registrado. Inicia sesión para continuar.');
+        }
+
         $user = User::firstOrCreate(
             ['email' => $googleUser->getEmail()],
             [
