@@ -49,18 +49,18 @@
 
             <div class="space-y-1">
                 <label for="source_of_funds" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Origen de Fondos</label>
-                <div class="relative">
+                <div class="relative group">
                     <select name="source_of_funds" id="source_of_funds" required
-                            class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all appearance-none cursor-pointer">
-                        <option value="" disabled selected>Selecciona una opción</option>
-                        <option value="Ahorros personales">Ahorros personales</option>
-                        <option value="Ganancias de negocio">Ganancias de negocio</option>
-                        <option value="Venta de activos">Venta de activos</option>
-                        <option value="Herencia">Herencia</option>
-                        <option value="Otros">Otros</option>
+                            class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2.5 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all appearance-none cursor-pointer relative z-10">
+                        <option value="" disabled selected class="dark:bg-gray-950">Selecciona una opción</option>
+                        <option value="Ahorros personales" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ahorros personales</option>
+                        <option value="Ganancias de negocio" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ganancias de negocio</option>
+                        <option value="Venta de activos" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Venta de activos</option>
+                        <option value="Herencia" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Herencia</option>
+                        <option value="Otros" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Otros</option>
                     </select>
-                    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-hover:text-green-500 transition-colors z-0">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
                 @error('source_of_funds') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
