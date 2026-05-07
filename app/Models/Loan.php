@@ -18,6 +18,10 @@ class Loan extends Model
         'status',
         'type',
         'reason',
+        'bank_name',
+        'account_number',
+        'account_type',
+        'cci',
     ];
 
     public function user()

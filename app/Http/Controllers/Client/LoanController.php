@@ -32,10 +32,14 @@ class LoanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'amount' => 'required|numeric|min:100',
-            'months' => 'required|integer|min:1|max:24',
-            'type'   => 'required|in:cuotas,unico',
-            'reason' => 'required|string|min:10|max:1000',
+            'amount'         => 'required|numeric|min:100',
+            'months'         => 'required|integer|min:1|max:24',
+            'type'           => 'required|in:cuotas,unico',
+            'reason'         => 'required|string|min:10|max:1000',
+            'bank_name'      => 'required|string',
+            'account_number' => 'required|string|min:10',
+            'account_type'   => 'required|in:ahorros,corriente',
+            'cci'            => 'nullable|string|min:20',
         ]);
 
         $montoSolicitado = $request->amount;
@@ -43,15 +47,16 @@ class LoanController extends Controller
         $tipo = $request->type;
         $reason = $request->reason;
 
-        // Lógica de simulación (20%)
+        // Lógica de simulación profesional (20% interés fijo)
         $tasaInteres = 0.20;
         $interes = $montoSolicitado * $tasaInteres;
 
-        $tarifaTecnologia = $montoSolicitado * 0.10;
-        $igv = $tarifaTecnologia * 0.18;
-        $importeTotalMonto = $tarifaTecnologia + $igv;
+        // Mantener cargos mínimos por operación (opcional, pero el usuario pidió 100->120)
+        // Si el usuario quiere 100 -> 120, entonces no hay otros cargos.
+        $tarifaTecnologia = 0; // Desactivado según ejemplo 100->120
+        $igv = 0;
 
-        $totalAPagar = $montoSolicitado + $interes + $importeTotalMonto;
+        $totalAPagar = $montoSolicitado + $interes;
         $cuotaMensual = $totalAPagar / $plazo;
 
         Loan::create([
@@ -66,6 +71,10 @@ class LoanController extends Controller
             'status'          => 'pending',
             'type'            => $tipo,
             'reason'          => $reason,
+            'bank_name'      => $request->bank_name,
+            'account_number' => $request->account_number,
+            'account_type'   => $request->account_type,
+            'cci'            => $request->cci,
         ]);
 
         return redirect()->route('client.loans')->with('success', 'Tu solicitud de préstamo ha sido recibida y está en proceso de revisión.');
