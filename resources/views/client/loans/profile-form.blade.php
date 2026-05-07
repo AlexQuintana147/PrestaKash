@@ -53,6 +53,10 @@
     background: #ffffff;
     border-color: #ffffff;
 }
+.dark .option-card input[type=radio]:checked ~ .check-box svg path,
+.dark .option-card.selected .check-box svg path {
+    stroke: #111827;
+}
 .option-card input[type=radio]:checked ~ .check-box svg,
 .option-card.selected .check-box svg {
     display: block;
