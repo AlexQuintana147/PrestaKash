@@ -80,6 +80,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::get('/configuracion',              [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
     Route::post('/configuracion/nombre',      [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
     Route::post('/configuracion/contrasena',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updatePassword'])->name('settings.password');
+    Route::post('/configuracion/empresa',     [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateCompanySettings'])->name('settings.company');
 });
 
 // Panel Cliente (usuarios aprobados)
