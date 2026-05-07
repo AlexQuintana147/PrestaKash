@@ -11,6 +11,7 @@ class Loan extends Model
         'amount',
         'currency',
         'months',
+        'payment_days',
         'interest_rate',
         'technology_fee',
         'igv',

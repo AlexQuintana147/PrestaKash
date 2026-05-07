@@ -31,52 +31,64 @@ class LoanController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'amount'         => 'required|numeric|min:100',
             'currency'       => 'required|in:PEN,USD',
-            'months'         => 'required|integer|min:1|max:24',
             'type'           => 'required|in:cuotas,unico',
             'reason'         => 'required|string|min:10|max:1000',
             'bank_name'      => 'required|string',
             'account_number' => 'required|string|min:10',
             'account_type'   => 'required|in:ahorros,corriente',
             'cci'            => 'nullable|string|min:20',
-        ]);
+        ];
+
+        if ($request->type === 'cuotas') {
+            $rules['months'] = 'required|integer|min:3|max:24';
+        } else {
+            $rules['payment_days'] = 'required|in:15,30';
+        }
+
+        $request->validate($rules);
 
         $montoSolicitado = $request->amount;
-        $plazo = $request->months;
         $tipo = $request->type;
-        $reason = $request->reason;
 
-        // Lógica de simulación profesional (20% interés fijo)
-        $tasaInteres = 0.20;
-        $interes = $montoSolicitado * $tasaInteres;
+        // ── Lógica de comisión ──
+        // Cuotas mensuales: 20% fijo
+        // Pago único 15 días: 10%
+        // Pago único 30 días: 15%
+        if ($tipo === 'cuotas') {
+            $tasaInteres  = 0.20;
+            $plazo        = $request->months;
+            $paymentDays  = null;
+        } else {
+            $paymentDays  = (int) $request->payment_days;
+            $tasaInteres  = $paymentDays === 15 ? 0.10 : 0.15;
+            $plazo        = 1; // un solo pago
+        }
 
-        // Mantener cargos mínimos por operación (opcional, pero el usuario pidió 100->120)
-        // Si el usuario quiere 100 -> 120, entonces no hay otros cargos.
-        $tarifaTecnologia = 0; // Desactivado según ejemplo 100->120
-        $igv = 0;
-
-        $totalAPagar = $montoSolicitado + $interes;
-        $cuotaMensual = $totalAPagar / $plazo;
+        $interes      = $montoSolicitado * $tasaInteres;
+        $totalAPagar  = $montoSolicitado + $interes;
+        $cuotaMensual = $tipo === 'cuotas' ? ($totalAPagar / $plazo) : $totalAPagar;
 
         Loan::create([
             'user_id'         => Auth::id(),
             'amount'          => $montoSolicitado,
             'currency'        => $request->currency,
-            'months'          => $plazo,
-            'interest_rate'   => 20.00,
-            'technology_fee'  => $tarifaTecnologia,
-            'igv'             => $igv,
+            'months'          => $tipo === 'cuotas' ? $plazo : null,
+            'payment_days'    => $paymentDays,
+            'interest_rate'   => $tasaInteres * 100,
+            'technology_fee'  => 0,
+            'igv'             => 0,
             'total_amount'    => $totalAPagar,
             'monthly_payment' => $cuotaMensual,
             'status'          => 'pending',
             'type'            => $tipo,
-            'reason'          => $reason,
-            'bank_name'      => $request->bank_name,
-            'account_number' => $request->account_number,
-            'account_type'   => $request->account_type,
-            'cci'            => $request->cci,
+            'reason'          => $request->reason,
+            'bank_name'       => $request->bank_name,
+            'account_number'  => $request->account_number,
+            'account_type'    => $request->account_type,
+            'cci'             => $request->cci,
         ]);
 
         return redirect()->route('client.loans')->with('success', 'Tu solicitud de préstamo ha sido recibida y está en proceso de revisión.');

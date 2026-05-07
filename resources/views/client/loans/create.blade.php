@@ -75,22 +75,7 @@
                     <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Plazo</p>
 
                     <div class="space-y-6">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <label for="months" class="text-xs text-gray-500 dark:text-gray-400">Fraccionar en</label>
-                                <span id="monthsDisplay" class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">12 meses</span>
-                            </div>
-                            <input type="range" name="months" id="months" min="1" max="24" value="{{ old('months', 12) }}"
-                                   class="w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer">
-                            <div class="flex justify-between text-[10px] text-gray-300 dark:text-gray-700 mt-1.5">
-                                <span>1</span>
-                                <span>6</span>
-                                <span>12</span>
-                                <span>18</span>
-                                <span>24</span>
-                            </div>
-                        </div>
-
+                        <!-- Tipo de pago (primero) -->
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Tipo de pago</label>
                             <div class="flex gap-2">
@@ -104,6 +89,44 @@
                                     <input type="radio" name="type" value="unico" class="hidden peer" {{ old('type') === 'unico' ? 'checked' : '' }}>
                                     <div class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
                                         Pago único
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Cuotas: slider de meses (3-24) -->
+                        <div id="cuotasBlock">
+                            <div class="flex items-center justify-between mb-3">
+                                <label for="months" class="text-xs text-gray-500 dark:text-gray-400">Fraccionar en</label>
+                                <span id="monthsDisplay" class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">12 meses</span>
+                            </div>
+                            <input type="range" name="months" id="months" min="3" max="24" value="{{ old('months', 12) }}"
+                                   class="w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-gray-300 dark:text-gray-700 mt-1.5">
+                                <span>3</span>
+                                <span>6</span>
+                                <span>12</span>
+                                <span>18</span>
+                                <span>24</span>
+                            </div>
+                        </div>
+
+                        <!-- Pago único: 15 o 30 días -->
+                        <div id="unicoBlock" class="hidden">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Pagar en</label>
+                            <div class="flex gap-2">
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="payment_days" value="15" class="hidden peer" {{ old('payment_days', '15') == '15' ? 'checked' : '' }}>
+                                    <div class="text-center py-3 rounded-lg border border-transparent peer-checked:border-green-500/40 peer-checked:bg-green-500/5 transition-all">
+                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">15 días</p>
+                                        <p class="text-[10px] text-green-600 dark:text-green-400 mt-0.5">10% comisión</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="payment_days" value="30" class="hidden peer" {{ old('payment_days') == '30' ? 'checked' : '' }}>
+                                    <div class="text-center py-3 rounded-lg border border-transparent peer-checked:border-green-500/40 peer-checked:bg-green-500/5 transition-all">
+                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">30 días</p>
+                                        <p class="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">15% comisión</p>
                                     </div>
                                 </label>
                             </div>
@@ -139,15 +162,19 @@
                         <div>
                             <label for="account_number" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Número de cuenta</label>
                             <input type="text" name="account_number" id="account_number" value="{{ old('account_number') }}"
-                                   placeholder="Ej: 191-12345678-0-01"
-                                   class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                                   placeholder="Ej: 19112345678001"
+                                   inputmode="numeric" pattern="[0-9]*" maxlength="20"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors tabular-nums tracking-wider">
                         </div>
 
                         <div>
                             <label for="cci" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">CCI <span class="text-gray-300 dark:text-gray-700">· opcional</span></label>
                             <input type="text" name="cci" id="cci" value="{{ old('cci') }}"
                                    placeholder="20 dígitos"
-                                   class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                                   inputmode="numeric" pattern="[0-9]*" maxlength="20"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors tabular-nums tracking-wider">
                         </div>
                     </div>
                 </section>
@@ -283,6 +310,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const currencySymbol = document.getElementById('currencySymbol');
     const currencyRadios = document.querySelectorAll('input[name="currency"]');
     const typeRadios     = document.querySelectorAll('input[name="type"]');
+    const paymentDaysRadios = document.querySelectorAll('input[name="payment_days"]');
+    const cuotasBlock    = document.getElementById('cuotasBlock');
+    const unicoBlock      = document.getElementById('unicoBlock');
 
     const simAmount      = document.getElementById('simAmount');
     const simCurrency    = document.getElementById('simCurrency');
@@ -296,20 +326,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const sym = () => document.querySelector('input[name="currency"]:checked')?.value === 'USD' ? '$' : 'S/';
     const fmt = n => n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+    function toggleBlocks() {
+        const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
+        cuotasBlock.classList.toggle('hidden', !isCuotas);
+        unicoBlock.classList.toggle('hidden', isCuotas);
+    }
+
     function update() {
         const a = parseFloat(amount.value) || 0;
-        const m = parseInt(months.value) || 1;
+        const m = parseInt(months.value) || 3;
         const s = sym();
         const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
 
-        const interest = a * 0.20;
-        const total = a + interest;
-        const monthly = total / m;
+        let interestRate, interest, total, monthly, plazoText;
+
+        if (isCuotas) {
+            interestRate = 0.20;
+            interest = a * interestRate;
+            total = a + interest;
+            monthly = total / m;
+            plazoText = m + (m === 1 ? ' mes' : ' meses');
+        } else {
+            const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
+            interestRate = days === 15 ? 0.10 : 0.15;
+            interest = a * interestRate;
+            total = a + interest;
+            monthly = 0;
+            plazoText = days + ' días';
+        }
 
         currencySymbol.textContent = s;
         simAmount.textContent      = s + ' ' + fmt(a);
         simCurrency.textContent    = s === '$' ? 'Dólares' : 'Soles';
-        simMonths.textContent      = m + (m === 1 ? ' mes' : ' meses');
+        simMonths.textContent      = plazoText;
         simType.textContent        = isCuotas ? 'Cuotas' : 'Pago único';
         simInterest.textContent    = s + ' ' + fmt(interest);
         simTotal.textContent       = s + ' ' + fmt(total);
@@ -321,9 +370,16 @@ document.addEventListener('DOMContentLoaded', function () {
     amount.addEventListener('input', update);
     months.addEventListener('input', update);
     currencyRadios.forEach(r => r.addEventListener('change', update));
-    typeRadios.forEach(r => r.addEventListener('change', update));
+    typeRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            toggleBlocks();
+            update();
+        });
+    });
+    paymentDaysRadios.forEach(r => r.addEventListener('change', update));
     reason.addEventListener('input', () => charCount.textContent = reason.value.length);
 
+    toggleBlocks();
     update();
     charCount.textContent = reason.value.length;
 });
