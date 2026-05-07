@@ -42,8 +42,10 @@ class GoogleController extends Controller
         $existingUser = User::where('email', $googleUser->getEmail())->first();
 
         if (session('referral_code') && $existingUser) {
+            $code = session('referral_code');
             session()->forget('referral_code');
-            return redirect('/')->with('error', 'Este correo ya está registrado. Inicia sesión para continuar.');
+            return redirect()->route('referral.handle', ['code' => $code])
+                ->with('error', 'Este correo ya está registrado.');
         }
 
         $user = User::firstOrCreate(
