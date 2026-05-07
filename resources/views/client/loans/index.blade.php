@@ -6,15 +6,9 @@
 <div class="min-h-screen px-5 md:px-10 py-8">
 
     <!-- Header -->
-    <div class="flex items-end justify-between mb-12">
-        <div>
-            <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Panel</p>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestionar Préstamos</h1>
-        </div>
-        <a href="{{ route('client.loans.profile.edit') }}"
-           class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-            Editar perfil →
-        </a>
+    <div class="mb-12">
+        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Panel</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestionar Préstamos</h1>
     </div>
 
     @if(session('success'))
@@ -63,7 +57,13 @@
 
     <!-- Perfil -->
     <div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-6">Tu perfil de préstamos</p>
+        <div class="flex items-center justify-between mb-6">
+            <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest">Tu perfil de préstamos</p>
+            <a href="{{ route('client.loans.profile.edit') }}"
+               class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                Editar →
+            </a>
+        </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-y-6">
             @foreach([
