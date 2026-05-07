@@ -26,7 +26,7 @@
         .dark nav::-webkit-scrollbar-thumb:hover, .dark main::-webkit-scrollbar-thumb:hover, .dark body::-webkit-scrollbar-thumb:hover { background: #4b5563; }
     </style>
 </head>
-<body class="h-full bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200"
+<body class="h-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200"
       onload="noBack();" onpageshow="if(event.persisted) noBack();">
 
 <script>
