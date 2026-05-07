@@ -31,46 +31,61 @@
 
     <!-- Benefits Section -->
     <div class="mb-12">
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-8">Beneficios exclusivos</p>
+        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-8">Beneficios y Rentabilidad</p>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-gray-100 dark:bg-gray-900 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-900">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-gray-100 dark:bg-gray-900 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-900 shadow-sm">
             
-            <!-- Benefit 1 -->
-            <div class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-4">
-                <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-2">Rentabilidad Competitiva</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Tasas de retorno diseñadas para maximizar el crecimiento de tu capital de forma constante.</p>
-                </div>
-            </div>
-
-            <!-- Benefit 2 -->
-            <div class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-4">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-2">Riesgo Gestionado</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Filtramos cada solicitud con un sistema de evaluación propio para proteger tu inversión.</p>
+            <!-- Benefit 1: Earning Model -->
+            <div class="bg-white dark:bg-gray-950 p-8 flex flex-col h-full">
+                <h3 class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-6">Rentabilidad</h3>
+                <div class="space-y-5">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-1.5">Gana el 2% Mensual</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Recibe el 2% de tu inversión cada 30 días. Por ejemplo: invierte S/ 20,000 y recibe S/ 400 mensuales.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Benefit 3 -->
-            <div class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-4">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+            <!-- Benefit 2: Security -->
+            <div class="bg-white dark:bg-gray-950 p-8 flex flex-col h-full">
+                <h3 class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-6">Seguridad</h3>
+                <div class="space-y-5">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-1.5">Retorno de Capital</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Tu inversión principal está protegida. Al finalizar el periodo, recuperas el 100% de tu capital íntegro.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-2">Transparencia Total</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Monitorea tus rendimientos y el estado de tus fondos en tiempo real desde tu panel.</p>
+            </div>
+
+            <!-- Benefit 3: Transparency -->
+            <div class="bg-white dark:bg-gray-950 p-8 flex flex-col h-full">
+                <h3 class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-6">Confianza</h3>
+                <div class="space-y-5">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-1.5">Pagos Puntuales</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Los intereses generados se depositan automáticamente cada mes directamente a tu cuenta bancaria.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
