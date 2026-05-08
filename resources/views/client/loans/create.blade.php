@@ -255,10 +255,28 @@
                                 <table class="w-full text-[10px] text-left">
                                     <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
                                         <tr>
-                                            <th class="px-2 py-1.5 font-medium">N°</th>
-                                            <th class="px-2 py-1.5 font-medium">Capital</th>
-                                            <th class="px-2 py-1.5 font-medium">Interés</th>
-                                            <th class="px-2 py-1.5 font-medium">Saldo</th>
+                                            <th class="px-2 py-2 font-medium">N°</th>
+                                            <th class="px-2 py-2 font-medium">
+                                                <div class="flex items-center gap-1 group relative">
+                                                    Capital
+                                                    <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block w-32 p-2 bg-gray-900 text-white text-[9px] rounded shadow-lg z-50">Parte de la cuota que reduce la deuda principal.</div>
+                                                </div>
+                                            </th>
+                                            <th class="px-2 py-2 font-medium">
+                                                <div class="flex items-center gap-1 group relative">
+                                                    Interés
+                                                    <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block w-32 p-2 bg-gray-900 text-white text-[9px] rounded shadow-lg z-50">Costo por el uso del dinero prestado en este periodo.</div>
+                                                </div>
+                                            </th>
+                                            <th class="px-2 py-2 font-medium">
+                                                <div class="flex items-center gap-1 group relative">
+                                                    Saldo
+                                                    <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-900 text-white text-[9px] rounded shadow-lg z-50">Monto pendiente de pago después de esta cuota.</div>
+                                                </div>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody id="scheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
@@ -275,10 +293,16 @@
                     </p>
 
                     <!-- Submit mobile -->
-                    <button type="submit" id="submitMobile"
-                            class="md:hidden w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
-                        Enviar solicitud
-                    </button>
+                    <div class="md:hidden flex gap-3">
+                        <button type="button" id="toggleScheduleMobile"
+                                class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-bold transition-colors uppercase tracking-tighter">
+                            Ver cronograma
+                        </button>
+                        <button type="submit"
+                                class="flex-[2] py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-colors uppercase tracking-tighter">
+                            Enviar solicitud
+                        </button>
+                    </div>
 
                     <!-- Submit desktop -->
                     <button type="submit"
@@ -292,6 +316,53 @@
         </div>
     </form>
 
+</div>
+
+<!-- Modal Cronograma (Mobile) -->
+<div id="scheduleModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Overlay -->
+        <div id="closeModalOverlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal content -->
+        <div class="inline-block align-bottom bg-white dark:bg-gray-950 rounded-t-3xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:rounded-3xl">
+            <div class="px-6 py-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Cronograma de Pagos</h3>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Simulación Sistema Francés</p>
+                    </div>
+                    <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
+                            <tr>
+                                <th class="px-3 py-3 font-medium">N°</th>
+                                <th class="px-3 py-3 font-medium">Capital</th>
+                                <th class="px-3 py-3 font-medium">Interés</th>
+                                <th class="px-3 py-3 font-medium">Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
+                            <!-- JS dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8">
+                    <button type="button" id="closeModalBtnBottom" class="w-full py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold uppercase tracking-widest">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -425,7 +496,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateSchedule(principal, monthlyRate, months, symbol) {
         const body = document.getElementById('scheduleBody');
+        const modalBody = document.getElementById('modalScheduleBody');
         body.innerHTML = '';
+        modalBody.innerHTML = '';
         
         let balance = principal;
         const monthlyPayment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
@@ -435,14 +508,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const capital = monthlyPayment - interest;
             balance -= capital;
             
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td class="px-2 py-1.5 font-medium text-gray-900 dark:text-white">${i}</td>
-                <td class="px-2 py-1.5">${symbol} ${fmt(capital)}</td>
-                <td class="px-2 py-1.5">${symbol} ${fmt(interest)}</td>
-                <td class="px-2 py-1.5">${symbol} ${fmt(Math.max(0, balance))}</td>
+            const html = `
+                <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
             `;
+
+            const row = document.createElement('tr');
+            row.innerHTML = html;
             body.appendChild(row);
+
+            const modalRow = document.createElement('tr');
+            modalRow.innerHTML = html.replace(/px-2 py-2/g, 'px-3 py-3');
+            modalBody.appendChild(modalRow);
         }
     }
 
@@ -495,6 +574,30 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleSim.querySelector('svg').style.transform = simExpanded ? '' : 'rotate(180deg)';
         });
     }
+
+    const toggleScheduleMobile = document.getElementById('toggleScheduleMobile');
+    const scheduleModal = document.getElementById('scheduleModal');
+    const closeModalElements = [
+        document.getElementById('closeModalBtn'),
+        document.getElementById('closeModalBtnBottom'),
+        document.getElementById('closeModalOverlay')
+    ];
+
+    if (toggleScheduleMobile) {
+        toggleScheduleMobile.addEventListener('click', () => {
+            scheduleModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
+        });
+    }
+
+    closeModalElements.forEach(el => {
+        if (el) {
+            el.addEventListener('click', () => {
+                scheduleModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            });
+        }
+    });
 
     if (amount.value) {
         amount.value = formatNumber(amount.value.replace(/[^0-9.]/g, ''));
