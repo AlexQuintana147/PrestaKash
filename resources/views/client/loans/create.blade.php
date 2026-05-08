@@ -251,7 +251,7 @@
                                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cronograma de pagos</span>
                                 <button type="button" onclick="document.getElementById('fullSchedule').classList.toggle('hidden')" class="text-[10px] text-green-600 font-bold hover:underline">VER DETALLE</button>
                             </div>
-                            <div id="fullSchedule" class="hidden overflow-hidden rounded-lg border border-gray-100 dark:border-gray-800">
+                            <div id="fullSchedule" class="hidden overflow-visible rounded-lg border border-gray-100 dark:border-gray-800">
                                 <table class="w-full text-[10px] text-left">
                                     <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
                                         <tr>
@@ -261,7 +261,7 @@
                                                     Capital
                                                     <div class="relative group">
                                                         <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none">
                                                             Parte de la cuota que reduce la deuda principal.
                                                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                                                         </div>
@@ -273,7 +273,7 @@
                                                     Interés
                                                     <div class="relative group">
                                                         <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none">
                                                             Costo por el uso del dinero prestado en este periodo.
                                                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                                                         </div>
@@ -285,7 +285,7 @@
                                                     Saldo
                                                     <div class="relative group">
                                                         <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none">
                                                             Monto pendiente de pago después de esta cuota.
                                                             <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                                                         </div>
@@ -354,7 +354,7 @@
                     </button>
                 </div>
 
-                <div class="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800">
+                <div class="overflow-visible rounded-2xl border border-gray-100 dark:border-gray-800">
                     <table class="w-full text-xs text-left">
                         <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
                             <tr>
@@ -364,7 +364,7 @@
                                         Capital
                                         <div class="relative group">
                                             <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none">
                                                 Parte de la cuota que reduce la deuda principal.
                                                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                                             </div>
@@ -376,7 +376,7 @@
                                         Interés
                                         <div class="relative group">
                                             <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none">
                                                 Costo por el uso del dinero prestado en este periodo.
                                                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                                             </div>
@@ -388,7 +388,7 @@
                                         Saldo
                                         <div class="relative group">
                                             <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none">
                                                 Monto pendiente de pago después de esta cuota.
                                                 <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                                             </div>
