@@ -56,12 +56,13 @@ class SettingsController extends Controller
     {
         $request->validate([
             'company_ruc' => 'nullable|numeric|digits_between:8,20',
-            'company_razon_social' => 'nullable|string|max:255',
+            'company_razon_social' => 'nullable|string|max:255|regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/u',
             'company_logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
             'company_signature' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
         ], [
             'company_ruc.numeric' => 'El RUC debe contener solo números.',
             'company_ruc.digits_between' => 'El RUC debe tener entre 8 y 20 dígitos.',
+            'company_razon_social.regex' => 'La Razón Social solo debe contener letras.',
         ]);
 
         $manager = new ImageManager(new Driver());

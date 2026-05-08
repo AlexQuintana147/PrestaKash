@@ -192,6 +192,7 @@
                     <div class="group">
                         <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Razón Social</label>
                         <input type="text" name="company_razon_social" value="{{ old('company_razon_social', $company_razon_social) }}"
+                               oninput="this.value = this.value.replace(/[^a-zA-Z\sñÑáéíóúÁÉÍÓÚ]/g, '')"
                                class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_razon_social') border-red-400 @enderror"
                                placeholder="Nombre legal de la empresa">
                         @error('company_razon_social') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
