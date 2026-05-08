@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasMany(Loan::class);
     }
 
+    public function bankAccounts()
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role?->name === 'admin';
