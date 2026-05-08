@@ -19,6 +19,7 @@ class SettingsController extends Controller
             'company_logo' => CompanySetting::get('company_logo'),
             'company_ruc' => CompanySetting::get('company_ruc'),
             'company_signature' => CompanySetting::get('company_signature'),
+            'company_razon_social' => CompanySetting::get('company_razon_social'),
         ];
 
         return view('superadmin.settings', $settings);
@@ -55,6 +56,7 @@ class SettingsController extends Controller
     {
         $request->validate([
             'company_ruc' => 'nullable|numeric|digits_between:8,20',
+            'company_razon_social' => 'nullable|string|max:255',
             'company_logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
             'company_signature' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
         ], [
@@ -92,6 +94,10 @@ class SettingsController extends Controller
 
         if ($request->filled('company_ruc')) {
             CompanySetting::set('company_ruc', $request->company_ruc);
+        }
+
+        if ($request->has('company_razon_social')) {
+            CompanySetting::set('company_razon_social', $request->company_razon_social);
         }
 
         return back()->with('success_company', 'Configuración de empresa actualizada correctamente.');
