@@ -95,6 +95,25 @@
                             </div>
                         </div>
 
+                        <!-- Sistema de Amortización (Solo si es cuotas) -->
+                        <div id="amortizationSystemBlock">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Sistema de amortización</label>
+                            <div class="flex gap-2">
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="amortization_system" value="french" class="hidden peer" {{ old('amortization_system', 'french') === 'french' ? 'checked' : '' }}>
+                                    <div class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                        Francés (Cuota fija)
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer flex-1">
+                                    <input type="radio" name="amortization_system" value="american" class="hidden peer" {{ old('amortization_system') === 'american' ? 'checked' : '' }}>
+                                    <div class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                        Americano (Interés mensual)
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Cuotas: slider de meses (3-24) -->
                         <div id="cuotasBlock">
                             <div class="flex items-center justify-between mb-3">
@@ -462,6 +481,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const paymentDaysRadios = document.querySelectorAll('input[name="payment_days"]');
     const cuotasBlock    = document.getElementById('cuotasBlock');
     const unicoBlock      = document.getElementById('unicoBlock');
+    const amortizationSystemBlock = document.getElementById('amortizationSystemBlock');
+    const amortizationRadios = document.querySelectorAll('input[name="amortization_system"]');
 
     const simAmount      = document.getElementById('simAmount');
     const simCurrency    = document.getElementById('simCurrency');
@@ -485,6 +506,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function toggleBlocks() {
         const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
         cuotasBlock.classList.toggle('hidden', !isCuotas);
+        amortizationSystemBlock.classList.toggle('hidden', !isCuotas);
         unicoBlock.classList.toggle('hidden', isCuotas);
     }
 
@@ -493,25 +515,32 @@ document.addEventListener('DOMContentLoaded', function () {
         const m = parseInt(months.value) || 3;
         const s = sym();
         const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
+        const system = document.querySelector('input[name="amortization_system"]:checked')?.value || 'french';
 
         let interestRate, interest, total, monthly, plazoText;
 
         if (isCuotas) {
-            interestRate = 0.20; // 20% mensual (Sistema Francés)
+            interestRate = 0.20; // 20% mensual
             
-            // Fórmula Sistema Francés: P = (A * i) / (1 - (1 + i)^-n)
-            if (a > 0) {
-                monthly = (a * interestRate) / (1 - Math.pow(1 + interestRate, -m));
-                total = monthly * m;
-                interest = total - a;
+            if (system === 'french') {
+                // Sistema Francés
+                if (a > 0) {
+                    monthly = (a * interestRate) / (1 - Math.pow(1 + interestRate, -m));
+                    total = monthly * m;
+                    interest = total - a;
+                } else {
+                    monthly = 0; total = 0; interest = 0;
+                }
+                simInterestLabel.textContent = 'Interés Total (Sistema Francés)';
             } else {
-                monthly = 0;
-                total = 0;
-                interest = 0;
+                // Sistema Americano
+                interest = (a * interestRate) * m;
+                total = a + interest;
+                monthly = a * interestRate; // Pago mensual es solo el interés
+                simInterestLabel.textContent = 'Interés Total (Sistema Americano)';
             }
             
             plazoText = m + (m === 1 ? ' mes' : ' meses');
-            simInterestLabel.textContent = 'Interés Total (Sistema Francés)';
         } else {
             const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
             interestRate = days === 15 ? 0.10 : 0.20;
@@ -526,51 +555,70 @@ document.addEventListener('DOMContentLoaded', function () {
         simAmount.textContent      = s + ' ' + fmt(a);
         simCurrency.textContent    = s === '$' ? 'Dólares' : 'Soles';
         simMonths.textContent      = plazoText;
-        simType.textContent        = isCuotas ? 'Cuotas' : 'Pago único';
+        simType.textContent        = isCuotas ? (system === 'french' ? 'Cuotas (Francés)' : 'Cuotas (Americano)') : 'Pago único';
         simInterest.textContent    = s + ' ' + fmt(interest);
         simTotal.textContent       = s + ' ' + fmt(total);
-        simMonthly.textContent     = s + ' ' + fmt(monthly);
+        
+        if (isCuotas && system === 'american') {
+            simMonthly.textContent = s + ' ' + fmt(monthly) + ' (Final: ' + s + ' ' + fmt(a + monthly) + ')';
+        } else {
+            simMonthly.textContent = s + ' ' + fmt(monthly);
+        }
+
         simMonthlyRow.style.display = isCuotas ? '' : 'none';
         monthsDisplay.textContent  = m + (m === 1 ? ' mes' : ' meses');
 
-        // Actualizar cronograma si existe la función
+        // Actualizar cronograma
         if (isCuotas && a > 0) {
-            updateSchedule(a, interestRate, m, s);
+            updateSchedule(a, interestRate, m, s, system);
             document.getElementById('scheduleSection').classList.remove('hidden');
         } else {
             document.getElementById('scheduleSection').classList.add('hidden');
         }
     }
 
-    function updateSchedule(principal, monthlyRate, months, symbol) {
+    function updateSchedule(principal, monthlyRate, months, symbol, system) {
         const body = document.getElementById('scheduleBody');
         const modalBody = document.getElementById('modalScheduleBody');
         body.innerHTML = '';
         modalBody.innerHTML = '';
         
         let balance = principal;
-        const monthlyPayment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
-        
-        for (let i = 1; i <= months; i++) {
-            const interest = balance * monthlyRate;
-            const capital = monthlyPayment - interest;
-            balance -= capital;
-            
-            const html = `
-                <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-            `;
 
-            const row = document.createElement('tr');
-            row.innerHTML = html;
-            body.appendChild(row);
-
-            const modalRow = document.createElement('tr');
-            modalRow.innerHTML = html.replace(/px-2 py-2/g, 'px-3 py-3');
-            modalBody.appendChild(modalRow);
+        if (system === 'french') {
+            const monthlyPayment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+            for (let i = 1; i <= months; i++) {
+                const interest = balance * monthlyRate;
+                const capital = monthlyPayment - interest;
+                balance -= capital;
+                renderRow(i, capital, interest, balance, body, modalBody, symbol);
+            }
+        } else {
+            // Sistema Americano
+            for (let i = 1; i <= months; i++) {
+                const interest = principal * monthlyRate;
+                const capital = (i === months) ? principal : 0;
+                balance = (i === months) ? 0 : principal;
+                renderRow(i, capital, interest, balance, body, modalBody, symbol);
+            }
         }
+    }
+
+    function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
+        const html = `
+            <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+        `;
+
+        const row = document.createElement('tr');
+        row.innerHTML = html;
+        body.appendChild(row);
+
+        const modalRow = document.createElement('tr');
+        modalRow.innerHTML = html.replace(/px-2 py-2/g, 'px-3 py-3');
+        modalBody.appendChild(modalRow);
     }
 
     amount.addEventListener('input', function(e) {
@@ -610,6 +658,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     paymentDaysRadios.forEach(r => r.addEventListener('change', update));
+    amortizationRadios.forEach(r => r.addEventListener('change', update));
     reason.addEventListener('input', () => charCount.textContent = reason.value.length);
 
     const toggleSim = document.getElementById('toggleSim');
