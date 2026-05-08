@@ -257,24 +257,39 @@
                                         <tr>
                                             <th class="px-2 py-2 font-medium">N°</th>
                                             <th class="px-2 py-2 font-medium">
-                                                <div class="flex items-center gap-1 group relative">
+                                                <div class="flex items-center gap-1">
                                                     Capital
-                                                    <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                    <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block w-32 p-2 bg-gray-900 text-white text-[9px] rounded shadow-lg z-50">Parte de la cuota que reduce la deuda principal.</div>
+                                                    <div class="relative group">
+                                                        <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                            Parte de la cuota que reduce la deuda principal.
+                                                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </th>
                                             <th class="px-2 py-2 font-medium">
-                                                <div class="flex items-center gap-1 group relative">
+                                                <div class="flex items-center gap-1">
                                                     Interés
-                                                    <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                    <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block w-32 p-2 bg-gray-900 text-white text-[9px] rounded shadow-lg z-50">Costo por el uso del dinero prestado en este periodo.</div>
+                                                    <div class="relative group">
+                                                        <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                            Costo por el uso del dinero prestado en este periodo.
+                                                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </th>
                                             <th class="px-2 py-2 font-medium">
-                                                <div class="flex items-center gap-1 group relative">
+                                                <div class="flex items-center gap-1">
                                                     Saldo
-                                                    <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-900 text-white text-[9px] rounded shadow-lg z-50">Monto pendiente de pago después de esta cuota.</div>
+                                                    <div class="relative group">
+                                                        <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                            Monto pendiente de pago después de esta cuota.
+                                                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </th>
                                         </tr>
@@ -344,9 +359,42 @@
                         <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
                             <tr>
                                 <th class="px-3 py-3 font-medium">N°</th>
-                                <th class="px-3 py-3 font-medium">Capital</th>
-                                <th class="px-3 py-3 font-medium">Interés</th>
-                                <th class="px-3 py-3 font-medium">Saldo</th>
+                                <th class="px-3 py-3 font-medium">
+                                    <div class="flex items-center gap-1">
+                                        Capital
+                                        <div class="relative group">
+                                            <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                Parte de la cuota que reduce la deuda principal.
+                                                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="px-3 py-3 font-medium">
+                                    <div class="flex items-center gap-1">
+                                        Interés
+                                        <div class="relative group">
+                                            <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                Costo por el uso del dinero prestado en este periodo.
+                                                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="px-3 py-3 font-medium">
+                                    <div class="flex items-center gap-1">
+                                        Saldo
+                                        <div class="relative group">
+                                            <svg class="w-2.5 h-2.5 text-gray-300 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-32 p-2 bg-gray-800 text-white text-[9px] rounded shadow-xl z-50 text-center pointer-events-none">
+                                                Monto pendiente de pago después de esta cuota.
+                                                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="modalScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
