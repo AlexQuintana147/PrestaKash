@@ -42,8 +42,9 @@
                             <label for="amount" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Monto</label>
                             <div class="relative">
                                 <span id="currencySymbol" class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400 dark:text-gray-500 pointer-events-none">S/</span>
-                                <input type="number" name="amount" id="amount" min="100" step="0.01" value="{{ old('amount') }}"
+                                <input type="text" name="amount" id="amount" value="{{ old('amount') }}"
                                        placeholder="0.00"
+                                       inputmode="decimal"
                                        class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
                             </div>
                         </div>
@@ -333,6 +334,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const sym = () => document.querySelector('input[name="currency"]:checked')?.value === 'USD' ? '$' : 'S/';
     const fmt = n => n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+    function formatNumber(n) {
+        let parts = n.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parts.join('.');
+    }
+
     function toggleBlocks() {
         const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
         cuotasBlock.classList.toggle('hidden', !isCuotas);
@@ -340,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function update() {
-        const a = parseFloat(amount.value) || 0;
+        const a = parseFloat(amount.value.replace(/,/g, '')) || 0;
         const m = parseInt(months.value) || 3;
         const s = sym();
         const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
@@ -376,7 +383,28 @@ document.addEventListener('DOMContentLoaded', function () {
         monthsDisplay.textContent  = m + (m === 1 ? ' mes' : ' meses');
     }
 
-    amount.addEventListener('input', update);
+    amount.addEventListener('input', function(e) {
+        let cursorPosition = this.selectionStart;
+        let originalLength = this.value.length;
+        
+        let value = this.value.replace(/[^0-9.]/g, '');
+        let parts = value.split('.');
+        if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
+        
+        let formattedValue = formatNumber(value);
+        this.value = formattedValue;
+        
+        let newLength = this.value.length;
+        cursorPosition = cursorPosition + (newLength - originalLength);
+        this.setSelectionRange(cursorPosition, cursorPosition);
+        
+        update();
+    });
+
+    document.getElementById('loanForm').addEventListener('submit', function() {
+        amount.value = amount.value.replace(/,/g, '');
+    });
+
     months.addEventListener('input', update);
     currencyRadios.forEach(r => r.addEventListener('change', update));
     typeRadios.forEach(r => {
@@ -399,6 +427,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (amount.value) {
+        amount.value = formatNumber(amount.value.replace(/[^0-9.]/g, ''));
+    }
     toggleBlocks();
     update();
     charCount.textContent = reason.value.length;
