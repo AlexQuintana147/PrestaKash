@@ -63,7 +63,7 @@ class LoanController extends Controller
             $paymentDays  = null;
         } else {
             $paymentDays  = (int) $request->payment_days;
-            $tasaInteres  = $paymentDays === 15 ? 0.10 : 0.15;
+            $tasaInteres  = $paymentDays === 15 ? 0.10 : 0.20;
             $plazo        = 1; // un solo pago
         }
 

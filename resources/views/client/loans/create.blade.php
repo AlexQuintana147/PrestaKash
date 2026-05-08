@@ -126,7 +126,7 @@
                                     <input type="radio" name="payment_days" value="30" class="hidden peer" {{ old('payment_days') == '30' ? 'checked' : '' }}>
                                     <div class="text-center py-3 rounded-lg border border-transparent peer-checked:border-green-500/40 peer-checked:bg-green-500/5 transition-all">
                                         <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">30 días</p>
-                                        <p class="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">15% comisión</p>
+                                        <p class="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">20% comisión</p>
                                     </div>
                                 </label>
                             </div>
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
             simInterestLabel.textContent = 'Comisión simulada (20%)';
         } else {
             const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
-            interestRate = days === 15 ? 0.10 : 0.15;
+            interestRate = days === 15 ? 0.10 : 0.20;
             interest = a * interestRate;
             total = a + interest;
             monthly = 0;
