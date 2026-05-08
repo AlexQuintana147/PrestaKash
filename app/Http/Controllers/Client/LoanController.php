@@ -26,20 +26,18 @@ class LoanController extends Controller
 
     public function create()
     {
-        return view('client.loans.create');
+        $bankAccounts = Auth::user()->bankAccounts;
+        return view('client.loans.create', compact('bankAccounts'));
     }
 
     public function store(Request $request)
     {
         $rules = [
-            'amount'         => 'required|numeric|min:100',
-            'currency'       => 'required|in:PEN,USD',
-            'type'           => 'required|in:cuotas,unico',
-            'reason'         => 'required|string|min:10|max:1000',
-            'bank_name'      => 'required|string',
-            'account_number' => 'required|string|min:10',
-            'account_type'   => 'required|in:ahorros,corriente',
-            'cci'            => 'nullable|string|min:20',
+            'amount'          => 'required|numeric|min:100',
+            'currency'        => 'required|in:PEN,USD',
+            'type'            => 'required|in:cuotas,unico',
+            'reason'          => 'required|string|min:10|max:1000',
+            'bank_account_id' => 'required|exists:bank_accounts,id,user_id,' . Auth::id(),
         ];
 
         if ($request->type === 'cuotas') {
@@ -71,6 +69,8 @@ class LoanController extends Controller
         $totalAPagar  = $montoSolicitado + $interes;
         $cuotaMensual = $tipo === 'cuotas' ? ($totalAPagar / $plazo) : $totalAPagar;
 
+        $bankAccount = \App\Models\BankAccount::find($request->bank_account_id);
+
         Loan::create([
             'user_id'         => Auth::id(),
             'amount'          => $montoSolicitado,
@@ -85,10 +85,10 @@ class LoanController extends Controller
             'status'          => 'pending',
             'type'            => $tipo,
             'reason'          => $request->reason,
-            'bank_name'       => $request->bank_name,
-            'account_number'  => $request->account_number,
-            'account_type'    => $request->account_type,
-            'cci'             => $request->cci,
+            'bank_name'       => $bankAccount->bank_name,
+            'account_number'  => $bankAccount->account_number,
+            'account_type'    => $bankAccount->account_type,
+            'cci'             => $bankAccount->cci,
         ]);
 
         return redirect()->route('client.loans')->with('success', 'Tu solicitud de préstamo ha sido recibida y está en proceso de revisión.');

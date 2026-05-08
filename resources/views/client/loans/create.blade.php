@@ -158,45 +158,45 @@
                 <section>
                     <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Cuenta de desembolso</p>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="bank_name" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Banco</label>
-                            <select name="bank_name" id="bank_name"
-                                    class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
-                                <option value="" class="dark:bg-gray-950">Seleccionar</option>
-                                @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa'] as $bank)
-                                    <option value="{{ $bank }}" class="dark:bg-gray-950" {{ old('bank_name') === $bank ? 'selected' : '' }}>{{ $bank }}</option>
-                                @endforeach
-                            </select>
+                    @if($bankAccounts->isEmpty())
+                        <div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl p-6">
+                            <div class="flex gap-4">
+                                <div class="text-amber-500">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-amber-900 dark:text-amber-400 uppercase tracking-widest mb-1">No tienes cuentas registradas</h4>
+                                    <p class="text-xs text-amber-700 dark:text-amber-500/80 mb-4 leading-relaxed">Para solicitar un préstamo, primero debes agregar una cuenta bancaria donde recibirás el dinero.</p>
+                                    <a href="{{ route('client.dashboard') }}" class="inline-flex items-center text-[10px] font-black text-amber-900 dark:text-amber-400 uppercase tracking-[0.2em] border-b-2 border-amber-900 dark:border-amber-400 pb-0.5 hover:opacity-70 transition-opacity">
+                                        Ir al inicio para agregar cuenta
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-
-                        <div>
-                            <label for="account_type" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Tipo de cuenta</label>
-                            <select name="account_type" id="account_type"
-                                    class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
-                                <option value="ahorros" class="dark:bg-gray-950" {{ old('account_type', 'ahorros') === 'ahorros' ? 'selected' : '' }}>Ahorros</option>
-                                <option value="corriente" class="dark:bg-gray-950" {{ old('account_type') === 'corriente' ? 'selected' : '' }}>Corriente</option>
-                            </select>
+                    @else
+                        <div class="group">
+                            <label for="bank_account_id" class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Selecciona tu cuenta de destino</label>
+                            <div class="relative">
+                                <select name="bank_account_id" id="bank_account_id" required
+                                        class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
+                                    <option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>
+                                    @foreach($bankAccounts as $acc)
+                                        <option value="{{ $acc->id }}" class="dark:bg-gray-950" {{ old('bank_account_id') == $acc->id ? 'selected' : '' }}>
+                                            {{ $acc->alias ?: $acc->bank_name }} — {{ $acc->account_number }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <a href="{{ route('client.dashboard') }}" class="text-green-600 dark:text-green-400 font-bold hover:underline">Gestiónalas aquí</a></p>
                         </div>
-
-                        <div>
-                            <label for="account_number" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Número de cuenta</label>
-                            <input type="text" name="account_number" id="account_number" value="{{ old('account_number') }}"
-                                   placeholder="Ej: 19112345678001"
-                                   inputmode="numeric" pattern="[0-9]*" maxlength="20"
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                   class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors tabular-nums tracking-wider">
-                        </div>
-
-                        <div>
-                            <label for="cci" class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">CCI <span class="text-gray-300 dark:text-gray-700">· opcional</span></label>
-                            <input type="text" name="cci" id="cci" value="{{ old('cci') }}"
-                                   placeholder="20 dígitos"
-                                   inputmode="numeric" pattern="[0-9]*" maxlength="20"
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                   class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors tabular-nums tracking-wider">
-                        </div>
-                    </div>
+                    @endif
                 </section>
 
                 <!-- Motivo -->
@@ -328,21 +328,25 @@
 
                     <!-- Submit mobile -->
                     <div class="md:hidden flex gap-3">
-                        <button type="button" id="toggleScheduleMobile"
-                                class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-bold transition-colors uppercase tracking-tighter">
-                            Ver cronograma
-                        </button>
-                        <button type="submit"
-                                class="flex-[2] py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-colors uppercase tracking-tighter">
-                            Enviar solicitud
-                        </button>
+                        @if($bankAccounts->isNotEmpty())
+                            <button type="button" id="toggleScheduleMobile"
+                                    class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-bold transition-colors uppercase tracking-tighter">
+                                Ver cronograma
+                            </button>
+                            <button type="submit"
+                                    class="flex-[2] py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-colors uppercase tracking-tighter">
+                                Enviar solicitud
+                            </button>
+                        @endif
                     </div>
 
                     <!-- Submit desktop -->
-                    <button type="submit"
-                            class="hidden md:block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
-                        Enviar solicitud
-                    </button>
+                    @if($bankAccounts->isNotEmpty())
+                        <button type="submit"
+                                class="hidden md:block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
+                            Enviar solicitud
+                        </button>
+                    @endif
 
                 </div>
             </div>
