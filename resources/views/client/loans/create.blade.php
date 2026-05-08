@@ -388,6 +388,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let originalLength = this.value.length;
         
         let value = this.value.replace(/[^0-9.]/g, '');
+
+        // Eliminar ceros a la izquierda, excepto si es "0."
+        if (value.length > 1 && value.startsWith('0') && value[1] !== '.') {
+            value = value.replace(/^0+/, '');
+        }
+        
         let parts = value.split('.');
         if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
         
