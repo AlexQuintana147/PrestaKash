@@ -364,7 +364,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white">Cronograma de Pagos</h3>
-                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Simulación Sistema Francés</p>
+                        <p id="modalScheduleSubtitle" class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Simulación Sistema Francés</p>
                     </div>
                     <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-500">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -508,6 +508,12 @@ document.addEventListener('DOMContentLoaded', function () {
         cuotasBlock.classList.toggle('hidden', !isCuotas);
         amortizationSystemBlock.classList.toggle('hidden', !isCuotas);
         unicoBlock.classList.toggle('hidden', isCuotas);
+        
+        // Mostrar/Ocultar botón de cronograma en móvil
+        const toggleBtn = document.getElementById('toggleScheduleMobile');
+        if (toggleBtn) {
+            toggleBtn.classList.toggle('hidden', !isCuotas);
+        }
     }
 
     function update() {
@@ -532,12 +538,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     monthly = 0; total = 0; interest = 0;
                 }
                 simInterestLabel.textContent = 'Interés Total (Sistema Francés)';
+                document.getElementById('modalScheduleSubtitle').textContent = 'Simulación Sistema Francés';
             } else {
                 // Sistema Americano
                 interest = (a * interestRate) * m;
                 total = a + interest;
                 monthly = a * interestRate; // Pago mensual es solo el interés
                 simInterestLabel.textContent = 'Interés Total (Sistema Americano)';
+                document.getElementById('modalScheduleSubtitle').textContent = 'Simulación Sistema Americano';
             }
             
             plazoText = m + (m === 1 ? ' mes' : ' meses');
