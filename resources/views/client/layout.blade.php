@@ -122,7 +122,11 @@
 
             <!-- User -->
             <div class="flex items-center gap-3 px-3 py-2">
-                <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=e5e7eb&color=6b7280' }}"
+                @php
+                    $selfie = Auth::user()->documents?->selfie;
+                    $profilePhoto = $selfie ? Storage::url($selfie) : (Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=e5e7eb&color=6b7280');
+                @endphp
+                <img src="{{ $profilePhoto }}"
                      class="w-8 h-8 rounded-full object-cover flex-shrink-0 bg-gray-200 dark:bg-gray-800">
                 <div class="min-w-0">
                     <p class="text-xs font-medium text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
