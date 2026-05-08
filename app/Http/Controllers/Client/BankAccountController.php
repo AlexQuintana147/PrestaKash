@@ -18,6 +18,7 @@ class BankAccountController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'alias'          => 'nullable|string|max:50',
             'bank_name'      => 'required|string',
             'account_type'   => 'required|string|in:ahorros,corriente',
             'account_number' => 'required|string|max:30',
@@ -40,6 +41,7 @@ class BankAccountController extends Controller
         }
 
         $request->validate([
+            'alias'          => 'nullable|string|max:50',
             'bank_name'      => 'required|string',
             'account_type'   => 'required|string|in:ahorros,corriente',
             'account_number' => 'required|string|max:30',

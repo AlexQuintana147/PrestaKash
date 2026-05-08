@@ -133,6 +133,10 @@
                     <h4 id="formTitle" class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-6">Agregar Nueva Cuenta</h4>
                     <form id="actualForm" onsubmit="saveBankAccount(event)" class="space-y-6">
                         <input type="hidden" id="editingId" value="">
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">Nombre Personalizado (Alias)</label>
+                            <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="group">
                                 <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">Banco</label>
@@ -152,11 +156,15 @@
                             </div>
                             <div class="group">
                                 <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">Número de Cuenta</label>
-                                <input type="text" id="f_account_number" required placeholder="Ej: 1911234..." class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
+                                <input type="text" id="f_account_number" required placeholder="Solo números" 
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                             </div>
                             <div class="group">
                                 <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">CCI (Opcional)</label>
-                                <input type="text" id="f_cci" placeholder="20 dígitos" class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
+                                <input type="text" id="f_cci" placeholder="Solo números" 
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                             </div>
                         </div>
                         <div class="flex gap-4 pt-4">
@@ -208,8 +216,8 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">${acc.bank_name}</span>
-                                <span class="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 text-[8px] font-bold rounded uppercase tracking-tighter text-gray-600 dark:text-gray-400">${acc.account_type}</span>
+                                <span class="text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">${acc.alias || acc.bank_name}</span>
+                                <span class="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 text-[8px] font-bold rounded uppercase tracking-tighter text-gray-600 dark:text-gray-400">${acc.bank_name} - ${acc.account_type}</span>
                             </div>
                             <p class="text-xs font-medium text-gray-900 dark:text-white tabular-nums">${acc.account_number}</p>
                             ${acc.cci ? `<p class="text-[10px] text-gray-400 mt-1 tabular-nums">CCI: ${acc.cci}</p>` : ''}
@@ -250,6 +258,7 @@
         if (!acc) return;
         
         document.getElementById('editingId').value = acc.id;
+        document.getElementById('f_alias').value = acc.alias || '';
         document.getElementById('f_bank_name').value = acc.bank_name;
         document.getElementById('f_account_type').value = acc.account_type;
         document.getElementById('f_account_number').value = acc.account_number;
@@ -263,6 +272,7 @@
         e.preventDefault();
         const id = document.getElementById('editingId').value;
         const data = {
+            alias: document.getElementById('f_alias').value,
             bank_name: document.getElementById('f_bank_name').value,
             account_type: document.getElementById('f_account_type').value,
             account_number: document.getElementById('f_account_number').value,
