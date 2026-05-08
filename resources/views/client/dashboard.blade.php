@@ -156,13 +156,15 @@
                             </div>
                             <div class="group">
                                 <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">Número de Cuenta</label>
-                                <input type="text" id="f_account_number" required placeholder="Solo números" 
+                                <input type="text" id="f_account_number" required placeholder="Ej: 19134567890123" 
+                                       maxlength="14"
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                        class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                             </div>
                             <div class="group">
                                 <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">CCI (Opcional)</label>
-                                <input type="text" id="f_cci" placeholder="Solo números" 
+                                <input type="text" id="f_cci" placeholder="Ej: 00219100123456789012" 
+                                       maxlength="20"
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                        class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                             </div>

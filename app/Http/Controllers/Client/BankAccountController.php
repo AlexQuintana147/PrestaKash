@@ -21,8 +21,8 @@ class BankAccountController extends Controller
             'alias'          => 'nullable|string|max:50',
             'bank_name'      => 'required|string',
             'account_type'   => 'required|string|in:ahorros,corriente',
-            'account_number' => 'required|string|max:30',
-            'cci'            => 'nullable|string|max:30',
+            'account_number' => 'required|string|max:14',
+            'cci'            => 'nullable|string|max:20',
         ]);
 
         $account = Auth::user()->bankAccounts()->create($request->all());
@@ -44,8 +44,8 @@ class BankAccountController extends Controller
             'alias'          => 'nullable|string|max:50',
             'bank_name'      => 'required|string',
             'account_type'   => 'required|string|in:ahorros,corriente',
-            'account_number' => 'required|string|max:30',
-            'cci'            => 'nullable|string|max:30',
+            'account_number' => 'required|string|max:14',
+            'cci'            => 'nullable|string|max:20',
         ]);
 
         $bankAccount->update($request->all());
