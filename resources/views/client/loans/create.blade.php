@@ -244,6 +244,29 @@
                             <span id="simInterestLabel" class="text-amber-500 dark:text-amber-400">Comisión simulada (20%)</span>
                             <span id="simInterest" class="text-amber-500 dark:text-amber-400 font-medium tabular-nums">S/ 0.00</span>
                         </div>
+
+                        <!-- Cronograma Preview -->
+                        <div id="scheduleSection" class="hidden pt-4 border-t border-gray-100 dark:border-gray-800 mt-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cronograma de pagos</span>
+                                <button type="button" onclick="document.getElementById('fullSchedule').classList.toggle('hidden')" class="text-[10px] text-green-600 font-bold hover:underline">VER DETALLE</button>
+                            </div>
+                            <div id="fullSchedule" class="hidden overflow-hidden rounded-lg border border-gray-100 dark:border-gray-800">
+                                <table class="w-full text-[10px] text-left">
+                                    <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
+                                        <tr>
+                                            <th class="px-2 py-1.5 font-medium">N°</th>
+                                            <th class="px-2 py-1.5 font-medium">Capital</th>
+                                            <th class="px-2 py-1.5 font-medium">Interés</th>
+                                            <th class="px-2 py-1.5 font-medium">Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
+                                        <!-- JS dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Disclaimer (desktop only) -->
@@ -355,12 +378,21 @@ document.addEventListener('DOMContentLoaded', function () {
         let interestRate, interest, total, monthly, plazoText;
 
         if (isCuotas) {
-            interestRate = 0.20;
-            interest = a * interestRate;
-            total = a + interest;
-            monthly = total / m;
+            interestRate = 0.20; // 20% mensual (Sistema Francés)
+            
+            // Fórmula Sistema Francés: P = (A * i) / (1 - (1 + i)^-n)
+            if (a > 0) {
+                monthly = (a * interestRate) / (1 - Math.pow(1 + interestRate, -m));
+                total = monthly * m;
+                interest = total - a;
+            } else {
+                monthly = 0;
+                total = 0;
+                interest = 0;
+            }
+            
             plazoText = m + (m === 1 ? ' mes' : ' meses');
-            simInterestLabel.textContent = 'Comisión simulada (20%)';
+            simInterestLabel.textContent = 'Interés Total (Sistema Francés)';
         } else {
             const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
             interestRate = days === 15 ? 0.10 : 0.20;
@@ -368,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function () {
             total = a + interest;
             monthly = 0;
             plazoText = days + ' días';
-            simInterestLabel.textContent = 'Comisión simulada (' + (interestRate * 100) + '%)';
+            simInterestLabel.textContent = 'Comisión (' + (interestRate * 100) + '%)';
         }
 
         currencySymbol.textContent = s;
@@ -381,6 +413,37 @@ document.addEventListener('DOMContentLoaded', function () {
         simMonthly.textContent     = s + ' ' + fmt(monthly);
         simMonthlyRow.style.display = isCuotas ? '' : 'none';
         monthsDisplay.textContent  = m + (m === 1 ? ' mes' : ' meses');
+
+        // Actualizar cronograma si existe la función
+        if (isCuotas && a > 0) {
+            updateSchedule(a, interestRate, m, s);
+            document.getElementById('scheduleSection').classList.remove('hidden');
+        } else {
+            document.getElementById('scheduleSection').classList.add('hidden');
+        }
+    }
+
+    function updateSchedule(principal, monthlyRate, months, symbol) {
+        const body = document.getElementById('scheduleBody');
+        body.innerHTML = '';
+        
+        let balance = principal;
+        const monthlyPayment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+        
+        for (let i = 1; i <= months; i++) {
+            const interest = balance * monthlyRate;
+            const capital = monthlyPayment - interest;
+            balance -= capital;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-2 py-1.5 font-medium text-gray-900 dark:text-white">${i}</td>
+                <td class="px-2 py-1.5">${symbol} ${fmt(capital)}</td>
+                <td class="px-2 py-1.5">${symbol} ${fmt(interest)}</td>
+                <td class="px-2 py-1.5">${symbol} ${fmt(Math.max(0, balance))}</td>
+            `;
+            body.appendChild(row);
+        }
     }
 
     amount.addEventListener('input', function(e) {
