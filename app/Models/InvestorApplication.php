@@ -13,6 +13,7 @@ class InvestorApplication extends Model
         'user_id',
         'phone',
         'occupation',
+        'currency',
         'intended_amount',
         'source_of_funds',
         'experience',

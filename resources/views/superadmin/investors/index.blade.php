@@ -96,7 +96,7 @@
             'phone' => $app->phone,
             'dni' => $app->user->dni ?? '—',
             'occupation' => $app->occupation,
-            'amount' => number_format($app->intended_amount, 2),
+            'amount' => ($app->currency === 'USD' ? '$ ' : 'S/ ') . number_format($app->intended_amount, 2),
             'term' => $app->preferred_term,
             'source' => $app->source_of_funds,
             'experience' => $app->experience ?? 'Sin experiencia previa registrada.',
@@ -142,7 +142,9 @@
         </div>
 
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $app->occupation }}</span>
-        <span class="hidden md:block text-xs text-green-600 dark:text-green-400 font-bold text-center">S/ {{ number_format($app->intended_amount, 2) }}</span>
+        <span class="hidden md:block text-xs text-green-600 dark:text-green-400 font-bold text-center">
+            {{ $app->currency === 'USD' ? '$' : 'S/' }} {{ number_format($app->intended_amount, 2) }}
+        </span>
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $app->preferred_term }}</span>
 
         <!-- Estado -->

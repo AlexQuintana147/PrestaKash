@@ -60,16 +60,18 @@ class InvestorApplicationController extends Controller
         $request->validate([
             'phone' => 'required|string',
             'occupation' => 'required|string|max:255',
+            'currency' => 'required|string|in:PEN,USD',
             'intended_amount' => 'required|numeric|min:100',
             'source_of_funds' => 'required|string|max:255',
             'experience' => 'nullable|string',
-            'preferred_term' => 'required|string',
+            'preferred_term' => 'required|string|in:6 meses,12 meses',
         ]);
 
         InvestorApplication::create([
             'user_id' => Auth::id(),
             'phone' => $request->phone,
             'occupation' => $request->occupation,
+            'currency' => $request->currency,
             'intended_amount' => $request->intended_amount,
             'source_of_funds' => $request->source_of_funds,
             'experience' => $request->experience,

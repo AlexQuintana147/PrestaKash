@@ -43,10 +43,25 @@
             </div>
 
             <div class="space-y-1">
-                <label for="intended_amount" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Monto Estimado (S/)</label>
-                <input type="number" name="intended_amount" id="intended_amount" value="{{ old('intended_amount') }}" required
-                       placeholder="Mínimo S/ 100"
-                       class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                <label for="intended_amount" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Monto Estimado</label>
+                <div class="flex items-end gap-3">
+                    <div class="relative group min-w-[80px]">
+                        <select name="currency" id="currency" required
+                                class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all appearance-none cursor-pointer relative z-10">
+                            <option value="PEN" {{ old('currency') == 'PEN' ? 'selected' : '' }} class="dark:bg-gray-950">S/</option>
+                            <option value="USD" {{ old('currency') == 'USD' ? 'selected' : '' }} class="dark:bg-gray-950">$</option>
+                        </select>
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-hover:text-green-500 transition-colors z-0">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <input type="text" id="amount_display" value="{{ old('intended_amount') }}" required
+                               placeholder="Mínimo 100.00"
+                               class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                        <input type="hidden" name="intended_amount" id="intended_amount" value="{{ old('intended_amount') }}">
+                    </div>
+                </div>
                 @error('intended_amount') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
             </div>
 
@@ -73,7 +88,7 @@
         <div class="space-y-3">
             <label class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Plazo de Inversión</label>
             <div class="flex flex-wrap gap-6">
-                @foreach(['3 meses', '6 meses', '12 meses', 'Indefinido'] as $term)
+                @foreach(['6 meses', '12 meses'] as $term)
                     <label class="relative group cursor-pointer">
                         <input type="radio" name="preferred_term" value="{{ $term }}" class="sr-only peer" required {{ old('preferred_term') == $term ? 'checked' : '' }}>
                         <div class="text-[11px] font-bold text-gray-300 dark:text-gray-700 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all duration-300">
@@ -105,4 +120,52 @@
     </form>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const displayInput = document.getElementById('amount_display');
+    const hiddenInput = document.getElementById('intended_amount');
+
+    function formatAmount(value) {
+        // Eliminar todo lo que no sea número o punto
+        value = value.replace(/[^0-9.]/g, '');
+        
+        // Evitar múltiples puntos
+        const parts = value.split('.');
+        if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
+        
+        // No permitir 0 al inicio si no es decimal (0.xx)
+        if (value.length > 1 && value[0] === '0' && value[1] !== '.') {
+            value = value.substring(1);
+        }
+
+        // Si está vacío
+        if (!value) return '';
+
+        // Formatear con comas para miles
+        const numberParts = value.split('.');
+        numberParts[0] = numberParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        
+        // Limitar a 2 decimales
+        if (numberParts[1]) {
+            numberParts[1] = numberParts[1].substring(0, 2);
+        }
+
+        return numberParts.join('.');
+    }
+
+    displayInput.addEventListener('input', function(e) {
+        const formatted = formatAmount(e.target.value);
+        displayInput.value = formatted;
+        
+        // Guardar valor real (sin comas) en el hidden
+        hiddenInput.value = formatted.replace(/,/g, '');
+    });
+
+    // Formatear valor inicial si existe
+    if (displayInput.value) {
+        displayInput.value = formatAmount(displayInput.value);
+    }
+});
+</script>
 @endsection
