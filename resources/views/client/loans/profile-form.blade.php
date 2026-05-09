@@ -120,15 +120,15 @@
                     <div>
                         <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
                         <div class="grid grid-cols-2 gap-2">
-                            @foreach(['Estudiante activo', 'Egresado', 'Titulado', 'Bachiller'] as $opt)
-                            <label class="option-card {{ old('academic_status') === $opt ? 'selected' : '' }}">
-                                <input type="radio" name="academic_status" value="{{ $opt }}" {{ old('academic_status') === $opt ? 'checked' : '' }} required onchange="syncCards(this)">
+                            @foreach(['Estudiante activo', 'Egresado', 'Titulado', 'Bachiller', 'Secundaria completa', 'Ninguno de los anteriores'] as $opt)
+                            <label class="option-card {{ old('academic_status', $profile->academic_status ?? '') === $opt ? 'selected' : '' }}">
+                                <input type="radio" name="academic_status" value="{{ $opt }}" {{ old('academic_status', $profile->academic_status ?? '') === $opt ? 'checked' : '' }} required onchange="syncCards(this)">
                                 <div class="check-box">
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                         <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </div>
-                                <span>{{ $opt }}</span>
+                                <span class="leading-tight">{{ $opt }}</span>
                             </label>
                             @endforeach
                         </div>
@@ -165,21 +165,37 @@
                         <div>
                             <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
                             <div class="flex gap-2">
-                                <label class="option-card {{ old('is_employed') == '1' ? 'selected' : '' }}">
-                                    <input type="radio" name="is_employed" value="1" {{ old('is_employed') == '1' ? 'checked' : '' }} required onchange="syncCards(this)">
+                                <label class="option-card {{ old('is_employed', $profile->is_employed ?? '') == '1' ? 'selected' : '' }}">
+                                    <input type="radio" name="is_employed" value="1" {{ old('is_employed', $profile->is_employed ?? '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
                                     <div class="check-box">
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </div>
                                     <span>Sí</span>
                                 </label>
-                                <label class="option-card {{ old('is_employed') == '0' ? 'selected' : '' }}">
-                                    <input type="radio" name="is_employed" value="0" {{ old('is_employed') == '0' ? 'checked' : '' }} onchange="syncCards(this)">
+                                <label class="option-card {{ old('is_employed', $profile->is_employed ?? '') == '0' ? 'selected' : '' }}">
+                                    <input type="radio" name="is_employed" value="0" {{ old('is_employed', $profile->is_employed ?? '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
                                     <div class="check-box">
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </div>
                                     <span>No</span>
                                 </label>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Tipo de empleo -->
+                    <div id="employmentTypeField" class="{{ old('is_employed', $profile->is_employed ?? '') == '1' ? '' : 'hidden' }} pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                        <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
+                        <div class="flex gap-2">
+                            @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
+                            <label class="option-card {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'selected' : '' }}">
+                                <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }} onchange="syncCards(this)">
+                                <div class="check-box">
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </div>
+                                <span>{{ $label }}</span>
+                            </label>
+                            @endforeach
                         </div>
                     </div>
 
@@ -205,11 +221,18 @@
                     </div>
 
                     <!-- Campos cónyuge -->
-                    <div id="spouseFields" class="{{ old('marital_status') === 'casado_compartido' ? '' : 'hidden' }} grid grid-cols-2 gap-3 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-1">Nombre del cónyuge</label>
-                            <input type="text" name="spouse_name" value="{{ old('spouse_name', $profile->spouse_name ?? '') }}" placeholder="Nombres y apellidos"
-                                   class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                    <div id="spouseFields" class="{{ old('marital_status', $profile->marital_status ?? '') === 'casado_compartido' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
+                                <input type="text" name="spouse_first_name" value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}" placeholder="Nombres"
+                                       class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
+                                <input type="text" name="spouse_last_name" value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}" placeholder="Apellidos"
+                                       class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
@@ -249,8 +272,23 @@ function toggleSpouse() {
         fields.classList.remove('hidden');
     } else {
         fields.classList.add('hidden');
-        document.querySelector('input[name="spouse_name"]').value = '';
+        document.querySelector('input[name="spouse_first_name"]').value = '';
+        document.querySelector('input[name="spouse_last_name"]').value = '';
         document.querySelector('input[name="spouse_dni"]').value = '';
+    }
+}
+
+function toggleEmployment() {
+    const val = document.querySelector('input[name="is_employed"]:checked')?.value;
+    const field = document.getElementById('employmentTypeField');
+    if (val == '1') {
+        field.classList.remove('hidden');
+    } else {
+        field.classList.add('hidden');
+        document.querySelectorAll('input[name="employment_type"]').forEach(r => {
+            r.checked = false;
+            r.closest('.option-card').classList.remove('selected');
+        });
     }
 }
 </script>

@@ -8,8 +8,8 @@ class ClientProfile extends Model
 {
     protected $fillable = [
         'user_id', 'institution', 'career', 'academic_status',
-        'has_children', 'instagram', 'is_employed', 'marital_status',
-        'spouse_name', 'spouse_dni',
+        'has_children', 'instagram', 'is_employed', 'employment_type', 'marital_status',
+        'spouse_first_name', 'spouse_last_name', 'spouse_dni',
     ];
 
     protected $casts = [
