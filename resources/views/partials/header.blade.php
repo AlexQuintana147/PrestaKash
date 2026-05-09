@@ -240,10 +240,6 @@ function toggleMobileMenu() {
             <form action="{{ route('register') }}" method="POST" class="space-y-3">
                 @csrf
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Nombre completo</label>
-                    <input type="text" name="name" required class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
-                </div>
-                <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Correo electrónico</label>
                     <input type="email" id="registerEmail" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Por favor ingresa un correo electrónico válido" class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
                     <p id="emailError" class="text-red-500 text-xs mt-1 hidden">Este correo ya está registrado</p>

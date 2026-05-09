@@ -60,15 +60,6 @@
             <input type="hidden" name="referred_by_code" value="{{ $referralCode }}">
 
             <div>
-                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">Nombre completo</label>
-                <input type="text" name="name" required value="{{ old('name') }}"
-                       class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm @error('name') border-red-500 @enderror">
-                @error('name')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
                 <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">Correo electrónico</label>
                 <input type="email" name="email" required value="{{ old('email') }}"
                        class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm @error('email') border-red-500 @enderror">
