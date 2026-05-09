@@ -240,7 +240,7 @@
             <div class="w-full md:w-2/5 bg-gray-50 dark:bg-gray-900 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
                 <img id="modalSelfie" src="" class="w-40 h-40 rounded-[2rem] object-cover shadow-xl border-4 border-white dark:border-gray-800 mb-6">
                 <h3 id="modalName" class="text-xl font-bold text-gray-900 dark:text-white text-center leading-tight"></h3>
-                <p id="modalEmail" class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center"></p>
+                <a id="modalEmail" href="" class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center hover:text-blue-500 transition-colors"></a>
                 <div id="modalBadge" class="mt-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em]"></div>
             </div>
 
@@ -364,7 +364,9 @@ function openInvestorModal(data) {
     
     document.getElementById('modalSelfie').src = data.selfie || data.avatar;
     document.getElementById('modalName').textContent = data.name;
-    document.getElementById('modalEmail').textContent = data.email;
+    const emailEl = document.getElementById('modalEmail');
+    emailEl.textContent = data.email;
+    emailEl.href = `mailto:${data.email}`;
     document.getElementById('modalDni').textContent = data.dni;
     document.getElementById('modalPhone').textContent = data.phone;
 
