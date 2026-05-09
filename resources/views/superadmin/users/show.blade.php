@@ -112,7 +112,7 @@
                             </a>
                         @elseif(is_array($data) && isset($data['is_whatsapp']))
                             <a href="{{ $data['link'] }}" target="_blank"
-                               class="flex justify-between items-center py-3 px-3 -mx-3 rounded-lg bg-green-500 mb-2 hover:bg-green-600 transition-colors border border-white shadow-sm">
+                               class="flex justify-between items-center py-3 px-3 -mx-3 bg-green-500 mb-2 hover:bg-green-600 transition-colors border border-white shadow-sm">
                                 <span class="text-xs text-white flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-bold text-white text-right">{{ $value ?? '—' }}</span>
@@ -132,7 +132,7 @@
                             </a>
                         @elseif(is_array($data) && isset($data['is_email']))
                             <a href="{{ $data['link'] }}"
-                               class="flex justify-between items-center py-3 px-3 -mx-3 rounded-lg bg-blue-500 mb-2 hover:bg-blue-600 transition-colors border border-white shadow-sm">
+                               class="flex justify-between items-center py-3 px-3 -mx-3 bg-blue-500 mb-2 hover:bg-blue-600 transition-colors border border-white shadow-sm">
                                 <span class="text-xs text-white flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-bold text-white text-right">{{ $value ?? '—' }}</span>
