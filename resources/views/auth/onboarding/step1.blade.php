@@ -134,9 +134,10 @@
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Apellidos</label>
                 <input type="text" name="last_name" value="{{ old('last_name') }}" required
-                    placeholder="Castillo Villa"
+                    placeholder="Ej: Castillo Villa"
                     oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                     class="input-field">
+                <p class="text-[10px] text-gray-600 mt-1">Ingresa tus dos apellidos separados por un espacio.</p>
             </div>
         </div>
 

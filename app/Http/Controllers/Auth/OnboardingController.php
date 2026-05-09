@@ -20,7 +20,18 @@ class OnboardingController extends Controller
     {
         $request->validate([
             'first_name' => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
-            'last_name'  => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
+            'last_name'  => [
+                'required', 
+                'string', 
+                'max:60', 
+                'regex:/^[\pL\s]+$/u',
+                function ($attribute, $value, $fail) {
+                    $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                    if (count($words) < 2) {
+                        $fail('Debes ingresar al menos dos apellidos.');
+                    }
+                },
+            ],
             'dni'        => ['required', 'digits:8', 'unique:users,dni,' . auth()->id()],
             'phone'      => ['required', 'digits_between:9,9', 'regex:/^9\d{8}$/', 'unique:users,phone,' . auth()->id()],
             'department' => ['required', 'string', 'max:100'],
