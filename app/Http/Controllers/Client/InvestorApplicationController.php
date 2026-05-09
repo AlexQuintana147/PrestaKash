@@ -63,9 +63,15 @@ class InvestorApplicationController extends Controller
             'currency' => 'required|string|in:PEN,USD',
             'intended_amount' => 'required|numeric|min:100',
             'source_of_funds' => 'required|string|max:255',
+            'custom_source' => 'required_if:source_of_funds,Otros|nullable|string|max:255',
             'experience' => 'nullable|string',
             'preferred_term' => 'required|string|in:6 meses,12 meses',
         ]);
+
+        $sourceOfFunds = $request->source_of_funds;
+        if ($sourceOfFunds === 'Otros' && $request->custom_source) {
+            $sourceOfFunds = 'Otros: ' . $request->custom_source;
+        }
 
         InvestorApplication::create([
             'user_id' => Auth::id(),
@@ -73,7 +79,7 @@ class InvestorApplicationController extends Controller
             'occupation' => $request->occupation,
             'currency' => $request->currency,
             'intended_amount' => $request->intended_amount,
-            'source_of_funds' => $request->source_of_funds,
+            'source_of_funds' => $sourceOfFunds,
             'experience' => $request->experience,
             'preferred_term' => $request->preferred_term,
             'status' => 'pending',

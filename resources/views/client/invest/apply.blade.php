@@ -71,17 +71,25 @@
                     <select name="source_of_funds" id="source_of_funds" required
                             class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2.5 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all appearance-none cursor-pointer relative z-10">
                         <option value="" disabled selected class="dark:bg-gray-950">Selecciona una opción</option>
-                        <option value="Ahorros personales" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ahorros personales</option>
-                        <option value="Ganancias de negocio" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ganancias de negocio</option>
-                        <option value="Venta de activos" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Venta de activos</option>
-                        <option value="Herencia" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Herencia</option>
-                        <option value="Otros" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Otros</option>
+                        <option value="Ahorros personales" {{ old('source_of_funds') == 'Ahorros personales' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ahorros personales</option>
+                        <option value="Ganancias de negocio" {{ old('source_of_funds') == 'Ganancias de negocio' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ganancias de negocio</option>
+                        <option value="Venta de activos" {{ old('source_of_funds') == 'Venta de activos' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Venta de activos</option>
+                        <option value="Herencia" {{ old('source_of_funds') == 'Herencia' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Herencia</option>
+                        <option value="Otros" {{ old('source_of_funds') == 'Otros' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Otros</option>
                     </select>
                     <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-hover:text-green-500 transition-colors z-0">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
                 @error('source_of_funds') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
+
+                <!-- Campo extra para "Otros" -->
+                <div id="custom_source_container" class="{{ old('source_of_funds') == 'Otros' ? '' : 'hidden' }} mt-4">
+                    <input type="text" name="custom_source" id="custom_source" value="{{ old('custom_source') }}"
+                           placeholder="Especifica el origen..."
+                           class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                    @error('custom_source') <p class="text-red-500 text-[10px]">{{ $message }}</p> @enderror
+                </div>
             </div>
         </div>
 
@@ -166,6 +174,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (displayInput.value) {
         displayInput.value = formatAmount(displayInput.value);
     }
+
+    // Lógica para Origen de Fondos "Otros"
+    const sourceSelect = document.getElementById('source_of_funds');
+    const customSourceContainer = document.getElementById('custom_source_container');
+    const customSourceInput = document.getElementById('custom_source');
+
+    sourceSelect.addEventListener('change', function() {
+        if (this.value === 'Otros') {
+            customSourceContainer.classList.remove('hidden');
+            customSourceInput.setAttribute('required', 'required');
+        } else {
+            customSourceContainer.classList.add('hidden');
+            customSourceInput.removeAttribute('required');
+            customSourceInput.value = '';
+        }
+    });
 });
 </script>
 @endsection
