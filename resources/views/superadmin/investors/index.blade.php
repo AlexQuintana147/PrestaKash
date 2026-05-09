@@ -375,7 +375,7 @@ function openInvestorModal(data) {
     }
 
     document.getElementById('modalOccupation').textContent = data.occupation;
-    document.getElementById('modalAmount').textContent = 'S/ ' + data.amount;
+    document.getElementById('modalAmount').textContent = data.amount;
     document.getElementById('modalTerm').textContent = data.term;
     document.getElementById('modalSource').textContent = data.source;
     document.getElementById('modalExperience').textContent = data.experience;
