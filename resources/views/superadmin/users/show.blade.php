@@ -87,7 +87,8 @@
                         'Correo'       => [
                             'value' => $user->email,
                             'icon' => 'email',
-                            'link' => 'mailto:' . $user->email
+                            'link' => 'mailto:' . $user->email,
+                            'is_email' => true
                         ],
                         'Departamento' => $department,
                         'Provincia'    => $province,
@@ -129,27 +130,29 @@
                                     </svg>
                                 </div>
                             </a>
+                        @elseif(is_array($data) && isset($data['is_email']))
+                            <a href="{{ $data['link'] }}"
+                               class="flex justify-between items-center py-3 px-3 -mx-3 rounded-lg bg-blue-500 mb-2 hover:bg-blue-600 transition-colors border border-white shadow-sm">
+                                <span class="text-xs text-white flex-shrink-0">{{ $label }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-white text-right">{{ $value ?? '—' }}</span>
+                                    <svg class="w-5 h-5" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+                                        <rect x="7.904" y="119.947" style="fill:#5EBAE7;" width="496.195" height="272.109"/>
+                                        <polygon style="fill:#36A9E1;" points="256,280.01 23.91,127.951 7.904,135.954 256,312.022 352.037,223.987 "/>
+                                        <path style="fill:#1D1D1B;" d="M0,112.043v287.913h512V112.043H0z M477.266,127.851L256,270.603L34.733,127.851H477.266z M15.807,384.149V134.452L256,289.414l240.193-154.962v249.696H15.807V384.149z"/>
+                                        <g>
+                                            <rect x="215.982" y="344.138" style="fill:#FFFFFF;" width="16.007" height="15.807"/>
+                                            <rect x="247.997" y="344.138" style="fill:#FFFFFF;" width="16.006" height="15.807"/>
+                                            <rect x="280.013" y="344.138" style="fill:#FFFFFF;" width="16.007" height="15.807"/>
+                                        </g>
+                                    </svg>
+                                </div>
+                            </a>
                         @else
                             <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-900 pb-3">
                                 <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs text-gray-900 dark:text-white text-right">{{ $value ?? '—' }}</span>
-                                    @if(is_array($data) && isset($data['icon']))
-                                        @if($data['icon'] === 'email')
-                                            <a href="{{ $data['link'] }}" class="hover:opacity-80 transition-opacity">
-                                                <svg class="w-5 h-5" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-                                                    <rect x="7.904" y="119.947" style="fill:#5EBAE7;" width="496.195" height="272.109"/>
-                                                    <polygon style="fill:#36A9E1;" points="256,280.01 23.91,127.951 7.904,135.954 256,312.022 352.037,223.987 "/>
-                                                    <path style="fill:#1D1D1B;" d="M0,112.043v287.913h512V112.043H0z M477.266,127.851L256,270.603L34.733,127.851H477.266z M15.807,384.149V134.452L256,289.414l240.193-154.962v249.696H15.807V384.149z"/>
-                                                    <g>
-                                                        <rect x="215.982" y="344.138" style="fill:#FFFFFF;" width="16.007" height="15.807"/>
-                                                        <rect x="247.997" y="344.138" style="fill:#FFFFFF;" width="16.006" height="15.807"/>
-                                                        <rect x="280.013" y="344.138" style="fill:#FFFFFF;" width="16.007" height="15.807"/>
-                                                    </g>
-                                                </svg>
-                                            </a>
-                                        @endif
-                                    @endif
                                 </div>
                             </div>
                         @endif
