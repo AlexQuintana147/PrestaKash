@@ -28,7 +28,7 @@
         <!-- Mobile: grid 2 columnas -->
         <div class="md:hidden space-y-2">
             <div class="grid grid-cols-3 gap-2">
-                @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados'] as $key => $label)
+                @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados'] as $key => $label)
                     <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
                        class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
                               {{ $filter === $key
@@ -59,7 +59,7 @@
 
         <!-- Desktop: tabs horizontales -->
         <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
-            @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
+            @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados', 'rejected' => 'Rechazados'] as $key => $label)
                 <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
                    class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
                           {{ $filter === $key
@@ -151,10 +151,10 @@
         <div class="flex items-center justify-center gap-1.5 ml-auto md:ml-0 my-2 md:my-0">
             @if($app->status === 'pending')
                 <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></span>
-                <span class="text-xs text-yellow-500">Pendiente</span>
+                <span class="text-xs text-yellow-500">Solicitud</span>
             @elseif($app->status === 'approved')
                 <span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>
-                <span class="text-xs text-green-500">Aprobado</span>
+                <span class="text-xs text-green-500">Interesado</span>
             @elseif($app->status === 'rejected')
                 <span class="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></span>
                 <span class="text-xs text-red-500">Rechazado</span>
@@ -164,18 +164,18 @@
         <!-- Acciones -->
         <div class="flex items-center justify-end gap-2 w-full md:w-auto" onclick="event.stopPropagation()">
             @if($app->status === 'pending')
-                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar">
+                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar Interesado">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </button>
                 <button onclick="openConfirmModal('reject', {{ $app->id }})" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors" title="Rechazar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             @elseif($app->status === 'approved')
-                <button onclick="openConfirmModal('unapprove', {{ $app->id }})" class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-xl transition-colors" title="Desaprobar">
+                <button onclick="openConfirmModal('unapprove', {{ $app->id }})" class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-xl transition-colors" title="Desaprobar Interesado">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </button>
             @else
-                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar (Revertir)">
+                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar Interesado (Revertir)">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </button>
             @endif
@@ -323,7 +323,7 @@ function openConfirmModal(type, appId) {
     
     if (type === 'approve') {
         form.action = `/gestion-interna/inversores/${appId}/aprobar`;
-        title.textContent = '¿Aprobar Inversor?';
+        title.textContent = '¿Aprobar Interesado?';
         desc.textContent = 'El usuario será notificado y podrá comenzar a operar como inversor en la plataforma.';
         icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-green-50 dark:bg-green-500/10 text-green-600';
         icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
@@ -331,8 +331,8 @@ function openConfirmModal(type, appId) {
         btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-green-600 hover:bg-green-500 shadow-green-500/20 transition-all';
     } else if (type === 'unapprove') {
         form.action = `/gestion-interna/inversores/${appId}/desaprobar`;
-        title.textContent = '¿Desaprobar Inversor?';
-        desc.textContent = 'La solicitud volverá al estado pendiente y el usuario perderá sus privilegios de inversor.';
+        title.textContent = '¿Desaprobar Interesado?';
+        desc.textContent = 'La solicitud volverá al estado de solicitud y el usuario perderá sus privilegios de inversor.';
         icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600';
         icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
         btn.textContent = 'Confirmar Reversión';
@@ -381,7 +381,7 @@ function openInvestorModal(data) {
     document.getElementById('modalExperience').textContent = data.experience;
 
     const badge = document.getElementById('modalBadge');
-    badge.textContent = data.status === 'pending' ? 'Pendiente' : (data.status === 'approved' ? 'Aprobado' : 'Rechazado');
+    badge.textContent = data.status === 'pending' ? 'Solicitud' : (data.status === 'approved' ? 'Interesado' : 'Rechazado');
     badge.className = 'mt-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ' + 
         (data.status === 'approved' ? 'bg-green-100 text-green-700' : (data.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'));
 
@@ -389,12 +389,12 @@ function openInvestorModal(data) {
     actions.innerHTML = '';
     if (data.status === 'pending') {
         actions.innerHTML = `
-            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar Inversor</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar Interesado</button>
             <button onclick="closeInvestorModal(); openConfirmModal('reject', ${data.id})" class="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-all">Rechazar</button>
         `;
     } else if (data.status === 'approved') {
         actions.innerHTML = `
-            <button onclick="closeInvestorModal(); openConfirmModal('unapprove', ${data.id})" class="w-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:text-yellow-600 transition-all border border-transparent hover:border-yellow-200 dark:hover:border-yellow-900/50">Desaprobar Inversor</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('unapprove', ${data.id})" class="w-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:text-yellow-600 transition-all border border-transparent hover:border-yellow-200 dark:hover:border-yellow-900/50">Desaprobar Interesado</button>
         `;
     } else if (data.status === 'rejected') {
         actions.innerHTML = `
