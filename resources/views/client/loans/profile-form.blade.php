@@ -110,6 +110,7 @@
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
                         <input type="text" name="institution" value="{{ old('institution', $profile->institution ?? '') }}" required placeholder="Ej: UNMSM"
+                               oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('institution') border-red-500 @enderror">
                         @error('institution') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -117,6 +118,7 @@
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
                         <input type="text" name="career" value="{{ old('career', $profile->career ?? '') }}" required placeholder="Ej: Ingeniería de Sistemas"
+                               oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('career') border-red-500 @enderror">
                         @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -232,12 +234,14 @@
                             <div>
                                 <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
                                 <input type="text" name="spouse_first_name" value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}" placeholder="Nombres"
+                                       oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_first_name') border-red-500 @enderror">
                                 @error('spouse_first_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
                                 <input type="text" name="spouse_last_name" value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}" placeholder="Apellido1 Apellido2"
+                                       oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_last_name') border-red-500 @enderror">
                                 @error('spouse_last_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>

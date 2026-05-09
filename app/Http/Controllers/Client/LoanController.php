@@ -103,19 +103,22 @@ class LoanController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'institution'       => 'required|string|max:200',
-            'career'            => 'required|string|max:200',
+            'institution'       => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
+            'career'            => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'academic_status'   => 'required|string',
             'has_children'      => 'required|boolean',
             'instagram'         => 'nullable|string|max:100',
             'is_employed'       => 'required|boolean',
             'employment_type'   => 'required_if:is_employed,1|nullable|in:dependiente,independiente',
             'marital_status'    => 'required|in:soltero,casado_separado,casado_compartido',
-            'spouse_first_name' => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
+            'spouse_first_name' => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'spouse_last_name'  => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/u'],
             'spouse_dni'        => 'required_if:marital_status,casado_compartido|nullable|digits:8',
         ], [
-            'spouse_last_name.regex' => 'Debe ingresar al menos dos apellidos.',
+            'institution.regex'       => 'La institución solo debe contener letras.',
+            'career.regex'            => 'La carrera solo debe contener letras.',
+            'spouse_first_name.regex' => 'Los nombres solo deben contener letras.',
+            'spouse_last_name.regex'  => 'Debe ingresar al menos dos apellidos (solo letras).',
         ]);
 
         Auth::user()->clientProfile->update([
@@ -138,21 +141,24 @@ class LoanController extends Controller
     public function storeProfile(Request $request)
     {
         $request->validate([
-            'institution'       => 'required|string|max:200',
-            'career'            => 'required|string|max:200',
+            'institution'       => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
+            'career'            => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'academic_status'   => 'required|string',
             'has_children'      => 'required|boolean',
             'instagram'         => 'nullable|string|max:100',
             'is_employed'       => 'required|boolean',
             'employment_type'   => 'required_if:is_employed,1|nullable|in:dependiente,independiente',
             'marital_status'    => 'required|in:soltero,casado_separado,casado_compartido',
-            'spouse_first_name' => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
+            'spouse_first_name' => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'spouse_last_name'  => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/u'],
             'spouse_dni'        => 'required_if:marital_status,casado_compartido|nullable|digits:8',
         ], [
+            'institution.regex'             => 'La institución solo debe contener letras.',
+            'career.regex'                  => 'La carrera solo debe contener letras.',
             'spouse_first_name.required_if' => 'Los nombres del cónyuge son obligatorios.',
+            'spouse_first_name.regex'       => 'Los nombres solo deben contener letras.',
             'spouse_last_name.required_if'  => 'Los apellidos del cónyuge son obligatorios.',
-            'spouse_last_name.regex'        => 'Debe ingresar al menos dos apellidos.',
+            'spouse_last_name.regex'        => 'Debe ingresar al menos dos apellidos (solo letras).',
             'spouse_dni.required_if'        => 'El DNI del cónyuge es obligatorio.',
             'spouse_dni.digits'             => 'El DNI debe tener 8 dígitos.',
             'employment_type.required_if'   => 'Debe especificar si es dependiente o independiente.',
