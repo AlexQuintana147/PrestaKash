@@ -104,7 +104,7 @@
                         @php $value = is_array($data) ? $data['value'] : $data; @endphp
                         @if(is_array($data) && isset($data['is_referrer']))
                             <a href="{{ $data['link'] }}"
-                               class="flex justify-between items-start py-3 px-3 -mx-3 rounded-lg bg-gray-900 dark:bg-white mb-2 hover:opacity-90 transition-opacity cursor-pointer">
+                               class="flex justify-between items-start py-3 px-3 -mx-3 bg-gray-900 dark:bg-white mb-2 hover:opacity-90 transition-opacity cursor-pointer">
                                 <span class="text-xs text-white dark:text-gray-900 flex-shrink-0">Referido por</span>
                                 <span class="text-xs font-semibold text-white dark:text-gray-900 text-right ml-4">
                                     {{ $value }}
