@@ -172,6 +172,12 @@ class UsersController extends Controller
         }
 
         $user->$field = $value;
+
+        // Si se cambia nombre o apellido, actualizar también el campo 'name'
+        if (in_array($field, ['first_name', 'last_name'])) {
+            $user->name = trim($user->first_name . ' ' . $user->last_name);
+        }
+
         $user->save();
 
         return back()->with('success', 'Dato actualizado correctamente.');
