@@ -133,4 +133,47 @@ class UsersController extends Controller
 
         return redirect()->route('superadmin.users.index')->with('success', 'Usuario bloqueado correctamente.');
     }
+
+    public function updateField(Request $request, User $user)
+    {
+        $request->validate([
+            'field' => 'required|string|in:first_name,last_name,dni,phone,address',
+            'value' => 'required|string|max:255',
+        ]);
+
+        $field = $request->field;
+        $value = trim($request->value);
+
+        // Validaciones adicionales en el backend
+        if ($field === 'first_name') {
+            if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u', $value)) {
+                return back()->withErrors(['value' => 'El nombre solo puede contener letras.']);
+            }
+        } elseif ($field === 'last_name') {
+            if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u', $value)) {
+                return back()->withErrors(['value' => 'Los apellidos solo pueden contener letras.']);
+            }
+            $words = preg_split('/\s+/', $value, -1, PREG_SPLIT_NO_EMPTY);
+            if (count($words) < 2) {
+                return back()->withErrors(['value' => 'Debes ingresar al menos dos apellidos.']);
+            }
+        } elseif ($field === 'dni') {
+            if (!preg_match('/^\d{8}$/', $value)) {
+                return back()->withErrors(['value' => 'El DNI debe tener exactamente 8 dígitos.']);
+            }
+        } elseif ($field === 'phone') {
+            if (!preg_match('/^\d{9}$/', $value)) {
+                return back()->withErrors(['value' => 'El teléfono debe tener exactamente 9 dígitos.']);
+            }
+        } elseif ($field === 'address') {
+            if (mb_strlen($value) > 50) {
+                return back()->withErrors(['value' => 'La dirección no puede exceder los 50 caracteres.']);
+            }
+        }
+
+        $user->$field = $value;
+        $user->save();
+
+        return back()->with('success', 'Dato actualizado correctamente.');
+    }
 }

@@ -72,17 +72,37 @@
         <div class="md:col-span-4 space-y-8">
 
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Datos personales</p>
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest">Datos personales</p>
+                    <button type="button" onclick="openEditWarningModal()"
+                            class="text-[10px] font-bold text-blue-500 hover:text-blue-600 uppercase tracking-wider transition-colors">
+                        Editar datos
+                    </button>
+                </div>
                 <div class="space-y-3">
                     @foreach([
-                        'Nombres'      => $user->first_name,
-                        'Apellidos'    => $user->last_name,
-                        'DNI'          => $user->dni,
+                        'Nombres'      => [
+                            'value' => $user->first_name,
+                            'editable' => true,
+                            'field' => 'first_name'
+                        ],
+                        'Apellidos'    => [
+                            'value' => $user->last_name,
+                            'editable' => true,
+                            'field' => 'last_name'
+                        ],
+                        'DNI'          => [
+                            'value' => $user->dni,
+                            'editable' => true,
+                            'field' => 'dni'
+                        ],
                         'Teléfono'     => [
                             'value' => $user->phone,
                             'icon' => 'wssp',
                             'link' => 'https://wa.me/51' . preg_replace('/\D/', '', $user->phone),
-                            'is_whatsapp' => true
+                            'is_whatsapp' => true,
+                            'editable' => true,
+                            'field' => 'phone'
                         ],
                         'Correo'       => [
                             'value' => $user->email,
@@ -93,7 +113,11 @@
                         'Departamento' => $department,
                         'Provincia'    => $province,
                         'Distrito'     => $district,
-                        'Dirección'    => $user->address,
+                        'Dirección'    => [
+                            'value' => $user->address,
+                            'editable' => true,
+                            'field' => 'address'
+                        ],
                         'Registro'     => $user->created_at->format('d/m/Y'),
                         'Referido por' => $user->referrer ? [
                             'value' => $user->referrer->first_name . ' ' . $user->referrer->last_name,
@@ -101,7 +125,10 @@
                             'is_referrer' => true
                         ] : null,
                     ] as $label => $data)
-                        @php $value = is_array($data) ? $data['value'] : $data; @endphp
+                        @php 
+                            $value = is_array($data) ? $data['value'] : $data;
+                            $isEditable = is_array($data) && isset($data['editable']) && $data['editable'];
+                        @endphp
                         @if(is_array($data) && isset($data['is_referrer']))
                             <a href="{{ $data['link'] }}"
                                class="flex justify-between items-start py-3 px-3 -mx-3 bg-gray-900 dark:bg-white mb-2 hover:opacity-90 transition-opacity cursor-pointer">
@@ -111,11 +138,19 @@
                                 </span>
                             </a>
                         @elseif(is_array($data) && isset($data['is_whatsapp']))
-                            <a href="{{ $data['link'] }}" target="_blank"
-                               class="flex justify-between items-center py-3 px-3 -mx-3 bg-green-500 mb-2 hover:bg-green-600 transition-colors border border-white shadow-sm">
-                                <span class="text-xs text-white flex-shrink-0">{{ $label }}</span>
-                                <div class="flex items-center gap-2">
+                            <div class="flex justify-between items-center py-3 px-3 -mx-3 bg-green-500 mb-2 hover:bg-green-600 transition-colors border border-white shadow-sm relative group">
+                                <a href="{{ $data['link'] }}" target="_blank" class="absolute inset-0 z-0 wssp-link"></a>
+                                <span class="text-xs text-white flex-shrink-0 relative z-10">{{ $label }}</span>
+                                <div class="flex items-center gap-2 relative z-10">
                                     <span class="text-xs font-bold text-white text-right">{{ $value ?? '—' }}</span>
+                                    @if($isEditable)
+                                        <button type="button" onclick="openEditFieldModal('{{ $label }}', '{{ $data['field'] }}', '{{ $value }}')"
+                                                class="edit-action-btn hidden p-1 hover:bg-white/20 rounded transition-colors text-white relative z-20">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                            </svg>
+                                        </button>
+                                    @endif
                                     <svg class="w-5 h-5" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M16 31C23.732 31 30 24.732 30 17C30 9.26801 23.732 3 16 3C8.26801 3 2 9.26801 2 17C2 19.5109 2.661 21.8674 3.81847 23.905L2 31L9.31486 29.3038C11.3014 30.3854 13.5789 31 16 31ZM16 28.8462C22.5425 28.8462 27.8462 23.5425 27.8462 17C27.8462 10.4576 22.5425 5.15385 16 5.15385C9.45755 5.15385 4.15385 10.4576 4.15385 17C4.15385 19.5261 4.9445 21.8675 6.29184 23.7902L5.23077 27.7692L9.27993 26.7569C11.1894 28.0746 13.5046 28.8462 16 28.8462Z" fill="#BFC8D0"/>
                                         <path d="M28 16C28 22.6274 22.6274 28 16 28C13.4722 28 11.1269 27.2184 9.19266 25.8837L5.09091 26.9091L6.16576 22.8784C4.80092 20.9307 4 18.5589 4 16C4 9.37258 9.37258 4 16 4C22.6274 4 28 9.37258 28 16Z" fill="url(#paint0_linear_87_7264)"/>
@@ -129,7 +164,7 @@
                                         </defs>
                                     </svg>
                                 </div>
-                            </a>
+                            </div>
                         @elseif(is_array($data) && isset($data['is_email']))
                             <a href="{{ $data['link'] }}"
                                class="flex justify-between items-center py-3 px-3 -mx-3 bg-blue-500 mb-2 hover:bg-blue-600 transition-colors border border-white shadow-sm">
@@ -153,6 +188,14 @@
                                 <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs text-gray-900 dark:text-white text-right">{{ $value ?? '—' }}</span>
+                                    @if($isEditable)
+                                        <button type="button" onclick="openEditFieldModal('{{ $label }}', '{{ $data['field'] }}', '{{ $value }}')"
+                                                class="edit-action-btn hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-gray-400">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                            </svg>
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -279,6 +322,58 @@
             @endif
         </div>
 
+    </div>
+</div>
+
+<!-- Modal advertencia edición -->
+<div id="editWarningModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center">
+        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4">
+            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Datos sensibles</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            Si vas a modificar estos datos, son muy sensibles, así que procede con cuidado.
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeEditWarningModal()"
+                    class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                Cancelar
+            </button>
+            <button onclick="enableEditMode()"
+                    class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">
+                Editar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal campo edición -->
+<div id="editFieldModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+        <h3 id="editFieldTitle" class="text-base font-bold text-gray-900 dark:text-white mb-4"></h3>
+        <form action="{{ route('superadmin.users.update-field', $user) }}" method="POST" onsubmit="return validateField()">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="field" id="editFieldName">
+            <div class="mb-5">
+                <input type="text" name="value" id="editFieldValue"
+                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 py-2 focus:outline-none focus:border-blue-500 transition-colors">
+                <p id="editFieldError" class="text-[10px] text-red-500 mt-1 hidden"></p>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeEditFieldModal()"
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors">
+                    Guardar
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -503,7 +598,97 @@ document.getElementById('rejectModal').addEventListener('click', e => {
     if (e.target === document.getElementById('rejectModal')) closeRejectModal();
 });
 
-function openApproveModal() {
+    function openEditWarningModal() {
+        document.getElementById('editWarningModal').classList.remove('hidden');
+    }
+
+    function closeEditWarningModal() {
+        document.getElementById('editWarningModal').classList.add('hidden');
+    }
+
+    function enableEditMode() {
+        closeEditWarningModal();
+        document.querySelectorAll('.edit-action-btn').forEach(btn => {
+            btn.classList.remove('hidden');
+        });
+        // Desactivar links de whatsapp
+        document.querySelectorAll('.wssp-link').forEach(link => {
+            link.classList.add('pointer-events-none');
+        });
+    }
+
+    function openEditFieldModal(label, field, value) {
+        const titleEl = document.getElementById('editFieldTitle');
+        const fieldNameEl = document.getElementById('editFieldName');
+        const fieldValueEl = document.getElementById('editFieldValue');
+        const errorEl = document.getElementById('editFieldError');
+
+        titleEl.textContent = 'Editar ' + label;
+        fieldNameEl.value = field;
+        fieldValueEl.value = value;
+        errorEl.textContent = '';
+        errorEl.classList.add('hidden');
+
+        // Reset inputs
+        fieldValueEl.oninput = null;
+        fieldValueEl.maxLength = 255;
+
+        // Configurar validaciones según el campo
+        if (field === 'first_name') {
+            fieldValueEl.placeholder = 'Solo letras';
+        } else if (field === 'last_name') {
+            fieldValueEl.placeholder = 'Mínimo dos apellidos';
+        } else if (field === 'dni') {
+            fieldValueEl.maxLength = 8;
+            fieldValueEl.placeholder = '8 dígitos numéricos';
+            fieldValueEl.oninput = function() { this.value = this.value.replace(/\D/g, '').slice(0, 8); };
+        } else if (field === 'phone') {
+            fieldValueEl.maxLength = 9;
+            fieldValueEl.placeholder = '9 dígitos numéricos';
+            fieldValueEl.oninput = function() { this.value = this.value.replace(/\D/g, '').slice(0, 9); };
+        } else if (field === 'address') {
+            fieldValueEl.maxLength = 50;
+            fieldValueEl.placeholder = 'Máximo 50 caracteres';
+        }
+
+        document.getElementById('editFieldModal').classList.remove('hidden');
+    }
+
+    function validateField() {
+        const field = document.getElementById('editFieldName').value;
+        const value = document.getElementById('editFieldValue').value.trim();
+        const errorEl = document.getElementById('editFieldError');
+        let error = '';
+
+        if (field === 'first_name') {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) error = 'El nombre solo puede contener letras.';
+        } else if (field === 'last_name') {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+                error = 'Los apellidos solo pueden contener letras.';
+            } else if (value.split(/\s+/).filter(word => word.length > 0).length < 2) {
+                error = 'Debes ingresar al menos dos apellidos.';
+            }
+        } else if (field === 'dni') {
+            if (!/^\d{8}$/.test(value)) error = 'El DNI debe tener exactamente 8 dígitos numéricos.';
+        } else if (field === 'phone') {
+            if (!/^\d{9}$/.test(value)) error = 'El teléfono debe tener exactamente 9 dígitos numéricos.';
+        } else if (field === 'address') {
+            if (value.length > 50) error = 'La dirección no puede exceder los 50 caracteres.';
+        }
+
+        if (error) {
+            errorEl.textContent = error;
+            errorEl.classList.remove('hidden');
+            return false;
+        }
+        return true;
+    }
+
+    function closeEditFieldModal() {
+        document.getElementById('editFieldModal').classList.add('hidden');
+    }
+
+    function openApproveModal() {
     document.getElementById('approveModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
