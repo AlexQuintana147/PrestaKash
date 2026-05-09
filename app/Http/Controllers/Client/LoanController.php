@@ -112,8 +112,10 @@ class LoanController extends Controller
             'employment_type'   => 'required_if:is_employed,1|nullable|in:dependiente,independiente',
             'marital_status'    => 'required|in:soltero,casado_separado,casado_compartido',
             'spouse_first_name' => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
-            'spouse_last_name'  => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
+            'spouse_last_name'  => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/u'],
             'spouse_dni'        => 'required_if:marital_status,casado_compartido|nullable|digits:8',
+        ], [
+            'spouse_last_name.regex' => 'Debe ingresar al menos dos apellidos.',
         ]);
 
         Auth::user()->clientProfile->update([
@@ -145,11 +147,12 @@ class LoanController extends Controller
             'employment_type'   => 'required_if:is_employed,1|nullable|in:dependiente,independiente',
             'marital_status'    => 'required|in:soltero,casado_separado,casado_compartido',
             'spouse_first_name' => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
-            'spouse_last_name'  => 'required_if:marital_status,casado_compartido|nullable|string|max:200',
+            'spouse_last_name'  => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/u'],
             'spouse_dni'        => 'required_if:marital_status,casado_compartido|nullable|digits:8',
         ], [
             'spouse_first_name.required_if' => 'Los nombres del cónyuge son obligatorios.',
             'spouse_last_name.required_if'  => 'Los apellidos del cónyuge son obligatorios.',
+            'spouse_last_name.regex'        => 'Debe ingresar al menos dos apellidos.',
             'spouse_dni.required_if'        => 'El DNI del cónyuge es obligatorio.',
             'spouse_dni.digits'             => 'El DNI debe tener 8 dígitos.',
             'employment_type.required_if'   => 'Debe especificar si es dependiente o independiente.',
