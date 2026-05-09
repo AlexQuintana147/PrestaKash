@@ -17,7 +17,14 @@
              class="w-9 h-9 rounded-full object-cover bg-gray-200 dark:bg-gray-900 flex-shrink-0">
         <div class="min-w-0 flex-1">
             <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $user->name }}</h1>
-            <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
+            <div class="flex items-center gap-1.5">
+                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
+                <a href="mailto:{{ $user->email }}" class="text-blue-500 hover:text-blue-600 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </a>
+            </div>
         </div>
 
         @if($user->documents)
@@ -64,7 +71,16 @@
                         'Nombres'      => $user->first_name,
                         'Apellidos'    => $user->last_name,
                         'DNI'          => $user->dni,
-                        'Teléfono'     => $user->phone,
+                        'Teléfono'     => [
+                            'value' => $user->phone,
+                            'icon' => 'wssp',
+                            'link' => 'https://wa.me/51' . preg_replace('/\D/', '', $user->phone)
+                        ],
+                        'Correo'       => [
+                            'value' => $user->email,
+                            'icon' => 'email',
+                            'link' => 'mailto:' . $user->email
+                        ],
                         'Departamento' => $department,
                         'Provincia'    => $province,
                         'Distrito'     => $district,
@@ -88,7 +104,20 @@
                         @else
                             <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-900 pb-3">
                                 <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
-                                <span class="text-xs text-gray-900 dark:text-white text-right ml-4">{{ $value ?? '—' }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-gray-900 dark:text-white text-right">{{ $value ?? '—' }}</span>
+                                    @if(is_array($data) && isset($data['icon']))
+                                        @if($data['icon'] === 'wssp')
+                                            <a href="{{ $data['link'] }}" target="_blank" class="text-green-500 hover:text-green-600 transition-colors">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.353-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.13.57-.072 1.758-.47 2.005-.923.248-.453.248-.842.174-.923-.074-.08-.272-.13-.57-.279zM12.94 1.399c-5.11 0-9.27 4.159-9.27 9.27 0 1.633.425 3.228 1.233 4.637L3.65 20.601l5.469-1.435c1.35.736 2.866 1.124 4.411 1.124 5.11 0 9.27-4.159 9.27-9.27 0-5.111-4.16-9.27-9.27-9.27zM12.94 18.261c-1.455 0-2.883-.391-4.13-1.128l-.297-.175-3.069.805.819-2.993-.192-.306c-.808-1.288-1.235-2.778-1.235-4.312 0-4.403 3.582-7.985 7.985-7.985 4.403 0 7.985 3.582 7.985 7.985 0 4.404-3.582 7.986-7.985 7.986z"/></svg>
+                                            </a>
+                                        @elseif($data['icon'] === 'email')
+                                            <a href="{{ $data['link'] }}" class="text-blue-500 hover:text-blue-600 transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                            </a>
+                                        @endif
+                                    @endif
+                                </div>
                             </div>
                         @endif
                     @endforeach
