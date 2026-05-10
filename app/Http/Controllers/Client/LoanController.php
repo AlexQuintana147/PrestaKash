@@ -50,18 +50,20 @@ class LoanController extends Controller
 
         $montoSolicitado = $request->amount;
         $tipo = $request->type;
+        $user = Auth::user();
+        $defaultRate = $user->loan_interest_rate ? ($user->loan_interest_rate / 100) : 0.20;
 
         // ── Lógica de comisión ──
-        // Cuotas mensuales: 20% fijo
+        // Cuotas mensuales: usa tasa default (20% o personalizada)
         // Pago único 15 días: 10%
-        // Pago único 30 días: 15%
+        // Pago único 30 días: usa tasa default (20% o personalizada)
         if ($tipo === 'cuotas') {
-            $tasaInteres  = 0.20;
+            $tasaInteres  = $defaultRate;
             $plazo        = $request->months;
             $paymentDays  = null;
         } else {
             $paymentDays  = (int) $request->payment_days;
-            $tasaInteres  = $paymentDays === 15 ? 0.10 : 0.20;
+            $tasaInteres  = $paymentDays === 15 ? 0.10 : $defaultRate;
             $plazo        = 1; // un solo pago
         }
 

@@ -118,6 +118,12 @@
                             'editable' => true,
                             'field' => 'address'
                         ],
+                        'Tasa de interés' => [
+                            'value' => ($user->loan_interest_rate ?? 20),
+                            'editable' => true,
+                            'field' => 'loan_interest_rate',
+                            'suffix' => '%'
+                        ],
                         'Registro'     => $user->created_at->format('d/m/Y'),
                         'Referido por' => $user->referrer ? [
                             'value' => $user->referrer->first_name . ' ' . $user->referrer->last_name,
@@ -187,7 +193,9 @@
                             <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-900 pb-3">
                                 <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-xs text-gray-900 dark:text-white text-right">{{ $value ?? '—' }}</span>
+                                    <span class="text-xs text-gray-900 dark:text-white text-right">
+                                        {{ $value ?? '—' }}{{ is_array($data) && isset($data['suffix']) ? $data['suffix'] : '' }}
+                                    </span>
                                     @if($isEditable)
                                         <button type="button" onclick="openEditFieldModal('{{ $label }}', '{{ $data['field'] }}', '{{ $value }}')"
                                                 class="edit-action-btn hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-gray-400">

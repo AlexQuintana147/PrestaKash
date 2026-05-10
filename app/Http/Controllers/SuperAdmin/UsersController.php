@@ -137,7 +137,7 @@ class UsersController extends Controller
     public function updateField(Request $request, User $user)
     {
         $request->validate([
-            'field' => 'required|string|in:first_name,last_name,dni,phone,address',
+            'field' => 'required|string|in:first_name,last_name,dni,phone,address,loan_interest_rate',
             'value' => 'required|string|max:255',
         ]);
 
@@ -168,6 +168,10 @@ class UsersController extends Controller
         } elseif ($field === 'address') {
             if (mb_strlen($value) > 50) {
                 return back()->withErrors(['value' => 'La dirección no puede exceder los 50 caracteres.']);
+            }
+        } elseif ($field === 'loan_interest_rate') {
+            if (!is_numeric($value) || $value < 0 || $value > 100) {
+                return back()->withErrors(['value' => 'La tasa debe ser un número entre 0 y 100.']);
             }
         }
 

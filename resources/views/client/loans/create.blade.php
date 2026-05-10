@@ -146,7 +146,7 @@
                                     <input type="radio" name="payment_days" value="30" class="hidden peer" {{ old('payment_days') == '30' ? 'checked' : '' }}>
                                     <div class="text-center py-3 rounded-lg border border-transparent peer-checked:border-green-500/40 peer-checked:bg-green-500/5 transition-all">
                                         <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">30 días</p>
-                                        <p class="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">20% comisión</p>
+                                        <p class="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">{{ Auth::user()->loan_interest_rate ?? 20 }}% comisión</p>
                                     </div>
                                 </label>
                             </div>
@@ -260,7 +260,7 @@
                         </div>
                         <div class="h-px bg-gray-100 dark:bg-gray-800 my-1"></div>
                         <div class="flex justify-between text-xs">
-                            <span id="simInterestLabel" class="text-amber-500 dark:text-amber-400">Comisión simulada (20%)</span>
+                            <span id="simInterestLabel" class="text-amber-500 dark:text-amber-400">Comisión simulada ({{ Auth::user()->loan_interest_rate ?? 20 }}%)</span>
                             <span id="simInterest" class="text-amber-500 dark:text-amber-400 font-medium tabular-nums">S/ 0.00</span>
                         </div>
 
@@ -473,6 +473,8 @@
 </style>
 
 <script>
+const USER_CUSTOM_RATE = {{ Auth::user()->loan_interest_rate ?? 20 }};
+
 document.addEventListener('DOMContentLoaded', function () {
     const amount         = document.getElementById('amount');
     const months         = document.getElementById('months');
@@ -530,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let interestRate, interest, total, monthly, plazoText;
 
         if (isCuotas) {
-            interestRate = 0.20; // 20% mensual
+            interestRate = USER_CUSTOM_RATE / 100; 
             
             if (system === 'french') {
                 // Sistema Francés
@@ -555,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
             plazoText = m + (m === 1 ? ' mes' : ' meses');
         } else {
             const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
-            interestRate = days === 15 ? 0.10 : 0.20;
+            interestRate = days === 15 ? 0.10 : (USER_CUSTOM_RATE / 100);
             interest = a * interestRate;
             total = a + interest;
             monthly = 0;
