@@ -24,6 +24,13 @@
         .dark nav::-webkit-scrollbar-thumb, .dark main::-webkit-scrollbar-thumb, .dark body::-webkit-scrollbar-thumb { background: #374151; }
         nav::-webkit-scrollbar-thumb:hover, main::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
         .dark nav::-webkit-scrollbar-thumb:hover, .dark main::-webkit-scrollbar-thumb:hover, .dark body::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+        /* Estilos para los spinners de inputs numéricos en modo oscuro */
+        .dark input[type="number"]::-webkit-inner-spin-button,
+        .dark input[type="number"]::-webkit-outer-spin-button {
+            filter: invert(1) brightness(2);
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="h-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200"
