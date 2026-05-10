@@ -27,7 +27,7 @@
             
             <div class="flex flex-wrap gap-x-8 gap-y-4">
                 <button type="button" onclick="openBankModal()" class="group inline-flex items-center gap-2 text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-widest transition-opacity hover:opacity-70">
-                    <span class="border-b-2 border-gray-900 dark:border-white pb-1">Gestionar cuentas de banco</span>
+                    <span class="border-b-2 border-gray-900 dark:border-white pb-1">Ver cuentas de banco</span>
                 </button>
                 <a href="{{ route('client.loans.profile.edit') }}" class="group inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest transition-opacity hover:opacity-70">
                     <span class="border-b-2 border-transparent group-hover:border-gray-400 dark:group-hover:border-gray-500 pb-1 transition-colors">Editar Perfil</span>
@@ -162,8 +162,8 @@
                                        class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                             </div>
                             <div class="group">
-                                <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">CCI (Opcional)</label>
-                                <input type="text" id="f_cci" placeholder="Ej: 00219100123456789012" 
+                                <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">CCI</label>
+                                <input type="text" id="f_cci" required placeholder="Ej: 00219100123456789012" 
                                        maxlength="20"
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                        class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
