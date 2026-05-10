@@ -75,6 +75,8 @@
                         <option value="Ganancias de negocio" {{ old('source_of_funds') == 'Ganancias de negocio' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Ganancias de negocio</option>
                         <option value="Venta de activos" {{ old('source_of_funds') == 'Venta de activos' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Venta de activos</option>
                         <option value="Herencia" {{ old('source_of_funds') == 'Herencia' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Herencia</option>
+                        <option value="Prestamos bancarios" {{ old('source_of_funds') == 'Prestamos bancarios' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Prestamos bancarios</option>
+                        <option value="Prestamos familiares" {{ old('source_of_funds') == 'Prestamos familiares' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Prestamos familiares</option>
                         <option value="Otros" {{ old('source_of_funds') == 'Otros' ? 'selected' : '' }} class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">Otros</option>
                     </select>
                     <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-hover:text-green-500 transition-colors z-0">
