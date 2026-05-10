@@ -119,7 +119,7 @@
                             'field' => 'address'
                         ],
                         'Tasa de interés' => [
-                            'value' => ($user->loan_interest_rate ?? 20),
+                            'value' => number_format($user->loan_interest_rate ?? 20, 2, '.', ''),
                             'editable' => true,
                             'field' => 'loan_interest_rate',
                             'suffix' => '%'
@@ -657,6 +657,14 @@ document.getElementById('rejectModal').addEventListener('click', e => {
         } else if (field === 'address') {
             fieldValueEl.maxLength = 50;
             fieldValueEl.placeholder = 'Máximo 50 caracteres';
+        } else if (field === 'loan_interest_rate') {
+            fieldValueEl.placeholder = 'Ej: 20.00';
+            fieldValueEl.oninput = function() {
+                let val = this.value;
+                if (val.length > 1 && val.startsWith('0') && val[1] !== '.') {
+                    this.value = val.replace(/^0+/, '');
+                }
+            };
         }
 
         document.getElementById('editFieldModal').classList.remove('hidden');
@@ -682,6 +690,11 @@ document.getElementById('rejectModal').addEventListener('click', e => {
             if (!/^\d{9}$/.test(value)) error = 'El teléfono debe tener exactamente 9 dígitos numéricos.';
         } else if (field === 'address') {
             if (value.length > 50) error = 'La dirección no puede exceder los 50 caracteres.';
+        } else if (field === 'loan_interest_rate') {
+            const num = parseFloat(value);
+            if (isNaN(num) || num < 0 || num > 100) {
+                error = 'La tasa debe ser un número entre 0 y 100.';
+            }
         }
 
         if (error) {

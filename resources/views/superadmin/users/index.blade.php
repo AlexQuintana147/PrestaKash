@@ -170,9 +170,11 @@
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="field" value="loan_interest_rate">
-                <input type="number" name="value" value="{{ $user->loan_interest_rate ?? 20 }}" 
-                       class="w-10 text-center text-xs bg-transparent border-b border-gray-200 dark:border-gray-700 focus:outline-none focus:border-blue-500 p-0"
-                       step="0.1" min="0" max="100">
+                <input type="number" name="value" value="{{ number_format($user->loan_interest_rate ?? 20, 2, '.', '') }}" 
+                       class="w-16 text-center text-xs bg-transparent border-b border-gray-200 dark:border-gray-700 focus:outline-none focus:border-blue-500 p-0"
+                       step="0.01" min="0" max="100" 
+                       onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
+                       oninput="if(this.value.length > 1 && this.value.startsWith('0') && this.value[1] !== '.') this.value = this.value.replace(/^0+/, '')">
                 <button type="submit" class="text-blue-500 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>

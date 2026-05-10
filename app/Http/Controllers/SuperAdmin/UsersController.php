@@ -173,6 +173,7 @@ class UsersController extends Controller
             if (!is_numeric($value) || $value < 0 || $value > 100) {
                 return back()->withErrors(['value' => 'La tasa debe ser un número entre 0 y 100.']);
             }
+            $value = number_format((float)$value, 2, '.', '');
         }
 
         $user->$field = $value;
