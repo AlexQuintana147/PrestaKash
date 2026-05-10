@@ -141,7 +141,7 @@
     <div class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
        style="grid-template-columns: 1fr 100px 110px 80px 100px 90px 90px 24px;">
 
-        <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-3 min-w-0">
+        <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-3 min-w-0 flex-1">
             @php
                 $svgColor = match($status) {
                     'approved' => '#22c55e',
@@ -155,11 +155,40 @@
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.877014 7.49988C0.877014 3.84219 3.84216 0.877045 7.49985 0.877045C11.1575 0.877045 14.1227 3.84219 14.1227 7.49988C14.1227 11.1575 11.1575 14.1227 7.49985 14.1227C3.84216 14.1227 0.877014 11.1575 0.877014 7.49988ZM7.49985 1.82704C4.36683 1.82704 1.82701 4.36686 1.82701 7.49988C1.82701 8.97196 2.38774 10.3131 3.30727 11.3213C4.19074 9.94119 5.73818 9.02499 7.50023 9.02499C9.26206 9.02499 10.8093 9.94097 11.6929 11.3208C12.6121 10.3127 13.1727 8.97172 13.1727 7.49988C13.1727 4.36686 10.6328 1.82704 7.49985 1.82704ZM10.9818 11.9787C10.2839 10.7795 8.9857 9.97499 7.50023 9.97499C6.01458 9.97499 4.71624 10.7797 4.01845 11.9791C4.97952 12.7272 6.18765 13.1727 7.49985 13.1727C8.81227 13.1727 10.0206 12.727 10.9818 11.9787ZM5.14999 6.50487C5.14999 5.207 6.20212 4.15487 7.49999 4.15487C8.79786 4.15487 9.84999 5.207 9.84999 6.50487C9.84999 7.80274 8.79786 8.85487 7.49999 8.85487C6.20212 8.85487 5.14999 7.80274 5.14999 6.50487ZM7.49999 5.10487C6.72679 5.10487 6.09999 5.73167 6.09999 6.50487C6.09999 7.27807 6.72679 7.90487 7.49999 7.90487C8.27319 7.90487 8.89999 7.27807 8.89999 6.50487C8.89999 5.73167 8.27319 5.10487 7.49999 5.10487Z" fill="{{ $svgColor }}"/>
                 </svg>
             </div>
-            <div class="min-w-0">
+            <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $user->name }}</p>
                 <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
             </div>
         </a>
+
+        <div class="md:hidden flex items-center ml-2">
+            <form action="{{ route('superadmin.users.update-field', $user) }}" method="POST" class="flex items-center gap-1">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="field" value="loan_interest_rate">
+                <input type="number" name="value" value="{{ number_format($user->loan_interest_rate ?? 20, 2, '.', '') }}" 
+                       class="w-12 text-center text-[10px] bg-gray-100 dark:bg-gray-800 rounded border-none focus:ring-1 focus:ring-blue-500 p-0.5"
+                       step="0.01" min="0" max="99.99" 
+                       onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
+                       oninput="let val = this.value.replace(/[^0-9.]/g, '');
+                                let parts = val.split('.');
+                                if(parts[0].length > 2) {
+                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                }
+                                parts = val.split('.');
+                                if(parts[1] && parts[1].length > 2) {
+                                    val = parts[0] + '.' + parts[1].slice(0, 2);
+                                }
+                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                this.value = val;">
+                <span class="text-[10px] text-gray-400">%</span>
+                <button type="submit" class="text-blue-500 hover:text-blue-600 p-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
 
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->dni ?? '—' }}</span>
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->phone ?? '—' }}</span>
@@ -196,7 +225,7 @@
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->created_at->format('d/m/Y') }}</span>
 
         <!-- Estado -->
-        <div class="flex items-center justify-center gap-1.5 ml-auto md:ml-0">
+        <div class="hidden md:flex items-center justify-center gap-1.5 ml-auto md:ml-0">
             @if($status === 'pending')
                 <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></span>
                 <span class="text-xs text-yellow-500 hidden sm:inline">Pendiente</span>
