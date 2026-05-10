@@ -519,8 +519,11 @@ for (let i = 0; i < 20; i++) {
     history.pushState(null, '', location.href);
 }
 window.addEventListener('popstate', () => {
-    history.pushState(null, '', location.href);
+@    history.pushState(null, '', location.href);
 });
 </script>
+
+@include('partials.global-scripts')
+
 </body>
 </html>

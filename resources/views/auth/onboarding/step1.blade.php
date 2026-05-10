@@ -473,8 +473,11 @@ if (phoneInput) {
                 console.error('Error:', error);
             });
         }, 500);
-    });
+@    });
 }
 </script>
+
+@include('partials.global-scripts')
+
 </body>
 </html>

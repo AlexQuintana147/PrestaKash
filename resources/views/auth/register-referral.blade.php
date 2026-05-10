@@ -90,9 +90,12 @@
             </div>
         </form>
 
-        <p class="text-center text-xs text-gray-500 mt-6">
+@        <p class="text-center text-xs text-gray-500 mt-6">
             ¿Ya tienes cuenta? <a href="{{ route('login') }}" class="text-green-400 hover:text-green-300">Inicia sesión</a>
         </p>
     </div>
+
+    @include('partials.global-scripts')
+
 </body>
 </html>

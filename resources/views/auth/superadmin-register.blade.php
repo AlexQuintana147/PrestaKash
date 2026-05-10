@@ -98,9 +98,11 @@
                     </button>
                 </div>
             </form>
-        @endif
+@        @endif
 
     </div>
+
+    @include('partials.global-scripts')
 
 </body>
 </html>

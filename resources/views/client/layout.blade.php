@@ -193,8 +193,10 @@ function updateThemeUI(isDark) {
     document.getElementById('themeLabel').textContent = isDark ? 'Modo claro' : 'Modo oscuro';
 }
 
-updateThemeUI(document.documentElement.classList.contains('dark'));
+@updateThemeUI(document.documentElement.classList.contains('dark'));
 </script>
+
+@include('partials.global-scripts')
 
 </body>
 </html>

@@ -247,8 +247,10 @@ function updateThemeUI(isDark) {
 }
 
 // Inicializar iconos según tema actual
-updateThemeUI(document.documentElement.classList.contains('dark'));
+@updateThemeUI(document.documentElement.classList.contains('dark'));
 </script>
+
+@include('partials.global-scripts')
 
 </body>
 </html>
