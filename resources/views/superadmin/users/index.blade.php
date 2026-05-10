@@ -162,6 +162,7 @@
         </a>
 
         <div class="md:hidden flex items-center ml-2">
+            @if($status === 'approved')
             <form action="{{ route('superadmin.users.update-field', $user) }}" method="POST" class="flex items-center gap-1">
                 @csrf
                 @method('PATCH')
@@ -193,6 +194,7 @@
                     </svg>
                 </button>
             </form>
+            @endif
         </div>
 
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->dni ?? '—' }}</span>
@@ -200,6 +202,7 @@
         
         <!-- Tasa % -->
         <div class="hidden md:flex items-center justify-center">
+            @if($status === 'approved')
             <form action="{{ route('superadmin.users.update-field', $user) }}" method="POST" class="flex items-center gap-1">
                 @csrf
                 @method('PATCH')
@@ -230,6 +233,9 @@
                     </svg>
                 </button>
             </form>
+            @else
+                <span class="text-xs text-gray-300 dark:text-gray-700">—</span>
+            @endif
         </div>
 
         <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->created_at->format('d/m/Y') }}</span>

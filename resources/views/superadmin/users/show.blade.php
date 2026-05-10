@@ -118,12 +118,12 @@
                             'editable' => true,
                             'field' => 'address'
                         ],
-                        'Tasa de interés' => [
+                        'Tasa de interés' => $status === 'approved' ? [
                             'value' => number_format($user->loan_interest_rate ?? 20, 2, '.', ''),
                             'editable' => true,
                             'field' => 'loan_interest_rate',
                             'suffix' => '%'
-                        ],
+                        ] : null,
                         'Registro'     => $user->created_at->format('d/m/Y'),
                         'Referido por' => $user->referrer ? [
                             'value' => $user->referrer->first_name . ' ' . $user->referrer->last_name,
