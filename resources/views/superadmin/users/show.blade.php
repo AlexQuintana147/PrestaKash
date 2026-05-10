@@ -660,7 +660,9 @@ document.getElementById('rejectModal').addEventListener('click', e => {
         } else if (field === 'loan_interest_rate') {
             fieldValueEl.placeholder = 'Ej: 20.00';
             fieldValueEl.oninput = function() {
-                let val = this.value.replace(/[^0-9.]/g, '');
+                let start = this.selectionStart;
+                let oldVal = this.value;
+                let val = oldVal.replace(/[^0-9.]/g, '');
                 let parts = val.split('.');
                 if(parts[0].length > 2) {
                     val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
@@ -672,7 +674,10 @@ document.getElementById('rejectModal').addEventListener('click', e => {
                 if(val.length > 1 && val.startsWith('0') && val[1] !== '.') {
                     val = val.replace(/^0+/, '');
                 }
-                this.value = val;
+                if (oldVal !== val) {
+                    this.value = val;
+                    this.setSelectionRange(start, start);
+                }
             };
         }
 

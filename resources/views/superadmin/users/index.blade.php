@@ -170,7 +170,9 @@
                        class="w-12 text-center text-[10px] bg-gray-100 dark:bg-gray-800 rounded border-none focus:ring-1 focus:ring-blue-500 p-0.5"
                        step="0.01" min="0" max="99.99" 
                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
-                       oninput="let val = this.value.replace(/[^0-9.]/g, '');
+                       oninput="let start = this.selectionStart;
+                                let oldVal = this.value;
+                                let val = oldVal.replace(/[^0-9.]/g, '');
                                 let parts = val.split('.');
                                 if(parts[0].length > 2) {
                                     val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
@@ -180,7 +182,10 @@
                                     val = parts[0] + '.' + parts[1].slice(0, 2);
                                 }
                                 if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
-                                this.value = val;">
+                                if (oldVal !== val) {
+                                    this.value = val;
+                                    this.setSelectionRange(start, start);
+                                }">
                 <span class="text-[10px] text-gray-400">%</span>
                 <button type="submit" class="text-blue-500 hover:text-blue-600 p-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +208,9 @@
                        class="w-16 text-center text-xs bg-transparent border-b border-gray-200 dark:border-gray-700 focus:outline-none focus:border-blue-500 p-0"
                        step="0.01" min="0" max="99.99" 
                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
-                       oninput="let val = this.value.replace(/[^0-9.]/g, '');
+                       oninput="let start = this.selectionStart;
+                                let oldVal = this.value;
+                                let val = oldVal.replace(/[^0-9.]/g, '');
                                 let parts = val.split('.');
                                 if(parts[0].length > 2) {
                                     val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
@@ -213,7 +220,10 @@
                                     val = parts[0] + '.' + parts[1].slice(0, 2);
                                 }
                                 if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
-                                this.value = val;">
+                                if (oldVal !== val) {
+                                    this.value = val;
+                                    this.setSelectionRange(start, start);
+                                }">
                 <button type="submit" class="text-blue-500 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
