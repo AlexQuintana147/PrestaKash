@@ -636,25 +636,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     amount.addEventListener('input', function(e) {
-        let cursorPosition = this.selectionStart;
-        let originalLength = this.value.length;
+        let start = this.selectionStart;
+        let oldVal = this.value;
         
-        let value = this.value.replace(/[^0-9.]/g, '');
+        // Solo permitir números
+        let val = oldVal.replace(/\D/g, '');
 
-        // Eliminar ceros a la izquierda, excepto si es "0."
-        if (value.length > 1 && value.startsWith('0') && value[1] !== '.') {
-            value = value.replace(/^0+/, '');
+        if (val.length === 0) {
+            val = '0.00';
+        } else {
+            // Asegurar que tenga al menos 3 dígitos para el formato XX.XX
+            while (val.length < 3) {
+                val = '0' + val;
+            }
+            
+            // Insertar punto decimal antes de los últimos 2 dígitos
+            let integerPart = val.slice(0, -2);
+            let decimalPart = val.slice(-2);
+            
+            // Eliminar ceros a la izquierda del entero
+            integerPart = parseInt(integerPart, 10).toString();
+            
+            // Formatear miles con coma
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            
+            val = integerPart + '.' + decimalPart;
         }
-        
-        let parts = value.split('.');
-        if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
-        
-        let formattedValue = formatNumber(value);
-        this.value = formattedValue;
-        
-        let newLength = this.value.length;
-        cursorPosition = cursorPosition + (newLength - originalLength);
-        this.setSelectionRange(cursorPosition, cursorPosition);
+
+        if (oldVal !== val) {
+            this.value = val;
+            // Ajustar posición del cursor (aproximado para este tipo de entrada)
+            this.setSelectionRange(val.length, val.length);
+        }
         
         update();
     });
