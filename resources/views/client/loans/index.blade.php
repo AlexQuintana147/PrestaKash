@@ -170,8 +170,8 @@
                         </div>
 
                         <!-- Centro: Detalles -->
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4 md:border-l md:border-r border-gray-100 dark:border-gray-900 px-0 md:px-8 flex-1">
-                            <div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-4 md:border-l md:border-r border-gray-100 dark:border-gray-900 px-0 md:px-8 flex-1">
+                            <div class="flex flex-col">
                                 <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Destino completo</p>
                                 <div class="space-y-0.5">
                                     <p class="text-[11px] font-bold text-gray-800 dark:text-gray-200 uppercase leading-tight">{{ $loan->bank_name }}</p>
@@ -182,20 +182,20 @@
                                     @endif
                                 </div>
                             </div>
-                            <div>
+                            <div class="flex flex-col justify-center">
                                 <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Interés</p>
                                 <p class="text-xs text-gray-700 dark:text-gray-300">{{ number_format($loan->interest_rate, 2) }}%</p>
                             </div>
-                            <div class="col-span-2 sm:col-span-1">
+                            <div class="flex flex-col justify-center">
                                 <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Motivo</p>
-                                <p class="text-xs text-gray-700 dark:text-gray-300 truncate italic" title="{{ $loan->reason }}">
-                                    "{{ Str::limit($loan->reason, 30) }}"
+                                <p class="text-xs text-gray-700 dark:text-gray-300 italic" title="{{ $loan->reason }}">
+                                    "{{ Str::limit($loan->reason, 50) }}"
                                 </p>
                             </div>
                         </div>
                         
                         <!-- Derecha: Estado -->
-                        <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2">
+                        <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 border-t md:border-t-0 border-gray-50 dark:border-gray-900 pt-4 md:pt-0">
                             <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.15em]
                                 {{ $loan->status === 'approved' ? 'bg-green-500/10 text-green-500' : '' }}
                                 {{ $loan->status === 'pending' ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-500' : '' }}
