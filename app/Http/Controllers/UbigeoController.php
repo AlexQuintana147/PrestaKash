@@ -17,26 +17,26 @@ class UbigeoController extends Controller
 
     public function provinces(string $departmentId)
     {
-        // Los IDs en BD son varchar con cero adelante: '01', '02', etc.
+        // IDs are varchar with leading zero: '01', '02', etc.
         $departmentId = str_pad($departmentId, 2, '0', STR_PAD_LEFT);
 
-        return response()->json(
-            UbigeoProvince::where('department_id', $departmentId)
-                ->orderBy('name')
-                ->get(['id', 'name'])
-        );
+        $provinces = UbigeoProvince::where('department_id', $departmentId)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($provinces);
     }
 
     public function districts(string $provinceId)
     {
-        // Los IDs de provincia son varchar de 4 chars: '0101', '0201', etc.
+        // Province IDs are varchar(4): '0101', '0201', etc.
         $provinceId = str_pad($provinceId, 4, '0', STR_PAD_LEFT);
 
-        return response()->json(
-            UbigeoDistrict::where('province_id', $provinceId)
-                ->orderBy('name')
-                ->get(['id', 'name'])
-        );
+        $districts = UbigeoDistrict::where('province_id', $provinceId)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($districts);
     }
 }
 

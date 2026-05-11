@@ -8,4 +8,6 @@ class UbigeoDistrict extends Model
 {
     protected $table = 'ubigeo_peru_districts';
     public $timestamps = false;
+    protected $keyType = 'string';
+    public $incrementing = false;
 }

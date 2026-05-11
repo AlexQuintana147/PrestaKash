@@ -13,7 +13,11 @@ class RedirectClient
         $user = auth()->user();
 
         if ($user && $user->documents?->status === 'approved') {
-            if (!$request->routeIs('client.*') && !$request->routeIs('logout')) {
+            if (
+                !$request->routeIs('client.*') &&
+                !$request->routeIs('ubigeo.*') &&
+                !$request->routeIs('logout')
+            ) {
                 return redirect()->route('client.dashboard');
             }
         }

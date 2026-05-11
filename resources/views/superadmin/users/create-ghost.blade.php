@@ -78,37 +78,61 @@
                     </div>
 
                     <!-- Ubigeo -->
-                    <div>
+                    <div class="relative">
                         <label
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Departamento</label>
-                        <select name="department" id="department" required
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer">
-                            <option value="" class="dark:bg-black">Seleccionar</option>
-                            @foreach($departments as $dept)
-                                <option value="{{ $dept->id }}" {{ old('department') == $dept->id ? 'selected' : '' }}
-                                    class="dark:bg-black">
-                                    {{ $dept->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="relative">
+                            <select name="department" id="department" required
+                                class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer">
+                                <option value="" class="dark:bg-black">Seleccionar</option>
+                                @foreach($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ old('department') == $dept->id ? 'selected' : '' }}
+                                        class="dark:bg-black">
+                                        {{ $dept->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="relative">
                         <label
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Provincia</label>
-                        <select name="province" id="province" required disabled
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer disabled:opacity-30">
-                            <option value="" class="dark:bg-black">Seleccionar</option>
-                        </select>
+                        <div class="relative">
+                            <select name="province" id="province" required disabled
+                                class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer disabled:opacity-30">
+                                <option value="" class="dark:bg-black">Seleccionar</option>
+                            </select>
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="relative">
                         <label
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Distrito</label>
-                        <select name="district" id="district" required disabled
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer disabled:opacity-30">
-                            <option value="" class="dark:bg-black">Seleccionar</option>
-                        </select>
+                        <div class="relative">
+                            <select name="district" id="district" required disabled
+                                class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer disabled:opacity-30">
+                                <option value="" class="dark:bg-black">Seleccionar</option>
+                            </select>
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Dirección -->
@@ -137,49 +161,101 @@
             const provSelect = document.getElementById('province');
             const distSelect = document.getElementById('district');
 
-            deptSelect.addEventListener('change', function () {
-                const deptId = this.value;
+            function loadProvinces(deptId, selectedProvId = null) {
                 provSelect.innerHTML = '<option value="" class="dark:bg-black">Seleccionar</option>';
                 distSelect.innerHTML = '<option value="" class="dark:bg-black">Seleccionar</option>';
                 provSelect.disabled = true;
                 distSelect.disabled = true;
 
-                if (deptId) {
-                    fetch(`/ubigeo/provinces/${deptId}`)
-                        .then(r => r.json())
-                        .then(data => {
-                            data.forEach(p => {
-                                const opt = document.createElement('option');
-                                opt.value = p.id;
-                                opt.textContent = p.name;
-                                opt.className = 'dark:bg-black';
-                                provSelect.appendChild(opt);
-                            });
-                            provSelect.disabled = false;
-                        });
-                }
-            });
+                if (!deptId) return;
 
-            provSelect.addEventListener('change', function () {
-                const provId = this.value;
+                const url = `/ubigeo/provinces/${deptId}`;
+                console.log('Fetching provinces from:', url);
+
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(async r => {
+                        console.log('Response status:', r.status);
+                        const contentType = r.headers.get("content-type");
+                        if (!r.ok || !contentType || !contentType.includes("application/json")) {
+                            const text = await r.text();
+                            console.error('Fetch error body (likely HTML):', text);
+                            throw new Error(`Server error: ${r.status}. Expected JSON but got ${contentType}`);
+                        }
+                        return r.json();
+                    })
+                    .then(data => {
+                        data.forEach(p => {
+                            const opt = document.createElement('option');
+                            opt.value = p.id;
+                            opt.textContent = p.name;
+                            opt.className = 'dark:bg-black';
+                            if (selectedProvId && p.id == selectedProvId) opt.selected = true;
+                            provSelect.appendChild(opt);
+                        });
+                        provSelect.disabled = false;
+                        if (selectedProvId) {
+                            loadDistricts(selectedProvId, '{{ old('district') }}');
+                        }
+                    })
+                    .catch(err => console.error('Error fetching provinces:', err));
+            }
+
+            function loadDistricts(provId, selectedDistId = null) {
                 distSelect.innerHTML = '<option value="" class="dark:bg-black">Seleccionar</option>';
                 distSelect.disabled = true;
 
-                if (provId) {
-                    fetch(`/ubigeo/districts/${provId}`)
-                        .then(r => r.json())
-                        .then(data => {
-                            data.forEach(d => {
-                                const opt = document.createElement('option');
-                                opt.value = d.id;
-                                opt.textContent = d.name;
-                                opt.className = 'dark:bg-black';
-                                distSelect.appendChild(opt);
-                            });
-                            distSelect.disabled = false;
+                if (!provId) return;
+
+                const url = `/ubigeo/districts/${provId}`;
+                console.log('Fetching districts from:', url);
+
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(async r => {
+                        console.log('Response status:', r.status);
+                        const contentType = r.headers.get("content-type");
+                        if (!r.ok || !contentType || !contentType.includes("application/json")) {
+                            const text = await r.text();
+                            console.error('Fetch error body (likely HTML):', text);
+                            throw new Error(`Server error: ${r.status}. Expected JSON but got ${contentType}`);
+                        }
+                        return r.json();
+                    })
+                    .then(data => {
+                        data.forEach(d => {
+                            const opt = document.createElement('option');
+                            opt.value = d.id;
+                            opt.textContent = d.name;
+                            opt.className = 'dark:bg-black';
+                            if (selectedDistId && d.id == selectedDistId) opt.selected = true;
+                            distSelect.appendChild(opt);
                         });
-                }
+                        distSelect.disabled = false;
+                    })
+                    .catch(err => console.error('Error fetching districts:', err));
+            }
+
+            deptSelect.addEventListener('change', function () {
+                loadProvinces(this.value);
             });
+
+            provSelect.addEventListener('change', function () {
+                loadDistricts(this.value);
+            });
+
+            // Carga inicial si hay valores (ej: por validación fallida)
+            if (deptSelect.value) {
+                loadProvinces(deptSelect.value, '{{ old('province') }}');
+            }
         });
     </script>
     @include('partials.global-scripts')

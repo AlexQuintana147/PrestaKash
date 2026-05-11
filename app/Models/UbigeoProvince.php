@@ -8,6 +8,8 @@ class UbigeoProvince extends Model
 {
     protected $table = 'ubigeo_peru_provinces';
     public $timestamps = false;
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     public function districts()
     {

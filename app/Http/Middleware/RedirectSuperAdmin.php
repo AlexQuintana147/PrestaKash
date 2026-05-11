@@ -14,6 +14,7 @@ class RedirectSuperAdmin
             // Permitir rutas del panel superadmin y logout
             if (
                 !$request->routeIs('superadmin.*') &&
+                !$request->routeIs('ubigeo.*') &&
                 !$request->routeIs('logout')
             ) {
                 return redirect()->route('superadmin.dashboard');
