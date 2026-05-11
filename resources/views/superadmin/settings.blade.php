@@ -73,6 +73,7 @@
                         <div class="group">
                             <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Nombres Completos</label>
                             <input type="text" name="representative_name" value="{{ old('representative_name', $representative_name) }}"
+                                   placeholder="Ej: Juan Pedro"
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_name') border-red-400 @enderror">
                             @error('representative_name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -80,6 +81,7 @@
                         <div class="group">
                             <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Apellidos Completos</label>
                             <input type="text" name="representative_last_name" value="{{ old('representative_last_name', $representative_last_name) }}"
+                                   placeholder="Ej: Pérez García"
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_last_name') border-red-400 @enderror">
                             @error('representative_last_name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -87,6 +89,7 @@
                         <div class="group">
                             <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">DNI</label>
                             <input type="text" name="representative_dni" value="{{ old('representative_dni', $representative_dni) }}" maxlength="8"
+                                   placeholder="Ej: 12345678"
                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_dni') border-red-400 @enderror">
                             @error('representative_dni') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
@@ -95,18 +98,20 @@
                         <div class="group">
                             <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Correo Electrónico</label>
                             <input type="email" name="representative_email" value="{{ old('representative_email', $representative_email) }}"
+                                   placeholder="Ej: representante@empresa.com"
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_email') border-red-400 @enderror">
                             @error('representative_email') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                    <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Teléfono</label>
-                        <input type="text" name="representative_phone" value="{{ old('representative_phone', $representative_phone) }}"
-                               maxlength="9"
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_phone') border-red-400 @enderror">
-                        @error('representative_phone') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
-                    </div>
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Teléfono</label>
+                            <input type="text" name="representative_phone" value="{{ old('representative_phone', $representative_phone) }}"
+                                   maxlength="9"
+                                   placeholder="Ej: 987654321"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
+                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_phone') border-red-400 @enderror">
+                            @error('representative_phone') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
 
                         <div class="pt-2">
                             <button type="submit"
@@ -285,8 +290,8 @@
                     <div class="group">
                         <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Correo de Empresa</label>
                         <input type="email" name="company_email" value="{{ old('company_email', $company_email) }}"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_email') border-red-400 @enderror"
-                               placeholder="ejemplo@empresa.com">
+                               placeholder="Ej: contacto@empresa.com"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_email') border-red-400 @enderror">
                         @error('company_email') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -294,9 +299,9 @@
                         <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Teléfono de Empresa</label>
                         <input type="text" name="company_phone" value="{{ old('company_phone', $company_phone) }}"
                                maxlength="9"
+                               placeholder="Ej: 987654321"
                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_phone') border-red-400 @enderror"
-                               placeholder="Solo números">
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_phone') border-red-400 @enderror">
                         @error('company_phone') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
