@@ -32,32 +32,21 @@
         <!-- Filtros -->
         <div class="mb-6">
             <!-- Mobile: grid -->
-            <div class="md:hidden space-y-2">
-                <div class="grid grid-cols-4 gap-2">
-                    @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
-                                <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-3 py-2 rounded-lg text-[10px] font-medium text-center transition-colors
-                                                                                                                                                                                                                              {{ $filter === $key
-                        ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
-                        : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
-                                    {{ $label }}
-                                    @if($counts[$key] > 0)
-                                        <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
-                                    @endif
-                                </a>
-                    @endforeach
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    @foreach(['ghosts' => 'Fantasmas', 'blocked' => 'Bloqueados'] as $key => $label)
-                                <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
-                                    class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
-                                                                                                                                                                                                                              {{ $filter === $key
-                        ? ($key === 'blocked' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : ($key === 'ghosts' ? 'bg-purple-600 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'))
-                        : ($key === 'ghosts' ? 'bg-purple-600/20 text-purple-400' : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500') }}">
-                                    {{ $label }}
-                                    @if($counts[$key] > 0)
-                                        <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
-                                    @endif
-                                </a>
+            <div class="md:hidden">
+                <div class="grid grid-cols-3 gap-2">
+                    @foreach([
+                        'all'      => ['label' => 'Todos',      'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                        'pending'  => ['label' => 'Pendientes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                        'approved' => ['label' => 'Aprobados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                        'rejected' => ['label' => 'Rechazados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                        'ghosts'   => ['label' => 'Fantasmas',  'active' => 'bg-purple-600 text-white', 'inactive' => 'bg-transparent text-purple-500/50 border-purple-200 dark:border-purple-900/30'],
+                        'blocked'  => ['label' => 'Bloqueados', 'active' => 'bg-red-600 text-white',    'inactive' => 'bg-transparent text-red-500/50 border-red-200 dark:border-red-900/30'],
+                    ] as $key => $cfg)
+                        <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
+                           class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
+                                  {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
+                            {{ $cfg['label'] }}
+                        </a>
                     @endforeach
                 </div>
             </div>
