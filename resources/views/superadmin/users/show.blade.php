@@ -211,7 +211,7 @@
                 </div>
             </div>
 
-            @if($user->documents)
+            @if($user->documents && !$user->is_ghost)
             <div>
                 <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
 

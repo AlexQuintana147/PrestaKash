@@ -36,7 +36,7 @@
                 <div class="grid grid-cols-4 gap-2">
                     @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'ghosts' => 'Fantasmas'] as $key => $label)
                                 <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-3 py-2 rounded-lg text-[10px] font-medium text-center transition-colors
-                                                                                                                              {{ $filter === $key
+                                                                                                                                                                                              {{ $filter === $key
                         ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
                         : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
                                     {{ $label }}
@@ -49,7 +49,7 @@
                 <div class="grid grid-cols-2 gap-2 w-2/3 mx-auto">
                     @foreach(['rejected' => 'Rechazados', 'blocked' => 'Bloqueados'] as $key => $label)
                                 <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
-                                                                                                                              {{ $filter === $key
+                                                                                                                                                                                              {{ $filter === $key
                         ? ($key === 'blocked' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white')
                         : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
                                     {{ $label }}
@@ -65,7 +65,7 @@
             <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
                 @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'ghosts' => 'Fantasmas', 'blocked' => 'Bloqueados'] as $key => $label)
                         <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                                                                                                  {{ $filter === $key
+                                                                                                                                                  {{ $filter === $key
                     ? ($key === 'blocked' ? 'text-red-500' : 'text-gray-900 dark:text-white')
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
                             {{ $label }}
@@ -97,13 +97,12 @@
             </div>
         @elseif($filter === 'ghosts')
             <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center"
-                style="grid-template-columns: 1fr 100px 110px 100px 90px 90px 24px;">
+                style="grid-template-columns: 1fr 120px 130px 120px 100px 24px;">
                 <span>Usuario</span>
                 <span class="text-center">DNI</span>
                 <span class="text-center">Teléfono</span>
                 <span class="text-center">Registro</span>
                 <span class="text-center">Estado</span>
-                <span class="text-center">Referidor</span>
                 <span></span>
             </div>
         @endif
@@ -163,7 +162,7 @@
             @forelse($users as $user)
                 @php $status = $user->documents?->status @endphp
                 <div class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
-                    style="grid-template-columns: {{ $user->is_ghost ? '1fr 100px 110px 100px 90px 90px 24px' : '1fr 100px 110px 80px 100px 90px 90px 24px' }};">
+                    style="grid-template-columns: {{ $user->is_ghost ? '1fr 120px 130px 120px 100px 24px' : '1fr 100px 110px 80px 100px 90px 90px 24px' }};">
 
                     <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-3 min-w-0 flex-1">
                         @php
@@ -194,7 +193,7 @@
                     </a>
 
                     <div class="md:hidden flex items-center ml-2">
-                        @if($status === 'approved')
+                        @if($status === 'approved' && !$user->is_ghost)
                             <form action="{{ route('superadmin.users.update-field', $user) }}" method="POST"
                                 class="flex items-center gap-1">
                                 @csrf
@@ -204,22 +203,23 @@
                                     value="{{ number_format($user->loan_interest_rate ?? 20, 2, '.', '') }}"
                                     class="w-12 text-center text-[10px] bg-gray-100 dark:bg-gray-800 rounded border-none focus:ring-1 focus:ring-blue-500 p-0.5"
                                     step="0.01" min="0" max="99.99"
-                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)" oninput="let start = this.selectionStart;
-                                                                                                                                let oldVal = this.value;
-                                                                                                                                let val = oldVal.replace(/[^0-9.]/g, '');
-                                                                                                                                let parts = val.split('.');
-                                                                                                                                if(parts[0].length > 2) {
-                                                                                                                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
-                                                                                                                                }
-                                                                                                                                parts = val.split('.');
-                                                                                                                                if(parts[1] && parts[1].length > 2) {
-                                                                                                                                    val = parts[0] + '.' + parts[1].slice(0, 2);
-                                                                                                                                }
-                                                                                                                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
-                                                                                                                                if (oldVal !== val) {
-                                                                                                                                    this.value = val;
-                                                                                                                                    this.setSelectionRange(start, start);
-                                                                                                                                }">
+                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
+                                    oninput="let start = this.selectionStart;
+                                                                                                                                                                                                let oldVal = this.value;
+                                                                                                                                                                                                let val = oldVal.replace(/[^0-9.]/g, '');
+                                                                                                                                                                                                let parts = val.split('.');
+                                                                                                                                                                                                if(parts[0].length > 2) {
+                                                                                                                                                                                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                                                                                                                                                                                }
+                                                                                                                                                                                                parts = val.split('.');
+                                                                                                                                                                                                if(parts[1] && parts[1].length > 2) {
+                                                                                                                                                                                                    val = parts[0] + '.' + parts[1].slice(0, 2);
+                                                                                                                                                                                                }
+                                                                                                                                                                                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                                                                                                                                                                                if (oldVal !== val) {
+                                                                                                                                                                                                    this.value = val;
+                                                                                                                                                                                                    this.setSelectionRange(start, start);
+                                                                                                                                                                                                }">
                                 <span class="text-[10px] text-gray-400">%</span>
                                 <button type="submit" class="text-blue-500 hover:text-blue-600 p-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,22 +246,23 @@
                                         value="{{ number_format($user->loan_interest_rate ?? 20, 2, '.', '') }}"
                                         class="w-16 text-center text-xs bg-transparent border-b border-gray-200 dark:border-gray-700 focus:outline-none focus:border-blue-500 p-0"
                                         step="0.01" min="0" max="99.99"
-                                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)" oninput="let start = this.selectionStart;
-                                                                                                                                        let oldVal = this.value;
-                                                                                                                                        let val = oldVal.replace(/[^0-9.]/g, '');
-                                                                                                                                        let parts = val.split('.');
-                                                                                                                                        if(parts[0].length > 2) {
-                                                                                                                                            val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
-                                                                                                                                        }
-                                                                                                                                        parts = val.split('.');
-                                                                                                                                        if(parts[1] && parts[1].length > 2) {
-                                                                                                                                            val = parts[0] + '.' + parts[1].slice(0, 2);
-                                                                                                                                        }
-                                                                                                                                        if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
-                                                                                                                                        if (oldVal !== val) {
-                                                                                                                                            this.value = val;
-                                                                                                                                            this.setSelectionRange(start, start);
-                                                                                                                                        }">
+                                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
+                                        oninput="let start = this.selectionStart;
+                                                                                                                                                                                                                        let oldVal = this.value;
+                                                                                                                                                                                                                        let val = oldVal.replace(/[^0-9.]/g, '');
+                                                                                                                                                                                                                        let parts = val.split('.');
+                                                                                                                                                                                                                        if(parts[0].length > 2) {
+                                                                                                                                                                                                                            val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                        parts = val.split('.');
+                                                                                                                                                                                                                        if(parts[1] && parts[1].length > 2) {
+                                                                                                                                                                                                                            val = parts[0] + '.' + parts[1].slice(0, 2);
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                        if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                                                                                                                                                                                                        if (oldVal !== val) {
+                                                                                                                                                                                                                            this.value = val;
+                                                                                                                                                                                                                            this.setSelectionRange(start, start);
+                                                                                                                                                                                                                        }">
                                     <button type="submit"
                                         class="text-blue-500 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,15 +297,17 @@
                     </div>
 
                     <!-- Referido por -->
-                    <div class="hidden md:flex items-center justify-center h-full">
-                        @if($user->referrer)
-                            <span class="text-xs text-gray-600 dark:text-gray-400 font-medium" title="{{ $user->referrer->name }}">
-                                {{ $user->referrer->first_name }} {{ Str::substr($user->referrer->last_name, 0, 1) }}.
-                            </span>
-                        @else
-                            <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
-                        @endif
-                    </div>
+                    @if(!$user->is_ghost)
+                        <div class="hidden md:flex items-center justify-center h-full">
+                            @if($user->referrer)
+                                <span class="text-xs text-gray-600 dark:text-gray-400 font-medium" title="{{ $user->referrer->name }}">
+                                    {{ $user->referrer->first_name }} {{ Str::substr($user->referrer->last_name, 0, 1) }}.
+                                </span>
+                            @else
+                                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
+                            @endif
+                        </div>
+                    @endif
 
                     <a href="{{ route('superadmin.users.show', $user) }}" class="flex justify-end">
                         <svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors hidden md:block"
