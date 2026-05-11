@@ -138,7 +138,7 @@
                             'suffix' => '%'
                         ] : null,
                         'Registro'     => $user->created_at->format('d/m/Y'),
-                        'Referido por' => $user->referrer ? [
+                        'Referido por' => (!$user->is_ghost && $user->referrer) ? [
                             'value' => $user->referrer->first_name . ' ' . $user->referrer->last_name,
                             'link' => route('superadmin.users.show', $user->referrer),
                             'is_referrer' => true
@@ -794,6 +794,11 @@ document.getElementById('lightbox').addEventListener('wheel', e => {
     e.preventDefault();
     zoom(e.deltaY < 0 ? 0.15 : -0.15);
 }, { passive: false });
+
+function openDeleteGhostModal() { document.getElementById('deleteGhostModal').classList.remove('hidden'); }
+function closeDeleteGhostModal() { document.getElementById('deleteGhostModal').classList.add('hidden'); }
+</script>
+
 @if($user->is_ghost)
 <!-- Modal eliminar usuario fantasma -->
 <div id="deleteGhostModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
@@ -824,12 +829,7 @@ document.getElementById('lightbox').addEventListener('wheel', e => {
         </form>
     </div>
 </div>
-
-<script>
-    function openDeleteGhostModal() { document.getElementById('deleteGhostModal').classList.remove('hidden'); }
-    function closeDeleteGhostModal() { document.getElementById('deleteGhostModal').classList.add('hidden'); }
-</script>
 @endif
 
-</script>
+@include('partials.global-scripts')
 @endsection
