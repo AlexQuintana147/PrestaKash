@@ -59,7 +59,17 @@ class UsersController extends Controller
     {
         $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'last_name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                    if (count($words) < 2) {
+                        $fail('Debes ingresar al menos dos apellidos.');
+                    }
+                },
+            ],
             'dni' => 'required|string|size:8|unique:users,dni',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|size:9|unique:users,phone',

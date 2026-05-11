@@ -49,6 +49,7 @@
                             placeholder="Ej: Perez Garcia"
                             oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g,'')"
                             class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-300 dark:placeholder-gray-700">
+                        <p class="text-[10px] text-gray-500 mt-1">Ingresa tus dos apellidos separados por un espacio.</p>
                     </div>
 
                     <!-- DNI -->
