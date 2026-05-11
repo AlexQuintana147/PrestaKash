@@ -30,6 +30,7 @@ class User extends Authenticatable
         'referred_by',
         'referral_code',
         'loan_interest_rate',
+        'is_ghost',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -38,9 +39,9 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
             'profile_completed' => 'boolean',
-            'step1_completed'   => 'boolean',
+            'step1_completed' => 'boolean',
             'loan_interest_rate' => 'float',
         ];
     }

@@ -39,14 +39,61 @@ class UsersController extends Controller
         }
 
         $counts = [
-            'all'      => User::whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))->where('profile_completed', true)->count(),
-            'pending'  => UserDocument::where('status', 'pending')->count(),
+            'all' => User::whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))->where('profile_completed', true)->count(),
+            'pending' => UserDocument::where('status', 'pending')->count(),
             'approved' => UserDocument::where('status', 'approved')->count(),
             'rejected' => UserDocument::where('status', 'rejected')->count(),
-            'blocked'  => BlockedUser::count(),
+            'blocked' => BlockedUser::count(),
         ];
 
         return view('superadmin.users.index', compact('users', 'filter', 'counts', 'blockedUsers'));
+    }
+
+    public function createGhost()
+    {
+        $departments = UbigeoDepartment::all();
+        return view('superadmin.users.create-ghost', compact('departments'));
+    }
+
+    public function storeGhost(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'dni' => 'required|string|size:8|unique:users,dni',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|size:9|unique:users,phone',
+            'department' => 'required|string',
+            'province' => 'required|string',
+            'district' => 'required|string',
+            'address' => 'required|string|max:255',
+        ]);
+
+        $user = User::create([
+            'role_id' => \App\Models\Role::where('name', 'usuario')->value('id') ?? 2, // Default to usuario
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'dni' => $request->dni,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'department' => $request->department,
+            'province' => $request->province,
+            'district' => $request->district,
+            'address' => $request->address,
+            'profile_completed' => true,
+            'step1_completed' => true,
+            'is_ghost' => true,
+            'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
+        ]);
+
+        // Create empty documents as approved
+        UserDocument::create([
+            'user_id' => $user->id,
+            'status' => 'approved',
+        ]);
+
+        return redirect()->route('superadmin.users.index')->with('success', 'Usuario fantasma creado correctamente.');
     }
 
     public function show(User $user)
@@ -83,9 +130,9 @@ class UsersController extends Controller
         $now = now();
 
         $user->documents()->update([
-            'status'           => 'rejected',
+            'status' => 'rejected',
             'rejection_reason' => $request->reason,
-            'rejected_at'      => $now,
+            'rejected_at' => $now,
         ]);
 
         // Eliminar al usuario en 60 segundos
@@ -108,12 +155,12 @@ class UsersController extends Controller
         \App\Models\BlockedUser::updateOrCreate(
             ['email' => $user->email],
             [
-                'name'       => $user->name,
+                'name' => $user->name,
                 'first_name' => $user->first_name,
-                'last_name'  => $user->last_name,
-                'phone'      => $user->phone,
-                'dni'        => $user->dni,
-                'reason'     => request('reason'),
+                'last_name' => $user->last_name,
+                'phone' => $user->phone,
+                'dni' => $user->dni,
+                'reason' => request('reason'),
             ]
         );
 
@@ -173,7 +220,7 @@ class UsersController extends Controller
             if (!is_numeric($value) || $value < 0 || $value > 100) {
                 return back()->withErrors(['value' => 'La tasa debe ser un número entre 0 y 100.']);
             }
-            $value = number_format((float)$value, 2, '.', '');
+            $value = number_format((float) $value, 2, '.', '');
         }
 
         $user->$field = $value;
