@@ -25,33 +25,19 @@
 
     <!-- Filtros -->
     <div class="mb-6">
-        <!-- Mobile: grid 2 columnas -->
-        <div class="md:hidden space-y-2">
-            <div class="grid grid-cols-3 gap-2">
-                @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados'] as $key => $label)
+        <!-- Mobile: grid -->
+        <div class="md:hidden">
+            <div class="grid grid-cols-2 gap-2">
+                @foreach([
+                    'all'      => ['label' => 'Todos',       'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'pending'  => ['label' => 'Solicitudes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'approved' => ['label' => 'Interesados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'rejected' => ['label' => 'Rechazados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                ] as $key => $cfg)
                     <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
-                       class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
-                              {{ $filter === $key
-                                  ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
-                                  : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
-                        {{ $label }}
-                        @if($counts[$key] > 0)
-                            <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
-                        @endif
-                    </a>
-                @endforeach
-            </div>
-            <div class="grid grid-cols-1 gap-2 w-1/2 mx-auto">
-                @foreach(['rejected' => 'Rechazados'] as $key => $label)
-                    <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
-                       class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
-                              {{ $filter === $key
-                                  ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
-                                  : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
-                        {{ $label }}
-                        @if($counts[$key] > 0)
-                            <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
-                        @endif
+                       class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
+                              {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
+                        {{ $cfg['label'] }}
                     </a>
                 @endforeach
             </div>
