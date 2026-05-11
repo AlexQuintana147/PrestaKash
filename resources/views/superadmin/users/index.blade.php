@@ -31,12 +31,12 @@
 
         <!-- Filtros -->
         <div class="mb-6">
-            <!-- Mobile: grid 2 columnas -->
+            <!-- Mobile: grid -->
             <div class="md:hidden space-y-2">
                 <div class="grid grid-cols-4 gap-2">
-                    @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'ghosts' => 'Fantasmas'] as $key => $label)
+                    @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
                                 <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-3 py-2 rounded-lg text-[10px] font-medium text-center transition-colors
-                                                                                                                                                                                              {{ $filter === $key
+                                                                                                                                                                                                                              {{ $filter === $key
                         ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'
                         : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
                                     {{ $label }}
@@ -46,12 +46,13 @@
                                 </a>
                     @endforeach
                 </div>
-                <div class="grid grid-cols-2 gap-2 w-2/3 mx-auto">
-                    @foreach(['rejected' => 'Rechazados', 'blocked' => 'Bloqueados'] as $key => $label)
-                                <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
-                                                                                                                                                                                              {{ $filter === $key
-                        ? ($key === 'blocked' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white')
-                        : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500' }}">
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach(['ghosts' => 'Fantasmas', 'blocked' => 'Bloqueados'] as $key => $label)
+                                <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
+                                    class="px-3 py-2 rounded-lg text-xs font-medium text-center transition-colors
+                                                                                                                                                                                                                              {{ $filter === $key
+                        ? ($key === 'blocked' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : ($key === 'ghosts' ? 'bg-purple-600 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white'))
+                        : ($key === 'ghosts' ? 'bg-purple-600/20 text-purple-400' : 'bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500') }}">
                                     {{ $label }}
                                     @if($counts[$key] > 0)
                                         <span class="ml-1 opacity-60">{{ $counts[$key] }}</span>
@@ -63,22 +64,41 @@
 
             <!-- Desktop: tabs horizontales -->
             <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
-                @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'ghosts' => 'Fantasmas', 'blocked' => 'Bloqueados'] as $key => $label)
+                @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
                         <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                                                                                                                                                  {{ $filter === $key
-                    ? ($key === 'blocked' ? 'text-red-500' : 'text-gray-900 dark:text-white')
+                                                                                                                                                                                                                  {{ $filter === $key
+                    ? 'text-gray-900 dark:text-white'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
                             {{ $label }}
                             @if($counts[$key] > 0)
                                 <span
-                                    class="ml-1.5 text-xs {{ $filter === $key ? ($key === 'blocked' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400') : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                                    class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
                             @endif
                             @if($filter === $key)
-                                <span
-                                    class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'blocked' ? 'bg-red-500' : 'bg-gray-900 dark:bg-white' }}"></span>
+                                <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
                             @endif
                         </a>
                 @endforeach
+
+                <div class="flex items-center gap-2 ml-4">
+                    <a href="{{ route('superadmin.users.index', ['filter' => 'ghosts']) }}"
+                        class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all
+                                      {{ $filter === 'ghosts' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' }}">
+                        Fantasmas
+                        @if($counts['ghosts'] > 0)
+                            <span class="ml-1 opacity-70">{{ $counts['ghosts'] }}</span>
+                        @endif
+                    </a>
+
+                    <a href="{{ route('superadmin.users.index', ['filter' => 'blocked']) }}"
+                        class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all
+                                      {{ $filter === 'blocked' ? 'bg-red-600 text-white shadow-lg shadow-red-500/20' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20' }}">
+                        Bloqueados
+                        @if($counts['blocked'] > 0)
+                            <span class="ml-1 opacity-70">{{ $counts['blocked'] }}</span>
+                        @endif
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -205,21 +225,21 @@
                                     step="0.01" min="0" max="99.99"
                                     onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
                                     oninput="let start = this.selectionStart;
-                                                                                                                                                                                                let oldVal = this.value;
-                                                                                                                                                                                                let val = oldVal.replace(/[^0-9.]/g, '');
-                                                                                                                                                                                                let parts = val.split('.');
-                                                                                                                                                                                                if(parts[0].length > 2) {
-                                                                                                                                                                                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
-                                                                                                                                                                                                }
-                                                                                                                                                                                                parts = val.split('.');
-                                                                                                                                                                                                if(parts[1] && parts[1].length > 2) {
-                                                                                                                                                                                                    val = parts[0] + '.' + parts[1].slice(0, 2);
-                                                                                                                                                                                                }
-                                                                                                                                                                                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
-                                                                                                                                                                                                if (oldVal !== val) {
-                                                                                                                                                                                                    this.value = val;
-                                                                                                                                                                                                    this.setSelectionRange(start, start);
-                                                                                                                                                                                                }">
+                                                                                                                                                                                                                                let oldVal = this.value;
+                                                                                                                                                                                                                                let val = oldVal.replace(/[^0-9.]/g, '');
+                                                                                                                                                                                                                                let parts = val.split('.');
+                                                                                                                                                                                                                                if(parts[0].length > 2) {
+                                                                                                                                                                                                                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                parts = val.split('.');
+                                                                                                                                                                                                                                if(parts[1] && parts[1].length > 2) {
+                                                                                                                                                                                                                                    val = parts[0] + '.' + parts[1].slice(0, 2);
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                                                                                                                                                                                                                if (oldVal !== val) {
+                                                                                                                                                                                                                                    this.value = val;
+                                                                                                                                                                                                                                    this.setSelectionRange(start, start);
+                                                                                                                                                                                                                                }">
                                 <span class="text-[10px] text-gray-400">%</span>
                                 <button type="submit" class="text-blue-500 hover:text-blue-600 p-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,21 +268,21 @@
                                         step="0.01" min="0" max="99.99"
                                         onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
                                         oninput="let start = this.selectionStart;
-                                                                                                                                                                                                                        let oldVal = this.value;
-                                                                                                                                                                                                                        let val = oldVal.replace(/[^0-9.]/g, '');
-                                                                                                                                                                                                                        let parts = val.split('.');
-                                                                                                                                                                                                                        if(parts[0].length > 2) {
-                                                                                                                                                                                                                            val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
-                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                        parts = val.split('.');
-                                                                                                                                                                                                                        if(parts[1] && parts[1].length > 2) {
-                                                                                                                                                                                                                            val = parts[0] + '.' + parts[1].slice(0, 2);
-                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                        if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
-                                                                                                                                                                                                                        if (oldVal !== val) {
-                                                                                                                                                                                                                            this.value = val;
-                                                                                                                                                                                                                            this.setSelectionRange(start, start);
-                                                                                                                                                                                                                        }">
+                                                                                                                                                                                                                                                                let oldVal = this.value;
+                                                                                                                                                                                                                                                                let val = oldVal.replace(/[^0-9.]/g, '');
+                                                                                                                                                                                                                                                                let parts = val.split('.');
+                                                                                                                                                                                                                                                                if(parts[0].length > 2) {
+                                                                                                                                                                                                                                                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                parts = val.split('.');
+                                                                                                                                                                                                                                                                if(parts[1] && parts[1].length > 2) {
+                                                                                                                                                                                                                                                                    val = parts[0] + '.' + parts[1].slice(0, 2);
+                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                                                                                                                                                                                                                                                if (oldVal !== val) {
+                                                                                                                                                                                                                                                                    this.value = val;
+                                                                                                                                                                                                                                                                    this.setSelectionRange(start, start);
+                                                                                                                                                                                                                                                                }">
                                     <button type="submit"
                                         class="text-blue-500 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
