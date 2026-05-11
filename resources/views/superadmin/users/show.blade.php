@@ -87,7 +87,7 @@
                             </a>
                             <button type="button" onclick="openDeleteGhostModal()"
                                     class="text-[10px] font-bold text-red-500 hover:text-red-600 uppercase tracking-wider transition-colors">
-                                Eliminar usuario fantasma
+                                Eliminar
                             </button>
                         </div>
                     @endif
