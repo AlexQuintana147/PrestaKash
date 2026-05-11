@@ -27,22 +27,29 @@ class UsersController extends Controller
                 ->whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))
                 ->where('profile_completed', true);
 
-            if ($filter === 'pending') {
-                $query->whereHas('documents', fn($q) => $q->where('status', 'pending'));
-            } elseif ($filter === 'approved') {
-                $query->whereHas('documents', fn($q) => $q->where('status', 'approved'));
-            } elseif ($filter === 'rejected') {
-                $query->whereHas('documents', fn($q) => $q->where('status', 'rejected'));
+            if ($filter === 'ghosts') {
+                $query->where('is_ghost', true);
+            } else {
+                $query->where('is_ghost', false);
+
+                if ($filter === 'pending') {
+                    $query->whereHas('documents', fn($q) => $q->where('status', 'pending'));
+                } elseif ($filter === 'approved') {
+                    $query->whereHas('documents', fn($q) => $q->where('status', 'approved'));
+                } elseif ($filter === 'rejected') {
+                    $query->whereHas('documents', fn($q) => $q->where('status', 'rejected'));
+                }
             }
 
             $users = $query->latest()->paginate(15)->withQueryString();
         }
 
         $counts = [
-            'all' => User::whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))->where('profile_completed', true)->count(),
-            'pending' => UserDocument::where('status', 'pending')->count(),
-            'approved' => UserDocument::where('status', 'approved')->count(),
-            'rejected' => UserDocument::where('status', 'rejected')->count(),
+            'all' => User::whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))->where('profile_completed', true)->where('is_ghost', false)->count(),
+            'pending' => UserDocument::where('status', 'pending')->whereHas('user', fn($q) => $q->where('is_ghost', false))->count(),
+            'approved' => UserDocument::where('status', 'approved')->whereHas('user', fn($q) => $q->where('is_ghost', false))->count(),
+            'rejected' => UserDocument::where('status', 'rejected')->whereHas('user', fn($q) => $q->where('is_ghost', false))->count(),
+            'ghosts' => User::where('is_ghost', true)->count(),
             'blocked' => BlockedUser::count(),
         ];
 
@@ -200,6 +207,10 @@ class UsersController extends Controller
 
         $field = $request->field;
         $value = trim($request->value);
+
+        if ($user->is_ghost && $field === 'loan_interest_rate') {
+            return back()->withErrors(['value' => 'No se puede personalizar la tasa de un usuario fantasma.']);
+        }
 
         // Validaciones adicionales en el backend
         if ($field === 'first_name') {
