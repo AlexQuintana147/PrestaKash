@@ -57,7 +57,8 @@
                     </div>
                     <div class="flex-1">
                         <input type="text" id="amount_display" value="{{ old('intended_amount') }}" required
-                               placeholder="Mínimo 100.00"
+                               placeholder="0.00"
+                               inputmode="decimal"
                                class="w-full bg-transparent border-b border-gray-100 dark:border-gray-900 rounded-none px-0 py-2 text-sm focus:outline-none focus:border-green-500 dark:text-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
                         <input type="hidden" name="intended_amount" id="intended_amount" value="{{ old('intended_amount') }}">
                     </div>
@@ -135,33 +136,33 @@
 document.addEventListener('DOMContentLoaded', function() {
     const displayInput = document.getElementById('amount_display');
     const hiddenInput = document.getElementById('intended_amount');
+    const form = document.querySelector('form');
 
-    function formatAmount(value) {
-        // Eliminar todo lo que no sea número o punto
-        value = value.replace(/[^0-9.]/g, '');
-        
-        // Evitar múltiples puntos
-        const parts = value.split('.');
-        if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
-        
-        // No permitir 0 al inicio si no es decimal (0.xx)
-        if (value.length > 1 && value[0] === '0' && value[1] !== '.') {
-            value = value.substring(1);
+    function formatAmount(oldVal) {
+        // Solo permitir números
+        let val = oldVal.replace(/\D/g, '');
+
+        if (val.length === 0) {
+            val = '0.00';
+        } else {
+            // Asegurar que tenga al menos 3 dígitos para el formato XX.XX
+            while (val.length < 3) {
+                val = '0' + val;
+            }
+            
+            // Insertar punto decimal antes de los últimos 2 dígitos
+            let integerPart = val.slice(0, -2);
+            let decimalPart = val.slice(-2);
+            
+            // Eliminar ceros a la izquierda del entero
+            integerPart = parseInt(integerPart, 10).toString();
+            
+            // Formatear miles con coma
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            
+            val = integerPart + '.' + decimalPart;
         }
-
-        // Si está vacío
-        if (!value) return '';
-
-        // Formatear con comas para miles
-        const numberParts = value.split('.');
-        numberParts[0] = numberParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        
-        // Limitar a 2 decimales
-        if (numberParts[1]) {
-            numberParts[1] = numberParts[1].substring(0, 2);
-        }
-
-        return numberParts.join('.');
+        return val;
     }
 
     displayInput.addEventListener('input', function(e) {
@@ -172,9 +173,14 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenInput.value = formatted.replace(/,/g, '');
     });
 
+    form.addEventListener('submit', function() {
+        hiddenInput.value = displayInput.value.replace(/,/g, '');
+    });
+
     // Formatear valor inicial si existe
     if (displayInput.value) {
-        displayInput.value = formatAmount(displayInput.value);
+        displayInput.value = formatAmount(displayInput.value.replace(/[^0-9]/g, ''));
+        hiddenInput.value = displayInput.value.replace(/,/g, '');
     }
 
     // Lógica para Origen de Fondos "Otros"
@@ -182,16 +188,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const customSourceContainer = document.getElementById('custom_source_container');
     const customSourceInput = document.getElementById('custom_source');
 
-    sourceSelect.addEventListener('change', function() {
-        if (this.value === 'Otros') {
-            customSourceContainer.classList.remove('hidden');
-            customSourceInput.setAttribute('required', 'required');
-        } else {
-            customSourceContainer.classList.add('hidden');
-            customSourceInput.removeAttribute('required');
-            customSourceInput.value = '';
-        }
-    });
+    if (sourceSelect) {
+        sourceSelect.addEventListener('change', function() {
+            if (this.value === 'Otros') {
+                customSourceContainer.classList.remove('hidden');
+                customSourceInput.setAttribute('required', 'required');
+            } else {
+                customSourceContainer.classList.add('hidden');
+                customSourceInput.removeAttribute('required');
+                customSourceInput.value = '';
+            }
+        });
+    }
 });
 </script>
 @endsection
