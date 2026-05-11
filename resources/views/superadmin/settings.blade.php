@@ -12,45 +12,112 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-        <!-- Perfil -->
-        <section>
-            <div class="flex items-center gap-3 mb-6">
-                <div class="text-gray-900 dark:text-white">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">Perfil</h2>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">Información personal</p>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                @if(session('success_name'))
-                    <div class="flex items-center gap-2 text-xs text-green-500">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        <div class="space-y-12">
+            <!-- Perfil -->
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="text-gray-900 dark:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        {{ session('success_name') }}
                     </div>
-                @endif
+                    <div>
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Perfil</h2>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider">Información personal</p>
+                    </div>
+                </div>
 
-                <form action="{{ route('superadmin.settings.name') }}" method="POST" class="space-y-6">
-                    @csrf
-                    <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nombre completo</label>
-                        <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" required
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('name') border-red-400 @enderror">
-                        @error('name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                <div class="space-y-6">
+                    @if(session('success_name'))
+                        <div class="flex items-center gap-2 text-xs text-green-500">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{ session('success_name') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('superadmin.settings.name') }}" method="POST" class="space-y-6">
+                        @csrf
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nombre completo</label>
+                            <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" required
+                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('name') border-red-400 @enderror">
+                            @error('name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <button type="submit"
+                                class="inline-flex items-center text-xs font-bold text-gray-900 dark:text-white hover:opacity-70 transition-opacity border-b-2 border-gray-900 dark:border-white pb-1">
+                            GUARDAR CAMBIOS
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Representante Legal -->
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="text-gray-900 dark:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
                     </div>
-                    <button type="submit"
-                            class="inline-flex items-center text-xs font-bold text-gray-900 dark:text-white hover:opacity-70 transition-opacity border-b-2 border-gray-900 dark:border-white pb-1">
-                        GUARDAR CAMBIOS
-                    </button>
-                </form>
-            </div>
-        </section>
+                    <div>
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Representante Legal</h2>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider">Datos del firmante</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <form action="{{ route('superadmin.settings.company') }}" method="POST" class="space-y-6">
+                        @csrf
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Nombres Completos</label>
+                            <input type="text" name="representative_name" value="{{ old('representative_name', $representative_name) }}"
+                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_name') border-red-400 @enderror">
+                            @error('representative_name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Apellidos Completos</label>
+                            <input type="text" name="representative_last_name" value="{{ old('representative_last_name', $representative_last_name) }}"
+                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_last_name') border-red-400 @enderror">
+                            @error('representative_last_name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">DNI</label>
+                            <input type="text" name="representative_dni" value="{{ old('representative_dni', $representative_dni) }}" maxlength="8"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_dni') border-red-400 @enderror">
+                            @error('representative_dni') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="group">
+                            <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Correo Electrónico</label>
+                            <input type="email" name="representative_email" value="{{ old('representative_email', $representative_email) }}"
+                                   class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_email') border-red-400 @enderror">
+                            @error('representative_email') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1">Teléfono</label>
+                        <input type="text" name="representative_phone" value="{{ old('representative_phone', $representative_phone) }}"
+                               maxlength="9"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_phone') border-red-400 @enderror">
+                        @error('representative_phone') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                        <div class="pt-2">
+                            <button type="submit"
+                                    class="inline-flex items-center text-xs font-bold text-gray-900 dark:text-white hover:opacity-70 transition-opacity border-b-2 border-gray-900 dark:border-white pb-1">
+                                GUARDAR DATOS
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
 
         <!-- Seguridad -->
         <section>
@@ -205,6 +272,32 @@
                                class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_ruc') border-red-400 @enderror"
                                placeholder="Solo números">
                         @error('company_ruc') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Dirección de Empresa</label>
+                        <input type="text" name="company_address" value="{{ old('company_address', $company_address) }}"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_address') border-red-400 @enderror"
+                               placeholder="Dirección legal">
+                        @error('company_address') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Correo de Empresa</label>
+                        <input type="email" name="company_email" value="{{ old('company_email', $company_email) }}"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_email') border-red-400 @enderror"
+                               placeholder="ejemplo@empresa.com">
+                        @error('company_email') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Teléfono de Empresa</label>
+                        <input type="text" name="company_phone" value="{{ old('company_phone', $company_phone) }}"
+                               maxlength="9"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-300 dark:placeholder-gray-700 @error('company_phone') border-red-400 @enderror"
+                               placeholder="Solo números">
+                        @error('company_phone') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="pt-2">
