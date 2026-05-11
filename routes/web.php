@@ -72,6 +72,9 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::get('/usuarios', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'index'])->name('users.index');
     Route::get('/usuarios/crear-fantasma', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'createGhost'])->name('users.create-ghost');
     Route::post('/usuarios/crear-fantasma', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'storeGhost'])->name('users.store-ghost');
+    Route::get('/usuarios/fantasma/{user}/editar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'editGhost'])->name('users.edit-ghost');
+    Route::put('/usuarios/fantasma/{user}', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'updateGhost'])->name('users.update-ghost');
+    Route::delete('/usuarios/fantasma/{user}', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'destroyGhost'])->name('users.destroy-ghost');
     Route::get('/usuarios/{user}', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'show'])->name('users.show');
     Route::post('/usuarios/{user}/aprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'approve'])->name('users.approve');
     Route::post('/usuarios/{user}/rechazar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'reject'])->name('users.reject');

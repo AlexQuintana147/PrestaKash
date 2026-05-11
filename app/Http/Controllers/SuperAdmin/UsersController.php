@@ -62,6 +62,71 @@ class UsersController extends Controller
         return view('superadmin.users.create-ghost', compact('departments'));
     }
 
+    public function editGhost(User $user)
+    {
+        if (!$user->is_ghost) {
+            abort(404);
+        }
+        $departments = UbigeoDepartment::all();
+        return view('superadmin.users.edit-ghost', compact('user', 'departments'));
+    }
+
+    public function updateGhost(Request $request, User $user)
+    {
+        if (!$user->is_ghost) {
+            abort(404);
+        }
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                    if (count($words) < 2) {
+                        $fail('Debes ingresar al menos dos apellidos.');
+                    }
+                },
+            ],
+            'dni' => 'required|string|size:8|unique:users,dni,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'required|string|size:9|unique:users,phone,' . $user->id,
+            'department' => 'required|string',
+            'province' => 'required|string',
+            'district' => 'required|string',
+            'address' => 'required|string|max:255',
+        ]);
+
+        $user->update([
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'dni' => $request->dni,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'department' => $request->department,
+            'province' => $request->province,
+            'district' => $request->district,
+            'address' => $request->address,
+        ]);
+
+        return redirect()->route('superadmin.users.show', $user)->with('success', 'Usuario fantasma actualizado correctamente.');
+    }
+
+    public function destroyGhost(User $user)
+    {
+        if (!$user->is_ghost) {
+            abort(404);
+        }
+
+        $user->documents()->delete();
+        $user->delete();
+
+        return redirect()->route('superadmin.users.index')->with('success', 'Usuario fantasma eliminado correctamente.');
+    }
+
     public function storeGhost(Request $request)
     {
         $request->validate([
