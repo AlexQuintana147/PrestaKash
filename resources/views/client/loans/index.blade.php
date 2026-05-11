@@ -197,10 +197,10 @@
                         <!-- Derecha: Estado -->
                         <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 border-t md:border-t-0 border-gray-50 dark:border-gray-900 pt-4 md:pt-0">
                             <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.15em]
-                                {{ $loan->status === 'approved' ? 'bg-green-500/10 text-green-500' : '' }}
-                                {{ $loan->status === 'pending' ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-500' : '' }}
-                                {{ $loan->status === 'rejected' ? 'bg-red-500/10 text-red-500' : '' }}
-                                {{ $loan->status === 'paid' ? 'bg-blue-500/10 text-blue-500' : '' }}">
+                                {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
+                                {{ $loan->status === 'pending' ? 'text-yellow-600' : '' }}
+                                {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
+                                {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
                                 {{ match($loan->status) {
                                     'approved' => 'Aprobado',
                                     'pending'  => 'En revisión',
