@@ -118,7 +118,7 @@
                             'editable' => true,
                             'field' => 'address'
                         ],
-                        'Tasa de interés' => $status === 'approved' ? [
+                        'Tasa de interés' => ($status === 'approved' && !$user->is_ghost) ? [
                             'value' => number_format($user->loan_interest_rate ?? 20, 2, '.', ''),
                             'editable' => true,
                             'field' => 'loan_interest_rate',
