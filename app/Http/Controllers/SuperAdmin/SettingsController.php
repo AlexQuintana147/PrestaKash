@@ -69,7 +69,12 @@ class SettingsController extends Controller
             'company_email' => 'nullable|email|max:255',
             'company_phone' => 'nullable|string|max:20',
             'representative_name' => 'nullable|string|max:255|regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/u',
-            'representative_last_name' => 'nullable|string|max:255|regex:/^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$/u',
+            'representative_last_name' => [
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚ]+)+$/u'
+            ],
             'representative_dni' => 'nullable|numeric|digits:8',
             'representative_email' => 'nullable|email|max:255',
             'representative_phone' => 'nullable|string|max:20',
@@ -80,7 +85,7 @@ class SettingsController extends Controller
             'company_ruc.digits_between' => 'El RUC debe tener entre 8 y 20 dígitos.',
             'company_razon_social.regex' => 'La Razón Social solo debe contener letras.',
             'representative_name.regex' => 'El nombre del representante solo debe contener letras.',
-            'representative_last_name.regex' => 'Los apellidos del representante solo deben contener letras.',
+            'representative_last_name.regex' => 'Debe ingresar al menos dos apellidos (solo letras).',
             'representative_dni.digits' => 'El DNI debe tener 8 dígitos.',
         ]);
 
@@ -150,6 +155,11 @@ class SettingsController extends Controller
 
         if ($request->has('representative_phone')) {
             CompanySetting::set('representative_phone', $request->representative_phone);
+        }
+
+        // Determine which success message to send
+        if ($request->has('representative_name') || $request->has('representative_last_name')) {
+            return back()->with('success_representative', 'Datos del representante legal actualizados correctamente.');
         }
 
         return back()->with('success_company', 'Configuración de empresa actualizada correctamente.');
