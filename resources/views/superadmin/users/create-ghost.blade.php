@@ -37,6 +37,7 @@
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Nombres</label>
                         <input type="text" name="first_name" value="{{ old('first_name') }}" required
                             placeholder="Ej: Juan Pedro"
+                            oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g,'')"
                             class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-300 dark:placeholder-gray-700">
                     </div>
 
@@ -46,6 +47,7 @@
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Apellidos</label>
                         <input type="text" name="last_name" value="{{ old('last_name') }}" required
                             placeholder="Ej: Perez Garcia"
+                            oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g,'')"
                             class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-300 dark:placeholder-gray-700">
                     </div>
 
@@ -137,8 +139,8 @@
 
             deptSelect.addEventListener('change', function () {
                 const deptId = this.value;
-                provSelect.innerHTML = '<option value="">Seleccionar</option>';
-                distSelect.innerHTML = '<option value="">Seleccionar</option>';
+                provSelect.innerHTML = '<option value="" class="dark:bg-black">Seleccionar</option>';
+                distSelect.innerHTML = '<option value="" class="dark:bg-black">Seleccionar</option>';
                 provSelect.disabled = true;
                 distSelect.disabled = true;
 
@@ -150,6 +152,7 @@
                                 const opt = document.createElement('option');
                                 opt.value = p.id;
                                 opt.textContent = p.name;
+                                opt.className = 'dark:bg-black';
                                 provSelect.appendChild(opt);
                             });
                             provSelect.disabled = false;
@@ -159,7 +162,7 @@
 
             provSelect.addEventListener('change', function () {
                 const provId = this.value;
-                distSelect.innerHTML = '<option value="">Seleccionar</option>';
+                distSelect.innerHTML = '<option value="" class="dark:bg-black">Seleccionar</option>';
                 distSelect.disabled = true;
 
                 if (provId) {
@@ -170,6 +173,7 @@
                                 const opt = document.createElement('option');
                                 opt.value = d.id;
                                 opt.textContent = d.name;
+                                opt.className = 'dark:bg-black';
                                 distSelect.appendChild(opt);
                             });
                             distSelect.disabled = false;
