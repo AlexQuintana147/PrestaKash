@@ -188,6 +188,52 @@
         <form action="{{ route('onboarding.step1.store') }}" method="POST" class="space-y-8">
             @csrf
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Tipo de
+                        Persona</label>
+                    <div class="flex gap-4 mt-2">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="person_type" value="natural"
+                                {{ (old('person_type', 'natural') == 'natural') ? 'checked' : '' }} class="hidden peer"
+                                onchange="togglePersonType(this.value)">
+                            <div
+                                class="w-4 h-4 rounded-full border border-gray-700 peer-checked:border-green-500 peer-checked:bg-green-500 flex items-center justify-center transition-all">
+                                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                            </div>
+                            <span class="text-sm text-gray-400 peer-checked:text-white transition-colors">Natural</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="person_type" value="juridica"
+                                {{ (old('person_type') == 'juridica') ? 'checked' : '' }} class="hidden peer"
+                                onchange="togglePersonType(this.value)">
+                            <div
+                                class="w-4 h-4 rounded-full border border-gray-700 peer-checked:border-green-500 peer-checked:bg-green-500 flex items-center justify-center transition-all">
+                                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                            </div>
+                            <span class="text-sm text-gray-400 peer-checked:text-white transition-colors">Jurídica</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="juridica-fields" class="{{ (old('person_type') == 'juridica') ? '' : 'hidden' }} space-y-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">RUC</label>
+                        <input type="text" name="ruc" value="{{ old('ruc') }}" maxlength="11"
+                            oninput="this.value=this.value.replace(/\D/g,'')" class="input-field"
+                            placeholder="20123456789">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Razón
+                            Social</label>
+                        <input type="text" name="business_name" value="{{ old('business_name') }}" class="input-field"
+                            placeholder="Empresa S.A.C.">
+                    </div>
+                </div>
+            </div>
+
             <div>
                 <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Correo
                     electrónico</label>
@@ -327,6 +373,15 @@
     </div>
 
     <script>
+        function togglePersonType(val) {
+            const extra = document.getElementById('juridica-fields');
+            if (val === 'juridica') {
+                extra.classList.remove('hidden');
+            } else {
+                extra.classList.add('hidden');
+            }
+        }
+
         function buildCustomSelect({ triggerId, dropdownId, optionsId, searchId, hiddenId, onSelect }) {
             const trigger = document.getElementById(triggerId);
             const dropdown = document.getElementById(dropdownId);
