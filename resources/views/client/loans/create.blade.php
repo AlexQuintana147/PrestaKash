@@ -681,11 +681,11 @@
             function toggleBlocks() {
                 const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
                 const system = document.querySelector('input[name="amortization_system"]:checked')?.value || 'frances';
-                
+
                 cuotasBlock.classList.toggle('hidden', !isCuotas);
                 amortizationSystemBlock.classList.toggle('hidden', !isCuotas);
                 unicoBlock.classList.toggle('hidden', isCuotas);
-                
+
                 // Frecuencia solo para Francés
                 frequencyBlock.classList.toggle('hidden', !isCuotas || system !== 'frances');
 
@@ -744,13 +744,15 @@
                 const s = sym();
                 const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
                 const system = document.querySelector('input[name="amortization_system"]:checked')?.value || 'frances';
-                const freq = document.querySelector('input[name="payment_frequency"]:checked')?.value || 'mensual';
+                const freq = (isCuotas && system === 'frances') 
+                    ? (document.querySelector('input[name="payment_frequency"]:checked')?.value || 'mensual')
+                    : 'mensual';
 
                 let interestRate, interest, total, periodicPayment, plazoText, nTotal;
 
                 if (isCuotas) {
                     const monthlyRate = USER_CUSTOM_RATE / 100;
-                    
+
                     let installmentsPerMonth = 1;
                     if (system === 'frances') {
                         if (freq === 'diario') installmentsPerMonth = 30;
@@ -776,7 +778,7 @@
                         // Sistema Americano (Siempre mensual)
                         interest = (a * monthlyRate) * m;
                         total = a + interest;
-                        periodicPayment = a * monthlyRate; 
+                        periodicPayment = a * monthlyRate;
                         simInterestLabel.textContent = 'Interés Total (Sistema Americano)';
                         document.getElementById('modalScheduleSubtitle').textContent = 'Simulación Sistema Americano';
                         nTotal = m; // reset for American
@@ -807,7 +809,7 @@
                     simMonthly.textContent = s + ' ' + fmt(periodicPayment);
                 }
 
-                document.querySelector('#simMonthlyRow span:last-child').textContent = isCuotas ? '/ ' + freq.replace('o','').replace('al','') : '';
+                document.querySelector('#simMonthlyRow span:last-child').textContent = isCuotas ? '/ ' + freq.replace('o', '').replace('al', '') : '';
                 if (freq === 'diario') document.querySelector('#simMonthlyRow span:last-child').textContent = '/ día';
                 if (freq === 'quincenal') document.querySelector('#simMonthlyRow span:last-child').textContent = '/ quincena';
 
@@ -841,7 +843,7 @@
 
                 if (system === 'frances') {
                     const periodicPayment = (principal * periodicRate) / (1 - Math.pow(1 + periodicRate, -totalInstallments));
-                    
+
                     // Si son demasiadas cuotas (diario), limitamos la vista previa pero no el modal
                     const limitPreview = totalInstallments > 30;
 
@@ -849,9 +851,9 @@
                         const interest = balance * periodicRate;
                         const capital = periodicPayment - interest;
                         balance -= capital;
-                        
+
                         if (!limitPreview || i <= 10 || i > totalInstallments - 5) {
-                             renderRow(i, capital, interest, balance, body, modalBody, symbol);
+                            renderRow(i, capital, interest, balance, body, modalBody, symbol);
                         } else if (limitPreview && i === 11) {
                             const row = document.createElement('tr');
                             row.innerHTML = `<td colspan="4" class="text-center py-2 text-gray-400">... ${totalInstallments - 15} cuotas intermedias ocultas ...</td>`;
@@ -875,11 +877,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                            `;
+                                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                `;
 
                 if (body) {
                     const row = document.createElement('tr');
@@ -940,7 +942,7 @@
             typeRadios.forEach(r => r.addEventListener('change', () => { toggleBlocks(); update(); }));
             frequencyRadios.forEach(r => r.addEventListener('change', update));
             paymentDaysRadios.forEach(r => r.addEventListener('change', update));
-            amortizationRadios.forEach(r => r.addEventListener('change', update));
+            amortizationRadios.forEach(r => r.addEventListener('change', () => { toggleBlocks(); update(); }));
             reason.addEventListener('input', () => charCount.textContent = reason.value.length);
 
             const toggleSim = document.getElementById('toggleSim');

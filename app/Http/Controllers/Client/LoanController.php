@@ -60,7 +60,9 @@ class LoanController extends Controller
         $user = Auth::user();
         $defaultRate = $user->loan_interest_rate ? ($user->loan_interest_rate / 100) : 0.20;
         $system = $request->amortization_system ?? 'frances';
-        $freq = $request->payment_frequency ?? 'mensual';
+        $freq = ($tipo === 'cuotas' && $system === 'frances')
+            ? ($request->payment_frequency ?? 'mensual')
+            : 'mensual';
 
         // ── Lógica de comisión ──
         if ($tipo === 'cuotas') {
