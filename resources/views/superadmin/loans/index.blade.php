@@ -439,8 +439,8 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex-shrink-0">
-                    <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-[0.99] shadow-lg shadow-purple-500/20">
+                <div class="mt-6 flex justify-end flex-shrink-0">
+                    <button type="button" onclick="openCounterOfferConfirmModal()" class="text-sm font-bold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 pb-1 hover:opacity-70 transition-all uppercase tracking-widest bg-transparent">
                         Confirmar y Enviar Contra-oferta
                     </button>
                 </div>
@@ -726,7 +726,43 @@
         document.getElementById('rejectConfirmModal').classList.add('hidden');
         document.body.style.overflow = '';
     }
+
+    function openCounterOfferConfirmModal() {
+        document.getElementById('counterOfferConfirmModal').classList.remove('hidden');
+    }
+
+    function closeCounterOfferConfirmModal() {
+        document.getElementById('counterOfferConfirmModal').classList.add('hidden');
+    }
+
+    function submitCounterOffer() {
+        const form = document.getElementById('counterOfferForm');
+        const input = document.getElementById('modal_amount');
+        input.value = input.value.replace(/,/g, '');
+        form.submit();
+    }
 </script>
+
+<!-- Modal Confirmar Contra-oferta -->
+<div id="counterOfferConfirmModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-8 text-center">
+        <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Enviar Contra-oferta</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            ¿Estás seguro de enviar esta nueva propuesta de términos financieros al cliente?
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeCounterOfferConfirmModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                Revisar
+            </button>
+            <button onclick="submitCounterOffer()" class="flex-1 py-3 rounded-xl bg-purple-600 text-white text-xs font-black uppercase tracking-widest hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/20">
+                Enviar
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Modal Confirmar Aprobación -->
 <div id="approveConfirmModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
