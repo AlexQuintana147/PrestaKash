@@ -285,7 +285,7 @@
     </style>
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
         <!-- Close -->
         <button onclick="closeCounterOfferModal()" class="absolute top-5 right-5 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -387,14 +387,14 @@
                     
                     <!-- Cuotas Preview -->
                     <div id="previewCuotasContainer" class="flex-1 min-h-0 flex flex-col">
-                        <div class="flex-1 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-900 rounded-2xl">
+                        <div class="flex-1 overflow-y-auto custom-scrollbar">
                             <table class="w-full text-[10px] text-left">
                                 <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600 shadow-sm">
                                     <tr>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter">N°</th>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter">Capital</th>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter">Interés</th>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-right">Saldo</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">N°</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Capital</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Interés</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
                                     </tr>
                                 </thead>
                                 <tbody id="previewScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
@@ -409,11 +409,11 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="p-4 rounded-2xl border border-gray-100 dark:border-gray-900 relative">
                                 <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Original (<span id="unicoClientRate"></span>%)</p>
-                                <p id="unicoClientTotal" class="text-xl font-bold text-gray-400 line-through tabular-nums"></p>
+                                <p id="unicoClientTotal" class="text-xl font-bold text-gray-400 line-through tabular-nums text-center"></p>
                             </div>
                             <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/40 relative">
                                 <p class="text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Nueva Oferta (<span id="unicoAdminRate"></span>%)</p>
-                                <p id="unicoAdminTotal" class="text-xl font-black text-purple-600 tabular-nums"></p>
+                                <p id="unicoAdminTotal" class="text-xl font-black text-purple-600 tabular-nums text-center"></p>
                             </div>
                         </div>
                         <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center border border-gray-100 dark:border-gray-800">
@@ -612,10 +612,10 @@
             }
             body.innerHTML += `
                 <tr class="border-b border-gray-50 dark:border-gray-900/50 last:border-0">
-                    <td class="py-3 font-bold">${row.n}</td>
-                    <td class="py-3 tabular-nums">${currency}${row.principal.toFixed(2)}</td>
-                    <td class="py-3 tabular-nums">${currency}${row.interest.toFixed(2)}</td>
-                    <td class="py-3 tabular-nums text-right font-black text-gray-900 dark:text-white">${currency}${row.balance.toFixed(2)}</td>
+                    <td class="py-3 font-bold text-center">${row.n}</td>
+                    <td class="py-3 tabular-nums text-center">${currency}${row.principal.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums text-center">${currency}${row.interest.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums text-center font-black text-gray-900 dark:text-white">${currency}${row.balance.toFixed(2)}</td>
                 </tr>
             `;
         });
