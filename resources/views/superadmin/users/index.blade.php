@@ -33,7 +33,7 @@
         <div class="mb-6">
             <!-- Mobile: grid -->
             <div class="md:hidden">
-                <div class="grid grid-cols-3 gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     @foreach([
                         'all'      => ['label' => 'Todos',      'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'pending'  => ['label' => 'Pendientes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
@@ -56,7 +56,7 @@
                 @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
                         <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-4 py-2 text-sm font-bold transition-all rounded-xl
                                                                                                   {{ $filter === $key
-                    ? 'bg-gray-900 text-white dark:bg-white dark:text-black shadow-lg shadow-gray-500/20'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
                     : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             {{ $label }}
                             @if($counts[$key] > 0)
@@ -69,7 +69,7 @@
                 <div class="flex items-center gap-2 ml-auto">
                     <a href="{{ route('superadmin.users.index', ['filter' => 'ghosts']) }}"
                         class="px-4 py-2 rounded-xl text-sm font-bold transition-all
-                                  {{ $filter === 'ghosts' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' }}">
+                                  {{ $filter === 'ghosts' ? 'bg-purple-600 text-white' : 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' }}">
                         Fantasmas
                         @if($counts['ghosts'] > 0)
                             <span class="ml-1 opacity-70">{{ $counts['ghosts'] }}</span>
@@ -78,7 +78,7 @@
 
                     <a href="{{ route('superadmin.users.index', ['filter' => 'blocked']) }}"
                         class="px-4 py-2 rounded-xl text-sm font-bold transition-all
-                                  {{ $filter === 'blocked' ? 'bg-red-600 text-white shadow-lg shadow-red-500/20' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20' }}">
+                                  {{ $filter === 'blocked' ? 'bg-red-600 text-white' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20' }}">
                         Bloqueados
                         @if($counts['blocked'] > 0)
                             <span class="ml-1 opacity-70">{{ $counts['blocked'] }}</span>
