@@ -237,8 +237,8 @@
                     <div id="modal_display_amount" class="font-black mt-3 space-y-1"></div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
-                    <div class="space-y-4">
+                <div id="modalInputsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
+                    <div id="modalSystemWrapper" class="space-y-4">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
                         <div class="flex gap-4 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
@@ -314,7 +314,20 @@
         form.action = `/gestion-interna/prestamos/${loan.id}/counter-offer`;
         
         // Set initial values
-        document.querySelector(`input[name="amortization_system"][value="${loan.system}"]`).checked = true;
+        
+        const systemWrapper = document.getElementById('modalSystemWrapper');
+        const inputsGrid = document.getElementById('modalInputsGrid');
+        if (loan.type === 'unico') {
+            systemWrapper.classList.add('hidden');
+            inputsGrid.classList.remove('sm:grid-cols-2');
+            inputsGrid.classList.add('sm:grid-cols-1');
+        } else {
+            systemWrapper.classList.remove('hidden');
+            inputsGrid.classList.remove('sm:grid-cols-1');
+            inputsGrid.classList.add('sm:grid-cols-2');
+            document.querySelector(`input[name="amortization_system"][value="${loan.system}"]`).checked = true;
+        }
+
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
         
         // Show amount
