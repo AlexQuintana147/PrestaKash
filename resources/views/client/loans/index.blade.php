@@ -177,52 +177,71 @@
                                                     {{ $loan->type === 'cuotas' ? 'Cuotas' : 'Pago Único' }}
                                                 </span>
                                             </div>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                @if($loan->type === 'cuotas')
-                                                    {{ $loan->months }} {{ $loan->months > 1 ? 'meses' : 'mes' }} 
-                                                    @if($loan->amortization_system === 'frances')
-                                                        ({{ $loan->payment_frequency }})
-                                                    @endif
-                                                    — Cuotas de
-                                                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->monthly_payment, 2) }}
-                                                @else
-                                                    A pagar en {{ $loan->payment_days }} días
-                                                @endif
-                                            </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            @if($loan->type === 'cuotas')
+                                                @php
+                                                    $count = $loan->installments->count();
+                                                    if ($count === 0) {
+                                                        $installmentsPerMonth = match ($loan->payment_frequency) {
+                                                            'diario' => 30,
+                                                            'semanal' => 4,
+                                                            'quincenal' => 2,
+                                                            default => 1,
+                                                        };
+                                                        $count = $loan->months * $installmentsPerMonth;
+                                                    }
+                                                @endphp
+                                                {{ $count }} pagos 
+                                                ({{ $loan->payment_frequency }})
+                                                — Cuotas de
+                                                {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->monthly_payment, 2) }}
+                                            @else
+                                                Pago único en {{ $loan->payment_days }} días
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Centro: Detalles -->
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-4 xl:border-l xl:border-r border-gray-100 dark:border-gray-900 px-0 xl:px-8 flex-1">
+                                    
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Progreso</p>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex-1 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                                @php
+                                                    $total_i = $loan->installments->count();
+                                                    if ($total_i === 0) {
+                                                        $installmentsPerMonth = match ($loan->payment_frequency) {
+                                                            'diario' => 30,
+                                                            'semanal' => 4,
+                                                            'quincenal' => 2,
+                                                            default => 1,
+                                                        };
+                                                        $total_i = $loan->months * $installmentsPerMonth;
+                                                    }
+                                                    $paid_i = $loan->installments->where('status', 'approved')->count();
+                                                    $perc = ($paid_i / ($total_i ?: 1)) * 100;
+                                                @endphp
+                                                <div class="h-full bg-green-500 rounded-full" style="width: {{ $perc }}%"></div>
+                                            </div>
+                                            <span class="text-[10px] font-bold text-gray-700 dark:text-gray-300">{{ $paid_i }}/{{ $total_i }}</span>
                                         </div>
                                     </div>
 
-                                    <!-- Centro: Detalles -->
-                                    <div
-                                        class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-4 md:border-l md:border-r border-gray-100 dark:border-gray-900 px-0 md:px-8 flex-1">
-                                        <div class="flex flex-col">
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Destino
-                                                completo</p>
-                                            <div class="space-y-0.5">
-                                                <p class="text-[11px] font-bold text-gray-800 dark:text-gray-200 uppercase leading-tight">
-                                                    {{ $loan->bank_name }}</p>
-                                                <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-tight">
-                                                    {{ ucfirst($loan->account_type) }}</p>
-                                                <p class="text-[10px] font-mono text-gray-600 dark:text-gray-500 leading-tight">
-                                                    {{ $loan->account_number }}</p>
-                                                @if($loan->cci)
-                                                    <p class="text-[9px] font-mono text-gray-400 dark:text-gray-600 leading-tight">CCI:
-                                                        {{ $loan->cci }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="flex flex-col justify-center">
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Interés</p>
-                                            <p class="text-xs text-gray-700 dark:text-gray-300">
-                                                {{ number_format($loan->interest_rate, 2) }}%</p>
-                                        </div>
-                                        <div class="flex flex-col justify-center">
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Motivo</p>
-                                            <p class="text-xs text-gray-700 dark:text-gray-300 italic" title="{{ $loan->reason }}">
-                                                "{{ Str::limit($loan->reason, 50) }}"
-                                            </p>
-                                        </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Interés</p>
+                                        <p class="text-xs text-gray-700 dark:text-gray-300">
+                                            {{ number_format($loan->interest_rate, 2) }}%</p>
                                     </div>
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Motivo</p>
+                                        <p class="text-xs text-gray-700 dark:text-gray-300 italic" title="{{ $loan->reason }}">
+                                            "{{ Str::limit($loan->reason, 20) }}"
+                                        </p>
+                                    </div>
+                                </div>
 
                                     <!-- Derecha: Estado -->
                                     <div

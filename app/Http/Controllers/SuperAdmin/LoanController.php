@@ -100,6 +100,9 @@ class LoanController extends Controller
     {
         $loan->update(['status' => 'approved']);
 
+        // Delete existing installments if any (e.g. from previous attempts)
+        $loan->installments()->delete();
+
         // Generate installments
         $amount = $loan->amount;
         $rate = $loan->interest_rate / 100;
@@ -109,29 +112,27 @@ class LoanController extends Controller
         $months = $loan->months;
 
         if ($type === 'cuotas') {
-            $installmentsPerMonth = 1;
-            $daysStep = 30;
-
-            if ($system === 'frances') {
-                if ($freq === 'diario') {
-                    $installmentsPerMonth = 30;
-                    $daysStep = 1;
-                } elseif ($freq === 'semanal') {
-                    $installmentsPerMonth = 4;
-                    $daysStep = 7;
-                } elseif ($freq === 'quincenal') {
-                    $installmentsPerMonth = 2;
-                    $daysStep = 15;
-                }
-            }
+            $installmentsPerMonth = match ($freq) {
+                'diario' => 30,
+                'semanal' => 4,
+                'quincenal' => 2,
+                'mensual' => 1,
+                default => 1,
+            };
 
             $nTotal = $months * $installmentsPerMonth;
-            $periodicRate = $rate / $installmentsPerMonth;
             $periodicPayment = $loan->monthly_payment;
 
-            $balance = $amount;
+            $currentDate = now();
             for ($i = 1; $i <= $nTotal; $i++) {
-                $dueDate = now()->addDays($i * $daysStep);
+                if ($freq === 'diario')
+                    $currentDate->addDay();
+                elseif ($freq === 'semanal')
+                    $currentDate->addWeek();
+                elseif ($freq === 'quincenal')
+                    $currentDate->addDays(15);
+                else
+                    $currentDate->addMonth();
 
                 // For American system, last installment includes principal
                 $instAmount = $periodicPayment;
@@ -142,7 +143,7 @@ class LoanController extends Controller
                 $loan->installments()->create([
                     'installment_number' => $i,
                     'amount' => $instAmount,
-                    'due_date' => $dueDate,
+                    'due_date' => $currentDate->format('Y-m-d'),
                     'status' => 'pending',
                 ]);
             }
@@ -151,7 +152,7 @@ class LoanController extends Controller
             $loan->installments()->create([
                 'installment_number' => 1,
                 'amount' => $loan->total_amount,
-                'due_date' => now()->addDays($loan->payment_days),
+                'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
                 'status' => 'pending',
             ]);
         }
