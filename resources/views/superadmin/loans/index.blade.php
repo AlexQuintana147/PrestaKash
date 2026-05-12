@@ -194,7 +194,7 @@
                     </div>
                 @empty
                     <div
-                        class="py-20 text-center bg-gray-50 dark:bg-gray-900/30 rounded-3xl border-2 border-dashed border-gray-100 dark:border-gray-800">
+                        class="py-20 text-center">
                         <p class="text-gray-400 dark:text-gray-500 text-sm font-medium">No se encontraron préstamos en esta
                             categoría.</p>
                     </div>
