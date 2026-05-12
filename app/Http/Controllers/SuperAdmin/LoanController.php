@@ -37,19 +37,20 @@ class LoanController extends Controller
             'amount' => 'required|numeric|min:100',
             'amortization_system' => 'required|in:frances,americano',
             'interest_rate' => 'required|numeric|min:0|max:100',
+            'months' => 'nullable|integer|min:3|max:24',
             'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
         ]);
 
         $amount = (float) $request->amount;
         $rate = $request->interest_rate / 100;
         $system = $request->amortization_system;
+        $months = $loan->type === 'cuotas' ? ($request->months ?? $loan->months) : null;
         $freq = ($loan->type === 'cuotas' && $system === 'frances') ? ($request->payment_frequency ?? 'mensual') : 'mensual';
 
         $totalAmount = $amount;
         $periodicPayment = 0;
 
         if ($loan->type === 'cuotas') {
-            $months = $loan->months;
             if ($system === 'frances') {
                 $installmentsPerMonth = 1;
                 if ($freq === 'diario')
@@ -84,6 +85,7 @@ class LoanController extends Controller
 
         $loan->update([
             'amount' => $amount,
+            'months' => $months,
             'amortization_system' => $system,
             'payment_frequency' => $freq,
             'interest_rate' => $request->interest_rate,

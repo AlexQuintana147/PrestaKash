@@ -302,7 +302,7 @@
                     <div id="modal_display_amount" class="font-black text-right space-y-0.5"></div>
                 </div>
 
-                <div id="modalInputsGrid" class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-6">
+                <div id="modalInputsGrid" class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mb-6">
                     <!-- Monto -->
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
@@ -310,6 +310,18 @@
                             <input type="text" name="amount" id="modal_amount"
                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
+                        </div>
+                    </div>
+
+                    <!-- Meses -->
+                    <div id="modalMonthsWrapper" class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Plazo (Meses)</label>
+                        <div class="relative">
+                            <input type="number" name="months" id="modal_months" min="3" max="24" step="1"
+                                   onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
+                                   oninput="if(this.value > 24) this.value = 24; if(this.value && this.value < 1) this.value = 1; calculatePreview();"
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">M</span>
                         </div>
                     </div>
 
@@ -448,6 +460,7 @@
         // Set initial values
         const systemWrapper = document.getElementById('modalSystemWrapper');
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
+        const monthsWrapper = document.getElementById('modalMonthsWrapper');
         const inputsGrid = document.getElementById('modalInputsGrid');
 
         // Format initial amount
@@ -459,16 +472,21 @@
         if (loan.type === 'unico') {
             systemWrapper.classList.add('hidden');
             freqWrapper.classList.add('hidden');
-            inputsGrid.classList.remove('sm:grid-cols-2');
-            inputsGrid.classList.add('sm:grid-cols-1');
+            monthsWrapper.classList.add('hidden');
+            inputsGrid.classList.remove('md:grid-cols-5');
+            inputsGrid.classList.add('md:grid-cols-2');
             // Set default to pass backend validation even if hidden
             const radio = document.querySelector('input[name="amortization_system"][value="frances"]');
             if (radio) radio.checked = true;
         } else {
             systemWrapper.classList.remove('hidden');
             freqWrapper.classList.remove('hidden');
-            inputsGrid.classList.remove('sm:grid-cols-1');
-            inputsGrid.classList.add('sm:grid-cols-2');
+            monthsWrapper.classList.remove('hidden');
+            inputsGrid.classList.remove('md:grid-cols-2');
+            inputsGrid.classList.add('md:grid-cols-5');
+            
+            document.getElementById('modal_months').value = loan.months;
+
             const systemToSet = loan.system || 'frances';
             const radio = document.querySelector(`input[name="amortization_system"][value="${systemToSet}"]`);
             if (radio) radio.checked = true;
@@ -551,6 +569,12 @@
     function calculatePreview() {
         if (!currentLoan) return;
 
+        let monthsInput = document.getElementById('modal_months');
+        let months = parseInt(monthsInput.value) || 3;
+        
+        if (months < 3) months = 3;
+        if (months > 24) months = 24;
+
         const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, '')) || 0;
         const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0;
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
@@ -598,7 +622,6 @@
         }
 
         // Loan with installments
-        const months = parseInt(currentLoan.months);
         let installmentsPerMonth = 1;
         if (system === 'frances') {
             if (freq === 'diario') installmentsPerMonth = 30;
