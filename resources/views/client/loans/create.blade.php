@@ -647,14 +647,14 @@
                 const m = parseInt(months.value) || 3;
                 const s = sym();
                 const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
-                const system = document.querySelector('input[name="amortization_system"]:checked')?.value || 'french';
+                const system = document.querySelector('input[name="amortization_system"]:checked')?.value || 'frances';
 
                 let interestRate, interest, total, monthly, plazoText;
 
                 if (isCuotas) {
                     interestRate = USER_CUSTOM_RATE / 100;
 
-                    if (system === 'french') {
+                    if (system === 'frances') {
                         // Sistema Francés
                         if (a > 0) {
                             monthly = (a * interestRate) / (1 - Math.pow(1 + interestRate, -m));
@@ -689,11 +689,11 @@
                 simAmount.textContent = s + ' ' + fmt(a);
                 simCurrency.textContent = s === '$' ? 'Dólares' : 'Soles';
                 simMonths.textContent = plazoText;
-                simType.textContent = isCuotas ? (system === 'french' ? 'Cuotas (Francés)' : 'Cuotas (Americano)') : 'Pago único';
+                simType.textContent = isCuotas ? (system === 'frances' ? 'Cuotas (Francés)' : 'Cuotas (Americano)') : 'Pago único';
                 simInterest.textContent = s + ' ' + fmt(interest);
                 simTotal.textContent = s + ' ' + fmt(total);
 
-                if (isCuotas && system === 'american') {
+                if (isCuotas && system === 'americano') {
                     simMonthly.textContent = s + ' ' + fmt(monthly) + ' (Final: ' + s + ' ' + fmt(a + monthly) + ')';
                 } else {
                     simMonthly.textContent = s + ' ' + fmt(monthly);
@@ -719,7 +719,7 @@
 
                 let balance = principal;
 
-                if (system === 'french') {
+                if (system === 'frances') {
                     const monthlyPayment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
                     for (let i = 1; i <= months; i++) {
                         const interest = balance * monthlyRate;
@@ -798,12 +798,7 @@
 
             months.addEventListener('input', update);
             currencyRadios.forEach(r => r.addEventListener('change', update));
-            typeRadios.forEach(r => {
-                r.addEventListener('change', () => {
-                    toggleBlocks();
-                    update();
-                });
-            });
+            typeRadios.forEach(r => r.addEventListener('change', () => { toggleBlocks(); update(); }));
             paymentDaysRadios.forEach(r => r.addEventListener('change', update));
             amortizationRadios.forEach(r => r.addEventListener('change', update));
             reason.addEventListener('input', () => charCount.textContent = reason.value.length);
