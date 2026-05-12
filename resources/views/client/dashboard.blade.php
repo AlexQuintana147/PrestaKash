@@ -13,16 +13,21 @@
         @endphp
         
         <div class="relative inline-block">
-            <div class="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+            <div class="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden transition-all duration-700">
                 <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
             </div>
             <div class="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-white dark:border-gray-950"></div>
         </div>
 
         <div class="flex-1">
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] mb-2">Identidad Verificada</p>
+            <div class="flex items-center gap-3 mb-2">
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Identidad Verificada</p>
+                <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider {{ $user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                    {{ $user->person_type === 'juridica' ? 'Persona Jurídica' : 'Persona Natural' }}
+                </span>
+            </div>
             <h1 class="text-4xl md:text-5xl font-light text-gray-900 dark:text-white tracking-tighter mb-6">
-                {{ $user->first_name ?? $user->name }}
+                {{ $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : ($user->first_name ?? $user->name) }}
             </h1>
             
             <div class="flex flex-wrap gap-x-8 gap-y-4">
@@ -59,15 +64,35 @@
 
     <!-- Datos personales -->
     <div class="mb-10">
-        <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Datos personales</p>
+        <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">
+            {{ $user->person_type === 'juridica' ? 'Datos de la Empresa' : 'Datos personales' }}
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-0">
-            @foreach([
-                'Nombres'   => $user->first_name,
-                'Apellidos' => $user->last_name,
-                'DNI'       => $user->dni,
-                'Teléfono'  => $user->phone,
-                'Correo'    => $user->email,
-            ] as $label => $value)
+            @php
+                $personalFields = [
+                    'Nombres'   => $user->first_name,
+                    'Apellidos' => $user->last_name,
+                    'DNI'       => $user->dni,
+                ];
+                
+                if ($user->person_type === 'juridica') {
+                    $personalFields = [
+                        'Razón Social' => $user->business_name,
+                        'RUC'          => $user->ruc,
+                        'Representante' => $user->first_name . ' ' . $user->last_name,
+                        'DNI Rep.'     => $user->dni,
+                    ];
+                }
+
+                $contactFields = [
+                    'Teléfono'  => $user->phone,
+                    'Correo'    => $user->email,
+                ];
+
+                $allFields = array_merge($personalFields, $contactFields);
+            @endphp
+
+            @foreach($allFields as $label => $value)
             <div class="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-900">
                 <span class="text-xs text-gray-600 dark:text-gray-400">{{ $label }}</span>
                 <span class="text-xs font-medium text-gray-900 dark:text-white">{{ $value ?? '—' }}</span>
