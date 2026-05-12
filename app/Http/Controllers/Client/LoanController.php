@@ -111,8 +111,8 @@ class LoanController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'institution' => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
-            'career' => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
+            'institution' => ['required_unless:academic_status,Ninguno de los anteriores', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
+            'career' => ['required_unless:academic_status,Ninguno de los anteriores', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'academic_status' => 'required|string',
             'has_children' => 'required|boolean',
             'instagram' => 'nullable|string|max:100',
@@ -149,8 +149,8 @@ class LoanController extends Controller
     public function storeProfile(Request $request)
     {
         $request->validate([
-            'institution' => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
-            'career' => ['required', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
+            'institution' => ['required_unless:academic_status,Ninguno de los anteriores', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
+            'career' => ['required_unless:academic_status,Ninguno de los anteriores', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'academic_status' => 'required|string',
             'has_children' => 'required|boolean',
             'instagram' => 'nullable|string|max:100',

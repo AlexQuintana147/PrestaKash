@@ -3,313 +3,398 @@
 @section('title', 'Completar perfil')
 
 @section('content')
-<style>
-.option-card {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 12px;
-    border: 1.5px solid #d1d5db;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 0.75rem;
-    color: #111827;
-    user-select: none;
-}
-.dark .option-card {
-    border-color: #374151;
-    color: #d1d5db;
-}
-.option-card:hover {
-    border-color: #6b7280;
-}
-.dark .option-card:hover {
-    border-color: #6b7280;
-}
-.option-card input[type=radio] { display: none; }
+    <style>
+        .option-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.75rem;
+            color: #111827;
+            user-select: none;
+        }
 
-.option-card .check-box {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #9ca3af;
-    border-radius: 4px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-}
-.dark .option-card .check-box {
-    border-color: #4b5563;
-}
-.option-card input[type=radio]:checked ~ .check-box,
-.option-card.selected .check-box {
-    background: #111827;
-    border-color: #111827;
-}
-.dark .option-card input[type=radio]:checked ~ .check-box,
-.dark .option-card.selected .check-box {
-    background: #ffffff;
-    border-color: #ffffff;
-}
-.dark .option-card input[type=radio]:checked ~ .check-box svg path,
-.dark .option-card.selected .check-box svg path {
-    stroke: #111827;
-}
-.option-card input[type=radio]:checked ~ .check-box svg,
-.option-card.selected .check-box svg {
-    display: block;
-}
-.check-box svg { display: none; }
+        .dark .option-card {
+            border-color: #374151;
+            color: #d1d5db;
+        }
 
-.option-card input[type=radio]:checked ~ span {
-    color: #111827;
-    font-weight: 500;
-}
-.dark .option-card input[type=radio]:checked ~ span {
-    color: #ffffff;
-}
-.option-card:has(input[type=radio]:checked),
-.option-card.selected {
-    border-color: #111827;
-}
-.dark .option-card:has(input[type=radio]:checked),
-.dark .option-card.selected {
-    border-color: #ffffff;
-}
-</style>
+        .option-card:hover {
+            border-color: #6b7280;
+        }
 
-<div class="min-h-screen px-5 md:px-8 py-6">
+        .dark .option-card:hover {
+            border-color: #6b7280;
+        }
 
-    <div class="mb-6">
-        <p class="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
-        <h1 class="text-xl font-bold text-gray-900 dark:text-white">{{ isset($editing) ? 'Editar perfil' : 'Completa tu perfil' }}</h1>
-        <p class="text-xs text-gray-500 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
-    </div>
+        .option-card input[type=radio] {
+            display: none;
+        }
 
-    @if($errors->any())
-    <div class="mb-4 p-3 border-l-2 border-red-400 bg-red-50 dark:bg-red-500/5 rounded-r-lg">
-        @foreach($errors->all() as $error)
-            <p class="text-red-500 text-xs">{{ $error }}</p>
-        @endforeach
-    </div>
-    @endif
+        .option-card .check-box {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #9ca3af;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
 
-    <form action="{{ isset($editing) ? route('client.loans.profile.update') : route('client.loans.profile.store') }}" method="POST">
-        @csrf
-        @if(isset($editing)) @method('PUT') @endif
+        .dark .option-card .check-box {
+            border-color: #4b5563;
+        }
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-0">
+        .option-card input[type=radio]:checked~.check-box,
+        .option-card.selected .check-box {
+            background: #111827;
+            border-color: #111827;
+        }
 
-            <!-- Columna izquierda -->
-            <div>
-                <p class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">Información académica</p>
-                <div class="space-y-4">
+        .dark .option-card input[type=radio]:checked~.check-box,
+        .dark .option-card.selected .check-box {
+            background: #ffffff;
+            border-color: #ffffff;
+        }
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
-                        <input type="text" name="institution" value="{{ old('institution', $profile->institution ?? '') }}" required placeholder="Ej: UNMSM"
-                               oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
-                               class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('institution') border-red-500 @enderror">
-                        @error('institution') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                    </div>
+        .dark .option-card input[type=radio]:checked~.check-box svg path,
+        .dark .option-card.selected .check-box svg path {
+            stroke: #111827;
+        }
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
-                        <input type="text" name="career" value="{{ old('career', $profile->career ?? '') }}" required placeholder="Ej: Ingeniería de Sistemas"
-                               oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
-                               class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('career') border-red-500 @enderror">
-                        @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                    </div>
+        .option-card input[type=radio]:checked~.check-box svg,
+        .option-card.selected .check-box svg {
+            display: block;
+        }
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            @foreach(['Estudiante activo', 'Egresado', 'Titulado', 'Bachiller', 'Secundaria completa', 'Ninguno de los anteriores'] as $opt)
-                            <label class="option-card">
-                                <input type="radio" name="academic_status" value="{{ $opt }}" {{ old('academic_status', $profile->academic_status ?? '') === $opt ? 'checked' : '' }} required onchange="syncCards(this)">
-                                <div class="check-box">
-                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                        <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <span class="leading-tight">{{ $opt }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-                    </div>
+        .check-box svg {
+            display: none;
+        }
 
-                </div>
-            </div>
+        .option-card input[type=radio]:checked~span {
+            color: #111827;
+            font-weight: 500;
+        }
 
-            <!-- Columna derecha -->
-            <div class="mt-8 md:mt-0">
-                <p class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">Situación social</p>
-                <div class="space-y-4">
+        .dark .option-card input[type=radio]:checked~span {
+            color: #ffffff;
+        }
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
-                            <div class="flex gap-2">
-                                <label class="option-card">
-                                    <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this)">
-                                    <div class="check-box">
-                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
-                                    <span>Sí</span>
-                                </label>
-                                <label class="option-card">
-                                    <input type="radio" name="has_children" value="0" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this)">
-                                    <div class="check-box">
-                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
-                                    <span>No</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
-                            <div class="flex gap-2">
-                                <label class="option-card">
-                                    <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
-                                    <div class="check-box">
-                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
-                                    <span>Sí</span>
-                                </label>
-                                <label class="option-card">
-                                    <input type="radio" name="is_employed" value="0" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
-                                    <div class="check-box">
-                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </div>
-                                    <span>No</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+        .option-card:has(input[type=radio]:checked),
+        .option-card.selected {
+            border-color: #111827;
+        }
 
-                    <!-- Tipo de empleo -->
-                    <div id="employmentTypeField" class="{{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? '' : 'hidden' }} pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                        <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
-                        <div class="flex gap-2">
-                            @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
-                            <label class="option-card">
-                                <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }} onchange="syncCards(this)">
-                                <div class="check-box">
-                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </div>
-                                <span>{{ $label }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-                        @error('employment_type') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                    </div>
+        .dark .option-card:has(input[type=radio]:checked),
+        .dark .option-card.selected {
+            border-color: #ffffff;
+        }
+    </style>
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Instagram <span class="text-gray-300 dark:text-gray-600">(opcional)</span></label>
-                        <input type="text" name="instagram" value="{{ old('instagram', $profile->instagram ?? '') }}" placeholder="@usuario"
-                               class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('instagram') border-red-500 @enderror">
-                        @error('instagram') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                    </div>
+    <div class="min-h-screen px-5 md:px-8 py-6">
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-2">Estado civil</label>
-                        <div class="space-y-1.5">
-                            @foreach(['soltero' => 'Soltero/a', 'casado_separado' => 'Casado/a — bienes separados', 'casado_compartido' => 'Casado/a — bienes compartidos'] as $val => $label)
-                            <label class="option-card w-full">
-                                <input type="radio" name="marital_status" value="{{ $val }}" {{ old('marital_status', $profile->marital_status ?? '') === $val ? 'checked' : '' }} required onchange="syncCards(this); toggleSpouse()">
-                                <div class="check-box">
-                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </div>
-                                <span>{{ $label }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Campos cónyuge -->
-                    <div id="spouseFields" class="{{ old('marital_status', $profile->marital_status ?? '') === 'casado_compartido' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
-                                <input type="text" name="spouse_first_name" value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}" placeholder="Nombres"
-                                       oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                       class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_first_name') border-red-500 @enderror">
-                                @error('spouse_first_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
-                                <input type="text" name="spouse_last_name" value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}" placeholder="Apellido1 Apellido2"
-                                       oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                       class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_last_name') border-red-500 @enderror">
-                                @error('spouse_last_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
-                            <input type="text" name="spouse_dni" value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678" maxlength="8"
-                                   oninput="this.value=this.value.replace(/\D/g,'')"
-                                   class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_dni') border-red-500 @enderror">
-                            @error('spouse_dni') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+        <div class="mb-6">
+            <p class="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                {{ isset($editing) ? 'Editar perfil' : 'Completa tu perfil' }}
+            </h1>
+            <p class="text-xs text-gray-500 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
         </div>
 
-        <div class="mt-6 flex justify-end">
-            <button type="submit"
+        @if($errors->any())
+            <div class="mb-4 p-3 border-l-2 border-red-400 bg-red-50 dark:bg-red-500/5 rounded-r-lg">
+                @foreach($errors->all() as $error)
+                    <p class="text-red-500 text-xs">{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+
+        <form action="{{ isset($editing) ? route('client.loans.profile.update') : route('client.loans.profile.store') }}"
+            method="POST">
+            @csrf
+            @if(isset($editing)) @method('PUT') @endif
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-0">
+
+                <!-- Columna izquierda -->
+                <div>
+                    <p
+                        class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">
+                        Información académica</p>
+                    <div class="space-y-4">
+
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
+                            <input type="text" name="institution" id="input_institution"
+                                value="{{ old('institution', $profile->institution ?? '') }}" required
+                                placeholder="Ej: UNMSM"
+                                oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('institution') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
+                            @error('institution') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
+                            <input type="text" name="career" id="input_career"
+                                value="{{ old('career', $profile->career ?? '') }}" required
+                                placeholder="Ej: Ingeniería de Sistemas"
+                                oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('career') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
+                            @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                @foreach(['Estudiante activo', 'Egresado', 'Titulado', 'Bachiller', 'Secundaria completa', 'Ninguno de los anteriores'] as $opt)
+                                    <label class="option-card">
+                                        <input type="radio" name="academic_status" value="{{ $opt }}" {{ old('academic_status', $profile->academic_status ?? '') === $opt ? 'checked' : '' }} required
+                                            onchange="syncCards(this); toggleAcademicFields(this.value)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span class="leading-tight">{{ $opt }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Columna derecha -->
+                <div class="mt-8 md:mt-0">
+                    <p
+                        class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">
+                        Situación social</p>
+                    <div class="space-y-4">
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
+                                <div class="flex gap-2">
+                                    <label class="option-card">
+                                        <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>Sí</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="has_children" value="0" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
+                                <div class="flex gap-2">
+                                    <label class="option-card">
+                                        <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>Sí</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="is_employed" value="0" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tipo de empleo -->
+                        <div id="employmentTypeField"
+                            class="{{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? '' : 'hidden' }} pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                            <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
+                            <div class="flex gap-2">
+                                @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
+                                    <label class="option-card">
+                                        <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }}
+                                            onchange="syncCards(this)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>{{ $label }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            @error('employment_type') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Instagram <span
+                                    class="text-gray-300 dark:text-gray-600">(opcional)</span></label>
+                            <input type="text" name="instagram" value="{{ old('instagram', $profile->instagram ?? '') }}"
+                                placeholder="@usuario"
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('instagram') border-red-500 @enderror">
+                            @error('instagram') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">Estado civil</label>
+                            <div class="space-y-1.5">
+                                @foreach(['soltero' => 'Soltero/a', 'casado_separado' => 'Casado/a — bienes separados', 'casado_compartido' => 'Casado/a — bienes compartidos'] as $val => $label)
+                                    <label class="option-card w-full">
+                                        <input type="radio" name="marital_status" value="{{ $val }}" {{ old('marital_status', $profile->marital_status ?? '') === $val ? 'checked' : '' }} required
+                                            onchange="syncCards(this); toggleSpouse()">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>{{ $label }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- Campos cónyuge -->
+                        <div id="spouseFields"
+                            class="{{ old('marital_status', $profile->marital_status ?? '') === 'casado_compartido' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
+                                    <input type="text" name="spouse_first_name"
+                                        value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}"
+                                        placeholder="Nombres"
+                                        oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
+                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_first_name') border-red-500 @enderror">
+                                    @error('spouse_first_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
+                                    <input type="text" name="spouse_last_name"
+                                        value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}"
+                                        placeholder="Apellido1 Apellido2"
+                                        oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
+                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_last_name') border-red-500 @enderror">
+                                    @error('spouse_last_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
+                                <input type="text" name="spouse_dni"
+                                    value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678"
+                                    maxlength="8" oninput="this.value=this.value.replace(/\D/g,'')"
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600 @error('spouse_dni') border-red-500 @enderror">
+                                @error('spouse_dni') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button type="submit"
                     class="text-sm font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400 transition-colors pb-0.5 bg-transparent">
-                Guardar y continuar →
-            </button>
-        </div>
+                    Guardar y continuar →
+                </button>
+            </div>
 
-    </form>
-</div>
+        </form>
+    </div>
 
-<script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
+                syncCards(input);
+            });
+        });
+
+        function syncCards(input) {
+            const name = input.name;
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                const card = r.closest('.option-card');
+                if (card) card.classList.toggle('selected', r.checked);
+            });
+        }
+
+function toggleAcademicFields(val) {
+    const inst = document.getElementById('input_institution');
+    const career = document.getElementById('input_career');
+    if (val === 'Ninguno de los anteriores') {
+        inst.disabled = true;
+        career.disabled = true;
+        inst.required = false;
+        career.required = false;
+        inst.value = '';
+        career.value = '';
+    } else {
+        inst.disabled = false;
+        career.disabled = false;
+        inst.required = true;
+        career.required = true;
+    }
+}
+
+// Ejecutar al cargar para sincronizar estado inicial
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
-        syncCards(input);
-    });
+    const activeStatus = document.querySelector('input[name="academic_status"]:checked');
+    if (activeStatus) toggleAcademicFields(activeStatus.value);
 });
 
-function syncCards(input) {
-    const name = input.name;
-    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-        const card = r.closest('.option-card');
-        if (card) card.classList.toggle('selected', r.checked);
-    });
-}
-
 function toggleSpouse() {
-    const val = document.querySelector('input[name="marital_status"]:checked')?.value;
-    const fields = document.getElementById('spouseFields');
-    if (val === 'casado_compartido') {
-        fields.classList.remove('hidden');
-    } else {
-        fields.classList.add('hidden');
-        document.querySelector('input[name="spouse_first_name"]').value = '';
-        document.querySelector('input[name="spouse_last_name"]').value = '';
-        document.querySelector('input[name="spouse_dni"]').value = '';
-    }
-}
+            const val = document.querySelector('input[name="marital_status"]:checked')?.value;
+            const fields = document.getElementById('spouseFields');
+            if (val === 'casado_compartido') {
+                fields.classList.remove('hidden');
+            } else {
+                fields.classList.add('hidden');
+                document.querySelector('input[name="spouse_first_name"]').value = '';
+                document.querySelector('input[name="spouse_last_name"]').value = '';
+                document.querySelector('input[name="spouse_dni"]').value = '';
+            }
+        }
 
-function toggleEmployment() {
-    const val = document.querySelector('input[name="is_employed"]:checked')?.value;
-    const field = document.getElementById('employmentTypeField');
-    if (val == '1') {
-        field.classList.remove('hidden');
-    } else {
-        field.classList.add('hidden');
-        document.querySelectorAll('input[name="employment_type"]').forEach(r => {
-            r.checked = false;
-            r.closest('.option-card').classList.remove('selected');
-        });
-    }
-}
-</script>
+        function toggleEmployment() {
+            const val = document.querySelector('input[name="is_employed"]:checked')?.value;
+            const field = document.getElementById('employmentTypeField');
+            if (val == '1') {
+                field.classList.remove('hidden');
+            } else {
+                field.classList.add('hidden');
+                document.querySelectorAll('input[name="employment_type"]').forEach(r => {
+                    r.checked = false;
+                    r.closest('.option-card').classList.remove('selected');
+                });
+            }
+        }
+    </script>
 @endsection
