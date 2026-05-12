@@ -91,10 +91,11 @@
         <!-- Cabecera de columnas (solo desktop) -->
         @if($filter !== 'blocked' && $filter !== 'ghosts')
             <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center"
-                style="grid-template-columns: 1fr 100px 100px 110px 80px 100px 90px 90px 24px;">
+                style="grid-template-columns: 1fr 100px 100px 110px 110px 80px 100px 90px 90px 24px;">
                 <span>Usuario</span>
                 <span class="text-center">Tipo</span>
                 <span class="text-center">DNI</span>
+                <span class="text-center">RUC</span>
                 <span class="text-center">Teléfono</span>
                 <span class="text-center">Tasa %</span>
                 <span class="text-center">Registro</span>
@@ -104,10 +105,11 @@
             </div>
         @elseif($filter === 'ghosts')
             <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center"
-                style="grid-template-columns: 1fr 100px 120px 130px 120px 100px 24px;">
+                style="grid-template-columns: 1fr 100px 110px 120px 130px 120px 100px 24px;">
                 <span>Usuario</span>
                 <span class="text-center">Tipo</span>
                 <span class="text-center">DNI</span>
+                <span class="text-center">RUC</span>
                 <span class="text-center">Teléfono</span>
                 <span class="text-center">Registro</span>
                 <span class="text-center">Estado</span>
@@ -118,10 +120,11 @@
         @if($filter === 'blocked')
             <!-- Lista de bloqueados -->
             <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center"
-                style="grid-template-columns: 1fr 100px 120px 130px 120px 24px;">
+                style="grid-template-columns: 1fr 100px 110px 120px 130px 120px 24px;">
                 <span>Usuario</span>
                 <span class="text-center">Tipo</span>
                 <span class="text-center">DNI</span>
+                <span class="text-center">RUC</span>
                 <span class="text-center">Teléfono</span>
                 <span class="text-center">Bloqueado</span>
                 <span></span>
@@ -129,7 +132,7 @@
 
             @forelse($blockedUsers as $blocked)
                 <div class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 -mx-2 px-2"
-                    style="grid-template-columns: 1fr 100px 120px 130px 120px 24px;">
+                    style="grid-template-columns: 1fr 100px 110px 120px 130px 120px 24px;">
 
                     <div class="flex items-center gap-3 min-w-0">
                         <div
@@ -158,6 +161,8 @@
                     <span
                         class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $blocked->dni ?? '—' }}</span>
                     <span
+                        class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ ($blocked->person_type ?? 'natural') === 'juridica' ? ($blocked->ruc ?? '—') : '—' }}</span>
+                    <span
                         class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $blocked->phone ?? '—' }}</span>
                     <span
                         class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $blocked->created_at->format('d/m/Y') }}</span>
@@ -177,7 +182,7 @@
             @forelse($users as $user)
                 @php $status = $user->documents?->status @endphp
                 <div class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
-                    style="grid-template-columns: {{ $user->is_ghost ? '1fr 100px 120px 130px 120px 100px 24px' : '1fr 100px 100px 110px 80px 100px 90px 90px 24px' }};">
+                    style="grid-template-columns: {{ $user->is_ghost ? '1fr 100px 110px 120px 130px 120px 100px 24px' : '1fr 100px 100px 110px 110px 80px 100px 90px 90px 24px' }};">
 
                     <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-3 min-w-0 flex-1">
                         @php
@@ -256,6 +261,7 @@
                     </div>
 
                     <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->dni ?? '—' }}</span>
+                    <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->person_type === 'juridica' ? ($user->ruc ?? '—') : '—' }}</span>
                     <span class="hidden md:block text-xs text-gray-900 dark:text-white text-center">{{ $user->phone ?? '—' }}</span>
 
                     <!-- Tasa % -->
