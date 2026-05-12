@@ -319,7 +319,8 @@
                         <div class="relative">
                             <input type="number" name="months" id="modal_months" min="3" max="24" step="1"
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
-                                   oninput="if(this.value > 24) this.value = 24; if(this.value && this.value < 1) this.value = 1; calculatePreview();"
+                                   oninput="if(this.value > 24) this.value = 24; calculatePreview();"
+                                   onblur="if(this.value && this.value < 3) this.value = 3; calculatePreview();"
                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">M</span>
                         </div>
