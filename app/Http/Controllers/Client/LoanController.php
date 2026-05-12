@@ -48,6 +48,12 @@ class LoanController extends Controller
 
         $request->validate($rules);
 
+        $bankAccount = \App\Models\BankAccount::find($request->bank_account_id);
+
+        if ($bankAccount->currency !== $request->currency) {
+            return back()->withErrors(['bank_account_id' => 'La cuenta bancaria seleccionada debe estar en ' . ($request->currency === 'PEN' ? 'Soles' : 'Dólares') . '.'])->withInput();
+        }
+
         $montoSolicitado = $request->amount;
         $tipo = $request->type;
         $user = Auth::user();
@@ -70,8 +76,6 @@ class LoanController extends Controller
         $interes = $montoSolicitado * $tasaInteres;
         $totalAPagar = $montoSolicitado + $interes;
         $cuotaMensual = $tipo === 'cuotas' ? ($totalAPagar / $plazo) : $totalAPagar;
-
-        $bankAccount = \App\Models\BankAccount::find($request->bank_account_id);
 
         $loanData = [
             'user_id' => Auth::id(),

@@ -208,7 +208,7 @@
                                 </div>
                             </div>
                         @else
-                            <div class="group">
+                            <div class="group" id="accountSelectorGroup">
                                 <label for="bank_account_id"
                                     class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Selecciona tu cuenta de
                                     destino</label>
@@ -217,7 +217,8 @@
                                         class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
                                         <option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>
                                         @foreach($bankAccounts as $acc)
-                                            <option value="{{ $acc->id }}" class="dark:bg-gray-950" {{ old('bank_account_id') == $acc->id ? 'selected' : '' }}>
+                                            <option value="{{ $acc->id }}" data-currency="{{ $acc->currency }}"
+                                                class="dark:bg-gray-950" {{ old('bank_account_id') == $acc->id ? 'selected' : '' }}>
                                                 {{ $acc->alias ?: $acc->bank_name }} — {{ $acc->account_number }}
                                                 ({{ $acc->currency }})
                                             </option>
@@ -234,6 +235,32 @@
                                         href="{{ route('client.dashboard') }}"
                                         class="text-green-600 dark:text-green-400 font-bold hover:underline">Gestiónalas
                                         aquí</a></p>
+                            </div>
+
+                            <div id="noAccountWarning"
+                                class="hidden bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-2xl p-6">
+                                <div class="flex gap-4">
+                                    <div class="text-red-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-red-900 dark:text-red-400 uppercase tracking-widest mb-1">
+                                            No tienes cuentas en <span id="missingCurrencyName">Soles</span>
+                                        </h4>
+                                        <p class="text-xs text-red-700 dark:text-red-500/80 mb-4 leading-relaxed">
+                                            Para solicitar un préstamo en esta moneda, primero debes registrar una cuenta
+                                            bancaria correspondiente.
+                                        </p>
+                                        <a href="{{ route('client.dashboard') }}"
+                                            class="inline-flex items-center text-[10px] font-black text-red-900 dark:text-red-400 uppercase tracking-[0.2em] border-b-2 border-red-900 dark:border-red-400 pb-0.5 hover:opacity-70 transition-opacity">
+                                            Registrar cuenta ahora
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </section>
@@ -644,6 +671,48 @@
                 }
             }
 
+            function filterBankAccounts() {
+                const selectedCurrency = document.querySelector('input[name="currency"]:checked')?.value;
+                const select = document.getElementById('bank_account_id');
+                if (!select) return;
+
+                const options = select.querySelectorAll('option[data-currency]');
+                let matchCount = 0;
+
+                options.forEach(opt => {
+                    if (opt.dataset.currency === selectedCurrency) {
+                        opt.classList.remove('hidden');
+                        opt.disabled = false;
+                        matchCount++;
+                    } else {
+                        opt.classList.add('hidden');
+                        opt.disabled = true;
+                    }
+                });
+
+                const group = document.getElementById('accountSelectorGroup');
+                const warning = document.getElementById('noAccountWarning');
+                const missingName = document.getElementById('missingCurrencyName');
+
+                if (matchCount === 0) {
+                    group.classList.add('hidden');
+                    warning.classList.remove('hidden');
+                    missingName.textContent = selectedCurrency === 'USD' ? 'Dólares' : 'Soles';
+                    select.required = false;
+                    select.value = '';
+                } else {
+                    group.classList.remove('hidden');
+                    warning.classList.add('hidden');
+                    select.required = true;
+
+                    // Si la opción seleccionada quedó oculta, resetear select
+                    const currentOpt = select.options[select.selectedIndex];
+                    if (currentOpt && currentOpt.classList.contains('hidden')) {
+                        select.value = '';
+                    }
+                }
+            }
+
             function update() {
                 const a = parseFloat(amount.value.replace(/,/g, '')) || 0;
                 const m = parseInt(months.value) || 3;
@@ -742,11 +811,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                `;
+                            <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                        `;
 
                 const row = document.createElement('tr');
                 row.innerHTML = html;
@@ -799,7 +868,7 @@
             });
 
             months.addEventListener('input', update);
-            currencyRadios.forEach(r => r.addEventListener('change', update));
+            currencyRadios.forEach(r => r.addEventListener('change', () => { filterBankAccounts(); update(); }));
             typeRadios.forEach(r => r.addEventListener('change', () => { toggleBlocks(); update(); }));
             paymentDaysRadios.forEach(r => r.addEventListener('change', update));
             amortizationRadios.forEach(r => r.addEventListener('change', update));
@@ -844,6 +913,7 @@
                 amount.value = formatNumber(amount.value.replace(/[^0-9.]/g, ''));
             }
             toggleBlocks();
+            filterBankAccounts();
             update();
             charCount.textContent = reason.value.length;
         });
