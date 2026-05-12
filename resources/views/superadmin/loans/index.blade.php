@@ -138,9 +138,9 @@
                             </div>
 
                         <!-- Columna 3: Acciones -->
-                        <div class="lg:w-1/4 flex flex-col items-end justify-center gap-4">
+                        <div class="lg:w-1/4 flex flex-col items-end justify-center">
                             @if($loan->status === 'pending')
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-6">
                                     <!-- Contra-oferta -->
                                     <button type="button" 
                                             onclick="openCounterOfferModal({{ json_encode([
@@ -153,32 +153,32 @@
                                                 'interest_rate' => $loan->interest_rate,
                                                 'system' => $loan->amortization_system ?? 'frances'
                                             ]) }})"
-                                            class="p-3 rounded-xl bg-purple-500/10 text-purple-600 hover:bg-purple-600 hover:text-white transition-all shadow-sm group/btn" 
+                                            class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]" 
                                             title="Enviar Contra-oferta">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                     </button>
 
                                     <!-- Aprobar -->
-                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST">
+                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex items-center">
                                         @csrf
-                                        <button type="submit" class="p-3 rounded-xl bg-green-500/10 text-green-600 hover:bg-green-600 hover:text-white transition-all shadow-sm" title="Aprobar">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <button type="submit" class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95]" title="Aprobar">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </button>
                                     </form>
 
                                     <!-- Rechazar -->
-                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST">
+                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex items-center">
                                         @csrf
-                                        <button type="submit" class="p-3 rounded-xl bg-red-500/10 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Rechazar">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        <button type="submit" class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95]" title="Rechazar">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     </form>
                                 </div>
                             @else
                                 <span class="px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest
-                                            {{ $loan->status === 'approved' ? 'bg-green-500/10 text-green-500' : '' }}
-                                            {{ $loan->status === 'rejected' ? 'bg-red-500/10 text-red-500' : '' }}
-                                            {{ $loan->status === 'paid' ? 'bg-blue-500/10 text-blue-500' : '' }}">
+                                            {{ $loan->status === 'approved' ? 'text-green-500 bg-green-500/10' : '' }}
+                                            {{ $loan->status === 'rejected' ? 'text-red-500 bg-red-500/10' : '' }}
+                                            {{ $loan->status === 'paid' ? 'text-blue-500 bg-blue-500/10' : '' }}">
                                     {{ $loan->status }}
                                 </span>
                             @endif
