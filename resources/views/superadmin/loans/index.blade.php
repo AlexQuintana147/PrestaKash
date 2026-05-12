@@ -3,11 +3,9 @@
 @section('title', 'Control de Préstamos')
 
 @section('content')
-    <div class="flex h-screen overflow-hidden">
-        <!-- Main Content -->
-        <div class="flex-1 overflow-y-auto px-5 md:px-10 py-8">
+    <div class="px-5 md:px-10 py-8">
 
-            <!-- Header -->
+        <!-- Header -->
             <div class="flex items-end justify-between mb-8">
                 <div>
                     <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo
@@ -228,90 +226,6 @@
             </div>
 
         </div>
-
-        <!-- Right Sidebar: Future Options -->
-        <aside
-            class="hidden xl:flex w-80 bg-white dark:bg-black border-l border-gray-100 dark:border-gray-900 flex-col p-8 overflow-y-auto">
-            <div class="mb-10">
-                <h3 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] mb-6">Próximas
-                    Funciones</h3>
-
-                <div class="space-y-8">
-                    <div class="opacity-50">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div
-                                class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                            <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase">Generación de Contratos
-                            </h4>
-                        </div>
-                        <p class="text-[10px] text-gray-500 leading-relaxed">Automatización de contratos legales en PDF
-                            listos para firma digital.</p>
-                    </div>
-
-                    <div class="opacity-50">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div
-                                class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase">Gestión de Cobranzas</h4>
-                        </div>
-                        <p class="text-[10px] text-gray-500 leading-relaxed">Módulo de seguimiento de pagos, recordatorios
-                            automáticos y mora.</p>
-                    </div>
-
-                    <div class="opacity-50">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div
-                                class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                </svg>
-                            </div>
-                            <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase">Análisis de Riesgo</h4>
-                        </div>
-                        <p class="text-[10px] text-gray-500 leading-relaxed">Integración con centrales de riesgo y scoring
-                            crediticio interno.</p>
-                    </div>
-
-                    <div class="opacity-50">
-                        <div class="flex items-center gap-3 mb-2">
-                            <div
-                                class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </div>
-                            <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase">Asignación de Inversores
-                            </h4>
-                        </div>
-                        <p class="text-[10px] text-gray-500 leading-relaxed">Emparejamiento inteligente entre solicitudes de
-                            préstamo y fondeadores.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-auto pt-10 border-t border-gray-100 dark:border-gray-900">
-                <div class="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4">
-                    <p class="text-[9px] text-gray-400 uppercase font-black mb-2">Estado del Sistema</p>
-                    <div class="flex items-center gap-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                        <span class="text-[10px] text-gray-600 dark:text-gray-400 font-bold">Todos los servicios
-                            operativos</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
     </div>
 
     <style>
