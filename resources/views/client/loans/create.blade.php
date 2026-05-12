@@ -169,7 +169,8 @@
                                                 30 días</p>
                                             <p class="text-[10px] text-amber-500 dark:text-amber-400 mt-0.5">
                                                 {{ number_format(Auth::user()->loan_interest_rate ?? 20, 2, '.', '') }}%
-                                                comisión</p>
+                                                comisión
+                                            </p>
                                         </div>
                                     </label>
                                 </div>
@@ -218,6 +219,7 @@
                                         @foreach($bankAccounts as $acc)
                                             <option value="{{ $acc->id }}" class="dark:bg-gray-950" {{ old('bank_account_id') == $acc->id ? 'selected' : '' }}>
                                                 {{ $acc->alias ?: $acc->bank_name }} — {{ $acc->account_number }}
+                                                ({{ $acc->currency }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -740,11 +742,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-            `;
+                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                `;
 
                 const row = document.createElement('tr');
                 row.innerHTML = html;

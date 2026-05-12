@@ -11,6 +11,7 @@ class BankAccount extends Model
         'alias',
         'bank_name',
         'account_type',
+        'currency',
         'account_number',
         'cci',
     ];

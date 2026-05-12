@@ -180,6 +180,13 @@
                                 </select>
                             </div>
                             <div class="group">
+                                <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">Moneda</label>
+                                <select id="f_currency" required class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all appearance-none cursor-pointer">
+                                    <option value="PEN" class="dark:bg-gray-950">Soles (S/)</option>
+                                    <option value="USD" class="dark:bg-gray-950">Dólares ($)</option>
+                                </select>
+                            </div>
+                            <div class="group">
                                 <label class="block text-[10px] font-medium text-gray-400 dark:text-gray-500 mb-1 uppercase">Número de Cuenta</label>
                                 <input type="text" id="f_account_number" required placeholder="Ej: 19134567890123" 
                                        maxlength="14"
@@ -244,7 +251,7 @@
                         <div>
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="text-[10px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">${acc.alias || acc.bank_name}</span>
-                                <span class="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 text-[8px] font-bold rounded uppercase tracking-tighter text-gray-600 dark:text-gray-400">${acc.bank_name} - ${acc.account_type}</span>
+                                <span class="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 text-[8px] font-bold rounded uppercase tracking-tighter text-gray-600 dark:text-gray-400">${acc.bank_name} - ${acc.account_type} - ${acc.currency}</span>
                             </div>
                             <p class="text-xs font-medium text-gray-900 dark:text-white tabular-nums">${acc.account_number}</p>
                             ${acc.cci ? `<p class="text-[10px] text-gray-400 mt-1 tabular-nums">CCI: ${acc.cci}</p>` : ''}
@@ -288,6 +295,7 @@
         document.getElementById('f_alias').value = acc.alias || '';
         document.getElementById('f_bank_name').value = acc.bank_name;
         document.getElementById('f_account_type').value = acc.account_type;
+        document.getElementById('f_currency').value = acc.currency || 'PEN';
         document.getElementById('f_account_number').value = acc.account_number;
         document.getElementById('f_cci').value = acc.cci || '';
         document.getElementById('formTitle').textContent = 'Editar Cuenta';
@@ -302,6 +310,7 @@
             alias: document.getElementById('f_alias').value,
             bank_name: document.getElementById('f_bank_name').value,
             account_type: document.getElementById('f_account_type').value,
+            currency: document.getElementById('f_currency').value,
             account_number: document.getElementById('f_account_number').value,
             cci: document.getElementById('f_cci').value,
             _token: '{{ csrf_token() }}'

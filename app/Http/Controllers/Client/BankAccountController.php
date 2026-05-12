@@ -18,11 +18,12 @@ class BankAccountController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'alias'          => 'nullable|string|max:50',
-            'bank_name'      => 'required|string',
-            'account_type'   => 'required|string|in:ahorros,corriente',
-            'account_number' => 'required|string|max:14',
-            'cci'            => 'required|string|max:20',
+            'alias' => 'nullable|string|max:50',
+            'bank_name' => 'required|string',
+            'account_type' => 'required|string|in:ahorros,corriente',
+            'currency' => 'required|string|in:PEN,USD',
+            'account_number' => 'required|string|max:25',
+            'cci' => 'required|string|max:25',
         ]);
 
         $account = Auth::user()->bankAccounts()->create($request->all());
@@ -41,11 +42,12 @@ class BankAccountController extends Controller
         }
 
         $request->validate([
-            'alias'          => 'nullable|string|max:50',
-            'bank_name'      => 'required|string',
-            'account_type'   => 'required|string|in:ahorros,corriente',
-            'account_number' => 'required|string|max:14',
-            'cci'            => 'required|string|max:20',
+            'alias' => 'nullable|string|max:50',
+            'bank_name' => 'required|string',
+            'account_type' => 'required|string|in:ahorros,corriente',
+            'currency' => 'required|string|in:PEN,USD',
+            'account_number' => 'required|string|max:25',
+            'cci' => 'required|string|max:25',
         ]);
 
         $bankAccount->update($request->all());
