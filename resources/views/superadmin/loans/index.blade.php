@@ -278,7 +278,7 @@
                         </div>
                     </div>
                     
-                    <div class="max-height-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="max-h-[160px] md:max-h-none md:overflow-visible overflow-y-auto pr-2 custom-scrollbar">
                         <table class="w-full text-[10px] text-left">
                             <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600">
                                 <tr>
