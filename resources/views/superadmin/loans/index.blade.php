@@ -308,7 +308,7 @@
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
                             <input type="text" name="amount" id="modal_amount"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
                         </div>
                     </div>
@@ -336,7 +336,7 @@
                                                 this.setSelectionRange(start, start);
                                             }
                                             calculatePreview();"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                         </div>
                     </div>
@@ -535,6 +535,12 @@
     document.getElementById('modal_amount').addEventListener('input', function(e) {
         formatAmountInput(this.value);
         calculatePreview();
+    });
+
+    document.getElementById('modal_amount').addEventListener('keydown', function(e) {
+        if (e.key === '-' || e.key === 'e') {
+            e.preventDefault();
+        }
     });
 
     document.getElementById('counterOfferForm').addEventListener('submit', function() {
