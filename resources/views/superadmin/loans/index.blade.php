@@ -261,6 +261,7 @@
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Nueva Tasa de Interés (%)</label>
                         <div class="relative">
                             <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100" 
+                                   onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
                                    oninput="let start = this.selectionStart;
                                             let oldVal = this.value;
                                             let val = oldVal.replace(/[^0-9.]/g, '');
