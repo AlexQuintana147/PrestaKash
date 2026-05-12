@@ -45,16 +45,17 @@
             </div>
 
             <!-- Filtros Desktop -->
-            <div class="hidden md:flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 overflow-x-auto no-scrollbar pb-2 mb-8">
+            <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
                 @foreach(['pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
                     <a href="{{ route('superadmin.loans.index', ['filter' => $key]) }}"
-                        class="px-5 py-2 text-sm font-bold transition-all rounded-xl
-                                  {{ $filter === $key 
-                                    ? 'bg-gray-900 text-white dark:bg-white dark:text-black shadow-lg shadow-gray-500/20' 
-                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                        class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
+                                  {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
                         {{ $label }}
                         @if($counts[$key] > 0)
-                            <span class="ml-2 text-xs {{ $filter === $key ? 'opacity-70' : 'opacity-40' }}">{{ $counts[$key] }}</span>
+                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                        @endif
+                        @if($filter === $key)
+                            <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
                         @endif
                     </a>
                 @endforeach

@@ -52,36 +52,45 @@
             </div>
 
             <!-- Desktop: tabs horizontales -->
-            <div class="hidden md:flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-2">
+            <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
                 @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
-                        <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="px-4 py-2 text-sm font-bold transition-all rounded-xl
+                        <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
                                                                                                   {{ $filter === $key
-                    ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
-                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                    ? 'text-gray-900 dark:text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
                             {{ $label }}
                             @if($counts[$key] > 0)
                                 <span
-                                    class="ml-1.5 text-xs {{ $filter === $key ? 'opacity-70' : 'opacity-40' }}">{{ $counts[$key] }}</span>
+                                    class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                            @endif
+                            @if($filter === $key)
+                                <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
                             @endif
                         </a>
                 @endforeach
 
                 <div class="flex items-center gap-2 ml-auto">
                     <a href="{{ route('superadmin.users.index', ['filter' => 'ghosts']) }}"
-                        class="px-4 py-2 rounded-xl text-sm font-bold transition-all
-                                  {{ $filter === 'ghosts' ? 'bg-purple-600 text-white' : 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' }}">
+                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
+                              {{ $filter === 'ghosts' ? 'text-purple-600' : 'text-gray-600 dark:text-gray-400 hover:text-purple-500' }}">
                         Fantasmas
                         @if($counts['ghosts'] > 0)
-                            <span class="ml-1 opacity-70">{{ $counts['ghosts'] }}</span>
+                            <span class="ml-1.5 text-xs {{ $filter === 'ghosts' ? 'text-purple-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts['ghosts'] }}</span>
+                        @endif
+                        @if($filter === 'ghosts')
+                            <span class="absolute bottom-0 left-0 right-0 h-px bg-purple-600"></span>
                         @endif
                     </a>
 
                     <a href="{{ route('superadmin.users.index', ['filter' => 'blocked']) }}"
-                        class="px-4 py-2 rounded-xl text-sm font-bold transition-all
-                                  {{ $filter === 'blocked' ? 'bg-red-600 text-white' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20' }}">
+                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
+                              {{ $filter === 'blocked' ? 'text-red-500' : 'text-gray-600 dark:text-gray-400 hover:text-red-500' }}">
                         Bloqueados
                         @if($counts['blocked'] > 0)
-                            <span class="ml-1 opacity-70">{{ $counts['blocked'] }}</span>
+                            <span class="ml-1.5 text-xs {{ $filter === 'blocked' ? 'text-red-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts['blocked'] }}</span>
+                        @endif
+                        @if($filter === 'blocked')
+                            <span class="absolute bottom-0 left-0 right-0 h-px bg-red-500"></span>
                         @endif
                     </a>
                 </div>
