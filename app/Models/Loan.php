@@ -19,6 +19,7 @@ class Loan extends Model
         'monthly_payment',
         'status',
         'type',
+        'amortization_system',
         'reason',
         'bank_name',
         'account_number',
@@ -29,4 +30,5 @@ class Loan extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }}
+    }
+}

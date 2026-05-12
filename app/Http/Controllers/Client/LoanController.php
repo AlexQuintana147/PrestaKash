@@ -73,7 +73,7 @@ class LoanController extends Controller
 
         $bankAccount = \App\Models\BankAccount::find($request->bank_account_id);
 
-        Loan::create([
+        $loanData = [
             'user_id' => Auth::id(),
             'amount' => $montoSolicitado,
             'currency' => $request->currency,
@@ -91,7 +91,13 @@ class LoanController extends Controller
             'account_number' => $bankAccount->account_number,
             'account_type' => $bankAccount->account_type,
             'cci' => $bankAccount->cci,
-        ]);
+        ];
+
+        if ($tipo === 'cuotas') {
+            $loanData['amortization_system'] = $request->amortization_system;
+        }
+
+        Loan::create($loanData);
 
         return redirect()->route('client.loans')->with('success', 'Tu solicitud de préstamo ha sido recibida y está en proceso de revisión.');
     }

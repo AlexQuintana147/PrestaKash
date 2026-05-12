@@ -88,6 +88,12 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/inversores/{application}/desaprobar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'unapprove'])->name('investors.unapprove');
     Route::post('/inversores/{application}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'reject'])->name('investors.reject');
 
+    // Control de préstamos
+    Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');
+    Route::post('/prestamos/{loan}/counter-offer', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'counterOffer'])->name('loans.counter-offer');
+    Route::post('/prestamos/{loan}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approve'])->name('loans.approve');
+    Route::post('/prestamos/{loan}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'reject'])->name('loans.reject');
+
     // Configuración
     Route::get('/configuracion', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
     Route::post('/configuracion/nombre', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
