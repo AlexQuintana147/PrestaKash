@@ -34,39 +34,61 @@ class LoanController extends Controller
     public function counterOffer(Request $request, Loan $loan)
     {
         $request->validate([
+            'amount' => 'required|numeric|min:100',
             'amortization_system' => 'required|in:frances,americano',
             'interest_rate' => 'required|numeric|min:0|max:100',
+            'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
         ]);
 
+        $amount = (float) $request->amount;
         $rate = $request->interest_rate / 100;
-        $totalAmount = $loan->amount;
-        $monthlyPayment = 0;
+        $system = $request->amortization_system;
+        $freq = ($loan->type === 'cuotas' && $system === 'frances') ? ($request->payment_frequency ?? 'mensual') : 'mensual';
+
+        $totalAmount = $amount;
+        $periodicPayment = 0;
 
         if ($loan->type === 'cuotas') {
-            $n = $loan->months;
-            if ($request->amortization_system === 'frances') {
-                // French: Fixed installments
-                // Formula: M = P * [i(1+i)^n] / [(1+i)^n - 1]
-                $monthlyPayment = $loan->amount * ($rate * pow(1 + $rate, $n)) / (pow(1 + $rate, $n) - 1);
-                $totalAmount = $monthlyPayment * $n;
+            $months = $loan->months;
+            if ($system === 'frances') {
+                $installmentsPerMonth = 1;
+                if ($freq === 'diario')
+                    $installmentsPerMonth = 30;
+                elseif ($freq === 'semanal')
+                    $installmentsPerMonth = 4;
+                elseif ($freq === 'quincenal')
+                    $installmentsPerMonth = 2;
+
+                $nTotal = $months * $installmentsPerMonth;
+                $periodicRate = $rate / $installmentsPerMonth;
+
+                if ($amount > 0) {
+                    $periodicPayment = ($amount * $periodicRate) / (1 - pow(1 + $periodicRate, -$nTotal));
+                    $totalAmount = $periodicPayment * $nTotal;
+                } else {
+                    $periodicPayment = 0;
+                    $totalAmount = 0;
+                }
             } else {
                 // American: Fixed interest payments, principal at the end
-                $interestPerMonth = $loan->amount * $rate;
-                $monthlyPayment = $interestPerMonth; // Interest only
-                $totalAmount = $loan->amount + ($interestPerMonth * $n);
+                $interestPerMonth = $amount * $rate;
+                $periodicPayment = $interestPerMonth; // Interest only
+                $totalAmount = $amount + ($interestPerMonth * $months);
             }
         } else {
             // Pago único
-            $interest = $loan->amount * $rate;
-            $totalAmount = $loan->amount + $interest;
-            $monthlyPayment = $totalAmount;
+            $interest = $amount * $rate;
+            $totalAmount = $amount + $interest;
+            $periodicPayment = $totalAmount;
         }
 
         $loan->update([
-            'amortization_system' => $request->amortization_system,
+            'amount' => $amount,
+            'amortization_system' => $system,
+            'payment_frequency' => $freq,
             'interest_rate' => $request->interest_rate,
             'total_amount' => $totalAmount,
-            'monthly_payment' => $monthlyPayment,
+            'monthly_payment' => $periodicPayment,
         ]);
 
         return back()->with('success', 'Contra-oferta enviada correctamente.');

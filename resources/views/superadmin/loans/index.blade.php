@@ -301,34 +301,15 @@
                 </div>
 
                 <div id="modalInputsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
-                    <div id="modalSystemWrapper" class="space-y-4">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
-                        <div class="flex gap-4 border-b border-gray-100 dark:border-gray-900">
-                            <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
-                                    FRANCÉS
-                                </div>
-                            </label>
-                            <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
-                                    AMERICANO
-                                </div>
-                            </label>
+                    <!-- Monto -->
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto del Préstamo</label>
+                        <div class="relative">
+                            <input type="number" name="amount" id="modal_amount" step="0.01" min="100"
+                                   oninput="calculatePreview();"
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                            <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
                         </div>
-                    </div>
-
-                    <!-- Frecuencia -->
-                    <div id="modalFrequencyWrapper" class="space-y-4">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia de Pago</label>
-                        <select name="payment_frequency" id="modal_payment_frequency" onchange="calculatePreview()"
-                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
-                            <option value="mensual">Mensual</option>
-                            <option value="quincenal">Quincenal</option>
-                            <option value="semanal">Semanal</option>
-                            <option value="diario">Diario</option>
-                        </select>
                     </div>
 
                     <!-- Tasa -->
@@ -358,10 +339,45 @@
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                         </div>
                     </div>
+
+                    <div id="modalSystemWrapper" class="space-y-4">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
+                        <div class="flex gap-4 border-b border-gray-100 dark:border-gray-900">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
+                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    FRANCÉS
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
+                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    AMERICANO
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Frecuencia -->
+                    <div id="modalFrequencyWrapper" class="space-y-4">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia de Pago</label>
+                        <select name="payment_frequency" id="modal_payment_frequency" onchange="calculatePreview()"
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
+                            <option value="mensual">Mensual</option>
+                            <option value="quincenal">Quincenal</option>
+                            <option value="semanal">Semanal</option>
+                            <option value="diario">Diario</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Previews -->
                 <div class="space-y-6">
+                    <div class="flex items-center justify-between px-1">
+                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Resumen Financiero</h4>
+                        <p class="text-[10px] text-green-600 font-black uppercase tracking-widest">Ganancia Admin: <span id="previewGain" class="tabular-nums"></span></p>
+                    </div>
+                    
                     <!-- Cuotas Preview -->
                     <div id="previewCuotasContainer" class="space-y-6">
                         <div class="flex items-center justify-between">
@@ -433,6 +449,9 @@
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
         const inputsGrid = document.getElementById('modalInputsGrid');
 
+        document.getElementById('modal_amount').value = parseFloat(loan.amount).toFixed(2);
+        document.getElementById('modal_currency_symbol').textContent = loan.currency === 'USD' ? '$' : 'S/';
+
         if (loan.type === 'unico') {
             systemWrapper.classList.add('hidden');
             freqWrapper.classList.add('hidden');
@@ -459,10 +478,10 @@
         // Show amount
         const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-        let subtitleText = `<span class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">MONTO SOLICITADO: ${currencySymbol} ${amountFormatted}</span>`;
+        let subtitleText = `<span class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">PEDIDO ORIGINAL: ${currencySymbol} ${amountFormatted}</span>`;
         if (loan.type === 'cuotas' && loan.monthly_payment) {
             const monthlyFormatted = parseFloat(loan.monthly_payment).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            subtitleText += `<span class="block text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA PEDIDA: ${currencySymbol} ${monthlyFormatted}</span>`;
+            subtitleText += `<span class="block text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA ORIGINAL: ${currencySymbol} ${monthlyFormatted}</span>`;
         }
         document.getElementById('modal_display_amount').innerHTML = subtitleText;
         
@@ -488,8 +507,8 @@
     function calculatePreview() {
         if (!currentLoan) return;
 
-        const amount = parseFloat(currentLoan.amount);
-        const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100;
+        const amount = parseFloat(document.getElementById('modal_amount').value) || 0;
+        const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0;
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
         const freq = document.getElementById('modal_payment_frequency').value || 'mensual';
@@ -498,31 +517,25 @@
         const body = document.getElementById('previewScheduleBody');
         const totalEl = document.getElementById('previewTotal');
         const monthlyEl = document.getElementById('previewMonthly');
+        const gainEl = document.getElementById('previewGain');
         const subtitleEl = document.getElementById('modal_display_amount');
         
         body.innerHTML = '';
         
         const amountObj = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-        const amountFormatted = amount.toLocaleString('en-US', amountObj);
         
-        let subtitleHtml = `<span class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">MONTO SOLICITADO: ${currency} ${amountFormatted}</span>`;
-        if (currentLoan.type === 'cuotas' && currentLoan.monthly_payment) {
-            const reqMonthly = parseFloat(currentLoan.monthly_payment).toLocaleString('en-US', amountObj);
-            subtitleHtml += `<span class="block text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA PEDIDA: ${currency} ${reqMonthly}</span>`;
-        }
-
         if (currentLoan.type === 'unico') {
             document.getElementById('previewCuotasContainer').classList.add('hidden');
             document.getElementById('previewUnicoContainer').classList.remove('hidden');
 
             const rateClient = parseFloat(currentLoan.interest_rate) || 0;
-            const clientTotal = amount + (amount * (rateClient / 100));
+            const clientTotal = parseFloat(currentLoan.amount) + (parseFloat(currentLoan.amount) * (rateClient / 100));
             const adminTotal = amount + (amount * rate);
 
             document.getElementById('unicoClientRate').textContent = rateClient.toFixed(2);
             document.getElementById('unicoClientTotal').textContent = `${currency} ${clientTotal.toLocaleString('en-US', amountObj)}`;
 
-            document.getElementById('unicoAdminRate').textContent = parseFloat(document.getElementById('modal_interest_rate').value).toFixed(2);
+            document.getElementById('unicoAdminRate').textContent = (rate * 100).toFixed(2);
             document.getElementById('unicoAdminTotal').textContent = `${currency} ${adminTotal.toLocaleString('en-US', amountObj)}`;
 
             const days = parseInt(currentLoan.payment_days) || 15;
@@ -532,8 +545,7 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('unicoDeadline').textContent = date.toLocaleDateString('es-PE', options);
 
-            subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVO TOTAL: ${currency} ${adminTotal.toLocaleString('en-US', amountObj)}</span>`;
-            subtitleEl.innerHTML = subtitleHtml;
+            gainEl.textContent = `${currency} ${(adminTotal - amount).toLocaleString('en-US', amountObj)}`;
             return;
         } else {
             document.getElementById('previewCuotasContainer').classList.remove('hidden');
@@ -559,7 +571,12 @@
 
         if (system === 'frances') {
             // French: Fixed installments
-            periodicPayment = amount * (periodicRate * Math.pow(1 + periodicRate, n)) / (Math.pow(1 + periodicRate, n) - 1);
+            if (amount > 0 && rate > 0) {
+                periodicPayment = amount * (periodicRate * Math.pow(1 + periodicRate, n)) / (Math.pow(1 + periodicRate, n) - 1);
+            } else {
+                periodicPayment = amount / n;
+            }
+            
             let balance = amount;
             for (let i = 1; i <= n; i++) {
                 const interest = balance * periodicRate;
@@ -606,9 +623,7 @@
 
         totalEl.textContent = `${currency}${(amount + totalInterest).toFixed(2)}`;
         monthlyEl.textContent = pmtText;
-        
-        subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVA CUOTA: ${pmtText}</span>`;
-        subtitleEl.innerHTML = subtitleHtml;
+        gainEl.textContent = `${currency} ${totalInterest.toLocaleString('en-US', amountObj)}`;
     }
 
     // Close on overlay click
