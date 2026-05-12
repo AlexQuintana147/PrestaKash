@@ -228,8 +228,9 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Razón
                             Social</label>
-                        <input type="text" name="business_name" value="{{ old('business_name') }}" class="input-field"
-                            placeholder="Empresa S.A.C.">
+                    <input type="text" name="business_name" value="{{ old('business_name') }}" class="input-field"
+                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s.]/g,'')"
+                        placeholder="Empresa S.A.C.">
                     </div>
                 </div>
             </div>
