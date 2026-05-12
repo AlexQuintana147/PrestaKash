@@ -307,8 +307,7 @@
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
-                            <input type="number" name="amount" id="modal_amount" step="0.01" min="100"
-                                   oninput="calculatePreview();"
+                            <input type="text" name="amount" id="modal_amount"
                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
                         </div>
@@ -451,7 +450,10 @@
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
         const inputsGrid = document.getElementById('modalInputsGrid');
 
-        document.getElementById('modal_amount').value = parseFloat(loan.amount).toFixed(2);
+        // Format initial amount
+        const initialAmount = parseFloat(loan.amount).toFixed(2).replace('.', '');
+        formatAmountInput(initialAmount);
+        
         document.getElementById('modal_currency_symbol').textContent = loan.currency === 'USD' ? '$' : 'S/';
 
         if (loan.type === 'unico') {
@@ -509,10 +511,41 @@
         document.body.style.overflow = '';
     }
 
+    function formatAmountInput(val) {
+        const input = document.getElementById('modal_amount');
+        let cleanVal = val.replace(/\D/g, '');
+        
+        if (cleanVal.length === 0) {
+            cleanVal = '000';
+        } else {
+            while (cleanVal.length < 3) {
+                cleanVal = '0' + cleanVal;
+            }
+        }
+
+        let integerPart = cleanVal.slice(0, -2);
+        let decimalPart = cleanVal.slice(-2);
+
+        integerPart = parseInt(integerPart, 10).toString();
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        input.value = integerPart + '.' + decimalPart;
+    }
+
+    document.getElementById('modal_amount').addEventListener('input', function(e) {
+        formatAmountInput(this.value);
+        calculatePreview();
+    });
+
+    document.getElementById('counterOfferForm').addEventListener('submit', function() {
+        const input = document.getElementById('modal_amount');
+        input.value = input.value.replace(/,/g, '');
+    });
+
     function calculatePreview() {
         if (!currentLoan) return;
 
-        const amount = parseFloat(document.getElementById('modal_amount').value) || 0;
+        const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, '')) || 0;
         const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0;
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
