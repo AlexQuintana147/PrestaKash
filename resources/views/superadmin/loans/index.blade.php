@@ -111,105 +111,78 @@
 
                             <!-- Columna 2: Detalles Técnicos -->
                             <div
-                                class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 px-0 lg:px-8">
-                                <div class="space-y-4">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Destino completo</p>
-                                        <div class="space-y-0.5">
-                                            <p class="text-[11px] font-bold text-gray-800 dark:text-gray-200 uppercase leading-tight">{{ $loan->bank_name }}</p>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-tight">{{ ucfirst($loan->account_type) }}</p>
-                                            <p class="text-[10px] font-mono text-gray-600 dark:text-gray-500 leading-tight">{{ $loan->account_number }}</p>
-                                            @if($loan->cci)
-                                                <p class="text-[9px] font-mono text-gray-400 dark:text-gray-600 leading-tight">CCI: {{ $loan->cci }}</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Plazo</p>
-                                        <p class="text-xs text-gray-900 dark:text-gray-300 font-semibold">
-                                            @if($loan->type === 'cuotas')
-                                                {{ $loan->months }} meses
-                                            @else
-                                                {{ $loan->payment_days }} días
-                                            @endif
-                                        </p>
+                                class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-10 px-0 lg:px-12">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Destino completo</p>
+                                    <div class="space-y-1">
+                                        <p class="text-xs font-bold text-gray-900 dark:text-white uppercase leading-tight">{{ $loan->bank_name }}</p>
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">{{ ucfirst($loan->account_type) }} • {{ $loan->account_number }}</p>
+                                        @if($loan->cci)
+                                            <p class="text-[9px] font-mono text-gray-400 dark:text-gray-600 leading-tight">CCI: {{ $loan->cci }}</p>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="space-y-4">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Tasa
-                                            actual</p>
-                                        <p class="text-xs text-amber-600 dark:text-amber-500 font-black">
-                                            {{ number_format($loan->interest_rate, 2) }}%</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Sistema
-                                        </p>
-                                        <p class="text-xs text-gray-900 dark:text-gray-300 font-semibold uppercase">
-                                            {{ $loan->amortization_system ?? 'Francés' }}</p>
-                                    </div>
-                                </div>
-                                <div class="col-span-1 sm:col-span-1">
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Motivo</p>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400 italic leading-relaxed">
-                                        "{{ Str::limit($loan->reason, 150) }}"
+                                <div>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Plazo y Motivo</p>
+                                    <p class="text-xs text-gray-900 dark:text-white font-bold">
+                                        @if($loan->type === 'cuotas')
+                                            {{ $loan->months }} meses
+                                        @else
+                                            {{ $loan->payment_days }} días
+                                        @endif
+                                    </p>
+                                    <p class="text-[10px] text-gray-500 dark:text-gray-500 italic mt-1 leading-relaxed">
+                                        "{{ Str::limit($loan->reason, 80) }}"
                                     </p>
                                 </div>
                             </div>
 
-                        <!-- Columna 3: Contra-Oferta / Acciones -->
-                        <div class="lg:w-1/3 flex flex-col justify-between gap-6">
+                        <!-- Columna 3: Acciones -->
+                        <div class="lg:w-1/4 flex flex-col items-end justify-center gap-4">
                             @if($loan->status === 'pending')
-                                <form action="{{ route('superadmin.loans.counter-offer', $loan) }}" method="POST"
-                                    class="space-y-5">
-                                    @csrf
-                                    <div class="flex items-center gap-6">
-                                        <div class="flex-1">
-                                            <label class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 block tracking-widest">Sistema</label>
-                                            <select name="amortization_system"
-                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 text-[11px] font-bold py-2 focus:outline-none focus:border-purple-500 dark:text-white transition-colors appearance-none cursor-pointer">
-                                                <option value="frances" {{ ($loan->amortization_system ?? 'frances') === 'frances' ? 'selected' : '' }} class="dark:bg-black">FRANCÉS</option>
-                                                <option value="americano" {{ $loan->amortization_system === 'americano' ? 'selected' : '' }} class="dark:bg-black">AMERICANO</option>
-                                            </select>
-                                        </div>
-                                        <div class="flex-1">
-                                            <label class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 block tracking-widest">Tasa %</label>
-                                            <div class="relative">
-                                                <input type="number" name="interest_rate" value="{{ number_format($loan->interest_rate, 2, '.', '') }}" step="0.01" min="0" max="100"
-                                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 text-[11px] font-bold py-2 focus:outline-none focus:border-purple-500 dark:text-white transition-colors">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all shadow-lg shadow-purple-500/20 active:scale-[0.98]">
-                                        Enviar Contra-Oferta
+                                <div class="flex items-center gap-3">
+                                    <!-- Contra-oferta -->
+                                    <button type="button" 
+                                            onclick="openCounterOfferModal({{ json_encode([
+                                                'id' => $loan->id,
+                                                'amount' => $loan->amount,
+                                                'currency' => $loan->currency,
+                                                'type' => $loan->type,
+                                                'months' => $loan->months,
+                                                'payment_days' => $loan->payment_days,
+                                                'interest_rate' => $loan->interest_rate,
+                                                'system' => $loan->amortization_system ?? 'frances'
+                                            ]) }})"
+                                            class="p-3 rounded-xl bg-purple-500/10 text-purple-600 hover:bg-purple-600 hover:text-white transition-all shadow-sm group/btn" 
+                                            title="Enviar Contra-oferta">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                     </button>
-                                </form>
 
-                                <div class="flex gap-3">
-                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex-1">
+                                    <!-- Aprobar -->
+                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="w-full py-2.5 border border-green-500/20 text-green-600 dark:text-green-500 hover:text-white dark:hover:text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-500 transition-all active:scale-[0.98]">
-                                            Aprobar
+                                        <button type="submit" class="p-3 rounded-xl bg-green-500/10 text-green-600 hover:bg-green-600 hover:text-white transition-all shadow-sm" title="Aprobar">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </button>
                                     </form>
-                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex-1">
+
+                                    <!-- Rechazar -->
+                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="w-full py-2.5 border border-red-500/20 text-red-600 dark:text-red-500 hover:text-white dark:hover:text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all active:scale-[0.98]">
-                                            Rechazar
+                                        <button type="submit" class="p-3 rounded-xl bg-red-500/10 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Rechazar">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     </form>
                                 </div>
-                                @else
-                                    <div class="h-full flex flex-col items-center justify-center text-center">
-                                        <span class="px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest
-                                                    {{ $loan->status === 'approved' ? 'bg-green-500/10 text-green-500' : '' }}
-                                                    {{ $loan->status === 'rejected' ? 'bg-red-500/10 text-red-500' : '' }}
-                                                    {{ $loan->status === 'paid' ? 'bg-blue-500/10 text-blue-500' : '' }}">
-                                            {{ $loan->status }}
-                                        </span>
-                                    </div>
-                                @endif
-                            </div>
+                            @else
+                                <span class="px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest
+                                            {{ $loan->status === 'approved' ? 'bg-green-500/10 text-green-500' : '' }}
+                                            {{ $loan->status === 'rejected' ? 'bg-red-500/10 text-red-500' : '' }}
+                                            {{ $loan->status === 'paid' ? 'bg-blue-500/10 text-blue-500' : '' }}">
+                                    {{ $loan->status }}
+                                </span>
+                            @endif
+                        </div>
 
                         </div>
                     </div>
@@ -241,3 +214,202 @@
         }
     </style>
 @endsection
+
+<!-- Modal Contra-Oferta -->
+<div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in duration-200">
+        <!-- Close -->
+        <button onclick="closeCounterOfferModal()" class="absolute top-8 right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <form id="counterOfferForm" method="POST">
+            @csrf
+            <div class="p-10 md:p-12">
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Enviar Contra-Oferta</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1 uppercase tracking-widest font-medium">Ajuste de términos financieros</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+                    <!-- Sistema -->
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
+                        <div class="flex gap-2">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="calculatePreview()">
+                                <div class="py-3 text-center rounded-2xl border border-gray-100 dark:border-gray-900 text-xs font-bold text-gray-400 dark:text-gray-600 peer-checked:border-purple-500 peer-checked:bg-purple-500/5 peer-checked:text-purple-600 transition-all group-hover:border-gray-200 dark:group-hover:border-gray-800">
+                                    FRANCÉS
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="calculatePreview()">
+                                <div class="py-3 text-center rounded-2xl border border-gray-100 dark:border-gray-900 text-xs font-bold text-gray-400 dark:text-gray-600 peer-checked:border-purple-500 peer-checked:bg-purple-500/5 peer-checked:text-purple-600 transition-all group-hover:border-gray-200 dark:group-hover:border-gray-800">
+                                    AMERICANO
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Tasa -->
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Nueva Tasa de Interés (%)</label>
+                        <div class="relative">
+                            <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100" oninput="calculatePreview()"
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Cronograma -->
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Vista Previa del Cronograma</h4>
+                        <div class="flex items-center gap-4">
+                            <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Total:</span> <span id="previewTotal" class="font-black tabular-nums"></span></p>
+                            <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Cuota:</span> <span id="previewMonthly" class="font-black tabular-nums"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="max-height-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                        <table class="w-full text-[10px] text-left">
+                            <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600">
+                                <tr>
+                                    <th class="py-2 font-black uppercase tracking-tighter">N°</th>
+                                    <th class="py-2 font-black uppercase tracking-tighter">Capital</th>
+                                    <th class="py-2 font-black uppercase tracking-tighter">Interés</th>
+                                    <th class="py-2 font-black uppercase tracking-tighter text-right">Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previewScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-12">
+                    <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-purple-500/20 active:scale-[0.99]">
+                        Confirmar y Enviar Contra-Oferta
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let currentLoan = null;
+
+    function openCounterOfferModal(loan) {
+        currentLoan = loan;
+        const modal = document.getElementById('counterOfferModal');
+        const form = document.getElementById('counterOfferForm');
+        
+        form.action = `/gestion-interna/prestamos/${loan.id}/counter-offer`;
+        
+        // Set initial values
+        document.querySelector(`input[name="amortization_system"][value="${loan.system}"]`).checked = true;
+        document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
+        
+        calculatePreview();
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCounterOfferModal() {
+        document.getElementById('counterOfferModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function calculatePreview() {
+        if (!currentLoan) return;
+
+        const amount = parseFloat(currentLoan.amount);
+        const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100;
+        const system = document.querySelector('input[name="amortization_system"]:checked').value;
+        const currency = currentLoan.currency === 'USD' ? '$' : 'S/';
+        
+        const body = document.getElementById('previewScheduleBody');
+        const totalEl = document.getElementById('previewTotal');
+        const monthlyEl = document.getElementById('previewMonthly');
+        
+        body.innerHTML = '';
+        
+        if (currentLoan.type === 'unico') {
+            const interest = amount * rate;
+            const total = amount + interest;
+            
+            body.innerHTML = `
+                <tr>
+                    <td class="py-3 font-bold">1</td>
+                    <td class="py-3 tabular-nums">${currency}${amount.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums">${currency}${interest.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums text-right font-black text-gray-900 dark:text-white">${currency}0.00</td>
+                </tr>
+            `;
+            totalEl.textContent = `${currency}${total.toFixed(2)}`;
+            monthlyEl.textContent = 'N/A';
+            return;
+        }
+
+        // Loan with installments
+        const n = parseInt(currentLoan.months);
+        let schedule = [];
+        let totalInterest = 0;
+        let monthlyPayment = 0;
+
+        if (system === 'frances') {
+            // French: Fixed installments
+            monthlyPayment = amount * (rate * Math.pow(1 + rate, n)) / (Math.pow(1 + rate, n) - 1);
+            let balance = amount;
+            for (let i = 1; i <= n; i++) {
+                const interest = balance * rate;
+                const principal = monthlyPayment - interest;
+                balance -= principal;
+                totalInterest += interest;
+                schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
+            }
+        } else {
+            // American: Fixed interest payments, principal at the end
+            const interestPerMonth = amount * rate;
+            monthlyPayment = interestPerMonth;
+            let balance = amount;
+            for (let i = 1; i <= n; i++) {
+                const interest = interestPerMonth;
+                const principal = (i === n) ? amount : 0;
+                balance -= principal;
+                totalInterest += interest;
+                schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
+            }
+        }
+
+        schedule.forEach(row => {
+            body.innerHTML += `
+                <tr class="border-b border-gray-50 dark:border-gray-900/50 last:border-0">
+                    <td class="py-3 font-bold">${row.n}</td>
+                    <td class="py-3 tabular-nums">${currency}${row.principal.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums">${currency}${row.interest.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums text-right font-black text-gray-900 dark:text-white">${currency}${row.balance.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        totalEl.textContent = `${currency}${(amount + totalInterest).toFixed(2)}`;
+        monthlyEl.textContent = `${currency}${monthlyPayment.toFixed(2)}`;
+    }
+
+    // Close on overlay click
+    document.getElementById('counterOfferModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('counterOfferModal')) closeCounterOfferModal();
+    });
+</script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
+</style>
