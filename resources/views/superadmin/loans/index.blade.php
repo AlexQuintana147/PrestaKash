@@ -267,29 +267,51 @@
                     </div>
                 </div>
 
-                <!-- Preview Cronograma -->
+                <!-- Previews -->
                 <div class="space-y-6">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Vista Previa del Cronograma</h4>
-                        <div class="flex items-center gap-4">
-                            <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Total:</span> <span id="previewTotal" class="font-black tabular-nums"></span></p>
-                            <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Cuota:</span> <span id="previewMonthly" class="font-black tabular-nums"></span></p>
+                    <!-- Cuotas Preview -->
+                    <div id="previewCuotasContainer" class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Vista Previa del Cronograma</h4>
+                            <div class="flex items-center gap-4">
+                                <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Total:</span> <span id="previewTotal" class="font-black tabular-nums"></span></p>
+                                <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Cuota:</span> <span id="previewMonthly" class="font-black tabular-nums"></span></p>
+                            </div>
+                        </div>
+                        <div class="max-h-[160px] md:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                            <table class="w-full text-[10px] text-left">
+                                <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600">
+                                    <tr>
+                                        <th class="py-2 font-black uppercase tracking-tighter">N°</th>
+                                        <th class="py-2 font-black uppercase tracking-tighter">Capital</th>
+                                        <th class="py-2 font-black uppercase tracking-tighter">Interés</th>
+                                        <th class="py-2 font-black uppercase tracking-tighter text-right">Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
+                                    <!-- JS -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="max-h-[160px] md:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                        <table class="w-full text-[10px] text-left">
-                            <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600">
-                                <tr>
-                                    <th class="py-2 font-black uppercase tracking-tighter">N°</th>
-                                    <th class="py-2 font-black uppercase tracking-tighter">Capital</th>
-                                    <th class="py-2 font-black uppercase tracking-tighter">Interés</th>
-                                    <th class="py-2 font-black uppercase tracking-tighter text-right">Saldo</th>
-                                </tr>
-                            </thead>
-                            <tbody id="previewScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
-                                <!-- JS -->
-                            </tbody>
-                        </table>
+
+                    <!-- Único Preview -->
+                    <div id="previewUnicoContainer" class="hidden space-y-4">
+                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Resumen del Pago Único</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 rounded-2xl border border-gray-100 dark:border-gray-900 relative">
+                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Lo que pidió el cliente (<span id="unicoClientRate"></span>%)</p>
+                                <p id="unicoClientTotal" class="text-xl font-bold text-gray-400 line-through tabular-nums"></p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/40 relative">
+                                <p class="text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Tú Contra-oferta (<span id="unicoAdminRate"></span>%)</p>
+                                <p id="unicoAdminTotal" class="text-xl font-black text-purple-600 tabular-nums"></p>
+                            </div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center mt-2 border border-gray-100 dark:border-gray-800">
+                            <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Día máximo de pago si se acepta hoy</p>
+                            <p id="unicoDeadline" class="text-sm font-bold text-gray-900 dark:text-white capitalize"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -376,23 +398,32 @@
         }
 
         if (currentLoan.type === 'unico') {
-            const interest = amount * rate;
-            const total = amount + interest;
+            document.getElementById('previewCuotasContainer').classList.add('hidden');
+            document.getElementById('previewUnicoContainer').classList.remove('hidden');
+
+            const rateClient = parseFloat(currentLoan.interest_rate) || 0;
+            const clientTotal = amount + (amount * (rateClient / 100));
+            const adminTotal = amount + (amount * rate);
+
+            document.getElementById('unicoClientRate').textContent = rateClient.toFixed(2);
+            document.getElementById('unicoClientTotal').textContent = `${currency} ${clientTotal.toLocaleString('en-US', amountObj)}`;
+
+            document.getElementById('unicoAdminRate').textContent = parseFloat(document.getElementById('modal_interest_rate').value).toFixed(2);
+            document.getElementById('unicoAdminTotal').textContent = `${currency} ${adminTotal.toLocaleString('en-US', amountObj)}`;
+
+            const days = parseInt(currentLoan.payment_days) || 15;
+            const date = new Date();
+            date.setDate(date.getDate() + days);
             
-            body.innerHTML = `
-                <tr>
-                    <td class="py-3 font-bold">1</td>
-                    <td class="py-3 tabular-nums">${currency}${amount.toFixed(2)}</td>
-                    <td class="py-3 tabular-nums">${currency}${interest.toFixed(2)}</td>
-                    <td class="py-3 tabular-nums text-right font-black text-gray-900 dark:text-white">${currency}0.00</td>
-                </tr>
-            `;
-            totalEl.textContent = `${currency}${total.toFixed(2)}`;
-            monthlyEl.textContent = 'N/A';
-            
-            subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVO TOTAL: ${currency} ${total.toLocaleString('en-US', amountObj)}</span>`;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('unicoDeadline').textContent = date.toLocaleDateString('es-PE', options);
+
+            subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVO TOTAL: ${currency} ${adminTotal.toLocaleString('en-US', amountObj)}</span>`;
             subtitleEl.innerHTML = subtitleHtml;
             return;
+        } else {
+            document.getElementById('previewCuotasContainer').classList.remove('hidden');
+            document.getElementById('previewUnicoContainer').classList.add('hidden');
         }
 
         // Loan with installments
