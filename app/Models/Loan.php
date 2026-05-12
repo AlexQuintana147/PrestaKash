@@ -19,6 +19,7 @@ class Loan extends Model
         'monthly_payment',
         'status',
         'type',
+        'payment_frequency',
         'amortization_system',
         'reason',
         'bank_name',

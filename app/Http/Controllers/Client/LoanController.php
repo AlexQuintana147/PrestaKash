@@ -42,6 +42,7 @@ class LoanController extends Controller
 
         if ($request->type === 'cuotas') {
             $rules['months'] = 'required|integer|min:3|max:24';
+            $rules['payment_frequency'] = 'required_if:amortization_system,frances|in:diario,semanal,quincenal,mensual';
         } else {
             $rules['payment_days'] = 'required|in:15,30';
         }
@@ -54,52 +55,77 @@ class LoanController extends Controller
             return back()->withErrors(['bank_account_id' => 'La cuenta bancaria seleccionada debe estar en ' . ($request->currency === 'PEN' ? 'Soles' : 'Dólares') . '.'])->withInput();
         }
 
-        $montoSolicitado = $request->amount;
+        $montoSolicitado = (float) $request->amount;
         $tipo = $request->type;
         $user = Auth::user();
         $defaultRate = $user->loan_interest_rate ? ($user->loan_interest_rate / 100) : 0.20;
+        $system = $request->amortization_system ?? 'frances';
+        $freq = $request->payment_frequency ?? 'mensual';
 
         // ── Lógica de comisión ──
-        // Cuotas mensuales: usa tasa default (20% o personalizada)
-        // Pago único 15 días: 10%
-        // Pago único 30 días: usa tasa default (20% o personalizada)
         if ($tipo === 'cuotas') {
-            $tasaInteres = $defaultRate;
-            $plazo = $request->months;
+            $monthlyRate = $defaultRate;
+            $months = (int) $request->months;
             $paymentDays = null;
+
+            if ($system === 'frances') {
+                $installmentsPerMonth = 1;
+                if ($freq === 'diario')
+                    $installmentsPerMonth = 30;
+                elseif ($freq === 'semanal')
+                    $installmentsPerMonth = 4;
+                elseif ($freq === 'quincenal')
+                    $installmentsPerMonth = 2;
+
+                $nTotal = $months * $installmentsPerMonth;
+                $periodicRate = $monthlyRate / $installmentsPerMonth;
+
+                if ($montoSolicitado > 0) {
+                    $cuota = ($montoSolicitado * $periodicRate) / (1 - pow(1 + $periodicRate, -$nTotal));
+                    $totalAPagar = $cuota * $nTotal;
+                    $interes = $totalAPagar - $montoSolicitado;
+                } else {
+                    $cuota = 0;
+                    $totalAPagar = 0;
+                    $interes = 0;
+                }
+            } else {
+                // Sistema Americano (Siempre mensual)
+                $interes = ($montoSolicitado * $monthlyRate) * $months;
+                $totalAPagar = $montoSolicitado + $interes;
+                $cuota = $montoSolicitado * $monthlyRate; // Interés mensual
+                $nTotal = $months;
+            }
         } else {
             $paymentDays = (int) $request->payment_days;
             $tasaInteres = $paymentDays === 15 ? 0.10 : $defaultRate;
-            $plazo = 1; // un solo pago
+            $interes = $montoSolicitado * $tasaInteres;
+            $totalAPagar = $montoSolicitado + $interes;
+            $cuota = $totalAPagar; // un solo pago
+            $months = null;
         }
-
-        $interes = $montoSolicitado * $tasaInteres;
-        $totalAPagar = $montoSolicitado + $interes;
-        $cuotaMensual = $tipo === 'cuotas' ? ($totalAPagar / $plazo) : $totalAPagar;
 
         $loanData = [
             'user_id' => Auth::id(),
             'amount' => $montoSolicitado,
             'currency' => $request->currency,
-            'months' => $tipo === 'cuotas' ? $plazo : null,
+            'months' => $months,
             'payment_days' => $paymentDays,
-            'interest_rate' => $tasaInteres * 100,
+            'interest_rate' => ($tipo === 'cuotas' ? $defaultRate : $tasaInteres) * 100,
             'technology_fee' => 0,
             'igv' => 0,
             'total_amount' => $totalAPagar,
-            'monthly_payment' => $cuotaMensual,
+            'monthly_payment' => $cuota,
             'status' => 'pending',
             'type' => $tipo,
+            'payment_frequency' => $freq,
+            'amortization_system' => $system,
             'reason' => $request->reason,
             'bank_name' => $bankAccount->bank_name,
             'account_number' => $bankAccount->account_number,
             'account_type' => $bankAccount->account_type,
             'cci' => $bankAccount->cci,
         ];
-
-        if ($tipo === 'cuotas') {
-            $loanData['amortization_system'] = $request->amortization_system;
-        }
 
         Loan::create($loanData);
 

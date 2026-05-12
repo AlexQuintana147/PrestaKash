@@ -126,6 +126,9 @@
                                     <p class="text-xs text-gray-900 dark:text-white font-bold">
                                         @if($loan->type === 'cuotas')
                                             {{ $loan->months }} meses
+                                            @if($loan->amortization_system === 'frances')
+                                                <span class="text-[10px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
+                                            @endif
                                         @else
                                             {{ $loan->payment_days }} días
                                         @endif
@@ -242,18 +245,30 @@
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
                         <div class="flex gap-4 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="calculatePreview()">
+                                <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
                                 <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     FRANCÉS
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="calculatePreview()">
+                                <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
                                 <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     AMERICANO
                                 </div>
                             </label>
                         </div>
+                    </div>
+
+                    <!-- Frecuencia -->
+                    <div id="modalFrequencyWrapper" class="space-y-4">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia de Pago</label>
+                        <select name="payment_frequency" id="modal_payment_frequency" onchange="calculatePreview()"
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
+                            <option value="mensual">Mensual</option>
+                            <option value="quincenal">Quincenal</option>
+                            <option value="semanal">Semanal</option>
+                            <option value="diario">Diario</option>
+                        </select>
                     </div>
 
                     <!-- Tasa -->
@@ -355,10 +370,12 @@
 
         // Set initial values
         const systemWrapper = document.getElementById('modalSystemWrapper');
+        const freqWrapper = document.getElementById('modalFrequencyWrapper');
         const inputsGrid = document.getElementById('modalInputsGrid');
 
         if (loan.type === 'unico') {
             systemWrapper.classList.add('hidden');
+            freqWrapper.classList.add('hidden');
             inputsGrid.classList.remove('sm:grid-cols-2');
             inputsGrid.classList.add('sm:grid-cols-1');
             // Set default to pass backend validation even if hidden
@@ -366,11 +383,15 @@
             if (radio) radio.checked = true;
         } else {
             systemWrapper.classList.remove('hidden');
+            freqWrapper.classList.remove('hidden');
             inputsGrid.classList.remove('sm:grid-cols-1');
             inputsGrid.classList.add('sm:grid-cols-2');
             const systemToSet = loan.system || 'frances';
             const radio = document.querySelector(`input[name="amortization_system"][value="${systemToSet}"]`);
             if (radio) radio.checked = true;
+            
+            document.getElementById('modal_payment_frequency').value = loan.payment_frequency || 'mensual';
+            toggleModalFrequency();
         }
 
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
@@ -391,6 +412,14 @@
         document.body.style.overflow = 'hidden';
     }
 
+    function toggleModalFrequency() {
+        const system = document.querySelector('input[name="amortization_system"]:checked')?.value;
+        const freqWrapper = document.getElementById('modalFrequencyWrapper');
+        if (freqWrapper) {
+            freqWrapper.style.display = system === 'frances' ? 'block' : 'none';
+        }
+    }
+
     function closeCounterOfferModal() {
         document.getElementById('counterOfferModal').classList.add('hidden');
         document.body.style.overflow = '';
@@ -403,6 +432,7 @@
         const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100;
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
+        const freq = document.getElementById('modal_payment_frequency').value || 'mensual';
         const currency = currentLoan.currency === 'USD' ? '$' : 'S/';
         
         const body = document.getElementById('previewScheduleBody');
@@ -451,41 +481,59 @@
         }
 
         // Loan with installments
-        const n = parseInt(currentLoan.months);
+        const months = parseInt(currentLoan.months);
+        let installmentsPerMonth = 1;
+        if (system === 'frances') {
+            if (freq === 'diario') installmentsPerMonth = 30;
+            else if (freq === 'semanal') installmentsPerMonth = 4;
+            else if (freq === 'quincenal') installmentsPerMonth = 2;
+        }
+
+        const n = months * installmentsPerMonth;
+        const periodicRate = rate / installmentsPerMonth;
+
         let schedule = [];
         let totalInterest = 0;
-        let monthlyPayment = 0;
-        let monthlyText = '';
+        let periodicPayment = 0;
+        let pmtText = '';
 
         if (system === 'frances') {
             // French: Fixed installments
-            monthlyPayment = amount * (rate * Math.pow(1 + rate, n)) / (Math.pow(1 + rate, n) - 1);
+            periodicPayment = amount * (periodicRate * Math.pow(1 + periodicRate, n)) / (Math.pow(1 + periodicRate, n) - 1);
             let balance = amount;
             for (let i = 1; i <= n; i++) {
-                const interest = balance * rate;
-                const principal = monthlyPayment - interest;
+                const interest = balance * periodicRate;
+                const principal = periodicPayment - interest;
                 balance -= principal;
                 totalInterest += interest;
-                schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
+                if (i <= 10 || i > n - 5) {
+                    schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
+                } else if (i === 11) {
+                    schedule.push({ n: '...', principal: 0, interest: 0, balance: 0, spacer: true });
+                }
             }
-            monthlyText = `${currency}${monthlyPayment.toFixed(2)}`;
+            pmtText = `${currency}${periodicPayment.toFixed(2)} / ${freq}`;
         } else {
             // American: Fixed interest payments, principal at the end
             const interestPerMonth = amount * rate;
-            monthlyPayment = interestPerMonth;
+            periodicPayment = interestPerMonth;
             let balance = amount;
-            for (let i = 1; i <= n; i++) {
+            for (let i = 1; i <= months; i++) {
                 const interest = interestPerMonth;
-                const principal = (i === n) ? amount : 0;
+                const principal = (i === months) ? amount : 0;
                 balance -= principal;
                 totalInterest += interest;
                 schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
             }
-            const finalPmt = amount + monthlyPayment;
-            monthlyText = `${currency}${monthlyPayment.toFixed(2)} (Final: ${currency}${finalPmt.toFixed(2)})`;
+            const finalPmt = amount + periodicPayment;
+            pmtText = `${currency}${periodicPayment.toFixed(2)} (Final: ${currency}${finalPmt.toFixed(2)})`;
         }
 
         schedule.forEach(row => {
+            if (row.spacer) {
+                body.innerHTML += `<tr><td colspan="4" class="text-center py-2 text-gray-400">...</td></tr>`;
+                return;
+            }
             body.innerHTML += `
                 <tr class="border-b border-gray-50 dark:border-gray-900/50 last:border-0">
                     <td class="py-3 font-bold">${row.n}</td>
@@ -497,9 +545,9 @@
         });
 
         totalEl.textContent = `${currency}${(amount + totalInterest).toFixed(2)}`;
-        monthlyEl.textContent = monthlyText;
+        monthlyEl.textContent = pmtText;
         
-        subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVA CUOTA: ${monthlyText}</span>`;
+        subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVA CUOTA: ${pmtText}</span>`;
         subtitleEl.innerHTML = subtitleHtml;
     }
 

@@ -183,7 +183,11 @@
                                         </div>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">
                                             @if($loan->type === 'cuotas')
-                                                {{ $loan->months }} {{ $loan->months > 1 ? 'meses' : 'mes' }} — Cuotas de
+                                                {{ $loan->months }} {{ $loan->months > 1 ? 'meses' : 'mes' }} 
+                                                @if($loan->amortization_system === 'frances')
+                                                    ({{ $loan->payment_frequency }})
+                                                @endif
+                                                — Cuotas de
                                                 {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->monthly_payment, 2) }}
                                             @else
                                                 A pagar en {{ $loan->payment_days }} días
