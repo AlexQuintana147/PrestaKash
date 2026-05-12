@@ -157,46 +157,44 @@
                                 </div>
                             </div>
 
-                            <!-- Columna 3: Contra-Oferta / Acciones -->
-                            <div class="lg:w-1/3 flex flex-col justify-between gap-6">
-                                @if($loan->status === 'pending')
-                                    <form action="{{ route('superadmin.loans.counter-offer', $loan) }}" method="POST"
-                                        class="space-y-4">
-                                        @csrf
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="text-[9px] text-gray-400 uppercase font-bold mb-1 block">Nuevo
-                                                    Sistema</label>
-                                                <select name="amortization_system"
-                                                    class="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-xl text-[10px] font-bold py-2 focus:ring-1 focus:ring-purple-500 dark:text-white">
-                                                    <option value="frances" {{ ($loan->amortization_system ?? 'frances') === 'frances' ? 'selected' : '' }}>FRANCÉS</option>
-                                                    <option value="americano" {{ $loan->amortization_system === 'americano' ? 'selected' : '' }}>AMERICANO</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="text-[9px] text-gray-400 uppercase font-bold mb-1 block">Nueva Tasa
-                                                    %</label>
-                                                <input type="number" name="interest_rate"
-                                                    value="{{ number_format($loan->interest_rate, 2, '.', '') }}" step="0.01"
-                                                    min="0" max="100"
-                                                    class="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-xl text-[10px] font-bold py-2 focus:ring-1 focus:ring-purple-500 dark:text-white">
+                        <!-- Columna 3: Contra-Oferta / Acciones -->
+                        <div class="lg:w-1/3 flex flex-col justify-between gap-6">
+                            @if($loan->status === 'pending')
+                                <form action="{{ route('superadmin.loans.counter-offer', $loan) }}" method="POST"
+                                    class="space-y-5">
+                                    @csrf
+                                    <div class="flex items-center gap-6">
+                                        <div class="flex-1">
+                                            <label class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 block tracking-widest">Sistema</label>
+                                            <select name="amortization_system"
+                                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 text-[11px] font-bold py-2 focus:outline-none focus:border-purple-500 dark:text-white transition-colors appearance-none cursor-pointer">
+                                                <option value="frances" {{ ($loan->amortization_system ?? 'frances') === 'frances' ? 'selected' : '' }} class="dark:bg-black">FRANCÉS</option>
+                                                <option value="americano" {{ $loan->amortization_system === 'americano' ? 'selected' : '' }} class="dark:bg-black">AMERICANO</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex-1">
+                                            <label class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 block tracking-widest">Tasa %</label>
+                                            <div class="relative">
+                                                <input type="number" name="interest_rate" value="{{ number_format($loan->interest_rate, 2, '.', '') }}" step="0.01" min="0" max="100"
+                                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-800 text-[11px] font-bold py-2 focus:outline-none focus:border-purple-500 dark:text-white transition-colors">
                                             </div>
                                         </div>
-                                        <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md shadow-purple-500/10 active:scale-[0.98]">
-                                            Enviar Contra-Oferta
-                                        </button>
-                                    </form>
+                                    </div>
+                                    <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all shadow-lg shadow-purple-500/20 active:scale-[0.98]">
+                                        Enviar Contra-Oferta
+                                    </button>
+                                </form>
 
-                                <div class="flex gap-2">
+                                <div class="flex gap-3">
                                     <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex-1">
                                         @csrf
-                                        <button type="submit" class="w-full py-2.5 bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-500 hover:text-white transition-all">
+                                        <button type="submit" class="w-full py-2.5 border border-green-500/20 text-green-600 dark:text-green-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-500 hover:text-white transition-all active:scale-[0.98]">
                                             Aprobar
                                         </button>
                                     </form>
                                     <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex-1">
                                         @csrf
-                                        <button type="submit" class="w-full py-2.5 bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all">
+                                        <button type="submit" class="w-full py-2.5 border border-red-500/20 text-red-600 dark:text-red-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all active:scale-[0.98]">
                                             Rechazar
                                         </button>
                                     </form>
