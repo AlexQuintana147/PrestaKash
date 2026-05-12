@@ -188,13 +188,13 @@
                                 <div class="flex gap-3">
                                     <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex-1">
                                         @csrf
-                                        <button type="submit" class="w-full py-2.5 border border-green-500/20 text-green-600 dark:text-green-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-500 hover:text-white transition-all active:scale-[0.98]">
+                                        <button type="submit" class="w-full py-2.5 border border-green-500/20 text-green-600 dark:text-green-500 hover:text-white dark:hover:text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-500 transition-all active:scale-[0.98]">
                                             Aprobar
                                         </button>
                                     </form>
                                     <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex-1">
                                         @csrf
-                                        <button type="submit" class="w-full py-2.5 border border-red-500/20 text-red-600 dark:text-red-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all active:scale-[0.98]">
+                                        <button type="submit" class="w-full py-2.5 border border-red-500/20 text-red-600 dark:text-red-500 hover:text-white dark:hover:text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all active:scale-[0.98]">
                                             Rechazar
                                         </button>
                                     </form>
