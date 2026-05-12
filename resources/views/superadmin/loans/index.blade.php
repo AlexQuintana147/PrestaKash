@@ -332,22 +332,27 @@
         currentLoan = loan;
         const modal = document.getElementById('counterOfferModal');
         const form = document.getElementById('counterOfferForm');
-        
+
         form.action = `/gestion-interna/prestamos/${loan.id}/counter-offer`;
-        
+
         // Set initial values
-        
         const systemWrapper = document.getElementById('modalSystemWrapper');
         const inputsGrid = document.getElementById('modalInputsGrid');
+
         if (loan.type === 'unico') {
             systemWrapper.classList.add('hidden');
             inputsGrid.classList.remove('sm:grid-cols-2');
             inputsGrid.classList.add('sm:grid-cols-1');
+            // Set default to pass backend validation even if hidden
+            const radio = document.querySelector('input[name="amortization_system"][value="frances"]');
+            if (radio) radio.checked = true;
         } else {
             systemWrapper.classList.remove('hidden');
             inputsGrid.classList.remove('sm:grid-cols-1');
             inputsGrid.classList.add('sm:grid-cols-2');
-            document.querySelector(`input[name="amortization_system"][value="${loan.system}"]`).checked = true;
+            const systemToSet = loan.system || 'frances';
+            const radio = document.querySelector(`input[name="amortization_system"][value="${systemToSet}"]`);
+            if (radio) radio.checked = true;
         }
 
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
@@ -378,7 +383,8 @@
 
         const amount = parseFloat(currentLoan.amount);
         const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100;
-        const system = document.querySelector('input[name="amortization_system"]:checked').value;
+        const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
+        const system = systemRadio ? systemRadio.value : 'frances';
         const currency = currentLoan.currency === 'USD' ? '$' : 'S/';
         
         const body = document.getElementById('previewScheduleBody');

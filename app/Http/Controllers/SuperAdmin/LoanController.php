@@ -38,14 +38,35 @@ class LoanController extends Controller
             'interest_rate' => 'required|numeric|min:0|max:100',
         ]);
 
-        // Logic for counter-offer would normally involve a new state or just updating the loan
-        // For now, let's assume it updates the current loan and stays pending or moves to a 'countered' status if we had one.
-        // The user mentioned "contra oferta", so maybe we just update and keep it pending for user to accept?
-        // Or maybe we just update the fields.
+        $rate = $request->interest_rate / 100;
+        $totalAmount = $loan->amount;
+        $monthlyPayment = 0;
+
+        if ($loan->type === 'cuotas') {
+            $n = $loan->months;
+            if ($request->amortization_system === 'frances') {
+                // French: Fixed installments
+                // Formula: M = P * [i(1+i)^n] / [(1+i)^n - 1]
+                $monthlyPayment = $loan->amount * ($rate * pow(1 + $rate, $n)) / (pow(1 + $rate, $n) - 1);
+                $totalAmount = $monthlyPayment * $n;
+            } else {
+                // American: Fixed interest payments, principal at the end
+                $interestPerMonth = $loan->amount * $rate;
+                $monthlyPayment = $interestPerMonth; // Interest only
+                $totalAmount = $loan->amount + ($interestPerMonth * $n);
+            }
+        } else {
+            // Pago único
+            $interest = $loan->amount * $rate;
+            $totalAmount = $loan->amount + $interest;
+            $monthlyPayment = $totalAmount;
+        }
 
         $loan->update([
-            'amortization_system' => $request->amortization_system, // We might need to add this field to the migration if it doesn't exist
+            'amortization_system' => $request->amortization_system,
             'interest_rate' => $request->interest_rate,
+            'total_amount' => $totalAmount,
+            'monthly_payment' => $monthlyPayment,
         ]);
 
         return back()->with('success', 'Contra-oferta enviada correctamente.');
