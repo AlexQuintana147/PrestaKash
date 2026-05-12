@@ -169,20 +169,33 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Plazo y Motivo</p>
-                                    <p class="text-xs text-gray-900 dark:text-white font-bold">
-                                        @if($loan->type === 'cuotas')
-                                            {{ $loan->months }} meses
-                                            @if($loan->amortization_system === 'frances')
-                                                <span class="text-[10px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Plazo y Rentabilidad</p>
+                                    <div class="space-y-1">
+                                        <p class="text-xs text-gray-900 dark:text-white font-bold">
+                                            @if($loan->type === 'cuotas')
+                                                {{ $loan->months }} meses
+                                                @if($loan->amortization_system === 'frances')
+                                                    <span class="text-[10px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
+                                                @endif
+                                            @else
+                                                {{ $loan->payment_days }} días
                                             @endif
-                                        @else
-                                            {{ $loan->payment_days }} días
-                                        @endif
-                                    </p>
-                                    <p class="text-[10px] text-gray-500 dark:text-gray-500 italic mt-1 leading-relaxed">
-                                        "{{ Str::limit($loan->reason, 80) }}"
-                                    </p>
+                                        </p>
+                                        <div class="flex flex-col gap-0.5">
+                                            <p class="text-[10px] text-gray-600 dark:text-gray-400">
+                                                Pago: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
+                                                @if($loan->type === 'cuotas')
+                                                    / {{ $loan->payment_frequency === 'diario' ? 'día' : ($loan->payment_frequency === 'quincenal' ? 'quincena' : ($loan->payment_frequency === 'semanal' ? 'semana' : 'mes')) }}
+                                                @endif
+                                            </p>
+                                            <p class="text-[10px] text-green-600 dark:text-green-500 font-bold">
+                                                Ganancia: {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}
+                                            </p>
+                                        </div>
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-500 italic mt-1 leading-relaxed">
+                                            "{{ Str::limit($loan->reason, 50) }}"
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
