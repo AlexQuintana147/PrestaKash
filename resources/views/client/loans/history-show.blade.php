@@ -60,8 +60,20 @@
                 <div class="flex items-center justify-between mb-8">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Cronograma de Pagos</h2>
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                        {{ $loan->installments->where('status', 'approved')->count() }} de
-                        {{ $loan->installments->count() }} Pagados
+                        @php
+                            $total_i = $loan->installments->count();
+                            if ($total_i === 0) {
+                                $installmentsPerMonth = match ($loan->payment_frequency) {
+                                    'diario' => 30,
+                                    'semanal' => 4,
+                                    'quincenal' => 2,
+                                    default => 1,
+                                };
+                                $total_i = $loan->months * $installmentsPerMonth;
+                            }
+                            $paid_i = $loan->installments->where('status', 'approved')->count();
+                        @endphp
+                        {{ $paid_i }} de {{ $total_i }} Pagados
                     </p>
                 </div>
 

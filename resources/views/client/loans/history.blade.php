@@ -66,7 +66,8 @@
                                         </span>
                                     </div>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">Solicitado el
-                                        {{ $loan->created_at->format('d M, Y') }}</p>
+                                        {{ $loan->created_at->format('d M, Y') }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -76,15 +77,25 @@
                                     <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold tracking-widest">
                                         Progreso de pago</p>
                                     <p class="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                        {{ $loan->installments->where('status', 'approved')->count() }} /
-                                        {{ $loan->installments->count() ?: 1 }}
+                                        @php
+                                            $total_h = $loan->installments->count();
+                                            if ($total_h === 0) {
+                                                $installmentsPerMonth = match ($loan->payment_frequency) {
+                                                    'diario' => 30,
+                                                    'semanal' => 4,
+                                                    'quincenal' => 2,
+                                                    default => 1,
+                                                };
+                                                $total_h = $loan->months * $installmentsPerMonth;
+                                            }
+                                            $paid_h = $loan->installments->where('status', 'approved')->count();
+                                        @endphp
+                                        {{ $paid_h }} / {{ $total_h }}
                                     </p>
                                 </div>
                                 <div class="h-2 w-full bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden">
                                     @php
-                                        $total_inst = $loan->installments->count() ?: 1;
-                                        $paid_inst = $loan->installments->where('status', 'approved')->count();
-                                        $percent_inst = ($paid_inst / $total_inst) * 100;
+                                        $percent_inst = ($paid_h / ($total_h ?: 1)) * 100;
                                     @endphp
                                     <div class="h-full bg-green-500 rounded-full transition-all duration-1000"
                                         style="width: {{ $percent_inst }}%"></div>
@@ -97,20 +108,22 @@
                                 <div>
                                     <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Frecuencia</p>
                                     <p class="text-xs font-medium text-gray-700 dark:text-gray-300 capitalize">
-                                        {{ $loan->payment_frequency ?? 'N/A' }}</p>
+                                        {{ $loan->payment_frequency ?? 'N/A' }}
+                                    </p>
                                 </div>
                                 <div>
                                     <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Interés</p>
                                     <p class="text-xs font-medium text-gray-700 dark:text-gray-300">
-                                        {{ number_format($loan->interest_rate, 2) }}%</p>
+                                        {{ number_format($loan->interest_rate, 2) }}%
+                                    </p>
                                 </div>
                                 <div class="hidden sm:block">
                                     <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Estado</p>
                                     <span class="text-[10px] font-black uppercase tracking-wider
-                                                    {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
-                                                    {{ $loan->status === 'pending' ? 'text-yellow-600' : '' }}
-                                                    {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}
-                                                    {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}">
+                                                                {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
+                                                                {{ $loan->status === 'pending' ? 'text-yellow-600' : '' }}
+                                                                {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}
+                                                                {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}">
                                         {{ match ($loan->status) {
                         'approved' => 'Activo',
                         'pending' => 'En revisión',
