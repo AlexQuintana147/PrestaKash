@@ -26,7 +26,7 @@
             @endif
 
             <!-- Filtros Mobile -->
-            <div class="md:hidden mb-6">
+            <div class="md:hidden">
                 <div class="grid grid-cols-3 gap-2">
                     @foreach([
                         'pending'  => ['label' => 'Pendientes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Filtros Desktop -->
-            <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
+            <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 overflow-x-auto no-scrollbar">
                 @foreach(['pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
                     <a href="{{ route('superadmin.loans.index', ['filter' => $key]) }}"
                         class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
@@ -138,7 +138,7 @@
                             </div>
 
                         <!-- Columna 3: Acciones -->
-                        <div class="lg:w-1/4 flex flex-col items-end justify-center">
+                        <div class="lg:w-1/4 flex items-center justify-end">
                             @if($loan->status === 'pending')
                                 <div class="flex items-center gap-6">
                                     <!-- Contra-oferta -->
@@ -153,24 +153,24 @@
                                                 'interest_rate' => $loan->interest_rate,
                                                 'system' => $loan->amortization_system ?? 'frances'
                                             ]) }})"
-                                            class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]" 
+                                            class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" 
                                             title="Enviar Contra-oferta">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                                        <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                     </button>
 
                                     <!-- Aprobar -->
-                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex items-center">
+                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0 m-0">
                                         @csrf
-                                        <button type="submit" class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95]" title="Aprobar">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        <button type="submit" class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" title="Aprobar">
+                                            <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </button>
                                     </form>
 
                                     <!-- Rechazar -->
-                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex items-center">
+                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0">
                                         @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95]" title="Rechazar">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        <button type="submit" class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" title="Rechazar">
+                                            <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     </form>
                                 </div>
@@ -179,7 +179,13 @@
                                             {{ $loan->status === 'approved' ? 'text-green-500 bg-green-500/10' : '' }}
                                             {{ $loan->status === 'rejected' ? 'text-red-500 bg-red-500/10' : '' }}
                                             {{ $loan->status === 'paid' ? 'text-blue-500 bg-blue-500/10' : '' }}">
-                                    {{ $loan->status }}
+                                    {{ match($loan->status) {
+                                        'approved' => 'Aprobado',
+                                        'pending'  => 'En revisión',
+                                        'rejected' => 'Rechazado',
+                                        'paid'     => 'Pagado',
+                                        default    => $loan->status
+                                    } }}
                                 </span>
                             @endif
                         </div>
