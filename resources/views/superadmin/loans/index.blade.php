@@ -151,7 +151,8 @@
                                                 'months' => $loan->months,
                                                 'payment_days' => $loan->payment_days,
                                                 'interest_rate' => $loan->interest_rate,
-                                                'system' => $loan->amortization_system ?? 'frances'
+                                                'system' => $loan->amortization_system ?? 'frances',
+                                                'monthly_payment' => $loan->monthly_payment ?? 0
                                             ]) }})"
                                             class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" 
                                             title="Enviar Contra-oferta">
@@ -221,18 +222,18 @@
     </style>
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-lg max-h-[95vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-md max-h-[95vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
         <!-- Close -->
-        <button onclick="closeCounterOfferModal()" class="absolute top-6 right-6 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+        <button onclick="closeCounterOfferModal()" class="absolute top-5 right-5 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
         <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
-            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar">
-                <div class="mb-6 md:mb-8 pr-12">
+            <div class="p-5 md:p-8 overflow-y-auto custom-scrollbar">
+                <div class="mb-5 md:mb-8 pr-12">
                     <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium flex flex-wrap gap-1">Ajuste de términos <span id="modal_display_amount" class="text-green-500 font-black"></span></p>
+                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium flex flex-wrap gap-1 leading-relaxed">Ajuste de términos <span id="modal_display_amount" class="text-green-500 font-black"></span></p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
@@ -319,7 +320,12 @@
         // Show amount
         const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-        document.getElementById('modal_display_amount').textContent = `• MONTO SOLICITADO: ${currencySymbol} ${amountFormatted}`;
+        let subtitleText = `• MONTO SOLICITADO: ${currencySymbol} ${amountFormatted}`;
+        if (loan.type === 'cuotas' && loan.monthly_payment) {
+            const monthlyFormatted = parseFloat(loan.monthly_payment).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            subtitleText += ` • CUOTA MENSUAL: ${currencySymbol} ${monthlyFormatted}`;
+        }
+        document.getElementById('modal_display_amount').textContent = subtitleText;
         
         calculatePreview();
         
