@@ -285,7 +285,7 @@
     </style>
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-md max-h-[95vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
         <!-- Close -->
         <button onclick="closeCounterOfferModal()" class="absolute top-5 right-5 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -293,28 +293,30 @@
 
         <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
-            <div class="p-5 md:p-8 overflow-y-auto custom-scrollbar">
-                <div class="mb-5 md:mb-8 pr-12">
-                    <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos</p>
-                    <div id="modal_display_amount" class="font-black mt-3 space-y-1"></div>
+            <div class="p-5 md:p-8 flex flex-col min-h-0 overflow-hidden">
+                <div class="mb-6 pr-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
+                        <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
+                    </div>
+                    <div id="modal_display_amount" class="font-black text-right space-y-0.5"></div>
                 </div>
 
-                <div id="modalInputsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
+                <div id="modalInputsGrid" class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-6">
                     <!-- Monto -->
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto del Préstamo</label>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
                             <input type="number" name="amount" id="modal_amount" step="0.01" min="100"
                                    oninput="calculatePreview();"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
                         </div>
                     </div>
 
                     <!-- Tasa -->
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Nueva Tasa de Interés (%)</label>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tasa (%)</label>
                         <div class="relative">
                             <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100" 
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
@@ -335,23 +337,24 @@
                                                 this.setSelectionRange(start, start);
                                             }
                                             calculatePreview();"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                         </div>
                     </div>
 
-                    <div id="modalSystemWrapper" class="space-y-4">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
-                        <div class="flex gap-4 border-b border-gray-100 dark:border-gray-900">
+                    <!-- Sistema -->
+                    <div id="modalSystemWrapper" class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
+                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     FRANCÉS
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     AMERICANO
                                 </div>
                             </label>
@@ -359,10 +362,10 @@
                     </div>
 
                     <!-- Frecuencia -->
-                    <div id="modalFrequencyWrapper" class="space-y-4">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia de Pago</label>
+                    <div id="modalFrequencyWrapper" class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
                         <select name="payment_frequency" id="modal_payment_frequency" onchange="calculatePreview()"
-                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
                             <option value="mensual" class="dark:bg-gray-950">Mensual</option>
                             <option value="quincenal" class="dark:bg-gray-950">Quincenal</option>
                             <option value="semanal" class="dark:bg-gray-950">Semanal</option>
@@ -372,29 +375,26 @@
                 </div>
 
                 <!-- Previews -->
-                <div class="space-y-6">
-                    <div class="flex items-center justify-between px-1">
-                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Resumen Financiero</h4>
-                        <p class="text-[10px] text-green-600 font-black uppercase tracking-widest">Ganancia Admin: <span id="previewGain" class="tabular-nums"></span></p>
+                <div class="flex-1 min-h-0 flex flex-col space-y-4">
+                    <div class="flex items-center justify-between px-1 flex-shrink-0">
+                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
+                        <div class="flex gap-4">
+                            <p class="text-[10px] text-gray-500 font-bold uppercase">Total: <span id="previewTotal" class="text-gray-900 dark:text-white tabular-nums"></span></p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase">Cuota: <span id="previewMonthly" class="text-gray-900 dark:text-white tabular-nums"></span></p>
+                            <p class="text-[10px] text-green-600 font-black uppercase">Ganancia: <span id="previewGain" class="tabular-nums"></span></p>
+                        </div>
                     </div>
                     
                     <!-- Cuotas Preview -->
-                    <div id="previewCuotasContainer" class="space-y-6">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Vista Previa del Cronograma</h4>
-                            <div class="flex items-center gap-4">
-                                <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Total:</span> <span id="previewTotal" class="font-black tabular-nums"></span></p>
-                                <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Cuota:</span> <span id="previewMonthly" class="font-black tabular-nums"></span></p>
-                            </div>
-                        </div>
-                        <div class="max-h-[160px] md:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div id="previewCuotasContainer" class="flex-1 min-h-0 flex flex-col">
+                        <div class="flex-1 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-900 rounded-2xl">
                             <table class="w-full text-[10px] text-left">
-                                <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600">
+                                <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600 shadow-sm">
                                     <tr>
-                                        <th class="py-2 font-black uppercase tracking-tighter">N°</th>
-                                        <th class="py-2 font-black uppercase tracking-tighter">Capital</th>
-                                        <th class="py-2 font-black uppercase tracking-tighter">Interés</th>
-                                        <th class="py-2 font-black uppercase tracking-tighter text-right">Saldo</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter">N°</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter">Capital</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter">Interés</th>
+                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-right">Saldo</th>
                                     </tr>
                                 </thead>
                                 <tbody id="previewScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
@@ -405,28 +405,27 @@
                     </div>
 
                     <!-- Único Preview -->
-                    <div id="previewUnicoContainer" class="hidden space-y-4">
-                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Resumen del Pago Único</h4>
+                    <div id="previewUnicoContainer" class="hidden space-y-4 py-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div class="p-4 rounded-2xl border border-gray-100 dark:border-gray-900 relative">
-                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Lo que pidió el cliente (<span id="unicoClientRate"></span>%)</p>
+                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Original (<span id="unicoClientRate"></span>%)</p>
                                 <p id="unicoClientTotal" class="text-xl font-bold text-gray-400 line-through tabular-nums"></p>
                             </div>
                             <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/40 relative">
-                                <p class="text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Tú Contra-oferta (<span id="unicoAdminRate"></span>%)</p>
+                                <p class="text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Nueva Oferta (<span id="unicoAdminRate"></span>%)</p>
                                 <p id="unicoAdminTotal" class="text-xl font-black text-purple-600 tabular-nums"></p>
                             </div>
                         </div>
-                        <div class="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center mt-2 border border-gray-100 dark:border-gray-800">
-                            <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Día máximo de pago si se acepta hoy</p>
+                        <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center border border-gray-100 dark:border-gray-800">
+                            <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Fecha límite de pago estimada</p>
                             <p id="unicoDeadline" class="text-sm font-bold text-gray-900 dark:text-white capitalize"></p>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-8">
-                    <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-[0.99]">
-                        Confirmar y Enviar
+                <div class="mt-6 flex-shrink-0">
+                    <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-[0.99] shadow-lg shadow-purple-500/20">
+                        Confirmar y Enviar Contra-oferta
                     </button>
                 </div>
             </div>
