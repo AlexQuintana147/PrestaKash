@@ -113,6 +113,19 @@
                             'editable' => true,
                             'field' => 'dni'
                         ],
+                        'Tipo Persona' => [
+                            'value' => $user->person_type === 'juridica' ? 'Jurídica' : 'Natural',
+                        ],
+                        'RUC'          => $user->person_type === 'juridica' ? [
+                            'value' => $user->ruc,
+                            'editable' => true,
+                            'field' => 'ruc'
+                        ] : null,
+                        'Razón Social' => $user->person_type === 'juridica' ? [
+                            'value' => $user->business_name,
+                            'editable' => true,
+                            'field' => 'business_name'
+                        ] : null,
                         'Teléfono'     => [
                             'value' => $user->phone,
                             'icon' => 'wssp',
