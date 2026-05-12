@@ -221,18 +221,18 @@
     </style>
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-lg rounded-3xl md:rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in duration-200">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-lg max-h-[95vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
         <!-- Close -->
         <button onclick="closeCounterOfferModal()" class="absolute top-6 right-6 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
-        <form id="counterOfferForm" method="POST">
+        <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
-            <div class="p-6 md:p-8">
+            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar">
                 <div class="mb-6 md:mb-8 pr-12">
                     <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-500 mt-1 uppercase tracking-widest font-medium">Ajuste de términos</p>
+                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium flex flex-wrap gap-1">Ajuste de términos <span id="modal_display_amount" class="text-green-500 font-black"></span></p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
@@ -275,8 +275,7 @@
                             <p class="text-[10px] text-gray-500"><span class="font-bold text-gray-900 dark:text-white uppercase">Cuota:</span> <span id="previewMonthly" class="font-black tabular-nums"></span></p>
                         </div>
                     </div>
-                    
-                    <div class="max-h-[160px] md:max-h-none md:overflow-visible overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="max-h-[160px] md:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                         <table class="w-full text-[10px] text-left">
                             <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600">
                                 <tr>
@@ -316,6 +315,11 @@
         // Set initial values
         document.querySelector(`input[name="amortization_system"][value="${loan.system}"]`).checked = true;
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
+        
+        // Show amount
+        const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
+        document.getElementById('modal_display_amount').textContent = `• MONTO SOLICITADO: ${currencySymbol} ${amountFormatted}`;
         
         calculatePreview();
         
