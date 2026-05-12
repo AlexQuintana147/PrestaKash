@@ -363,10 +363,10 @@
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia de Pago</label>
                         <select name="payment_frequency" id="modal_payment_frequency" onchange="calculatePreview()"
                                 class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
-                            <option value="mensual">Mensual</option>
-                            <option value="quincenal">Quincenal</option>
-                            <option value="semanal">Semanal</option>
-                            <option value="diario">Diario</option>
+                            <option value="mensual" class="dark:bg-gray-950">Mensual</option>
+                            <option value="quincenal" class="dark:bg-gray-950">Quincenal</option>
+                            <option value="semanal" class="dark:bg-gray-950">Semanal</option>
+                            <option value="diario" class="dark:bg-gray-950">Diario</option>
                         </select>
                     </div>
                 </div>
