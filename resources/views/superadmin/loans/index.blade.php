@@ -334,7 +334,7 @@
                 </div>
 
                 <div class="mt-8">
-                    <button type="submit" class="w-full py-3 md:py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-purple-500/20 active:scale-[0.99]">
+                    <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-[0.99]">
                         Confirmar y Enviar
                     </button>
                 </div>
