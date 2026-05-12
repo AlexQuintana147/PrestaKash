@@ -110,8 +110,7 @@
                             </div>
 
                             <!-- Columna 2: Detalles Técnicos -->
-                            <div
-                                class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-10 px-0 lg:px-12">
+                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10 px-0 lg:px-12">
                                 <div>
                                     <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Destino completo</p>
                                     <div class="space-y-1">
@@ -138,7 +137,8 @@
                             </div>
 
                         <!-- Columna 3: Acciones -->
-                        <div class="lg:w-1/4 flex items-center justify-end">
+                        <div class="w-full lg:w-1/4 flex items-center justify-between lg:justify-end pt-5 mt-2 lg:pt-0 lg:mt-0 border-t border-gray-100 dark:border-gray-800 lg:border-t-0">
+                            <span class="lg:hidden text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-600">Acción / Estado</span>
                             @if($loan->status === 'pending')
                                 <div class="flex items-center gap-6">
                                     <!-- Contra-oferta -->
@@ -223,21 +223,21 @@
 
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in duration-200">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-lg rounded-3xl md:rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in duration-200">
         <!-- Close -->
-        <button onclick="closeCounterOfferModal()" class="absolute top-8 right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+        <button onclick="closeCounterOfferModal()" class="absolute top-6 right-6 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
         <form id="counterOfferForm" method="POST">
             @csrf
-            <div class="p-10 md:p-12">
-                <div class="mb-10">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Enviar Contra-Oferta</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1 uppercase tracking-widest font-medium">Ajuste de términos financieros</p>
+            <div class="p-6 md:p-8">
+                <div class="mb-6 md:mb-8 pr-12">
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-500 mt-1 uppercase tracking-widest font-medium">Ajuste de términos</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
                     <!-- Sistema -->
                     <div class="space-y-4">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
@@ -295,9 +295,9 @@
                     </div>
                 </div>
 
-                <div class="mt-12">
-                    <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-purple-500/20 active:scale-[0.99]">
-                        Confirmar y Enviar Contra-Oferta
+                <div class="mt-8">
+                    <button type="submit" class="w-full py-3 md:py-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-purple-500/20 active:scale-[0.99]">
+                        Confirmar y Enviar
                     </button>
                 </div>
             </div>
