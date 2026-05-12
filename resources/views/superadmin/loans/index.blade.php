@@ -219,8 +219,6 @@
             scrollbar-width: none;
         }
     </style>
-@endsection
-
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-lg rounded-3xl md:rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in duration-200">
@@ -419,3 +417,4 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
 </style>
+@endsection
