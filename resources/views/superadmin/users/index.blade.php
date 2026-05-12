@@ -53,47 +53,38 @@
 
             <!-- Desktop: tabs horizontales -->
             <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
-                @foreach(['all' => 'Todos', 'pending' => 'Pendientes', 'approved' => 'Aprobados', 'rejected' => 'Rechazados'] as $key => $label)
-                        <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                                                                                                  {{ $filter === $key
-                    ? 'text-gray-900 dark:text-white'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                            {{ $label }}
-                            @if($counts[$key] > 0)
-                                <span
-                                    class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
-                            @endif
-                            @if($filter === $key)
-                                <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
-                            @endif
-                        </a>
+                @foreach([
+                    'all'      => 'Todos', 
+                    'pending'  => 'Pendientes', 
+                    'approved' => 'Aprobados', 
+                    'rejected' => 'Rechazados',
+                    'ghosts'   => 'Fantasmas',
+                    'blocked'  => 'Bloqueados'
+                ] as $key => $label)
+                    @php
+                        $isActive = $filter === $key;
+                        $colorClass = match($key) {
+                            'ghosts'  => $isActive ? 'text-purple-600' : 'text-gray-600 dark:text-gray-400 hover:text-purple-500',
+                            'blocked' => $isActive ? 'text-red-500'    : 'text-gray-600 dark:text-gray-400 hover:text-red-500',
+                            default   => $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400',
+                        };
+                        $lineClass = match($key) {
+                            'ghosts'  => 'bg-purple-600',
+                            'blocked' => 'bg-red-500',
+                            default   => 'bg-gray-900 dark:bg-white',
+                        };
+                    @endphp
+                    <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" 
+                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors {{ $colorClass }}">
+                        {{ $label }}
+                        @if($counts[$key] > 0)
+                            <span class="ml-1.5 text-xs opacity-60">{{ $counts[$key] }}</span>
+                        @endif
+                        @if($isActive)
+                            <span class="absolute bottom-0 left-0 right-0 h-px {{ $lineClass }}"></span>
+                        @endif
+                    </a>
                 @endforeach
-
-                <div class="flex items-center gap-2 ml-auto">
-                    <a href="{{ route('superadmin.users.index', ['filter' => 'ghosts']) }}"
-                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                              {{ $filter === 'ghosts' ? 'text-purple-600' : 'text-gray-600 dark:text-gray-400 hover:text-purple-500' }}">
-                        Fantasmas
-                        @if($counts['ghosts'] > 0)
-                            <span class="ml-1.5 text-xs {{ $filter === 'ghosts' ? 'text-purple-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts['ghosts'] }}</span>
-                        @endif
-                        @if($filter === 'ghosts')
-                            <span class="absolute bottom-0 left-0 right-0 h-px bg-purple-600"></span>
-                        @endif
-                    </a>
-
-                    <a href="{{ route('superadmin.users.index', ['filter' => 'blocked']) }}"
-                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                              {{ $filter === 'blocked' ? 'text-red-500' : 'text-gray-600 dark:text-gray-400 hover:text-red-500' }}">
-                        Bloqueados
-                        @if($counts['blocked'] > 0)
-                            <span class="ml-1.5 text-xs {{ $filter === 'blocked' ? 'text-red-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts['blocked'] }}</span>
-                        @endif
-                        @if($filter === 'blocked')
-                            <span class="absolute bottom-0 left-0 right-0 h-px bg-red-500"></span>
-                        @endif
-                    </a>
-                </div>
             </div>
         </div>
 

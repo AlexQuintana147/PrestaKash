@@ -154,15 +154,15 @@
                                                 'system' => $loan->amortization_system ?? 'frances',
                                                 'monthly_payment' => $loan->monthly_payment ?? 0
                                             ]) }})"
-                                            class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" 
+                                            class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" 
                                             title="Enviar Contra-oferta">
                                         <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                     </button>
 
                                     <!-- Aprobar -->
-                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0 m-0">
+                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0">
                                         @csrf
-                                        <button type="submit" class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" title="Aprobar">
+                                        <button type="submit" class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" title="Aprobar">
                                             <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                         </button>
                                     </form>
@@ -170,7 +170,7 @@
                                     <!-- Rechazar -->
                                     <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0">
                                         @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0" title="Rechazar">
+                                        <button type="submit" class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" title="Rechazar">
                                             <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                     </form>
@@ -260,7 +260,24 @@
                     <div class="space-y-4">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Nueva Tasa de Interés (%)</label>
                         <div class="relative">
-                            <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100" oninput="calculatePreview()"
+                            <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100" 
+                                   oninput="let start = this.selectionStart;
+                                            let oldVal = this.value;
+                                            let val = oldVal.replace(/[^0-9.]/g, '');
+                                            let parts = val.split('.');
+                                            if(parts[0].length > 2) {
+                                                val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                            }
+                                            parts = val.split('.');
+                                            if(parts[1] && parts[1].length > 2) {
+                                                val = parts[0] + '.' + parts[1].slice(0, 2);
+                                            }
+                                            if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                            if (oldVal !== val) {
+                                                this.value = val;
+                                                this.setSelectionRange(start, start);
+                                            }
+                                            calculatePreview();"
                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                         </div>
