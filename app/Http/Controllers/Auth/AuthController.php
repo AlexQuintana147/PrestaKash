@@ -28,29 +28,34 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+            $redirect = '/';
 
             if ($user->isSuperAdmin()) {
-                return redirect()->route('superadmin.dashboard');
+                $redirect = route('superadmin.dashboard');
+            } elseif ($user->profile_completed && $user->documents?->status === 'approved') {
+                $redirect = route('client.dashboard');
+            } elseif (!$user->profile_completed) {
+                $redirect = !$user->step1_completed ? route('onboarding.step1') : route('onboarding.step2');
             }
 
-            // Cliente aprobado
-            if ($user->profile_completed && $user->documents?->status === 'approved') {
-                return redirect()->route('client.dashboard');
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'redirect' => $redirect]);
             }
 
-            // Redirigir según el estado del perfil
-            if (!$user->profile_completed) {
-                if (!$user->step1_completed) {
-                    return redirect()->route('onboarding.step1');
-                }
-                return redirect()->route('onboarding.step2');
-            }
+            return redirect($redirect);
+        }
 
-            return redirect('/');
+        $userExists = User::where('email', $request->email)->exists();
+        $errorMessage = $userExists
+            ? 'La contraseña es incorrecta.'
+            : 'Este usuario no existe en nuestros registros.';
+
+        if ($request->ajax()) {
+            return response()->json(['success' => false, 'message' => $errorMessage], 422);
         }
 
         return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
+            'email' => $errorMessage,
         ])->withInput();
     }
 
