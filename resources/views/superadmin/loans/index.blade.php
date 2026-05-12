@@ -215,7 +215,8 @@
                                                 'payment_days' => $loan->payment_days,
                                                 'interest_rate' => $loan->interest_rate,
                                                 'system' => $loan->amortization_system ?? 'frances',
-                                                'monthly_payment' => $loan->monthly_payment ?? 0
+                                                'monthly_payment' => $loan->monthly_payment ?? 0,
+                                                'payment_frequency' => $loan->payment_frequency ?? 'mensual'
                                             ]) }})"
                                             class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" 
                                             title="Enviar Contra-oferta">
@@ -223,20 +224,20 @@
                                     </button>
 
                                     <!-- Aprobar -->
-                                    <form action="{{ route('superadmin.loans.approve', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0">
-                                        @csrf
-                                        <button type="submit" class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" title="Aprobar">
-                                            <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                            onclick="openApproveModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                            class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" 
+                                            title="Aprobar">
+                                        <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    </button>
 
                                     <!-- Rechazar -->
-                                    <form action="{{ route('superadmin.loans.reject', $loan) }}" method="POST" class="flex items-center justify-center p-0 m-0">
-                                        @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" title="Rechazar">
-                                            <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                            onclick="openRejectModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                            class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none" 
+                                            title="Rechazar">
+                                        <svg class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
                                 </div>
                             @else
                                 <span class="text-xs font-black uppercase tracking-widest
@@ -699,7 +700,81 @@
     document.getElementById('counterOfferModal').addEventListener('click', e => {
         if (e.target === document.getElementById('counterOfferModal')) closeCounterOfferModal();
     });
+
+    function openApproveModal(loanId, amount, user) {
+        document.getElementById('approve_modal_amount').textContent = amount;
+        document.getElementById('approve_modal_user').textContent = user;
+        document.getElementById('approveConfirmForm').action = `/gestion-interna/prestamos/${loanId}/approve`;
+        document.getElementById('approveConfirmModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeApproveModal() {
+        document.getElementById('approveConfirmModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function openRejectModal(loanId, amount, user) {
+        document.getElementById('reject_modal_amount').textContent = amount;
+        document.getElementById('reject_modal_user').textContent = user;
+        document.getElementById('rejectConfirmForm').action = `/gestion-interna/prestamos/${loanId}/reject`;
+        document.getElementById('rejectConfirmModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectConfirmModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
 </script>
+
+<!-- Modal Confirmar Aprobación -->
+<div id="approveConfirmModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-8 text-center">
+        <div class="w-16 h-16 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aprobar Préstamo</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            ¿Confirmas la aprobación del préstamo por <span id="approve_modal_amount" class="font-bold text-gray-900 dark:text-white"></span> para <span id="approve_modal_user" class="font-bold text-gray-900 dark:text-white"></span>?
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeApproveModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                Cancelar
+            </button>
+            <form id="approveConfirmForm" method="POST" class="flex-1">
+                @csrf
+                <button type="submit" class="w-full py-3 rounded-xl bg-green-600 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20">
+                    Aprobar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Rechazo -->
+<div id="rejectConfirmModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-8 text-center">
+        <div class="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Rechazar Préstamo</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            ¿Estás seguro de que deseas rechazar la solicitud de <span id="reject_modal_user" class="font-bold text-gray-900 dark:text-white"></span> por <span id="reject_modal_amount" class="font-bold text-gray-900 dark:text-white"></span>?
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeRejectModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                Cancelar
+            </button>
+            <form id="rejectConfirmForm" method="POST" class="flex-1">
+                @csrf
+                <button type="submit" class="w-full py-3 rounded-xl bg-red-600 text-white text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20">
+                    Rechazar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <style>
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
