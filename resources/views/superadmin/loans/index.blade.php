@@ -364,13 +364,16 @@
                     <!-- Frecuencia -->
                     <div id="modalFrequencyWrapper" class="space-y-2">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
-                        <select name="payment_frequency" id="modal_payment_frequency" onchange="calculatePreview()"
-                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none">
-                            <option value="mensual" class="dark:bg-gray-950">Mensual</option>
-                            <option value="quincenal" class="dark:bg-gray-950">Quincenal</option>
-                            <option value="semanal" class="dark:bg-gray-950">Semanal</option>
-                            <option value="diario" class="dark:bg-gray-950">Diario</option>
-                        </select>
+                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
+                            @foreach(['diario' => 'DÍA', 'semanal' => 'SEM', 'quincenal' => 'QUIN', 'mensual' => 'MES'] as $val => $label)
+                                <label class="flex-1 cursor-pointer group">
+                                    <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer" onchange="calculatePreview()">
+                                    <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                        {{ $label }}
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 
@@ -468,7 +471,10 @@
             const radio = document.querySelector(`input[name="amortization_system"][value="${systemToSet}"]`);
             if (radio) radio.checked = true;
             
-            document.getElementById('modal_payment_frequency').value = loan.payment_frequency || 'mensual';
+            const freqToSet = loan.payment_frequency || 'mensual';
+            const freqRadio = document.querySelector(`input[name="payment_frequency"][value="${freqToSet}"]`);
+            if (freqRadio) freqRadio.checked = true;
+
             toggleModalFrequency();
         }
 
@@ -510,7 +516,8 @@
         const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0;
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
-        const freq = document.getElementById('modal_payment_frequency').value || 'mensual';
+        const freqRadio = document.querySelector('input[name="payment_frequency"]:checked');
+        const freq = freqRadio ? freqRadio.value : 'mensual';
         const currency = currentLoan.currency === 'USD' ? '$' : 'S/';
         
         const body = document.getElementById('previewScheduleBody');
