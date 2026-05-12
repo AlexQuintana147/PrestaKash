@@ -233,23 +233,23 @@
             <div class="p-5 md:p-8 overflow-y-auto custom-scrollbar">
                 <div class="mb-5 md:mb-8 pr-12">
                     <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
-                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium flex flex-wrap gap-1 leading-relaxed">Ajuste de términos <span id="modal_display_amount" class="text-green-500 font-black"></span></p>
+                    <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos</p>
+                    <div id="modal_display_amount" class="font-black mt-3 space-y-1"></div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8 mb-8">
-                    <!-- Sistema -->
                     <div class="space-y-4">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema de Amortización</label>
-                        <div class="flex gap-2">
+                        <div class="flex gap-4 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="calculatePreview()">
-                                <div class="py-3 text-center rounded-2xl border border-gray-100 dark:border-gray-900 text-xs font-bold text-gray-400 dark:text-gray-600 peer-checked:border-purple-500 peer-checked:bg-purple-500/5 peer-checked:text-purple-600 transition-all group-hover:border-gray-200 dark:group-hover:border-gray-800">
+                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     FRANCÉS
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="calculatePreview()">
-                                <div class="py-3 text-center rounded-2xl border border-gray-100 dark:border-gray-900 text-xs font-bold text-gray-400 dark:text-gray-600 peer-checked:border-purple-500 peer-checked:bg-purple-500/5 peer-checked:text-purple-600 transition-all group-hover:border-gray-200 dark:group-hover:border-gray-800">
+                                <div class="py-2 text-center text-xs font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     AMERICANO
                                 </div>
                             </label>
@@ -320,12 +320,12 @@
         // Show amount
         const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-        let subtitleText = `• MONTO SOLICITADO: ${currencySymbol} ${amountFormatted}`;
+        let subtitleText = `<span class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">MONTO SOLICITADO: ${currencySymbol} ${amountFormatted}</span>`;
         if (loan.type === 'cuotas' && loan.monthly_payment) {
             const monthlyFormatted = parseFloat(loan.monthly_payment).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            subtitleText += ` • CUOTA MENSUAL: ${currencySymbol} ${monthlyFormatted}`;
+            subtitleText += `<span class="block text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA PEDIDA: ${currencySymbol} ${monthlyFormatted}</span>`;
         }
-        document.getElementById('modal_display_amount').textContent = subtitleText;
+        document.getElementById('modal_display_amount').innerHTML = subtitleText;
         
         calculatePreview();
         
@@ -356,10 +356,10 @@
         const amountObj = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
         const amountFormatted = amount.toLocaleString('en-US', amountObj);
         
-        let subtitleHtml = `MONTO SOLICITADO: ${currency} ${amountFormatted}`;
+        let subtitleHtml = `<span class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">MONTO SOLICITADO: ${currency} ${amountFormatted}</span>`;
         if (currentLoan.type === 'cuotas' && currentLoan.monthly_payment) {
             const reqMonthly = parseFloat(currentLoan.monthly_payment).toLocaleString('en-US', amountObj);
-            subtitleHtml += ` • CUOTA PEDIDA: ${currency} ${reqMonthly}`;
+            subtitleHtml += `<span class="block text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA PEDIDA: ${currency} ${reqMonthly}</span>`;
         }
 
         if (currentLoan.type === 'unico') {
@@ -377,8 +377,8 @@
             totalEl.textContent = `${currency}${total.toFixed(2)}`;
             monthlyEl.textContent = 'N/A';
             
-            subtitleHtml += `<br>Nuevo Total: ${currency} ${total.toLocaleString('en-US', amountObj)}\n`;
-            subtitleEl.innerHTML = `• ${subtitleHtml}`;
+            subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVO TOTAL: ${currency} ${total.toLocaleString('en-US', amountObj)}</span>`;
+            subtitleEl.innerHTML = subtitleHtml;
             return;
         }
 
@@ -431,8 +431,8 @@
         totalEl.textContent = `${currency}${(amount + totalInterest).toFixed(2)}`;
         monthlyEl.textContent = monthlyText;
         
-        subtitleHtml += `<br>Nueva Cuota: ${monthlyText}`;
-        subtitleEl.innerHTML = `<span class="block mt-1">• ${subtitleHtml}</span>`;
+        subtitleHtml += `<span class="block text-[10px] text-purple-500 dark:text-purple-400 uppercase tracking-widest">NUEVA CUOTA: ${monthlyText}</span>`;
+        subtitleEl.innerHTML = subtitleHtml;
     }
 
     // Close on overlay click
