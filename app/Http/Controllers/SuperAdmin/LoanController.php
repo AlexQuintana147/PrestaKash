@@ -12,7 +12,7 @@ class LoanController extends Controller
     {
         $filter = $request->get('filter', 'pending');
 
-        $query = Loan::with(['user.documents'])->latest();
+        $query = Loan::with(['user.documents', 'user.clientProfile'])->latest();
 
         if ($filter !== 'all') {
             $query->where('status', $filter);

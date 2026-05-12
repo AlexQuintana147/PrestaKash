@@ -87,10 +87,31 @@
                                         @endif
                                     </div>
                                     <div class="min-w-0">
-                                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
-                                            {{ $loan->user->name }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                                @if($loan->user->person_type === 'juridica' && $loan->user->business_name)
+                                                    {{ $loan->user->business_name }}
+                                                @else
+                                                    {{ $loan->user->name }}
+                                                @endif
+                                            </p>
+                                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest {{ $loan->user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                                                {{ $loan->user->person_type === 'juridica' ? 'JUR' : 'NAT' }}
+                                            </span>
+                                        </div>
+                                        @if($loan->user->person_type === 'juridica' && $loan->user->business_name)
+                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">Rep: {{ $loan->user->name }}</p>
+                                        @endif
                                         <p class="text-[10px] text-gray-500 dark:text-gray-500 uppercase tracking-tight">
-                                            {{ $loan->user->email }}</p>
+                                            {{ $loan->user->email }}
+                                        </p>
+                                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-600 mt-0.5">
+                                            @if($loan->user->person_type === 'juridica')
+                                                RUC: {{ $loan->user->ruc ?? '—' }}
+                                            @else
+                                                DNI: {{ $loan->user->dni ?? '—' }}
+                                            @endif
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="space-y-1">
@@ -110,7 +131,33 @@
                             </div>
 
                             <!-- Columna 2: Detalles Técnicos -->
-                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10 px-0 lg:px-12">
+                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 px-0 lg:px-12">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Perfil Solicitante</p>
+                                    <div class="space-y-1">
+                                        @if($loan->user->clientProfile)
+                                            <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
+                                                {{ $loan->user->clientProfile->academic_status }}
+                                                @if($loan->user->clientProfile->institution)
+                                                    <span class="font-normal text-gray-400">• {{ $loan->user->clientProfile->institution }}</span>
+                                                @endif
+                                            </p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
+                                                Trabaja: {{ $loan->user->clientProfile->is_employed ? 'Sí ('.ucfirst($loan->user->clientProfile->employment_type).')' : 'No' }}
+                                            </p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
+                                                Hijos: {{ $loan->user->clientProfile->has_children ? 'Sí' : 'No' }} • {{ match($loan->user->clientProfile->marital_status) {
+                                                    'soltero' => 'Soltero/a',
+                                                    'casado_separado' => 'Casado (B.S)',
+                                                    'casado_compartido' => 'Casado (B.C)',
+                                                    default => $loan->user->clientProfile->marital_status
+                                                } }}
+                                            </p>
+                                        @else
+                                            <p class="text-[10px] text-gray-400 italic">Perfil incompleto</p>
+                                        @endif
+                                    </div>
+                                </div>
                                 <div>
                                     <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Destino completo</p>
                                     <div class="space-y-1">
