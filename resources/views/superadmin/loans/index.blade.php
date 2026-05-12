@@ -175,10 +175,10 @@
                                     </form>
                                 </div>
                             @else
-                                <span class="px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest
-                                            {{ $loan->status === 'approved' ? 'text-green-500 bg-green-500/10' : '' }}
-                                            {{ $loan->status === 'rejected' ? 'text-red-500 bg-red-500/10' : '' }}
-                                            {{ $loan->status === 'paid' ? 'text-blue-500 bg-blue-500/10' : '' }}">
+                                <span class="text-xs font-black uppercase tracking-widest
+                                            {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
+                                            {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
+                                            {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
                                     {{ match($loan->status) {
                                         'approved' => 'Aprobado',
                                         'pending'  => 'En revisión',
