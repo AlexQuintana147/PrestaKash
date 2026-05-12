@@ -349,9 +349,19 @@
         const body = document.getElementById('previewScheduleBody');
         const totalEl = document.getElementById('previewTotal');
         const monthlyEl = document.getElementById('previewMonthly');
+        const subtitleEl = document.getElementById('modal_display_amount');
         
         body.innerHTML = '';
         
+        const amountObj = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+        const amountFormatted = amount.toLocaleString('en-US', amountObj);
+        
+        let subtitleHtml = `MONTO SOLICITADO: ${currency} ${amountFormatted}`;
+        if (currentLoan.type === 'cuotas' && currentLoan.monthly_payment) {
+            const reqMonthly = parseFloat(currentLoan.monthly_payment).toLocaleString('en-US', amountObj);
+            subtitleHtml += ` • CUOTA PEDIDA: ${currency} ${reqMonthly}`;
+        }
+
         if (currentLoan.type === 'unico') {
             const interest = amount * rate;
             const total = amount + interest;
@@ -366,6 +376,9 @@
             `;
             totalEl.textContent = `${currency}${total.toFixed(2)}`;
             monthlyEl.textContent = 'N/A';
+            
+            subtitleHtml += `<br>Nuevo Total: ${currency} ${total.toLocaleString('en-US', amountObj)}\n`;
+            subtitleEl.innerHTML = `• ${subtitleHtml}`;
             return;
         }
 
@@ -374,6 +387,7 @@
         let schedule = [];
         let totalInterest = 0;
         let monthlyPayment = 0;
+        let monthlyText = '';
 
         if (system === 'frances') {
             // French: Fixed installments
@@ -386,6 +400,7 @@
                 totalInterest += interest;
                 schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
             }
+            monthlyText = `${currency}${monthlyPayment.toFixed(2)}`;
         } else {
             // American: Fixed interest payments, principal at the end
             const interestPerMonth = amount * rate;
@@ -398,6 +413,8 @@
                 totalInterest += interest;
                 schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
             }
+            const finalPmt = amount + monthlyPayment;
+            monthlyText = `${currency}${monthlyPayment.toFixed(2)} (Final: ${currency}${finalPmt.toFixed(2)})`;
         }
 
         schedule.forEach(row => {
@@ -412,7 +429,10 @@
         });
 
         totalEl.textContent = `${currency}${(amount + totalInterest).toFixed(2)}`;
-        monthlyEl.textContent = `${currency}${monthlyPayment.toFixed(2)}`;
+        monthlyEl.textContent = monthlyText;
+        
+        subtitleHtml += `<br>Nueva Cuota: ${monthlyText}`;
+        subtitleEl.innerHTML = `<span class="block mt-1">• ${subtitleHtml}</span>`;
     }
 
     // Close on overlay click
