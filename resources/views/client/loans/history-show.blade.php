@@ -6,38 +6,40 @@
     <div class="min-h-screen px-5 md:px-10 py-8">
 
         <!-- Header -->
-        <div class="mb-12 flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-                <a href="{{ route('client.loans.history') }}"
-                    class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-4">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Volver al historial
-                </a>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Detalle de Préstamo
-                </h1>
-                <p class="text-sm text-gray-500 mt-1">ID: #{{ str_pad($loan->id, 6, '0', STR_PAD_LEFT) }} —
-                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2) }}</p>
-            </div>
+        <div class="mb-12 flex flex-col gap-4">
+            <a href="{{ route('client.loans.history') }}"
+                class="inline-flex items-center gap-2 text-xs font-semibold text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors self-start">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver al historial
+            </a>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Detalle de Préstamo
+                    </h1>
+                    <p class="text-sm text-gray-500 mt-1">ID: #{{ str_pad($loan->id, 6, '0', STR_PAD_LEFT) }} —
+                        {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2) }}</p>
+                </div>
 
-            <div class="flex items-center gap-3">
-                <span
-                    class="px-4 py-2 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                    {{ $loan->type === 'cuotas' ? 'Pago en Cuotas' : 'Pago Único' }}
-                </span>
-                <span class="px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest
-                        {{ $loan->status === 'approved' ? 'bg-green-50 dark:bg-green-900/20 text-green-600' : '' }}
-                        {{ $loan->status === 'paid' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600' : '' }}
-                        {{ $loan->status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600' : '' }}">
-                    {{ match ($loan->status) {
-        'approved' => 'Activo',
-        'paid' => 'Completado',
-        'pending' => 'En revisión',
-        default => $loan->status
-    } }}
-                </span>
+                <div class="flex items-center gap-3">
+                    <span
+                        class="px-4 py-2 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        {{ $loan->type === 'cuotas' ? 'Pago en Cuotas' : 'Pago Único' }}
+                    </span>
+                    <span class="px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest
+                            {{ $loan->status === 'approved' ? 'bg-green-50 dark:bg-green-900/20 text-green-600' : '' }}
+                            {{ $loan->status === 'paid' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600' : '' }}
+                            {{ $loan->status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600' : '' }}">
+                        {{ match ($loan->status) {
+            'approved' => 'Activo',
+            'paid' => 'Completado',
+            'pending' => 'En revisión',
+            default => $loan->status
+        } }}
+                    </span>
+                </div>
             </div>
         </div>
 
