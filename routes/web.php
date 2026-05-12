@@ -94,6 +94,11 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/prestamos/{loan}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approve'])->name('loans.approve');
     Route::post('/prestamos/{loan}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'reject'])->name('loans.reject');
 
+    // Gestión de pagos
+    Route::get('/pagos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsIndex'])->name('installments.index');
+    Route::post('/pagos/{installment}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approveInstallment'])->name('installments.approve');
+    Route::post('/pagos/{installment}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'rejectInstallment'])->name('installments.reject');
+
     // Configuración
     Route::get('/configuracion', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
     Route::post('/configuracion/nombre', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
@@ -114,6 +119,11 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/invertir', [\App\Http\Controllers\Client\DashboardController::class, 'invest'])->name('invertir');
     Route::get('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'create'])->name('invest.apply');
     Route::post('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'store'])->name('invest.store');
+
+    // Historial crediticio
+    Route::get('/historial-crediticio', [\App\Http\Controllers\Client\LoanController::class, 'history'])->name('loans.history');
+    Route::get('/historial-crediticio/{loan}', [\App\Http\Controllers\Client\LoanController::class, 'historyShow'])->name('loans.history.show');
+    Route::post('/historial-crediticio/pagar/{installment}', [\App\Http\Controllers\Client\LoanController::class, 'uploadVoucher'])->name('loans.history.upload');
 
     // Cuentas bancarias
     Route::get('/cuentas-bancarias', [\App\Http\Controllers\Client\BankAccountController::class, 'index'])->name('bank-accounts.index');

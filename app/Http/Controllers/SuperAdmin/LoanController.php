@@ -99,7 +99,64 @@ class LoanController extends Controller
     public function approve(Loan $loan)
     {
         $loan->update(['status' => 'approved']);
-        return back()->with('success', 'Préstamo aprobado correctamente.');
+
+        // Generate installments
+        $amount = $loan->amount;
+        $rate = $loan->interest_rate / 100;
+        $system = $loan->amortization_system;
+        $type = $loan->type;
+        $freq = $loan->payment_frequency;
+        $months = $loan->months;
+
+        if ($type === 'cuotas') {
+            $installmentsPerMonth = 1;
+            $daysStep = 30;
+
+            if ($system === 'frances') {
+                if ($freq === 'diario') {
+                    $installmentsPerMonth = 30;
+                    $daysStep = 1;
+                } elseif ($freq === 'semanal') {
+                    $installmentsPerMonth = 4;
+                    $daysStep = 7;
+                } elseif ($freq === 'quincenal') {
+                    $installmentsPerMonth = 2;
+                    $daysStep = 15;
+                }
+            }
+
+            $nTotal = $months * $installmentsPerMonth;
+            $periodicRate = $rate / $installmentsPerMonth;
+            $periodicPayment = $loan->monthly_payment;
+
+            $balance = $amount;
+            for ($i = 1; $i <= $nTotal; $i++) {
+                $dueDate = now()->addDays($i * $daysStep);
+
+                // For American system, last installment includes principal
+                $instAmount = $periodicPayment;
+                if ($system === 'americano' && $i === $nTotal) {
+                    $instAmount += $amount;
+                }
+
+                $loan->installments()->create([
+                    'installment_number' => $i,
+                    'amount' => $instAmount,
+                    'due_date' => $dueDate,
+                    'status' => 'pending',
+                ]);
+            }
+        } else {
+            // Pago único
+            $loan->installments()->create([
+                'installment_number' => 1,
+                'amount' => $loan->total_amount,
+                'due_date' => now()->addDays($loan->payment_days),
+                'status' => 'pending',
+            ]);
+        }
+
+        return back()->with('success', 'Préstamo aprobado e historial generado correctamente.');
     }
 
     public function reject(Loan $loan)

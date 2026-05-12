@@ -221,4 +221,38 @@ class LoanController extends Controller
 
         return redirect()->route('client.loans')->with('success', 'Perfil completado. Ya puedes gestionar tus préstamos.');
     }
+
+    public function history()
+    {
+        $loans = Auth::user()->loans()->with('installments')->latest()->get();
+        return view('client.loans.history', compact('loans'));
+    }
+
+    public function historyShow(Loan $loan)
+    {
+        if ($loan->user_id !== Auth::id())
+            abort(403);
+        $loan->load('installments');
+        return view('client.loans.history-show', compact('loan'));
+    }
+
+    public function uploadVoucher(Request $request, \App\Models\LoanInstallment $installment)
+    {
+        if ($installment->loan->user_id !== Auth::id())
+            abort(403);
+
+        $request->validate([
+            'payment_voucher' => 'required|image|max:5120',
+        ]);
+
+        $path = $request->file('payment_voucher')->store('vouchers/' . Auth::id(), 'public');
+
+        $installment->update([
+            'payment_voucher' => $path,
+            'status' => 'processing',
+            'paid_at' => now(),
+        ]);
+
+        return back()->with('success', 'Comprobante enviado. En breve será verificado por un administrador.');
+    }
 }
