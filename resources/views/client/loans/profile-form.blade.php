@@ -167,7 +167,7 @@
                                 @php
                                     $mainOptions = ['Secundaria completa', 'Educación superior', 'Ninguno de los anteriores'];
                                     $currentStatus = old('academic_status', $profile->academic_status ?? '');
-                                    
+
                                     // Determinar el valor principal si es educación superior
                                     $mainValue = $currentStatus;
                                     if (str_contains($currentStatus, 'Superior —')) {
@@ -292,9 +292,9 @@
                             <div id="childrenCountField" class="{{ old('has_children', $profile->has_children ?? false) ? '' : 'hidden' }}">
                                 <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
                                 <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '') }}"
-                                    placeholder="0" min="1"
+                                    placeholder="0" min="1" max="20"
                                     onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                                    oninput="if(this.value && this.value < 1) this.value = 1;"
+                                    oninput="if(this.value && this.value < 1) this.value = 1; if(this.value > 20) this.value = 20;"
                                     class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                                 @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -328,7 +328,7 @@
 
                         <!-- Detalle Empleo -->
                         <div id="employmentDetailField" class="space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                            
+
                             <!-- Tipo de empleo (solo si trabaja) -->
                             <div id="employmentTypeField" class="{{ old('is_employed', $profile->is_employed ?? false) ? '' : 'hidden' }}">
                                 <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
@@ -484,12 +484,12 @@
             document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
                 syncCards(input);
             });
-            
+
             // Inicializar lógica de campos según el estado actual
             const mainStatusInput = document.querySelector('input[name="main_academic_status"]:checked');
             if (mainStatusInput) {
                 handleMainStatusChange(mainStatusInput.value, true);
-                
+
                 if (mainStatusInput.value === 'Educación superior') {
                     const typeInput = document.querySelector('input[name="education_type"]:checked');
                     if (typeInput) {
@@ -543,7 +543,7 @@
                 if (!isInit) instInput.value = '';
                 hiddenStatus.value = val;
             }
-            
+
             // Limpiar sub-opciones si no es educación superior y no es inicialización
             if (val !== 'Educación superior' && !isInit) {
                 document.querySelectorAll('input[name="education_type"]').forEach(r => r.checked = false);
@@ -571,7 +571,7 @@
             levels.forEach(lvl => {
                 const label = document.createElement('label');
                 label.className = 'option-card';
-                
+
                 const fullVal = `Superior — ${type} (${lvl})`;
                 const isChecked = currentStatus === fullVal;
 
@@ -621,7 +621,7 @@
             const val = document.querySelector('input[name="is_employed"]:checked')?.value;
             const typeField = document.getElementById('employmentTypeField');
             const detailField = document.getElementById('employmentDetailField');
-            
+
             if (val == '1') {
                 typeField.classList.remove('hidden');
             } else {
@@ -638,7 +638,7 @@
         function toggleEmploymentSubFields(val) {
             const dep = document.getElementById('dependiente_fields');
             const indep = document.getElementById('independiente_fields');
-            
+
             if (val === 'dependiente') {
                 dep.classList.remove('hidden');
                 indep.classList.add('hidden');
