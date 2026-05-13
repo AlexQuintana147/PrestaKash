@@ -55,6 +55,18 @@
             </div>
         @endif
 
+        @if($errors->has('error'))
+            <div
+                class="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/40 rounded-3xl flex items-center gap-3 text-sm text-red-600 dark:text-red-400 animate-in slide-in-from-top-4 duration-500">
+                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                {{ $errors->first('error') }}
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
             <!-- Cronograma de Pagos -->
@@ -74,6 +86,10 @@
                                 $total_i = $loan->months * $installmentsPerMonth;
                             }
                             $paid_i = $loan->installments->where('status', 'approved')->count();
+                            
+                            // Lógica para bloqueo de botones
+                            $hasAnyProcessing = $loan->installments->where('status', 'processing')->count() > 0;
+                            $firstNonApproved = $loan->installments->where('status', '!=', 'approved')->sortBy('installment_number')->first();
                         @endphp
                         {{ $paid_i }} de {{ $total_i }} Pagados
                     </p>
@@ -132,11 +148,22 @@
                                                 </div>
 
                                                 @if($inst->status === 'pending' || $inst->status === 'rejected')
-                                                    <button type="button"
-                                                        onclick="openUploadModal({{ $inst->id }}, '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($inst->amount, 2) }}')"
-                                                        class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-gray-900/10 dark:shadow-none">
-                                                        Pagar ahora
-                                                    </button>
+                                                    @php
+                                                        $canPay = !$hasAnyProcessing && ($firstNonApproved && $firstNonApproved->id === $inst->id);
+                                                    @endphp
+                                                    
+                                                    @if($canPay)
+                                                        <button type="button"
+                                                            onclick="openUploadModal({{ $inst->id }}, '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($inst->amount, 2) }}')"
+                                                            class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-gray-900/10 dark:shadow-none">
+                                                            Subir Boucher
+                                                        </button>
+                                                    @else
+                                                        <button type="button" disabled
+                                                            class="bg-gray-100 dark:bg-gray-900 text-gray-400 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-not-allowed opacity-50">
+                                                            {{ $hasAnyProcessing ? 'En espera' : 'Siguiente' }}
+                                                        </button>
+                                                    @endif
                                                 @elseif($inst->payment_voucher)
                                                     <a href="{{ Storage::url($inst->payment_voucher) }}" target="_blank"
                                                         class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10 transition-all">

@@ -240,6 +240,25 @@ class LoanController extends Controller
         if ($installment->loan->user_id !== Auth::id())
             abort(403);
 
+        // 1. Bloquear si hay algún pago en revisión para este préstamo
+        $hasProcessing = $installment->loan->installments()
+            ->where('status', 'processing')
+            ->exists();
+
+        if ($hasProcessing) {
+            return back()->withErrors(['error' => 'Ya tienes un pago en revisión. Por favor espera a que sea validado.']);
+        }
+
+        // 2. Bloquear si no es el siguiente pago en orden
+        $previousUnapproved = $installment->loan->installments()
+            ->where('installment_number', '<', $installment->installment_number)
+            ->where('status', '!=', 'approved')
+            ->exists();
+
+        if ($previousUnapproved) {
+            return back()->withErrors(['error' => 'Debes completar los pagos anteriores en orden.']);
+        }
+
         $request->validate([
             'payment_voucher' => 'required|image|max:5120',
         ]);
