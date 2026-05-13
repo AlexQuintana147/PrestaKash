@@ -95,6 +95,38 @@
         .dark .option-card.selected {
             border-color: #ffffff;
         }
+
+        /* Custom scrollbar for dark mode compatibility */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 5px;
+            border: 2px solid #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border: 2px solid #0f172a;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
     </style>
 
     <div class="min-h-screen px-5 md:px-8 py-6">
@@ -261,6 +293,8 @@
                                 <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
                                 <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '') }}"
                                     placeholder="0" min="1"
+                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                    oninput="if(this.value && this.value < 1) this.value = 1;"
                                     class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                                 @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
