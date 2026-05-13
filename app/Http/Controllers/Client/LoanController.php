@@ -172,7 +172,9 @@ class LoanController extends Controller
             'workplace.regex' => 'El nombre de la empresa solo debe contener letras.',
             'job_title.regex' => 'El cargo solo debe contener letras.',
             'children_count.required_if' => 'Debe indicar cuántos hijos tiene.',
+            'children_count.max' => 'El número de hijos no puede ser mayor a 20.',
             'monthly_income.required' => 'Debe ingresar su ingreso mensual.',
+            'monthly_income.min' => 'El ingreso mensual debe ser al menos S/ 100.00.',
         ]);
 
         // Convertir formato de moneda (ej: "2,000.00" -> 2000.00)
@@ -233,7 +235,9 @@ class LoanController extends Controller
             'spouse_dni.digits' => 'El DNI debe tener 8 dígitos.',
             'employment_type.required_if' => 'Debe especificar si es dependiente o independiente.',
             'children_count.required_if' => 'Debe indicar cuántos hijos tiene.',
+            'children_count.max' => 'El número de hijos no puede ser mayor a 20.',
             'monthly_income.required' => 'Debe ingresar su ingreso mensual.',
+            'monthly_income.min' => 'El ingreso mensual debe ser al menos S/ 100.00.',
         ]);
 
         // Convertir formato de moneda (ej: "2,000.00" -> 2000.00)
