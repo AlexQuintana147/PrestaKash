@@ -393,8 +393,10 @@
                             <!-- Ingreso Mensual (Siempre visible si se llega aquí, sea trabajando o no) -->
                             <div id="incomeField">
                                 <label class="block text-xs text-gray-600 mb-1">Ingreso mensual aproximado (S/)</label>
-                                <input type="number" name="monthly_income" value="{{ old('monthly_income', $profile->monthly_income ?? '') }}"
-                                    placeholder="0.00" step="0.01" min="0"
+                                <input type="hidden" name="monthly_income" value="{{ old('monthly_income', isset($profile) ? $profile->monthly_income : '') }}">
+                                <input type="text" id="monthly_income_display" value="{{ old('monthly_income', isset($profile) ? number_format($profile->monthly_income, 2, '.', ',') : '') }}"
+                                    placeholder="100.00" step="0.01" min="100"
+                                    oninput="formatCurrency(this)"
                                     class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
                                 @error('monthly_income') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
@@ -657,5 +659,44 @@
                 indep.classList.add('hidden');
             }
         }
+
+        function formatCurrency(input) {
+            // Remover todo excepto dígitos
+            let value = input.value.replace(/[^\d]/g, '');
+
+            if (value === '') {
+                input.value = '';
+                // Actualizar campo oculto
+                document.querySelector('input[name="monthly_income"]').value = '';
+                return;
+            }
+
+            // Convertir a número y formatear
+            if (value.length <= 2) {
+                input.value = '0.' + value.padStart(2, '0');
+            } else {
+                let integerPart = value.slice(0, -2);
+                let decimalPart = value.slice(-2);
+
+                // Remover ceros a la izquierda del entero
+                integerPart = integerPart.replace(/^0+/, '') || '0';
+
+                // Agregar separadores de miles
+                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                input.value = integerPart + '.' + decimalPart;
+            }
+
+            // Actualizar campo oculto con valor sin formato
+            let numericValue = value.slice(0, -2) + '.' + value.slice(-2);
+            document.querySelector('input[name="monthly_income"]').value = parseFloat(numericValue);
+        }
+
+        // Formatear valor inicial al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            const incomeInput = document.querySelector('input[name="monthly_income"]');
+            if (incomeInput && incomeInput.value) {
+                formatCurrency(incomeInput);
+            }
+        });
     </script>
 @endsection

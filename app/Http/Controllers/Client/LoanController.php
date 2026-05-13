@@ -152,14 +152,14 @@ class LoanController extends Controller
             'career' => ['required_if:main_academic_status,Educación superior', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'academic_status' => 'required|string',
             'has_children' => 'required|boolean',
-            'children_count' => 'required_if:has_children,1|nullable|integer|min:1',
+            'children_count' => 'required_if:has_children,1|nullable|integer|min:1|max:20',
             'instagram' => 'nullable|string|max:100',
             'is_employed' => 'required|boolean',
             'employment_type' => 'required_if:is_employed,1|nullable|in:dependiente,independiente',
             'workplace' => ['required_if:employment_type,dependiente', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'job_title' => ['required_if:employment_type,dependiente', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'independent_type' => 'required_if:employment_type,independiente|nullable|in:comerciante,empresario,emprendedor',
-            'monthly_income' => 'required|numeric|min:0',
+            'monthly_income' => 'required|numeric|min:100',
             'marital_status' => 'required|in:soltero,casado_separado,casado_compartido',
             'spouse_first_name' => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'spouse_last_name' => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/u'],
@@ -174,6 +174,10 @@ class LoanController extends Controller
             'children_count.required_if' => 'Debe indicar cuántos hijos tiene.',
             'monthly_income.required' => 'Debe ingresar su ingreso mensual.',
         ]);
+
+        // Convertir formato de moneda (ej: "2,000.00" -> 2000.00)
+        $incomeValue = str_replace(',', '', $request->monthly_income);
+        $incomeValue = floatval($incomeValue);
 
         Auth::user()->clientProfile->update([
             'institution' => $request->institution,
@@ -204,14 +208,14 @@ class LoanController extends Controller
             'career' => ['required_if:main_academic_status,Educación superior', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'academic_status' => 'required|string',
             'has_children' => 'required|boolean',
-            'children_count' => 'required_if:has_children,1|nullable|integer|min:1',
+            'children_count' => 'required_if:has_children,1|nullable|integer|min:1|max:20',
             'instagram' => 'nullable|string|max:100',
             'is_employed' => 'required|boolean',
             'employment_type' => 'required_if:is_employed,1|nullable|in:dependiente,independiente',
             'workplace' => ['required_if:employment_type,dependiente', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'job_title' => ['required_if:employment_type,dependiente', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'independent_type' => 'required_if:employment_type,independiente|nullable|in:comerciante,empresario,emprendedor',
-            'monthly_income' => 'required|numeric|min:0',
+            'monthly_income' => 'required|numeric|min:100',
             'marital_status' => 'required|in:soltero,casado_separado,casado_compartido',
             'spouse_first_name' => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/u'],
             'spouse_last_name' => ['required_if:marital_status,casado_compartido', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+(\s+[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ]+)*$/u'],
@@ -231,6 +235,10 @@ class LoanController extends Controller
             'children_count.required_if' => 'Debe indicar cuántos hijos tiene.',
             'monthly_income.required' => 'Debe ingresar su ingreso mensual.',
         ]);
+
+        // Convertir formato de moneda (ej: "2,000.00" -> 2000.00)
+        $incomeValue = str_replace(',', '', $request->monthly_income);
+        $incomeValue = floatval($incomeValue);
 
         ClientProfile::create([
             'user_id' => Auth::id(),
