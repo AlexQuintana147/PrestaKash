@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class LoanController extends Controller
 {
+    public function editProfile()
+    {
+        $profile = Auth::user()->clientProfile;
+        return view('client.loans.profile-form', ['editing' => true, 'profile' => $profile]);
+    }
+
     public function index()
     {
         $user = Auth::user()->load('clientProfile');
