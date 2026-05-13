@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboarding/step1', [OnboardingController::class, 'step1Store'])->name('onboarding.step1.store');
     Route::post('/check-dni', [OnboardingController::class, 'checkDni'])->name('check.dni');
     Route::post('/check-phone', [OnboardingController::class, 'checkPhone'])->name('check.phone');
+    Route::post('/check-ruc', [OnboardingController::class, 'checkRuc'])->name('check.ruc');
 
     // Step 2 solo accesible si el paso 1 está completo
     Route::get('/onboarding/step2', [OnboardingController::class, 'step2'])->name('onboarding.step2')->middleware('onboarding.step1');

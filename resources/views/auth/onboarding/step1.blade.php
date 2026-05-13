@@ -221,16 +221,17 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div>
                         <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">RUC</label>
-                        <input type="text" name="ruc" value="{{ old('ruc') }}" maxlength="11"
+                        <input type="text" id="rucInput" name="ruc" value="{{ old('ruc') }}" maxlength="11"
                             oninput="this.value=this.value.replace(/\D/g,'')" class="input-field"
                             placeholder="20123456789">
+                        <p id="rucError" class="text-red-500 text-[10px] mt-1 hidden">Este RUC ya está registrado</p>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Razón
                             Social</label>
-                    <input type="text" name="business_name" value="{{ old('business_name') }}" class="input-field"
-                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s.]/g,'')"
-                        placeholder="Empresa S.A.C.">
+                        <input type="text" name="business_name" value="{{ old('business_name') }}" class="input-field"
+                            oninput="this.value=this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.&,\-\(\)\'\"\/]/g,'')"
+                            placeholder="Empresa S.A.C.">
                     </div>
                 </div>
             </div>
@@ -523,25 +524,67 @@
             history.pushState(null, '', location.href);
         });
 
-        // Validación en tiempo real de DNI y Celular
-        let dniCheckTimeout, phoneCheckTimeout;
+        // Validación en tiempo real de DNI, Celular y RUC
+        let dniCheckTimeout, phoneCheckTimeout, rucCheckTimeout;
         const dniInput = document.getElementById('dniInput');
         const phoneInput = document.getElementById('phoneInput');
+        const rucInput = document.getElementById('rucInput');
         const dniError = document.getElementById('dniError');
         const phoneError = document.getElementById('phoneError');
+        const rucError = document.getElementById('rucError');
         const submitBtn = document.getElementById('submitBtn');
 
         let dniValid = true;
         let phoneValid = true;
+        let rucValid = true;
 
         function updateSubmitButton() {
-            if (!dniValid || !phoneValid) {
+            if (!dniValid || !phoneValid || !rucValid) {
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
             } else {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
+        }
+
+        if (rucInput) {
+            rucInput.addEventListener('input', function () {
+                clearTimeout(rucCheckTimeout);
+                const ruc = this.value;
+
+                if (ruc.length !== 11) {
+                    rucError.classList.add('hidden');
+                    rucValid = true;
+                    updateSubmitButton();
+                    return;
+                }
+
+                rucCheckTimeout = setTimeout(() => {
+                    fetch('/check-ruc', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ ruc: ruc })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                rucError.classList.remove('hidden');
+                                rucValid = false;
+                            } else {
+                                rucError.classList.add('hidden');
+                                rucValid = true;
+                            }
+                            updateSubmitButton();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }, 500);
+            });
         }
 
         if (dniInput) {
@@ -557,7 +600,7 @@
                 }
 
                 dniCheckTimeout = setTimeout(() => {
-                    fetch('{{ route("check.dni") }}', {
+                    fetch('/check-dni', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -596,7 +639,7 @@
                 }
 
                 phoneCheckTimeout = setTimeout(() => {
-                    fetch('{{ route("check.phone") }}', {
+                    fetch('/check-phone', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

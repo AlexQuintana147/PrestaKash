@@ -35,8 +35,14 @@ class OnboardingController extends Controller
             'dni' => ['required', 'digits:8', 'unique:users,dni,' . auth()->id()],
             'phone' => ['required', 'digits_between:9,9', 'regex:/^9\d{8}$/', 'unique:users,phone,' . auth()->id()],
             'person_type' => ['required', 'in:natural,juridica'],
-            'ruc' => ['required_if:person_type,juridica', 'nullable', 'digits:11'],
-            'business_name' => ['required_if:person_type,juridica', 'nullable', 'string', 'max:200'],
+            'ruc' => ['required_if:person_type,juridica', 'nullable', 'digits:11', 'unique:users,ruc,' . auth()->id()],
+            'business_name' => [
+                'required_if:person_type,juridica',
+                'nullable',
+                'string',
+                'max:200',
+                'regex:/^[0-9\p{L}\s&.,\-\(\)\'\"\/]+$/u'
+            ],
             'department' => ['required', 'string', 'max:100'],
             'province' => ['required', 'string', 'max:100'],
             'district' => ['required', 'string', 'max:100'],
@@ -49,6 +55,9 @@ class OnboardingController extends Controller
             'phone.digits_between' => 'El teléfono debe tener 9 dígitos.',
             'phone.regex' => 'El número debe empezar con 9 (celular peruano).',
             'phone.unique' => 'Este número de teléfono ya está registrado.',
+            'ruc.digits' => 'El RUC debe tener 11 dígitos.',
+            'ruc.unique' => 'Este RUC ya está registrado.',
+            'business_name.regex' => 'La razón social contiene caracteres no permitidos o peligrosos.',
         ]);
 
         $fullName = $request->first_name . ' ' . $request->last_name;
@@ -137,6 +146,14 @@ class OnboardingController extends Controller
     public function checkPhone(Request $request)
     {
         $exists = \App\Models\User::where('phone', $request->phone)
+            ->where('id', '!=', auth()->id())
+            ->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function checkRuc(Request $request)
+    {
+        $exists = \App\Models\User::where('ruc', $request->ruc)
             ->where('id', '!=', auth()->id())
             ->exists();
         return response()->json(['exists' => $exists]);
