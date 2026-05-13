@@ -130,7 +130,79 @@
                     <div class="space-y-4">
 
                         <div>
-                            <label class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
+                            <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                @php
+                                    $mainOptions = ['Secundaria completa', 'Educación superior', 'Ninguno de los anteriores'];
+                                    $currentStatus = old('academic_status', $profile->academic_status ?? '');
+                                    
+                                    // Determinar el valor principal si es educación superior
+                                    $mainValue = $currentStatus;
+                                    if (str_contains($currentStatus, 'Superior —')) {
+                                        $mainValue = 'Educación superior';
+                                    }
+                                @endphp
+                                @foreach($mainOptions as $opt)
+                                    <label class="option-card">
+                                        <input type="radio" name="main_academic_status" value="{{ $opt }}" {{ $mainValue === $opt ? 'checked' : '' }} required
+                                            onchange="syncCards(this); handleMainStatusChange(this.value)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span class="leading-tight">{{ $opt }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                            <input type="hidden" name="academic_status" id="academic_status_hidden" value="{{ $currentStatus }}">
+                        </div>
+
+                        <!-- Sub-opciones Educación Superior -->
+                        <div id="education_superior_options" class="{{ $mainValue === 'Educación superior' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-2">Tipo de educación</label>
+                                <div class="flex gap-2">
+                                    @php
+                                        $isTecnico = str_contains($currentStatus, 'Técnico');
+                                        $isUniversitario = str_contains($currentStatus, 'Universitario');
+                                    @endphp
+                                    <label class="option-card">
+                                        <input type="radio" name="education_type" value="Técnico" {{ $isTecnico ? 'checked' : '' }}
+                                            onchange="syncCards(this); handleEducationTypeChange(this.value)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>Técnico</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="education_type" value="Universitario" {{ $isUniversitario ? 'checked' : '' }}
+                                            onchange="syncCards(this); handleEducationTypeChange(this.value)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span>Universitario</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="education_level_container" class="{{ $isTecnico || $isUniversitario ? '' : 'hidden' }}">
+                                <label class="block text-xs text-gray-600 mb-2">Estado</label>
+                                <div id="level_options" class="grid grid-cols-2 gap-2">
+                                    <!-- Se llena por JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label id="label_institution" class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
                             <input type="text" name="institution" id="input_institution"
                                 value="{{ old('institution', $profile->institution ?? '') }}" required
                                 placeholder="Ej: UNMSM"
@@ -149,25 +221,6 @@
                             @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                @foreach(['Estudiante activo', 'Egresado', 'Titulado', 'Bachiller', 'Secundaria completa', 'Ninguno de los anteriores'] as $opt)
-                                    <label class="option-card">
-                                        <input type="radio" name="academic_status" value="{{ $opt }}" {{ old('academic_status', $profile->academic_status ?? '') === $opt ? 'checked' : '' }} required
-                                            onchange="syncCards(this); toggleAcademicFields(this.value)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span class="leading-tight">{{ $opt }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
@@ -178,12 +231,12 @@
                         Situación social</p>
                     <div class="space-y-4">
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
                                 <div class="flex gap-2">
                                     <label class="option-card">
-                                        <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this)">
+                                        <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleChildrenCount(this.value)">
                                         <div class="check-box">
                                             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                                 <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
@@ -193,7 +246,7 @@
                                         <span>Sí</span>
                                     </label>
                                     <label class="option-card">
-                                        <input type="radio" name="has_children" value="0" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this)">
+                                        <input type="radio" name="has_children" value="0" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleChildrenCount(this.value)">
                                         <div class="check-box">
                                             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                                 <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
@@ -204,53 +257,113 @@
                                     </label>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
-                                <div class="flex gap-2">
-                                    <label class="option-card">
-                                        <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>Sí</span>
-                                    </label>
-                                    <label class="option-card">
-                                        <input type="radio" name="is_employed" value="0" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>No</span>
-                                    </label>
-                                </div>
+                            <div id="childrenCountField" class="{{ old('has_children', $profile->has_children ?? false) ? '' : 'hidden' }}">
+                                <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
+                                <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '') }}"
+                                    placeholder="0" min="1"
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                                @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
-                        <!-- Tipo de empleo -->
-                        <div id="employmentTypeField"
-                            class="{{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? '' : 'hidden' }} pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                            <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
                             <div class="flex gap-2">
-                                @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
-                                    <label class="option-card">
-                                        <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }}
-                                            onchange="syncCards(this)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>{{ $label }}</span>
-                                    </label>
-                                @endforeach
+                                <label class="option-card">
+                                    <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
+                                    <div class="check-box">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span>Sí</span>
+                                </label>
+                                <label class="option-card">
+                                    <input type="radio" name="is_employed" value="0" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
+                                    <div class="check-box">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span>No</span>
+                                </label>
                             </div>
-                            @error('employment_type') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <!-- Detalle Empleo -->
+                        <div id="employmentDetailField" class="space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                            
+                            <!-- Tipo de empleo (solo si trabaja) -->
+                            <div id="employmentTypeField" class="{{ old('is_employed', $profile->is_employed ?? false) ? '' : 'hidden' }}">
+                                <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
+                                <div class="flex gap-2">
+                                    @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
+                                        <label class="option-card">
+                                            <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }}
+                                                onchange="syncCards(this); toggleEmploymentSubFields(this.value)">
+                                            <div class="check-box">
+                                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                    <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <span>{{ $label }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('employment_type') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                            </div>
+
+                            <!-- Campos Dependiente -->
+                            <div id="dependiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'dependiente' ? '' : 'hidden' }} space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Empresa / Lugar</label>
+                                        <input type="text" name="workplace" value="{{ old('workplace', $profile->workplace ?? '') }}"
+                                            placeholder="Nombre de empresa"
+                                            oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
+                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Cargo</label>
+                                        <input type="text" name="job_title" value="{{ old('job_title', $profile->job_title ?? '') }}"
+                                            placeholder="Puesto que ocupa"
+                                            oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
+                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Campos Independiente -->
+                            <div id="independiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'independiente' ? '' : 'hidden' }}">
+                                <label class="block text-xs text-gray-600 mb-2">Usted es:</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    @foreach(['comerciante' => 'Comerciante', 'empresario' => 'Empresario', 'emprendedor' => 'Emprendedor'] as $val => $label)
+                                        <label class="option-card">
+                                            <input type="radio" name="independent_type" value="{{ $val }}" {{ old('independent_type', $profile->independent_type ?? '') === $val ? 'checked' : '' }}
+                                                onchange="syncCards(this)">
+                                            <div class="check-box">
+                                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                    <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <span class="leading-tight text-[10px]">{{ $label }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <!-- Ingreso Mensual (Siempre visible si se llega aquí, sea trabajando o no) -->
+                            <div id="incomeField">
+                                <label class="block text-xs text-gray-600 mb-1">Ingreso mensual aproximado (S/)</label>
+                                <input type="number" name="monthly_income" value="{{ old('monthly_income', $profile->monthly_income ?? '') }}"
+                                    placeholder="0.00" step="0.01" min="0"
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-400 dark:placeholder-gray-600">
+                                @error('monthly_income') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                            </div>
                         </div>
 
                         <div>
@@ -333,12 +446,27 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar estado de las tarjetas
             document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
                 syncCards(input);
             });
+            
+            // Inicializar lógica de campos según el estado actual
+            const mainStatusInput = document.querySelector('input[name="main_academic_status"]:checked');
+            if (mainStatusInput) {
+                handleMainStatusChange(mainStatusInput.value, true);
+                
+                if (mainStatusInput.value === 'Educación superior') {
+                    const typeInput = document.querySelector('input[name="education_type"]:checked');
+                    if (typeInput) {
+                        handleEducationTypeChange(typeInput.value, true);
+                    }
+                }
+            }
         });
 
         function syncCards(input) {
+            if (!input.name) return;
             const name = input.name;
             document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
                 const card = r.closest('.option-card');
@@ -346,31 +474,93 @@
             });
         }
 
-function toggleAcademicFields(val) {
-    const inst = document.getElementById('input_institution');
-    const career = document.getElementById('input_career');
-    if (val === 'Ninguno de los anteriores') {
-        inst.disabled = true;
-        career.disabled = true;
-        inst.required = false;
-        career.required = false;
-        inst.value = '';
-        career.value = '';
-    } else {
-        inst.disabled = false;
-        career.disabled = false;
-        inst.required = true;
-        career.required = true;
-    }
-}
+        function handleMainStatusChange(val, isInit = false) {
+            const supOptions = document.getElementById('education_superior_options');
+            const instLabel = document.getElementById('label_institution');
+            const instInput = document.getElementById('input_institution');
+            const careerInput = document.getElementById('input_career');
+            const hiddenStatus = document.getElementById('academic_status_hidden');
 
-// Ejecutar al cargar para sincronizar estado inicial
-document.addEventListener('DOMContentLoaded', function() {
-    const activeStatus = document.querySelector('input[name="academic_status"]:checked');
-    if (activeStatus) toggleAcademicFields(activeStatus.value);
-});
+            if (val === 'Educación superior') {
+                supOptions.classList.remove('hidden');
+                instLabel.textContent = 'Universidad o instituto';
+                careerInput.disabled = false;
+                careerInput.required = true;
+                instInput.disabled = false;
+                instInput.required = true;
+            } else if (val === 'Secundaria completa') {
+                supOptions.classList.add('hidden');
+                instLabel.textContent = 'Centro Educativo';
+                careerInput.disabled = true;
+                careerInput.required = false;
+                if (!isInit) careerInput.value = '';
+                instInput.disabled = false;
+                instInput.required = true;
+                hiddenStatus.value = val;
+            } else {
+                // Ninguno de los anteriores
+                supOptions.classList.add('hidden');
+                instLabel.textContent = 'Universidad o instituto';
+                careerInput.disabled = true;
+                careerInput.required = false;
+                if (!isInit) careerInput.value = '';
+                instInput.disabled = true;
+                instInput.required = false;
+                if (!isInit) instInput.value = '';
+                hiddenStatus.value = val;
+            }
+            
+            // Limpiar sub-opciones si no es educación superior y no es inicialización
+            if (val !== 'Educación superior' && !isInit) {
+                document.querySelectorAll('input[name="education_type"]').forEach(r => r.checked = false);
+                document.getElementById('education_level_container').classList.add('hidden');
+                document.getElementById('level_options').innerHTML = '';
+                syncCards({name: 'education_type'});
+            }
+        }
 
-function toggleSpouse() {
+        function handleEducationTypeChange(type, isInit = false) {
+            const container = document.getElementById('education_level_container');
+            const optionsDiv = document.getElementById('level_options');
+            container.classList.remove('hidden');
+            optionsDiv.innerHTML = '';
+
+            let levels = [];
+            if (type === 'Universitario') {
+                levels = ['Estudiante activo', 'Egresado', 'Bachiller'];
+            } else if (type === 'Técnico') {
+                levels = ['Egresado', 'Titulado'];
+            }
+
+            const currentStatus = document.getElementById('academic_status_hidden').value;
+
+            levels.forEach(lvl => {
+                const label = document.createElement('label');
+                label.className = 'option-card';
+                
+                const fullVal = `Superior — ${type} (${lvl})`;
+                const isChecked = currentStatus === fullVal;
+
+                label.innerHTML = `
+                    <input type="radio" name="education_level" value="${lvl}" ${isChecked ? 'checked' : ''} required
+                        onchange="syncCards(this); updateAcademicStatusHidden('${type}', this.value)">
+                    <div class="check-box">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <span class="leading-tight">${lvl}</span>
+                `;
+                optionsDiv.appendChild(label);
+                if (isChecked) syncCards(label.querySelector('input'));
+            });
+        }
+
+        function updateAcademicStatusHidden(type, level) {
+            document.getElementById('academic_status_hidden').value = `Superior — ${type} (${level})`;
+        }
+
+        function toggleSpouse() {
             const val = document.querySelector('input[name="marital_status"]:checked')?.value;
             const fields = document.getElementById('spouseFields');
             if (val === 'casado_compartido') {
@@ -383,17 +573,54 @@ function toggleSpouse() {
             }
         }
 
-        function toggleEmployment() {
-            const val = document.querySelector('input[name="is_employed"]:checked')?.value;
-            const field = document.getElementById('employmentTypeField');
+        function toggleChildrenCount(val) {
+            const field = document.getElementById('childrenCountField');
             if (val == '1') {
                 field.classList.remove('hidden');
             } else {
                 field.classList.add('hidden');
+                field.querySelector('input').value = '';
+            }
+        }
+
+        function toggleEmployment() {
+            const val = document.querySelector('input[name="is_employed"]:checked')?.value;
+            const typeField = document.getElementById('employmentTypeField');
+            const detailField = document.getElementById('employmentDetailField');
+            
+            if (val == '1') {
+                typeField.classList.remove('hidden');
+            } else {
+                typeField.classList.add('hidden');
+                // Limpiar sub-campos
                 document.querySelectorAll('input[name="employment_type"]').forEach(r => {
                     r.checked = false;
                     r.closest('.option-card').classList.remove('selected');
                 });
+                toggleEmploymentSubFields(null);
+            }
+        }
+
+        function toggleEmploymentSubFields(val) {
+            const dep = document.getElementById('dependiente_fields');
+            const indep = document.getElementById('independiente_fields');
+            
+            if (val === 'dependiente') {
+                dep.classList.remove('hidden');
+                indep.classList.add('hidden');
+                // Limpiar indep
+                document.querySelectorAll('input[name="independent_type"]').forEach(r => {
+                    r.checked = false;
+                    r.closest('.option-card').classList.remove('selected');
+                });
+            } else if (val === 'independiente') {
+                dep.classList.add('hidden');
+                indep.classList.remove('hidden');
+                // Limpiar dep
+                dep.querySelectorAll('input').forEach(i => i.value = '');
+            } else {
+                dep.classList.add('hidden');
+                indep.classList.add('hidden');
             }
         }
     </script>

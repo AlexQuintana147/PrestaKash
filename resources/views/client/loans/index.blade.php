@@ -102,7 +102,7 @@
                     </a>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-y-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-6">
                     @php
                         $profileFields = [
                             'Situación' => $profile->academic_status,
@@ -112,10 +112,24 @@
                                 'casado_compartido' => 'Casado — bienes comp.',
                                 default => $profile->marital_status,
                             },
-                            'Hijos' => $profile->has_children ? 'Sí' : 'No',
+                            'Hijos' => $profile->has_children ? ($profile->children_count . ($profile->children_count == 1 ? ' hijo' : ' hijos')) : 'No',
                             'Trabaja' => $profile->is_employed ? 'Sí' : 'No',
+                            'Ingresos' => 'S/ ' . number_format($profile->monthly_income, 2),
                             'Instagram' => $profile->instagram ?? '—',
                         ];
+
+                        if ($profile->is_employed) {
+                            if ($profile->employment_type === 'dependiente') {
+                                $profileFields = array_merge($profileFields, [
+                                    'Empresa' => $profile->workplace,
+                                    'Cargo' => $profile->job_title,
+                                ]);
+                            } else {
+                                $profileFields = array_merge($profileFields, [
+                                    'Tipo' => ucfirst($profile->independent_type),
+                                ]);
+                            }
+                        }
 
                         if ($profile->institution) {
                             $profileFields = array_merge(['Institución' => $profile->institution], $profileFields);
