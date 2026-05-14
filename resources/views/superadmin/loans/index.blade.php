@@ -633,19 +633,20 @@
 
         <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
-            <div class="p-5 md:p-8 flex flex-col min-h-0 overflow-hidden">
-                <div class="mb-6 pr-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="p-4 md:p-8 flex flex-col min-h-0 overflow-hidden">
+                <div class="mb-6 pr-10 md:pr-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
                         <div>
                             <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
                             <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
                         </div>
-                        <!-- Fecha Desembolso -->
-                        <div class="w-full md:w-40 space-y-1">
+                        <!-- Fecha Desembolso (Desktop) -->
+                        <div class="hidden md:block w-40 space-y-1">
                             <label class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
                             <div class="relative" onclick="this.querySelector('input').showPicker()">
-                                <input type="date" name="disbursement_date" id="modal_disbursement_date"
+                                <input type="date" name="disbursement_date_desktop" id="modal_disbursement_date_desktop"
                                        min="{{ date('Y-m-d') }}"
+                                       onchange="document.getElementById('modal_disbursement_date').value = this.value"
                                        class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1 pr-8 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
                                        style="color-scheme: dark;">
                                 <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
@@ -656,12 +657,12 @@
                             </div>
                         </div>
                     </div>
-                    <div id="modal_display_amount" class="font-black text-right space-y-0.5"></div>
+                    <div id="modal_display_amount" class="font-black text-left md:text-right space-y-0.5 text-xs md:text-base"></div>
                 </div>
 
-                <div id="modalInputsGrid" class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mb-6">
+                <div id="modalInputsGrid" class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-6">
                     <!-- Monto -->
-                    <div class="space-y-2">
+                    <div class="space-y-2 col-span-1 md:col-span-1">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
                             <input type="text" name="amount" id="modal_amount"
@@ -670,9 +671,26 @@
                         </div>
                     </div>
 
+                    <!-- Fecha Desembolso (Mobile) -->
+                    <div class="md:hidden space-y-2 col-span-1">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
+                        <div class="relative" onclick="this.querySelector('input').showPicker()">
+                            <input type="date" name="disbursement_date" id="modal_disbursement_date"
+                                   min="{{ date('Y-m-d') }}"
+                                   onchange="document.getElementById('modal_disbursement_date_desktop').value = this.value"
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
+                                   style="color-scheme: dark;">
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Meses -->
-                    <div id="modalMonthsWrapper" class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Plazo (Meses)</label>
+                    <div id="modalMonthsWrapper" class="space-y-2 col-span-1">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Plazo (M)</label>
                         <div class="relative">
                             <input type="number" name="months" id="modal_months" min="3" max="24" step="1"
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
@@ -684,7 +702,7 @@
                     </div>
 
                     <!-- Tasa -->
-                    <div class="space-y-2">
+                    <div class="space-y-2 col-span-1">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tasa (%)</label>
                         <div class="relative">
                             <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100"
@@ -712,7 +730,7 @@
                     </div>
 
                     <!-- Sistema -->
-                    <div id="modalSystemWrapper" class="space-y-2">
+                    <div id="modalSystemWrapper" class="space-y-2 col-span-2 md:col-span-1">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
@@ -731,7 +749,7 @@
                     </div>
 
                     <!-- Frecuencia -->
-                    <div id="modalFrequencyWrapper" class="space-y-2">
+                    <div id="modalFrequencyWrapper" class="space-y-2 col-span-2 md:col-span-1">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             @foreach(['diario' => 'DÍA', 'semanal' => 'SEM', 'quincenal' => 'QUIN', 'mensual' => 'MES'] as $val => $label)
@@ -748,19 +766,19 @@
 
                 <!-- Previews -->
                 <div class="flex-1 min-h-0 flex flex-col space-y-4">
-                    <div class="flex items-center justify-between px-1 flex-shrink-0">
-                        <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
-                        <div class="flex gap-4">
-                            <p class="text-[10px] text-gray-500 font-bold uppercase">Total: <span id="previewTotal" class="text-gray-900 dark:text-white tabular-nums"></span></p>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase">Cuota: <span id="previewMonthly" class="text-gray-900 dark:text-white tabular-nums"></span></p>
-                            <p class="text-[10px] text-green-600 font-black uppercase">Ganancia: <span id="previewGain" class="tabular-nums"></span></p>
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between px-1 flex-shrink-0 gap-3">
+                        <h4 class="text-[9px] md:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
+                        <div class="grid grid-cols-2 md:flex gap-x-4 gap-y-2">
+                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Total: <span id="previewTotal" class="text-gray-900 dark:text-white tabular-nums"></span></p>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Cuota: <span id="previewMonthly" class="text-gray-900 dark:text-white tabular-nums"></span></p>
+                            <p class="text-[9px] md:text-[10px] text-green-600 font-black uppercase col-span-2">Ganancia: <span id="previewGain" class="tabular-nums"></span></p>
                         </div>
                     </div>
 
                     <!-- Cuotas Preview -->
                     <div id="previewCuotasContainer" class="flex-1 min-h-0 flex flex-col">
-                        <div class="flex-1 overflow-y-auto custom-scrollbar">
-                            <table class="w-full text-[10px] text-left">
+                        <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar">
+                            <table class="w-full text-[10px] text-left min-w-[320px] md:min-w-0">
                                 <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600 shadow-sm">
                                     <tr>
                                         <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">N°</th>
@@ -795,8 +813,8 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end flex-shrink-0">
-                    <button type="button" onclick="openCounterOfferConfirmModal()" class="text-sm font-bold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 pb-1 hover:opacity-70 transition-all uppercase tracking-widest bg-transparent">
+                <div class="mt-6 flex flex-col md:flex-row justify-end gap-3 flex-shrink-0">
+                    <button type="button" onclick="openCounterOfferConfirmModal()" class="w-full md:w-auto text-sm font-bold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 pb-1 hover:opacity-70 transition-all uppercase tracking-widest bg-transparent">
                         Confirmar y Enviar Contra-oferta
                     </button>
                 </div>
@@ -858,14 +876,15 @@
 
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
         document.getElementById('modal_disbursement_date').value = loan.disbursement_date || '';
+        document.getElementById('modal_disbursement_date_desktop').value = loan.disbursement_date || '';
 
         // Show amount
         const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-        let subtitleText = `<span class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">PEDIDO ORIGINAL: ${currencySymbol} ${amountFormatted}</span>`;
+        let subtitleText = `<span class="block text-[9px] md:text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">PEDIDO ORIGINAL: ${currencySymbol} ${amountFormatted}</span>`;
         if (loan.type === 'cuotas' && loan.monthly_payment) {
             const monthlyFormatted = parseFloat(loan.monthly_payment).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            subtitleText += `<span class="block text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA ORIGINAL: ${currencySymbol} ${monthlyFormatted}</span>`;
+            subtitleText += `<span class="block text-[9px] md:text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA ORIGINAL: ${currencySymbol} ${monthlyFormatted}</span>`;
         }
         document.getElementById('modal_display_amount').innerHTML = subtitleText;
 
