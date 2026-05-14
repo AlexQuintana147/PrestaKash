@@ -81,16 +81,30 @@
 
                         <div class="space-y-6">
                             <!-- Fecha de desembolso -->
-                            <div>
+                            <div class="relative group">
                                 <label for="disbursement_date"
                                     class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Fecha estimada de
                                     desembolso</label>
-                                <input type="date" name="disbursement_date" id="disbursement_date"
-                                    min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                    value="{{ old('disbursement_date', date('Y-m-d', strtotime('+1 day'))) }}"
-                                    class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
-                                <p class="text-[10px] text-gray-400 mt-1.5 italic">* Debe ser al menos un día después de
-                                    hoy.</p>
+                                <div class="relative">
+                                    <input type="date" name="disbursement_date" id="disbursement_date"
+                                        min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                                        value="{{ old('disbursement_date', date('Y-m-d', strtotime('+1 day'))) }}"
+                                        class="w-full pl-0 pr-10 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-all cursor-pointer appearance-none">
+                                    <div
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-green-500 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-2 italic flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Mínimo un día después de hoy.
+                                </p>
                             </div>
 
                             <!-- Tipo de pago (primero) -->
@@ -969,11 +983,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                                                                        <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                                                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                                                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                                                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                                                                                    `;
+                                                                                            <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                                                                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                                                                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                                                                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                                                                        `;
 
                 if (body) {
                     const row = document.createElement('tr');
@@ -1070,6 +1084,16 @@
                         scheduleModal.classList.add('hidden');
                         document.body.style.overflow = '';
                     });
+                }
+            });
+
+            // Abrir selector de fecha al hacer click en el contenedor
+            const disbursementContainer = document.querySelector('#disbursement_date').parentElement;
+            disbursementContainer.addEventListener('click', () => {
+                try {
+                    disbursementDateInput.showPicker();
+                } catch (e) {
+                    disbursementDateInput.click();
                 }
             });
 
