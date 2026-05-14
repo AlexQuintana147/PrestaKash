@@ -35,14 +35,14 @@
                 <!-- Navigation: Floating Glassmorphism -->
                 <div
                     class="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex justify-between items-center px-4 md:px-10">
-                    <button onclick="scrollCarousel(-1)"
-                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-4 group-hover/carousel:translate-x-0 shadow-sm">
+                    <button id="prevBtn" onclick="scrollCarousel(-1)"
+                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-4 group-hover/carousel:translate-x-0 shadow-sm disabled:hidden">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button onclick="scrollCarousel(1)"
-                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-4 group-hover/carousel:translate-x-0 shadow-sm">
+                    <button id="nextBtn" onclick="scrollCarousel(1)"
+                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-4 group-hover/carousel:translate-x-0 shadow-sm disabled:hidden">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                         </svg>
@@ -80,7 +80,8 @@
                                             </div>
                                             <h3
                                                 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
-                                                {{ $cb->name }}</h3>
+                                                {{ $cb->name }}
+                                            </h3>
                                         </div>
                                         <div class="flex items-center gap-3 ml-1">
                                             <span
@@ -134,7 +135,8 @@
                                                 </p>
                                                 <p
                                                     class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tighter">
-                                                    {{ $cb->account_number }}</p>
+                                                    {{ $cb->account_number }}
+                                                </p>
                                             </div>
                                         @endif
                                         @if($cb->cci)
@@ -142,7 +144,8 @@
                                                 <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">CCI</p>
                                                 <p
                                                     class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tighter">
-                                                    {{ $cb->cci }}</p>
+                                                    {{ $cb->cci }}
+                                                </p>
                                             </div>
                                         @endif
                                     </div>
@@ -389,6 +392,12 @@
                     dot.classList.toggle('opacity-20', index !== activeIndex);
                 });
 
+                // Update arrows visibility
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                if (prevBtn) prevBtn.disabled = activeIndex === 0;
+                if (nextBtn) nextBtn.disabled = activeIndex === cards.length - 1;
+
                 // Update movements
                 const movements = JSON.parse(cards[activeIndex].dataset.movements);
                 renderMovements(movements);
@@ -410,21 +419,21 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                <div class="flex items-center gap-8">
-                                    <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                    <div>
-                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                    <div class="flex items-center gap-8">
+                                        <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                        <div>
+                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                            ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                        ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                    </p>
-                                </div>
-                            </div>
-                        `;
+                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
