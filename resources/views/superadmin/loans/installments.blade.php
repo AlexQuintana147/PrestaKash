@@ -156,6 +156,8 @@
         }
 
         function closeValidateModal() {
+            // Cerrar también el lightbox si está abierto
+            document.getElementById('voucherLightbox').classList.add('hidden');
             document.getElementById('validateModal').classList.add('hidden');
             document.body.style.overflow = '';
         }

@@ -10,14 +10,23 @@
                 <p class="text-[9px] font-black uppercase tracking-widest text-gray-400">Comprobante</p>
                 <a id="modal_voucher_link" href="" target="_blank"
                     class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
                 </a>
             </div>
             <!-- Imagen — click abre lightbox -->
-            <div class="flex-1 flex items-center justify-center p-3 cursor-zoom-in" style="min-height: 200px;"
+            <div class="flex-1 flex items-center justify-center p-3 cursor-zoom-in group relative" style="min-height: 200px;"
                  onclick="openVoucherLightbox()">
                 <img id="modal_voucher_img" src="" alt="Comprobante"
-                    class="max-w-full max-h-full object-contain rounded-lg"
+                    class="max-w-full max-h-full object-contain rounded-lg group-hover:opacity-80 transition-opacity"
                     draggable="false">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <svg class="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                    </svg>
+                </div>
             </div>
             <p class="text-[8px] text-center text-gray-300 dark:text-gray-700 py-2 font-medium">Click para ampliar</p>
         </div>
@@ -69,124 +78,100 @@
     </div>
 </div>
 
-<!-- Lightbox fullscreen -->
-<div id="voucherLightbox"
-    class="hidden fixed inset-0 z-[200] bg-black/95 flex items-center justify-center select-none"
-    onclick="closeLightboxOnBackdrop(event)">
+<!-- Lightbox fullscreen (mismo diseño que /usuarios/[ID]) -->
+<div id="voucherLightbox" onclick="closeLightboxBackdrop(event)"
+     class="hidden fixed inset-0 z-[200] bg-black/90 flex flex-col items-center justify-center p-4">
 
-    <!-- Cerrar -->
-    <button onclick="closeVoucherLightbox()"
-        class="absolute top-5 right-5 text-white/50 hover:text-white transition-colors z-10">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    </button>
+    <!-- Header -->
+    <div class="flex items-center justify-between w-full max-w-4xl mb-3 flex-shrink-0">
+        <p class="text-sm text-gray-400">Comprobante de Pago</p>
+        <div class="flex items-center gap-3">
+            <!-- Zoom out -->
+            <button onclick="voucherZoom(-0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/>
+                </svg>
+            </button>
+            <!-- Zoom level -->
+            <span id="voucherZoomLevel" class="text-xs text-gray-500 w-10 text-center">100%</span>
+            <!-- Zoom in -->
+            <button onclick="voucherZoom(0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                </svg>
+            </button>
+            <!-- Reset -->
+            <button onclick="voucherResetZoom()" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </button>
+            <!-- Cerrar -->
+            <button onclick="closeVoucherLightbox()" class="p-2 text-gray-400 hover:text-white transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
-    <!-- Hint -->
-    <p id="lightbox_hint" class="absolute bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black uppercase tracking-widest text-white/30 pointer-events-none transition-opacity duration-500">
-        Scroll para zoom · Arrastra para mover
-    </p>
-
-    <!-- Contenedor de imagen -->
-    <div id="lightbox_container" class="w-full h-full overflow-hidden cursor-zoom-in">
-        <img id="lightbox_img" src="" alt="Comprobante"
-            class="w-full h-full object-contain pointer-events-none"
-            style="transform-origin: center center; transform: scale(1) translate(0px, 0px);"
-            draggable="false">
+    <!-- Imagen -->
+    <div class="overflow-hidden w-full max-w-4xl flex items-center justify-center" style="max-height: 80vh;">
+        <img id="voucherLightboxImg" src="" alt="Comprobante"
+             class="transition-transform duration-200 rounded-lg select-none"
+             style="transform-origin: center; max-width: 100%;">
     </div>
 </div>
 
 <script>
-(function () {
-    let scale = 1, tx = 0, ty = 0;
-    let dragging = false, moved = false, sx = 0, sy = 0;
+let voucherScale = 1;
 
-    function applyTransform() {
-        document.getElementById('lightbox_img').style.transform =
-            `scale(${scale}) translate(${tx}px, ${ty}px)`;
+function openVoucherLightbox() {
+    voucherScale = 1;
+    const src = document.getElementById('modal_voucher_img').src;
+    document.getElementById('voucherLightboxImg').src = src;
+    document.getElementById('voucherLightboxImg').style.transform = 'scale(1)';
+    document.getElementById('voucherZoomLevel').textContent = '100%';
+    document.getElementById('voucherLightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVoucherLightbox() {
+    document.getElementById('voucherLightbox').classList.add('hidden');
+    document.body.style.overflow = 'hidden'; // mantener el modal de validación bloqueado
+}
+
+function closeLightboxBackdrop(e) {
+    if (e.target === document.getElementById('voucherLightbox')) closeVoucherLightbox();
+}
+
+function voucherZoom(delta) {
+    voucherScale = Math.min(4, Math.max(0.25, voucherScale + delta));
+    document.getElementById('voucherLightboxImg').style.transform = `scale(${voucherScale})`;
+    document.getElementById('voucherZoomLevel').textContent = Math.round(voucherScale * 100) + '%';
+}
+
+function voucherResetZoom() {
+    voucherScale = 1;
+    document.getElementById('voucherLightboxImg').style.transform = 'scale(1)';
+    document.getElementById('voucherZoomLevel').textContent = '100%';
+}
+
+// Scroll para zoom en el lightbox
+document.getElementById('voucherLightbox').addEventListener('wheel', function(e) {
+    if (this.classList.contains('hidden')) return;
+    e.preventDefault();
+    voucherZoom(e.deltaY < 0 ? 0.15 : -0.15);
+}, { passive: false });
+
+// Esc cierra el lightbox (no el modal de validación)
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('voucherLightbox').classList.contains('hidden')) {
+        closeVoucherLightbox();
     }
-
-    function resetLightbox() {
-        scale = 1; tx = 0; ty = 0;
-        applyTransform();
-        const c = document.getElementById('lightbox_container');
-        c.style.cursor = 'zoom-in';
+    if (!document.getElementById('voucherLightbox').classList.contains('hidden')) {
+        if (e.key === '+' || e.key === '=') voucherZoom(0.25);
+        if (e.key === '-') voucherZoom(-0.25);
     }
-
-    // Scroll → zoom
-    document.getElementById('lightbox_container').addEventListener('wheel', function (e) {
-        e.preventDefault();
-        scale = Math.min(8, Math.max(1, scale * (1 - e.deltaY * 0.001)));
-        if (scale <= 1) { scale = 1; tx = 0; ty = 0; this.style.cursor = 'zoom-in'; }
-        else this.style.cursor = 'grab';
-        applyTransform();
-    }, { passive: false });
-
-    // Click → toggle zoom rápido
-    document.getElementById('lightbox_container').addEventListener('click', function () {
-        if (moved) return;
-        if (scale === 1) { scale = 2.5; this.style.cursor = 'grab'; }
-        else { resetLightbox(); }
-        applyTransform();
-    });
-
-    // Drag
-    document.getElementById('lightbox_container').addEventListener('mousedown', function (e) {
-        if (scale === 1) return;
-        dragging = true; moved = false;
-        sx = e.clientX - tx * scale;
-        sy = e.clientY - ty * scale;
-        this.style.cursor = 'grabbing';
-    });
-
-    document.addEventListener('mousemove', function (e) {
-        if (!dragging) return;
-        moved = true;
-        tx = (e.clientX - sx) / scale;
-        ty = (e.clientY - sy) / scale;
-        applyTransform();
-    });
-
-    document.addEventListener('mouseup', function () {
-        if (!dragging) return;
-        dragging = false;
-        const c = document.getElementById('lightbox_container');
-        c.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
-        setTimeout(() => { moved = false; }, 50);
-    });
-
-    window.openVoucherLightbox = function () {
-        const src = document.getElementById('modal_voucher_img').src;
-        document.getElementById('lightbox_img').src = src;
-        resetLightbox();
-        document.getElementById('voucherLightbox').classList.remove('hidden');
-        // Ocultar hint después de 2s
-        setTimeout(() => {
-            const h = document.getElementById('lightbox_hint');
-            if (h) h.style.opacity = '0';
-        }, 2000);
-    };
-
-    window.closeVoucherLightbox = function () {
-        document.getElementById('voucherLightbox').classList.add('hidden');
-        document.getElementById('lightbox_hint').style.opacity = '1';
-        resetLightbox();
-    };
-
-    window.closeLightboxOnBackdrop = function (e) {
-        if (e.target === document.getElementById('voucherLightbox') ||
-            e.target === document.getElementById('lightbox_container')) {
-            if (!moved) closeVoucherLightbox();
-        }
-    };
-
-    // Esc cierra lightbox
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            if (!document.getElementById('voucherLightbox').classList.contains('hidden')) {
-                closeVoucherLightbox();
-            }
-        }
-    });
-})();
+});
 </script>
