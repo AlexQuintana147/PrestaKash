@@ -166,7 +166,7 @@
                                     </div>
 
                                     <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
-                                        <div class="flex items-center justify-between mb-1.5">
+                                        <div class="flex items-center gap-1.5 mb-1.5">
                                             <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest">Términos</p>
                                             @if($loan->type === 'cuotas')
                                                 <button type="button"
@@ -463,7 +463,7 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <div class="flex items-center justify-between mb-1.5">
+                                        <div class="flex items-center gap-1.5 mb-1.5">
                                             <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-[0.15em]">Términos</p>
                                             @if($loan->type === 'cuotas')
                                                 <button type="button"
