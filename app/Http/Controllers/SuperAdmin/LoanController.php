@@ -263,7 +263,7 @@ class LoanController extends Controller
     {
         $request->validate([
             'late_fee_enabled' => 'nullable|boolean',
-            'grace_days' => 'required|integer|min:1|max:30',
+            'grace_days' => 'required|integer|min:0|max:30',
             'late_fee_rate' => 'required|numeric|min:0|max:100',
             'late_fee_daily_amount' => 'required|numeric|min:0',
         ]);

@@ -64,13 +64,14 @@
                         <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Días de
                             Gracia</label>
                         <div class="relative">
-                            <input type="number" name="grace_days" id="lfm_grace" min="1" max="30" value="1"
+                            <input type="number" name="grace_days" id="lfm_grace" min="0" max="30" value="0"
                                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                 class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
                             <span
                                 class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase">días</span>
                         </div>
-                        <p class="text-[8px] text-gray-400 mt-1">Días que se perdonan antes de aplicar mora (Mínimo 1, Máximo 30).</p>
+                        <p class="text-[8px] text-gray-400 mt-1">Días que se perdonan antes de aplicar mora (Mínimo 0,
+                            Máximo 30).</p>
                     </div>
 
                     <!-- Tasa de mora -->
@@ -167,10 +168,10 @@
             el.value = '';
             return 0;
         }
-        
+
         // Remove leading zeros
         val = parseInt(val, 10).toString();
-        
+
         let numericValue = parseFloat(val) / 100;
         el.value = numericValue.toFixed(2);
         return numericValue;
@@ -183,12 +184,12 @@
 
         const enabledEl = document.getElementById('lfm_enabled');
         enabledEl.checked = !!currentEnabled;
-        
-        document.getElementById('lfm_grace').value = currentGrace || 1;
-        
+
+        document.getElementById('lfm_grace').value = currentGrace !== undefined ? currentGrace : 0;
+
         const rateEl = document.getElementById('lfm_rate');
         const dailyEl = document.getElementById('lfm_daily');
-        
+
         rateEl.value = (parseFloat(currentRate) || 0).toFixed(2);
         dailyEl.value = (parseFloat(currentDaily) || 0).toFixed(2);
 
@@ -232,25 +233,25 @@
 
     document.getElementById('lfm_enabled').addEventListener('change', toggleLateFeeFields);
 
-    document.getElementById('lfm_rate').addEventListener('input', function(e) {
+    document.getElementById('lfm_rate').addEventListener('input', function (e) {
         const rate = formatCentsInput(this);
-        
+
         // Automatic daily amount calculation
         const amount = window._lfm_amount || 0;
         const daily = amount * (rate / 100);
         document.getElementById('lfm_daily').value = daily.toFixed(2);
-        
+
         updateLateFeeSimulation();
     });
 
-    document.getElementById('lfm_daily').addEventListener('input', function(e) {
+    document.getElementById('lfm_daily').addEventListener('input', function (e) {
         formatCentsInput(this);
         updateLateFeeSimulation();
     });
 
-    document.getElementById('lfm_grace').addEventListener('input', function(e) {
+    document.getElementById('lfm_grace').addEventListener('input', function (e) {
         let val = parseInt(this.value);
-        if (isNaN(val) || val < 1) this.value = 1;
+        if (isNaN(val) || val < 0) this.value = 0;
         if (val > 30) this.value = 30;
     });
 
