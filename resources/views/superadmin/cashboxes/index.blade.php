@@ -75,10 +75,10 @@
                                         <div class="flex items-center gap-3">
                                             <!-- Card Chip Simulation -->
                                             <div
-                                                class="w-10 h-7 rounded-md bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex flex-col justify-around p-1.5 opacity-50">
-                                                <div class="w-full h-px bg-gray-300 dark:bg-gray-600"></div>
-                                                <div class="w-full h-px bg-gray-300 dark:bg-gray-600"></div>
-                                                <div class="w-full h-px bg-gray-300 dark:bg-gray-600"></div>
+                                                class="w-10 h-7 rounded-md bg-yellow-400 border border-yellow-500 flex flex-col justify-around p-1.5 opacity-100">
+                                                <div class="w-full h-px bg-yellow-700"></div>
+                                                <div class="w-full h-px bg-yellow-700"></div>
+                                                <div class="w-full h-px bg-yellow-700"></div>
                                             </div>
                                             <h3
                                                 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
