@@ -98,11 +98,8 @@
                                     <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $user->name }}</h3>
                                     <button type="button"
                                         onclick="openLoanDetailModal({{ json_encode($groupDetailData) }})"
-                                        class="text-gray-300 dark:text-gray-700 hover:text-gray-600 dark:hover:text-gray-400 transition-colors flex-shrink-0">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                        </svg>
+                                        class="text-gray-900 dark:text-white hover:opacity-60 transition-opacity flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g><path d="M32,47c8.271,0,15-6.729,15-15s-6.729-15-15-15s-15,6.729-15,15S23.729,47,32,47z M32,19c7.168,0,13,5.832,13,13s-5.832,13-13,13s-13-5.832-13-13S24.832,19,32,19z"/><path d="M32,41c4.962,0,9-4.037,9-9s-4.038-9-9-9s-9,4.037-9,9S27.038,41,32,41z M32,25c3.86,0,7,3.141,7,7s-3.14,7-7,7s-7-3.141-7-7S28.14,25,32,25z"/><path d="M32,37v-2c-1.654,0-3-1.346-3-3s1.346-3,3-3s3,1.346,3,3h2c0-2.757-2.243-5-5-5s-5,2.243-5,5S29.243,37,32,37z"/><path d="M62.53,30.74C57.134,18.748,45.15,11,32,11S6.866,18.748,1.47,30.74L0.903,32l0.567,1.26C6.866,45.252,18.85,53,32,53s25.134-7.748,30.53-19.74L63.097,32L62.53,30.74z M51,32c0,10.477-8.523,19-19,19s-19-8.523-19-19s8.523-19,19-19S51,21.523,51,32z M3.294,32.439L3.097,32l0.198-0.439c3.07-6.824,8.418-12.172,14.897-15.342C13.794,20.071,11,25.709,11,32s2.794,11.929,7.191,15.782C11.713,44.611,6.365,39.264,3.294,32.439z M60.706,32.439c-3.07,6.824-8.418,12.172-14.897,15.342C50.206,43.929,53,38.291,53,32s-2.794-11.929-7.191-15.782c6.478,3.17,11.826,8.518,14.897,15.342L60.903,32L60.706,32.439z"/></g></svg>
                                     </button>
                                 </div>
                                 <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Préstamo #{{ str_pad($loan->id, 4, '0', STR_PAD_LEFT) }} • Total: {{ $userInstallments->total() }}</p>
