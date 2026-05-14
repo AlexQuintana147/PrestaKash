@@ -731,6 +731,17 @@
             display: none;
             -webkit-appearance: none;
         }
+
+        /* Modern Dark Date Picker Styling */
+        @media (prefers-color-scheme: dark) {
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                filter: invert(1);
+            }
+        }
+
+        .dark input[type="date"] {
+            color-scheme: dark;
+        }
     </style>
 
     <script>
@@ -989,11 +1000,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                                                                                <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                                                                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                                                                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                                                                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                                                                                            `;
+                                                                                                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                                                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                                                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                                                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                                                                                `;
 
                 if (body) {
                     const row = document.createElement('tr');
