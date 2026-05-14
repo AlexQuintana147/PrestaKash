@@ -14,7 +14,7 @@ class CashboxController extends Controller
             'movements' => function ($q) {
                 $q->latest()->limit(10);
             }
-        ])->orderBy('created_at', 'desc')->get();
+        ])->orderBy('id', 'desc')->get();
 
         return view('superadmin.cashboxes.index', compact('cashboxes'));
     }
