@@ -107,4 +107,23 @@ class LoanInstallment extends Model
 
         return ['label' => 'Pagado con mora', 'color' => 'orange', 'days' => $daysLate, 'type' => 'late'];
     }
+
+    public function getAccumulatedDebtAttribute()
+    {
+        $loan = $this->loan;
+        $previousPending = $loan->installments()
+            ->where('installment_number', '<', $this->installment_number)
+            ->where('status', '!=', 'approved')
+            ->get();
+
+        $totalBase = $this->amount + $previousPending->sum('amount');
+        $totalMora = $this->late_fee + $previousPending->sum(fn($i) => $i->late_fee);
+
+        return [
+            'base' => $totalBase,
+            'mora' => $totalMora,
+            'total' => $totalBase + $totalMora,
+            'count' => $previousPending->count() + 1
+        ];
+    }
 }

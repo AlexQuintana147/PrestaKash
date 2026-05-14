@@ -91,6 +91,14 @@
                         </div>
                     </div>
 
+                    @if($firstNonApproved && in_array($firstNonApproved->status, ['pending', 'rejected']) && !$hasAnyProcessing)
+                    <button type="button"
+                        onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstNonApproved->id }}, '{{ $cur }}{{ number_format($firstNonApproved->amount, 2) }}', {{ $firstNonApproved->late_fee }})"
+                        class="w-full py-3 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-red-500/20 mb-6">
+                        Pagar cuota atrasada
+                    </button>
+                    @endif
+
                     <div class="bg-white/50 dark:bg-black/20 rounded-xl p-4">
                         <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">¿Cómo funciona?</p>
                         <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -185,14 +193,19 @@
                 <!-- Fecha + monto -->
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-gray-900 dark:text-white">
-                        {{ $cur }} {{ number_format($inst->amount, 2) }}
-                        @if($inst->late_fee > 0)
-                            <span class="text-[10px] text-orange-500 ml-1">+ {{ number_format($inst->late_fee, 2) }} mora</span>
+                        @if($inst->id === ($nextInst ? $nextInst->id : null) && $overdueInstallments->count() > 0)
+                            {{ $cur }} {{ number_format($inst->accumulated_debt['total'], 2) }}
+                            <span class="text-[8px] text-gray-400 font-normal block">Incluye {{ $overdueInstallments->count() }} cuotas anteriores + mora</span>
+                        @else
+                            {{ $cur }} {{ number_format($inst->amount, 2) }}
+                            @if($inst->late_fee > 0)
+                                <span class="text-[10px] text-orange-500 ml-1">+ {{ number_format($inst->late_fee, 2) }} mora</span>
+                            @endif
                         @endif
                     </p>
                     <p class="text-[9px] {{ $isOverdue ? 'text-red-500' : 'text-gray-400' }} mt-0.5">
                         {{ $inst->due_date->format('d M Y') }}
-                        @if($inst->late_fee > 0)
+                        @if($inst->late_fee > 0 && !($inst->id === ($nextInst ? $nextInst->id : null) && $overdueInstallments->count() > 0))
                             <span class="ml-2 text-gray-900 dark:text-white">Total: {{ $cur }} {{ number_format($inst->total_with_mora, 2) }}</span>
                         @elseif($inst->grace_days_remaining > 0)
                             <span class="ml-2 text-blue-500 font-bold uppercase tracking-widest">Quedan {{ $inst->grace_days_remaining }} días de gracia</span>
@@ -231,8 +244,13 @@
                     </div>
 
                     @if($canPay)
+                        @php
+                            $isNextWithOverdue = $inst->id === ($nextInst ? $nextInst->id : null) && $overdueInstallments->count() > 0;
+                            $payAmount = $isNextWithOverdue ? $inst->accumulated_debt['base'] : $inst->amount;
+                            $payMora = $isNextWithOverdue ? $inst->accumulated_debt['mora'] : $inst->late_fee;
+                        @endphp
                         <button type="button"
-                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($inst->amount, 2) }}', {{ $inst->late_fee }})"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }})"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-px hover:opacity-60 transition-opacity">
                             Pagar
                         </button>
