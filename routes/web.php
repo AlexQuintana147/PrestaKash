@@ -103,6 +103,12 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/pagos/{installment}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'rejectInstallment'])->name('installments.reject');
     Route::post('/pagos/{installment}/unapprove', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'unapproveInstallment'])->name('installments.unapprove');
 
+    // Gestión de cajas
+    Route::get('/cajas', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'index'])->name('cashboxes.index');
+    Route::post('/cajas', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'store'])->name('cashboxes.store');
+    Route::put('/cajas/{cashbox}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'update'])->name('cashboxes.update');
+    Route::delete('/cajas/{cashbox}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'destroy'])->name('cashboxes.destroy');
+
     // Configuración
     Route::get('/configuracion', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
     Route::post('/configuracion/nombre', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
