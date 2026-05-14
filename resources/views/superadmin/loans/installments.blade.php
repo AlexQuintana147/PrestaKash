@@ -86,6 +86,8 @@
                                     <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">L-{{ str_pad($loan->id, 4, '0', STR_PAD_LEFT) }}</span>
                                     <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
                                     <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Cuota #{{ $inst->installment_number }}</span>
+                                    <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $loan->bank_name }}</span>
                                 </div>
                             </div>
                         </div>
@@ -110,15 +112,15 @@
                         <div class="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-4 md:pt-0 border-gray-50 dark:border-gray-900">
                             <div class="text-right md:text-right">
                                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Estado</p>
-                                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest
-                                    {{ $inst->status === 'approved' ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400' : '' }}
-                                    {{ $inst->status === 'pending' ? 'bg-gray-100 text-gray-500 dark:bg-gray-900 dark:text-gray-500' : '' }}
-                                    {{ $inst->status === 'processing' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' : '' }}
-                                    {{ $inst->status === 'rejected' ? 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400' : '' }}">
+                                <span class="text-[9px] font-black uppercase tracking-widest
+                                    {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
+                                    {{ $inst->status === 'pending' ? 'text-gray-400' : '' }}
+                                    {{ $inst->status === 'processing' ? 'text-purple-600' : '' }}
+                                    {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}">
                                     {{ match ($inst->status) {
                                         'approved' => 'Pagado',
                                         'pending' => 'Pendiente',
-                                        'processing' => 'En Revisión',
+                                        'processing' => 'Validar',
                                         'rejected' => 'Rechazado',
                                         default => $inst->status
                                     } }}
@@ -134,7 +136,7 @@
                                         'number' => $inst->installment_number,
                                         'voucher' => Storage::url($inst->payment_voucher)
                                     ]) }})"
-                                    class="h-9 px-5 bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">
+                                    class="text-[10px] font-black uppercase tracking-widest text-purple-600 border-b-2 border-purple-600 pb-0.5 hover:opacity-60 transition-opacity">
                                         Revisar
                                     </button>
                                 @elseif($inst->status === 'approved')
@@ -142,7 +144,7 @@
                                         onsubmit="return confirm('¿Revertir aprobación de este pago?')">
                                         @csrf
                                         <button type="submit"
-                                            class="h-9 px-5 border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-orange-500 hover:border-orange-200 dark:hover:border-orange-900/30 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all">
+                                            class="text-[10px] font-black uppercase tracking-widest text-gray-400 border-b-2 border-gray-300 dark:border-gray-800 pb-0.5 hover:text-orange-500 hover:border-orange-500 transition-all">
                                             Revertir
                                         </button>
                                     </form>
