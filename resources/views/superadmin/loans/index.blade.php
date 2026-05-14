@@ -305,6 +305,7 @@
                                         {{ match($loan->status) {
                                             'approved' => 'Aprobado',
                                             'pending'  => 'En revisión',
+                                            'counter_offered' => 'Contra-oferta',
                                             'rejected' => 'Rechazado',
                                             'paid'     => 'Pagado',
                                             default    => $loan->status
@@ -439,6 +440,7 @@
                                                 {{ match($loan->status) {
                                                     'approved' => 'APROBADO',
                                                     'pending'  => 'EN REVISIÓN',
+                                                    'counter_offered' => 'CONTRA-OFERTA',
                                                     'rejected' => 'RECHAZADO',
                                                     'paid'     => 'PAGADO',
                                                     default    => $loan->status
