@@ -206,6 +206,11 @@ class LoanController extends Controller
             $query->where('status', 'processing');
         }
 
+        if ($filter === 'grouped') {
+            $installments = $query->orderBy('due_date', 'asc')->get()->groupBy('loan.user.id');
+            return view('superadmin.loans.installments', compact('installments', 'filter'));
+        }
+
         $installments = $query->orderBy('due_date', 'asc')
             ->paginate(10)
             ->withQueryString();
