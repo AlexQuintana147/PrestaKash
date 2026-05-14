@@ -244,19 +244,15 @@
                             </div>
                         </div>
 
-                        <!-- Layout Desktop: Horizontal -->
-                        <div class="hidden lg:flex gap-8 items-start">
-
-                            <!-- Columna 1: Usuario e Info Principal -->
-                            <div class="lg:w-1/4 flex flex-col gap-5">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-100 dark:border-gray-800">
+                        <!-- Layout Desktop: Row by Row -->
+                        <div class="hidden lg:block space-y-6">
+                            <!-- Fila 1: Header con Usuario y Monto -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden flex-shrink-0 border-2 border-gray-200 dark:border-gray-800">
                                         @if($loan->user->is_ghost)
-                                            <svg fill="#9333ea" width="22" height="22" viewBox="0 0 1024 1024"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M511.984-.128c-229.216 0-415.681 199.903-415.681 445.6v546.672c0 13.216 8.16 25.088 20.496 29.84 3.712 1.471 7.632 2.16 11.504 2.16 8.848 0 17.536-3.68 23.712-10.527l120.592-133.12 94.431 130.432a31.918 31.918 0 0 0 25.68 13.215h.224a31.98 31.98 0 0 0 25.664-12.912l94.816-127.344 93.184 127.152a31.993 31.993 0 0 0 25.809 13.088 32.028 32.028 0 0 0 25.808-13.055l95.569-130.288 118 132.624c8.816 9.904 22.944 13.376 35.28 8.624 12.4-4.72 20.624-16.624 20.624-29.905V445.456C927.696 199.776 741.2-.128 511.984-.128zm351.711 908.16l-88.402-99.376c-6.432-7.216-15.808-11.311-25.407-10.687a32.105 32.105 0 0 0-24.32 13.024l-93.12 127.008-93.008-126.912A31.975 31.975 0 0 0 513.758 798h-.127a31.935 31.935 0 0 0-25.664 12.912l-94.689 127.152-92-127.088c-5.664-7.807-14.528-12.655-24.16-13.151-.592-.032-1.151-.065-1.743-.065a31.984 31.984 0 0 0-23.712 10.528l-91.376 100.848v-463.68c0-210.4 157.776-381.601 351.68-381.601 193.937 0 351.713 171.184 351.713 381.6V908.03h.015zM671.997 352.16c-35.28 0-63.84 28.592-63.84 63.808 0 35.248 28.56 63.84 63.84 63.84s63.84-28.592 63.84-63.84c0-35.216-28.56-63.808-63.84-63.808zm-320 0c-35.28 0-63.84 28.592-63.84 63.808 0 35.248 28.576 63.84 63.84 63.84s63.84-28.592 63.84-63.84c0-35.216-28.56-63.808-63.84-63.808z" />
+                                            <svg fill="#9333ea" width="28" height="28" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M511.984-.128c-229.216 0-415.681 199.903-415.681 445.6v546.672c0 13.216 8.16 25.088 20.496 29.84 3.712 1.471 7.632 2.16 11.504 2.16 8.848 0 17.536-3.68 23.712-10.527l120.592-133.12 94.431 130.432a31.918 31.918 0 0 0 25.68 13.215h.224a31.98 31.98 0 0 0 25.664-12.912l94.816-127.344 93.184 127.152a31.993 31.993 0 0 0 25.809 13.088 32.028 32.028 0 0 0 25.808-13.055l95.569-130.288 118 132.624c8.816 9.904 22.944 13.376 35.28 8.624 12.4-4.72 20.624-16.624 20.624-29.905V445.456C927.696 199.776 741.2-.128 511.984-.128zm351.711 908.16l-88.402-99.376c-6.432-7.216-15.808-11.311-25.407-10.687a32.105 32.105 0 0 0-24.32 13.024l-93.12 127.008-93.008-126.912A31.975 31.975 0 0 0 513.758 798h-.127a31.935 31.935 0 0 0-25.664 12.912l-94.689 127.152-92-127.088c-5.664-7.807-14.528-12.655-24.16-13.151-.592-.032-1.151-.065-1.743-.065a31.984 31.984 0 0 0-23.712 10.528l-91.376 100.848v-463.68c0-210.4 157.776-381.601 351.68-381.601 193.937 0 351.713 171.184 351.713 381.6V908.03h.015zM671.997 352.16c-35.28 0-63.84 28.592-63.84 63.808 0 35.248 28.56 63.84 63.84 63.84s63.84-28.592 63.84-63.84c0-35.216-28.56-63.808-63.84-63.808zm-320 0c-35.28 0-63.84 28.592-63.84 63.808 0 35.248 28.576 63.84 63.84 63.84s63.84-28.592 63.84-63.84c0-35.216-28.56-63.808-63.84-63.808z" />
                                             </svg>
                                         @else
                                             @php
@@ -266,315 +262,212 @@
                                             <img src="{{ $photo }}" class="w-full h-full object-cover">
                                         @endif
                                     </div>
-                                    <div class="min-w-0">
-                                        <div class="flex items-center gap-2">
-                                            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <p class="text-base font-bold text-gray-900 dark:text-white">
                                                 @if($loan->user->person_type === 'juridica' && $loan->user->business_name)
                                                     {{ $loan->user->business_name }}
                                                 @else
                                                     {{ $loan->user->name }}
                                                 @endif
                                             </p>
-                                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest {{ $loan->user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
-                                                {{ $loan->user->person_type === 'juridica' ? 'JUR' : 'NAT' }}
+                                            <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest {{ $loan->user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                                                {{ $loan->user->person_type === 'juridica' ? 'JURÍDICA' : 'NATURAL' }}
                                             </span>
                                         </div>
-                                        @if($loan->user->person_type === 'juridica' && $loan->user->business_name)
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">Rep: {{ $loan->user->name }}</p>
-                                        @endif
-                                        <div class="space-y-1 mt-1">
-                                            <!-- Correo -->
-                                            <div class="flex items-center gap-1.5">
-                                                <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-                                                    <rect x="7.904" y="119.947" style="fill:#5EBAE7;" width="496.195" height="272.109"/>
-                                                    <polygon style="fill:#36A9E1;" points="256,280.01 23.91,127.951 7.904,135.954 256,312.022 352.037,223.987 "/>
-                                                    <path style="fill:#1D1D1B;" d="M0,112.043v287.913h512V112.043H0z M477.266,127.851L256,270.603L34.733,127.851H477.266z M15.807,384.149V134.452L256,289.414l240.193-154.962v249.696H15.807V384.149z"/>
-                                                    <g>
-                                                        <rect x="215.982" y="344.138" style="fill:#FFFFFF;" width="16.007" height="15.807"/>
-                                                        <rect x="247.997" y="344.138" style="fill:#FFFFFF;" width="16.006" height="15.807"/>
-                                                        <rect x="280.013" y="344.138" style="fill:#FFFFFF;" width="16.007" height="15.807"/>
-                                                    </g>
-                                                </svg>
-                                                <a href="mailto:{{ $loan->user->email }}" class="text-[10px] text-gray-500 dark:text-gray-500 hover:text-blue-500 transition-colors truncate" title="Enviar correo">
-                                                    {{ $loan->user->email }}
-                                                </a>
-                                            </div>
-                                            <!-- WhatsApp -->
-                                            <div class="flex items-center gap-1.5">
-                                                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 31C23.732 31 30 24.732 30 17C30 9.26801 23.732 3 16 3C8.26801 3 2 9.26801 2 17C2 19.5109 2.661 21.8674 3.81847 23.905L2 31L9.31486 29.3038C11.3014 30.3854 13.5789 31 16 31ZM16 28.8462C22.5425 28.8462 27.8462 23.5425 27.8462 17C27.8462 10.4576 22.5425 5.15385 16 5.15385C9.45755 5.15385 4.15385 10.4576 4.15385 17C4.15385 19.5261 4.9445 21.8675 6.29184 23.7902L5.23077 27.7692L9.27993 26.7569C11.1894 28.0746 13.5046 28.8462 16 28.8462Z" fill="#BFC8D0"/>
-                                                    <path d="M28 16C28 22.6274 22.6274 28 16 28C13.4722 28 11.1269 27.2184 9.19266 25.8837L5.09091 26.9091L6.16576 22.8784C4.80092 20.9307 4 18.5589 4 16C4 9.37258 9.37258 4 16 4C22.6274 4 28 9.37258 28 16Z" fill="url(#paint0_linear_87_7264_loan_{{ $loan->id }})"/>
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 30C23.732 30 30 23.732 30 16C30 8.26801 23.732 2 16 2C8.26801 2 2 8.26801 2 16C2 18.5109 2.661 20.8674 3.81847 22.905L2 30L9.31486 28.3038C11.1894 29.3854 13.5046 30 16 30ZM16 27.8462C22.5425 27.8462 27.8462 22.5425 27.8462 16C27.8462 9.45755 22.5425 4.15385 16 4.15385C9.45755 4.15385 4.15385 9.45755 4.15385 16C4.15385 18.5261 4.9445 20.8675 6.29184 22.7902L5.23077 26.7692L9.27993 25.7569C11.1894 27.0746 13.5046 27.8462 16 27.8462Z" fill="white"/>
-                                                    <path d="M12.5 9.49989C12.1672 8.83131 11.6565 8.8905 11.1407 8.8905C10.2188 8.8905 8.78125 9.99478 8.78125 12.05C8.78125 13.7343 9.52345 15.578 12.0244 18.3361C14.438 20.9979 17.6094 22.3748 20.2422 22.3279C22.875 22.2811 23.4167 20.0154 23.4167 19.2503C23.4167 18.9112 23.2062 18.742 23.0613 18.696C22.1641 18.2654 20.5093 17.4631 20.1328 17.3124C19.7563 17.1617 19.5597 17.3656 19.4375 17.4765C19.0961 17.8018 18.4193 18.7608 18.1875 18.9765C17.9558 19.1922 17.6103 19.083 17.4665 19.0015C16.9374 18.7892 15.5029 18.1511 14.3595 17.0426C12.9453 15.6718 12.8623 15.2001 12.5959 14.7803C12.3828 14.4444 12.5392 14.2384 12.6172 14.1483C12.9219 13.7968 13.3426 13.254 13.5313 12.9843C13.7199 12.7145 13.5702 12.305 13.4803 12.05C13.0938 10.953 12.7663 10.0347 12.5 9.49989Z" fill="white"/>
-                                                    <defs>
-                                                        <linearGradient id="paint0_linear_87_7264_loan_{{ $loan->id }}" x1="26.5" y1="7" x2="4" y2="28" gradientUnits="userSpaceOnUse">
-                                                            <stop stop-color="#5BD066"/>
-                                                            <stop offset="1" stop-color="#27B43E"/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                </svg>
-                                                <a href="https://wa.me/51{{ preg_replace('/\D/', '', $loan->user->phone) }}" target="_blank" class="text-[10px] text-gray-500 dark:text-gray-500 hover:text-green-500 transition-colors" title="Enviar WhatsApp">
-                                                    {{ $loan->user->phone }}
-                                                </a>
-                                            </div>
+                                        <div class="flex items-center gap-4 text-[10px]">
+                                            <span class="text-gray-500 dark:text-gray-500">
+                                                @if($loan->user->person_type === 'juridica')
+                                                    RUC: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->user->ruc ?? '—' }}</span>
+                                                @else
+                                                    DNI: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->user->dni ?? '—' }}</span>
+                                                @endif
+                                            </span>
+                                            <a href="mailto:{{ $loan->user->email }}" class="text-gray-500 dark:text-gray-500 hover:text-blue-500 transition-colors">{{ $loan->user->email }}</a>
+                                            <a href="https://wa.me/51{{ preg_replace('/\D/', '', $loan->user->phone) }}" target="_blank" class="text-gray-500 dark:text-gray-500 hover:text-green-500 transition-colors">{{ $loan->user->phone }}</a>
                                         </div>
-                                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-600 mt-0.5">
-                                            @if($loan->user->person_type === 'juridica')
-                                                RUC: {{ $loan->user->ruc ?? '—' }}
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-6">
+                                    <div class="text-right">
+                                        <div class="flex items-center gap-2 justify-end mb-1">
+                                            <p class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
+                                                {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2) }}
+                                            </p>
+                                            <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded font-black uppercase tracking-widest">
+                                                {{ $loan->type === 'cuotas' ? 'CUOTAS' : 'ÚNICO' }}
+                                            </span>
+                                        </div>
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">
+                                            {{ $loan->created_at->format('d/m/Y H:i') }}
+                                        </p>
+                                    </div>
+                                    @if($loan->status === 'pending')
+                                        <div class="flex items-center gap-3 pl-6 border-l border-gray-200 dark:border-gray-800">
+                                            <button type="button"
+                                                    onclick="openCounterOfferModal({{ json_encode([
+                                                        'id' => $loan->id,
+                                                        'amount' => $loan->amount,
+                                                        'currency' => $loan->currency,
+                                                        'type' => $loan->type,
+                                                        'months' => $loan->months,
+                                                        'payment_days' => $loan->payment_days,
+                                                        'interest_rate' => $loan->interest_rate,
+                                                        'system' => $loan->amortization_system ?? 'frances',
+                                                        'monthly_payment' => $loan->monthly_payment ?? 0,
+                                                        'payment_frequency' => $loan->payment_frequency ?? 'mensual'
+                                                    ]) }})"
+                                                    class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]"
+                                                    title="Contra-oferta">
+                                                <svg class="w-6 h-6" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="currentColor" fill="none"><polyline points="46.81 40.84 46.81 56.26 9.19 56.26 9.19 20.6 21.15 7.74 46.81 7.74 46.81 29.71" stroke-linecap="round"/><polyline points="21.17 7.74 21.15 20.6 9.19 20.6"/><line x1="14.34" y1="47.67" x2="31.35" y2="47.67"/><line x1="14.34" y1="41.14" x2="41.35" y2="41.14"/><line x1="14.34" y1="35.04" x2="35.35" y2="35.04"/><line x1="14.34" y1="28.94" x2="41.35" y2="28.94"/><polyline points="52.21 30.24 57.01 35.04 52.21 39.84" stroke-linecap="round"/><line x1="57.01" y1="35.04" x2="41.38" y2="35.04" stroke-linecap="round"/></svg>
+                                            </button>
+                                            <button type="button"
+                                                    onclick="openApproveModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                                    class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95]"
+                                                    title="Aprobar">
+                                                <svg class="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20,2H6A2,2,0,0,0,4,4V17H4a2,2,0,0,0-2,2H2a3,3,0,0,0,3,3H19.5A2.5,2.5,0,0,0,22,19.5V4A2,2,0,0,0,20,2Z" opacity="0.3"/><path d="M19,22v0H5a3,3,0,0,1-3-3H2a2,2,0,0,1,2-2H15a2,2,0,0,1,2,2v.5A2.52,2.52,0,0,0,19,22ZM12.71,11.71l4-4a1,1,0,1,0-1.42-1.42L12,9.59l-1.29-1.3A1,1,0,0,0,9.29,9.71l2,2a1,1,0,0,0,1.42,0Z"/></svg>
+                                            </button>
+                                            <button type="button"
+                                                    onclick="openRejectModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                                    class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95]"
+                                                    title="Rechazar">
+                                                <svg class="w-6 h-6" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 1.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h4.5a.75.75 0 010 1.5h-4.5A2.25 2.25 0 011 13.75V2.25A2.25 2.25 0 013.25 0h6.293c.331 0 .65.132.884.366l4.207 4.207c.234.235.366.553.366.884V7.5a.75.75 0 01-1.5 0V6H9.75A.75.75 0 019 5.25V1.5H3.25zm7.25 1.06l1.94 1.94H10.5V2.56z"/><path d="M11.53 14.53l.97-.97.97.97a.75.75 0 101.06-1.06l-.97-.97.97-.97a.75.75 0 10-1.06-1.06l-.97.97-.97-.97a.75.75 0 10-1.06 1.06l.97.97-.97.97a.75.75 0 101.06 1.06z"/></svg>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <div class="pl-6 border-l border-gray-200 dark:border-gray-800">
+                                            <span class="text-xs font-black uppercase tracking-widest
+                                                        {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
+                                                        {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
+                                                        {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
+                                                {{ match($loan->status) {
+                                                    'approved' => 'APROBADO',
+                                                    'pending'  => 'EN REVISIÓN',
+                                                    'rejected' => 'RECHAZADO',
+                                                    'paid'     => 'PAGADO',
+                                                    default    => $loan->status
+                                                } }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            @if($loan->user->clientProfile)
+                                @php $profile = $loan->user->clientProfile; @endphp
+
+                                <!-- Fila 2: Perfil Académico y Laboral -->
+                                <div class="grid grid-cols-4 gap-6 py-4 border-y border-gray-100 dark:border-gray-800">
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Educación</p>
+                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">{{ $profile->academic_status }}</p>
+                                        @if($profile->institution)
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->institution }}</p>
+                                        @endif
+                                        @if($profile->career)
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->career }}</p>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Trabajo</p>
+                                        @if($profile->is_employed)
+                                            <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">{{ ucfirst($profile->employment_type) }}</p>
+                                            @if($profile->employment_type === 'dependiente')
+                                                @if($profile->workplace)
+                                                    <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->workplace }}</p>
+                                                @endif
+                                                @if($profile->job_title)
+                                                    <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->job_title }}</p>
+                                                @endif
+                                            @elseif($profile->independent_type)
+                                                <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ ucfirst($profile->independent_type) }}</p>
+                                            @endif
+                                        @else
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">No trabaja</p>
+                                        @endif
+                                        <p class="text-[10px] text-green-600 dark:text-green-500 font-bold leading-tight mt-1">S/ {{ number_format($profile->monthly_income, 2) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Estado Civil</p>
+                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">
+                                            {{ match($profile->marital_status) {
+                                                'soltero' => 'Soltero/a',
+                                                'casado_separado' => 'Casado (B.S)',
+                                                'casado_compartido' => 'Casado (B.C)',
+                                                default => $profile->marital_status
+                                            } }}
+                                        </p>
+                                        @if($profile->marital_status === 'casado_compartido' && ($profile->spouse_first_name || $profile->spouse_last_name))
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->spouse_first_name }} {{ $profile->spouse_last_name }}</p>
+                                            @if($profile->spouse_dni)
+                                                <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">DNI: {{ $profile->spouse_dni }}</p>
+                                            @endif
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Hijos</p>
+                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
+                                            @if($profile->has_children)
+                                                {{ $profile->children_count }} {{ $profile->children_count == 1 ? 'hijo' : 'hijos' }}
                                             @else
-                                                DNI: {{ $loan->user->dni ?? '—' }}
+                                                Sin hijos
                                             @endif
                                         </p>
+                                        @if($profile->instagram)
+                                            <a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" class="text-[9px] text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors leading-tight flex items-center gap-1 mt-1">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                                {{ $profile->instagram }}
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="space-y-1">
-                                    <div class="flex items-center gap-2">
-                                        <p class="text-xl font-black text-gray-900 dark:text-white tracking-tighter">
-                                            {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2) }}
+
+                                <!-- Fila 3: Detalles del Préstamo -->
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Destino</p>
+                                        <p class="text-[10px] font-bold text-gray-900 dark:text-white uppercase leading-tight mb-0.5">{{ $loan->bank_name }}</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ ucfirst($loan->account_type) }} • {{ $loan->account_number }}</p>
+                                        @if($loan->cci)
+                                            <p class="text-[8px] font-mono text-gray-400 dark:text-gray-600 leading-tight mt-0.5">{{ $loan->cci }}</p>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Términos</p>
+                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">
+                                            @if($loan->type === 'cuotas')
+                                                {{ $loan->months }} meses
+                                                @if($loan->amortization_system === 'frances')
+                                                    <span class="text-[9px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
+                                                @endif
+                                            @else
+                                                {{ $loan->payment_days }} días
+                                            @endif
                                         </p>
-                                        <span
-                                            class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-black uppercase tracking-widest">
-                                            {{ $loan->type === 'cuotas' ? 'Cuotas' : 'Unico' }}
-                                        </span>
+                                        <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight">
+                                            Cuota: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
+                                        </p>
+                                        <p class="text-[9px] text-green-600 dark:text-green-500 font-bold leading-tight mt-0.5">
+                                            Ganancia: {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}
+                                        </p>
                                     </div>
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">
-                                        Solicitado el {{ $loan->created_at->format('d/m/Y H:i') }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Columna 2: Detalles del Solicitante -->
-                            <div class="flex-1 px-0 lg:px-8">
-                                @if($loan->user->clientProfile)
-                                    @php $profile = $loan->user->clientProfile; @endphp
-
-                                    <!-- Información Académica y Laboral -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Educación</p>
-                                            <div class="space-y-1">
-                                                <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                                    {{ $profile->academic_status }}
-                                                </p>
-                                                @if($profile->institution)
-                                                    <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                        {{ $profile->institution }}
-                                                    </p>
-                                                @endif
-                                                @if($profile->career)
-                                                    <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                        {{ $profile->career }}
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Situación Laboral</p>
-                                            <div class="space-y-1">
-                                                @if($profile->is_employed)
-                                                    <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                                        {{ ucfirst($profile->employment_type) }}
-                                                    </p>
-                                                    @if($profile->employment_type === 'dependiente')
-                                                        @if($profile->workplace)
-                                                            <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                                {{ $profile->workplace }}
-                                                            </p>
-                                                        @endif
-                                                        @if($profile->job_title)
-                                                            <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                                Cargo: {{ $profile->job_title }}
-                                                            </p>
-                                                        @endif
-                                                    @elseif($profile->employment_type === 'independiente' && $profile->independent_type)
-                                                        <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                            {{ ucfirst($profile->independent_type) }}
-                                                        </p>
-                                                    @endif
-                                                @else
-                                                    <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                        No trabaja actualmente
-                                                    </p>
-                                                @endif
-                                                <p class="text-[10px] text-green-600 dark:text-green-500 font-bold leading-tight">
-                                                    Ingreso: S/ {{ number_format($profile->monthly_income, 2) }}
-                                                </p>
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Motivo</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 italic leading-relaxed">
+                                            "{{ $loan->reason }}"
+                                        </p>
                                     </div>
-
-                                    <!-- Información Personal y Financiera -->
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Estado Civil</p>
-                                            <div class="space-y-1">
-                                                <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                                    {{ match($profile->marital_status) {
-                                                        'soltero' => 'Soltero/a',
-                                                        'casado_separado' => 'Casado/a (Bienes Separados)',
-                                                        'casado_compartido' => 'Casado/a (Bienes Compartidos)',
-                                                        default => $profile->marital_status
-                                                    } }}
-                                                </p>
-                                                @if($profile->marital_status === 'casado_compartido')
-                                                    @if($profile->spouse_first_name || $profile->spouse_last_name)
-                                                        <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                            Cónyuge: {{ $profile->spouse_first_name }} {{ $profile->spouse_last_name }}
-                                                        </p>
-                                                    @endif
-                                                    @if($profile->spouse_dni)
-                                                        <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                            DNI: {{ $profile->spouse_dni }}
-                                                        </p>
-                                                    @endif
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Hijos</p>
-                                            <div class="space-y-1">
-                                                @if($profile->has_children)
-                                                    <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                                        {{ $profile->children_count }} {{ $profile->children_count == 1 ? 'hijo' : 'hijos' }}
-                                                    </p>
-                                                @else
-                                                    <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">
-                                                        Sin hijos
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Redes</p>
-                                            <div class="space-y-1">
-                                                @if($profile->instagram)
-                                                    <a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" class="text-[10px] text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors leading-tight flex items-center gap-1">
-                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                                                        {{ $profile->instagram }}
-                                                    </a>
-                                                @else
-                                                    <p class="text-[10px] text-gray-400 dark:text-gray-600 leading-tight">—</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Destino y Préstamo -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Destino del Préstamo</p>
-                                            <div class="space-y-1">
-                                                <p class="text-xs font-bold text-gray-900 dark:text-white uppercase leading-tight">{{ $loan->bank_name }}</p>
-                                                <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">{{ ucfirst($loan->account_type) }} • {{ $loan->account_number }}</p>
-                                                @if($loan->cci)
-                                                    <p class="text-[9px] font-mono text-gray-400 dark:text-gray-600 leading-tight">CCI: {{ $loan->cci }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Términos del Préstamo</p>
-                                            <div class="space-y-1">
-                                                <p class="text-xs text-gray-900 dark:text-white font-bold">
-                                                    @if($loan->type === 'cuotas')
-                                                        {{ $loan->months }} meses
-                                                        @if($loan->amortization_system === 'frances')
-                                                            <span class="text-[10px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
-                                                        @endif
-                                                    @else
-                                                        {{ $loan->payment_days }} días
-                                                    @endif
-                                                </p>
-                                                <div class="flex flex-col gap-0.5">
-                                                    <p class="text-[10px] text-gray-600 dark:text-gray-400">
-                                                        Cuota: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
-                                                        @if($loan->type === 'cuotas')
-                                                            / {{ $loan->payment_frequency === 'diario' ? 'día' : ($loan->payment_frequency === 'quincenal' ? 'quincena' : ($loan->payment_frequency === 'semanal' ? 'semana' : 'mes')) }}
-                                                        @endif
-                                                    </p>
-                                                    <p class="text-[10px] text-green-600 dark:text-green-500 font-bold">
-                                                        Ganancia: {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}
-                                                    </p>
-                                                </div>
-                                                <p class="text-[10px] text-gray-500 dark:text-gray-500 italic mt-1 leading-relaxed">
-                                                    "{{ Str::limit($loan->reason, 60) }}"
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="text-center py-8">
-                                        <p class="text-sm text-gray-400 dark:text-gray-600 italic">Perfil incompleto</p>
-                                    </div>
-                                @endif
-                            </div>
-
-                        <!-- Columna 3: Acciones -->
-                        <div class="w-full lg:w-1/4 flex items-center justify-between lg:justify-end pt-5 mt-2 lg:pt-0 lg:mt-0 border-t border-gray-100 dark:border-gray-800 lg:border-t-0">
-                            <span class="lg:hidden text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-600">Acción / Estado</span>
-                            @if($loan->status === 'pending')
-                                <div class="flex items-center gap-6">
-                                    <!-- Contra-oferta -->
-                                    <button type="button"
-                                            onclick="openCounterOfferModal({{ json_encode([
-                                                'id' => $loan->id,
-                                                'amount' => $loan->amount,
-                                                'currency' => $loan->currency,
-                                                'type' => $loan->type,
-                                                'months' => $loan->months,
-                                                'payment_days' => $loan->payment_days,
-                                                'interest_rate' => $loan->interest_rate,
-                                                'system' => $loan->amortization_system ?? 'frances',
-                                                'monthly_payment' => $loan->monthly_payment ?? 0,
-                                                'payment_frequency' => $loan->payment_frequency ?? 'mensual'
-                                            ]) }})"
-                                            class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none"
-                                            title="Enviar Contra-oferta">
-                                        <svg class="w-6 h-6 block" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="currentColor" fill="none"><polyline points="46.81 40.84 46.81 56.26 9.19 56.26 9.19 20.6 21.15 7.74 46.81 7.74 46.81 29.71" stroke-linecap="round"/><polyline points="21.17 7.74 21.15 20.6 9.19 20.6"/><line x1="14.34" y1="47.67" x2="31.35" y2="47.67"/><line x1="14.34" y1="41.14" x2="41.35" y2="41.14"/><line x1="14.34" y1="35.04" x2="35.35" y2="35.04"/><line x1="14.34" y1="28.94" x2="41.35" y2="28.94"/><polyline points="52.21 30.24 57.01 35.04 52.21 39.84" stroke-linecap="round"/><line x1="57.01" y1="35.04" x2="41.38" y2="35.04" stroke-linecap="round"/></svg>
-                                    </button>
-
-                                    <!-- Aprobar -->
-                                    <button type="button"
-                                            onclick="openApproveModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
-                                            class="text-green-600 hover:text-green-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none"
-                                            title="Aprobar">
-                                        <svg class="w-6 h-6 block" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20,2H6A2,2,0,0,0,4,4V17H4a2,2,0,0,0-2,2H2a3,3,0,0,0,3,3H19.5A2.5,2.5,0,0,0,22,19.5V4A2,2,0,0,0,20,2Z" opacity="0.3"/><path d="M19,22v0H5a3,3,0,0,1-3-3H2a2,2,0,0,1,2-2H15a2,2,0,0,1,2,2v.5A2.52,2.52,0,0,0,19,22ZM12.71,11.71l4-4a1,1,0,1,0-1.42-1.42L12,9.59l-1.29-1.3A1,1,0,0,0,9.29,9.71l2,2a1,1,0,0,0,1.42,0Z"/></svg>
-                                    </button>
-
-                                    <!-- Rechazar -->
-                                    <button type="button"
-                                            onclick="openRejectModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
-                                            class="text-red-600 hover:text-red-400 transition-colors active:scale-[0.95] flex items-center justify-center p-0 m-0 leading-none"
-                                            title="Rechazar">
-                                        <svg class="w-6 h-6 block" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 1.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h4.5a.75.75 0 010 1.5h-4.5A2.25 2.25 0 011 13.75V2.25A2.25 2.25 0 013.25 0h6.293c.331 0 .65.132.884.366l4.207 4.207c.234.235.366.553.366.884V7.5a.75.75 0 01-1.5 0V6H9.75A.75.75 0 019 5.25V1.5H3.25zm7.25 1.06l1.94 1.94H10.5V2.56z"/><path d="M11.53 14.53l.97-.97.97.97a.75.75 0 101.06-1.06l-.97-.97.97-.97a.75.75 0 10-1.06-1.06l-.97.97-.97-.97a.75.75 0 10-1.06 1.06l.97.97-.97.97a.75.75 0 101.06 1.06z"/></svg>
-                                    </button>
                                 </div>
                             @else
-                                <span class="text-xs font-black uppercase tracking-widest
-                                            {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
-                                            {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
-                                            {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
-                                    {{ match($loan->status) {
-                                        'approved' => 'Aprobado',
-                                        'pending'  => 'En revisión',
-                                        'rejected' => 'Rechazado',
-                                        'paid'     => 'Pagado',
-                                        default    => $loan->status
-                                    } }}
-                                </span>
+                                <div class="text-center py-6 border-y border-gray-100 dark:border-gray-800">
+                                    <p class="text-sm text-gray-400 dark:text-gray-600 italic">Perfil incompleto</p>
+                                </div>
                             @endif
-                        </div>
-
                         </div>
                     </div>
                 @empty
-                    <div
-                        class="py-20 text-center">
-                        <p class="text-gray-400 dark:text-gray-500 text-sm font-medium">No se encontraron préstamos en esta
-                            categoría.</p>
+                    <div class="py-16 text-center">
+                        <p class="text-sm text-gray-400 dark:text-gray-600 italic">No hay préstamos para mostrar.</p>
                     </div>
                 @endforelse
             </div>
