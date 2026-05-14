@@ -29,35 +29,49 @@
         @endif
 
         <!-- Carousel de Cajas -->
-        <div class="relative mb-16">
+        <div class="relative mb-16 group/carousel">
+            <!-- Navigation Arrows -->
+            <button onclick="scrollCarousel(-1)"
+                class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button onclick="scrollCarousel(1)"
+                class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
             <div id="cashboxCarousel"
-                class="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[10%] md:px-[30%] py-4">
+                class="flex gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[10%] md:px-[30%] py-4">
                 @forelse($cashboxes as $cb)
-                    <div class="cashbox-card flex-shrink-0 w-full max-w-lg snap-center transition-all duration-500 scale-90 opacity-40 hover:opacity-100"
+                    <div class="cashbox-card flex-shrink-0 w-full max-w-lg snap-center transition-all duration-700 scale-90 opacity-20"
                         data-id="{{ $cb->id }}" data-movements="{{ json_encode($cb->movements) }}">
                         <div
-                            class="relative bg-white dark:bg-gray-900 rounded-[3rem] border border-gray-100 dark:border-gray-800 p-10 shadow-2xl overflow-hidden group">
+                            class="relative bg-white dark:bg-gray-900 rounded-[3.5rem] border border-gray-100 dark:border-gray-800 p-12 overflow-hidden group">
                             <!-- Color Accent -->
-                            <div class="absolute top-0 left-0 w-full h-2 transition-transform duration-500 group-hover:scale-y-150"
-                                style="background-color: {{ $cb->color }}"></div>
+                            <div class="absolute top-0 left-0 w-full h-1.5" style="background-color: {{ $cb->color }}"></div>
 
-                            <div class="flex justify-between items-start mb-10">
+                            <div class="flex justify-between items-start mb-12">
                                 <div>
                                     <h3
-                                        class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-1">
-                                        {{ $cb->name }}</h3>
-                                    <div class="flex items-center gap-2">
+                                        class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-1 leading-none">
+                                        {{ $cb->name }}
+                                    </h3>
+                                    <div class="flex items-center gap-3">
                                         <span
-                                            class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $cb->bank_name }}</span>
-                                        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                            class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $cb->bank_name }}</span>
+                                        <span class="w-1 h-1 rounded-full bg-gray-200 dark:bg-gray-800"></span>
                                         <span
-                                            class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $cb->currency }}</span>
+                                            class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
                                     </div>
                                 </div>
                                 <div class="flex gap-4">
                                     <button onclick="openCashboxModal({{ json_encode($cb) }})"
                                         class="text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
@@ -66,7 +80,7 @@
                                         onsubmit="return confirm('¿Eliminar esta caja?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-gray-300 hover:text-red-500 transition-colors">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
@@ -75,30 +89,33 @@
                                 </div>
                             </div>
 
-                            <div class="space-y-8">
+                            <div class="space-y-10">
                                 <div>
-                                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-2">Saldo
+                                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-[0.3em] mb-3 ml-1">Saldo
                                         Disponible</p>
-                                    <p class="text-5xl font-black text-gray-900 dark:text-white tracking-tighter tabular-nums">
+                                    <p
+                                        class="text-6xl font-black text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
                                         <span
-                                            class="text-2xl font-bold opacity-30 mr-1">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>{{ number_format($cb->balance, 2) }}
+                                            class="text-3xl font-bold opacity-20 mr-1">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>{{ number_format($cb->balance, 2) }}
                                     </p>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-50 dark:border-gray-800">
+                                <div class="grid grid-cols-2 gap-10 pt-10 border-t border-gray-50 dark:border-gray-800/50">
                                     @if($cb->account_number)
                                         <div>
-                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">N° Cuenta
-                                            </p>
+                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1.5">N°
+                                                Cuenta</p>
                                             <p class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tight">
-                                                {{ $cb->account_number }}</p>
+                                                {{ $cb->account_number }}
+                                            </p>
                                         </div>
                                     @endif
                                     @if($cb->cci)
                                         <div>
-                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">CCI</p>
+                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1.5">CCI</p>
                                             <p class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tight">
-                                                {{ $cb->cci }}</p>
+                                                {{ $cb->cci }}
+                                            </p>
                                         </div>
                                     @endif
                                 </div>
@@ -355,23 +372,23 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
 
                 const html = `
-                        <div class="px-10 py-8 flex items-center justify-between group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
-                            <div class="flex items-center gap-6">
-                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${isIncome ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${isIncome ? 'M19 14l-7 7m0 0l-7-7m7 7V3' : 'M5 10l7-7m0 0l7 7m-7-7v18'}" />
-                                    </svg>
+                                <div class="px-10 py-8 flex items-center justify-between group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${isIncome ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${isIncome ? 'M19 14l-7 7m0 0l-7-7m7 7V3' : 'M5 10l7-7m0 0l7 7m-7-7v18'}" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-base font-bold text-gray-900 dark:text-white">${m.description}</p>
+                                            <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-1">${date} • ${m.reference_type || 'Manual'}</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-lg font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                        ${isIncome ? '+' : '-'} S/ ${parseFloat(m.amount).toFixed(2)}
+                                    </p>
                                 </div>
-                                <div>
-                                    <p class="text-base font-bold text-gray-900 dark:text-white">${m.description}</p>
-                                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-1">${date} • ${m.reference_type || 'Manual'}</p>
-                                </div>
-                            </div>
-                            <p class="text-lg font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                ${isIncome ? '+' : '-'} S/ ${parseFloat(m.amount).toFixed(2)}
-                            </p>
-                        </div>
-                    `;
+                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
@@ -384,6 +401,11 @@
         // Init
         if (cards.length > 0) {
             setTimeout(updateActiveCard, 100);
+        }
+
+        function scrollCarousel(direction) {
+            const cardWidth = cards[0].offsetWidth + 48; // width + gap
+            carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
         }
 
         function toggleCustomBank(value) {
