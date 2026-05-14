@@ -229,22 +229,22 @@
                                 <label
                                     class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-2">Entidad</label>
                                 <select id="cb_bank_select" required onchange="toggleCustomBank(this.value)"
-                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all appearance-none cursor-pointer">
-                                    <option value="" disabled selected>Elegir banco</option>
-                                    <option value="BCP">BCP</option>
-                                    <option value="Interbank">Interbank</option>
-                                    <option value="BBVA">BBVA</option>
-                                    <option value="Scotiabank">Scotiabank</option>
-                                    <option value="BanBif">BanBif</option>
-                                    <option value="Banco de la Nación">Banco de la Nación</option>
-                                    <option value="Mibanco">Mibanco</option>
-                                    <option value="GNB">GNB</option>
-                                    <option value="Falabella">Falabella</option>
-                                    <option value="Ripley">Ripley</option>
-                                    <option value="Pichincha">Pichincha</option>
-                                    <option value="Comercio">Comercio</option>
-                                    <option value="Efectivo">Efectivo</option>
-                                    <option value="Otros">Otros</option>
+                                    class="w-full bg-transparent dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="dark:bg-gray-950">Elegir banco</option>
+                                    <option value="BCP" class="dark:bg-gray-950">BCP</option>
+                                    <option value="Interbank" class="dark:bg-gray-950">Interbank</option>
+                                    <option value="BBVA" class="dark:bg-gray-950">BBVA</option>
+                                    <option value="Scotiabank" class="dark:bg-gray-950">Scotiabank</option>
+                                    <option value="BanBif" class="dark:bg-gray-950">BanBif</option>
+                                    <option value="Banco de la Nación" class="dark:bg-gray-950">Banco de la Nación</option>
+                                    <option value="Mibanco" class="dark:bg-gray-950">Mibanco</option>
+                                    <option value="GNB" class="dark:bg-gray-950">GNB</option>
+                                    <option value="Falabella" class="dark:bg-gray-950">Falabella</option>
+                                    <option value="Ripley" class="dark:bg-gray-950">Ripley</option>
+                                    <option value="Pichincha" class="dark:bg-gray-950">Pichincha</option>
+                                    <option value="Comercio" class="dark:bg-gray-950">Comercio</option>
+                                    <option value="Efectivo" class="dark:bg-gray-950">Efectivo</option>
+                                    <option value="Otros" class="dark:bg-gray-950">Otros</option>
                                 </select>
                                 <input type="hidden" name="bank_name" id="cb_bank">
                             </div>
@@ -279,8 +279,6 @@
                                         <div id="colorPreview"
                                             class="absolute inset-y-3 left-0 w-full rounded-2xl transition-all border border-gray-100 dark:border-white/10 flex items-center justify-center"
                                             style="background-color: #000000">
-                                            <span
-                                                class="text-[8px] font-black text-white mix-blend-difference uppercase tracking-widest opacity-0 group-hover/color:opacity-100 transition-opacity">Personalizar</span>
                                         </div>
                                     </div>
                                 </div>
@@ -419,21 +417,21 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                    <div class="flex items-center gap-8">
-                                        <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                        <div>
-                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                            ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                        </p>
-                                    </div>
-                                </div>
-                            `;
+                                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                <div class="flex items-center gap-8">
+                                                    <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                                    <div>
+                                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                                        ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
@@ -535,9 +533,5 @@
             document.getElementById('cashboxModal').classList.add('hidden');
             document.body.style.overflow = '';
         }
-
-        document.getElementById('cashboxModal').addEventListener('click', function (e) {
-            if (e.target === this) closeCashboxModal();
-        });
     </script>
 @endsection
