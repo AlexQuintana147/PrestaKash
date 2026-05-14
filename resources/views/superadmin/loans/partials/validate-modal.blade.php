@@ -129,11 +129,18 @@
 
 <script>
 let voucherScale = 1;
+let _voucherFromModal = false;
 
-function openVoucherLightbox() {
+function openVoucherLightbox(src) {
     voucherScale = 1;
-    const src = document.getElementById('modal_voucher_img').src;
-    document.getElementById('voucherLightboxImg').src = src;
+    // Si se pasa src directo (desde fila), usarlo; si no, leer del modal de validación
+    if (src) {
+        document.getElementById('voucherLightboxImg').src = src;
+        _voucherFromModal = false;
+    } else {
+        document.getElementById('voucherLightboxImg').src = document.getElementById('modal_voucher_img').src;
+        _voucherFromModal = true;
+    }
     document.getElementById('voucherLightboxImg').style.transform = 'scale(1)';
     document.getElementById('voucherZoomLevel').textContent = '100%';
     document.getElementById('voucherLightbox').classList.remove('hidden');
@@ -142,7 +149,10 @@ function openVoucherLightbox() {
 
 function closeVoucherLightbox() {
     document.getElementById('voucherLightbox').classList.add('hidden');
-    document.body.style.overflow = 'hidden'; // mantener el modal de validación bloqueado
+    // Solo mantener overflow:hidden si venía del modal de validación
+    if (!_voucherFromModal) {
+        document.body.style.overflow = '';
+    }
 }
 
 function closeLightboxBackdrop(e) {
