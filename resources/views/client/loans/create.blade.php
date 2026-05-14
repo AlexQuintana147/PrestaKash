@@ -200,12 +200,12 @@
                                 <input type="range" name="months" id="months" min="3" max="24"
                                     value="{{ old('months', 12) }}"
                                     class="w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer">
-                                <div class="flex justify-between text-[10px] text-gray-300 dark:text-gray-700 mt-1.5">
-                                    <span>3</span>
-                                    <span>6</span>
-                                    <span>12</span>
-                                    <span>18</span>
-                                    <span>24</span>
+                                <div class="relative h-4 text-[10px] text-gray-300 dark:text-gray-700 mt-1.5">
+                                    <span class="absolute left-0">3</span>
+                                    <span class="absolute left-[14.28%] -translate-x-1/2">6</span>
+                                    <span class="absolute left-[42.85%] -translate-x-1/2">12</span>
+                                    <span class="absolute left-[71.42%] -translate-x-1/2">18</span>
+                                    <span class="absolute right-0">24</span>
                                 </div>
                             </div>
 
