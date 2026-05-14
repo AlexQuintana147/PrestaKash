@@ -89,7 +89,7 @@
                                     <input type="date" name="disbursement_date" id="disbursement_date"
                                         min="{{ date('Y-m-d', strtotime('+1 day')) }}"
                                         value="{{ old('disbursement_date', date('Y-m-d', strtotime('+1 day'))) }}"
-                                        class="w-full pl-0 pr-10 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-all cursor-pointer appearance-none">
+                                        class="w-full pl-0 pr-10 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-all cursor-pointer appearance-none calendar-picker-indicator-none">
                                     <div
                                         class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-green-500 transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -725,6 +725,12 @@
         input[type="number"] {
             -moz-appearance: textfield;
         }
+
+        /* Ocultar icono nativo de calendario para usar el personalizado que cambie de color */
+        .calendar-picker-indicator-none::-webkit-calendar-picker-indicator {
+            display: none;
+            -webkit-appearance: none;
+        }
     </style>
 
     <script>
@@ -983,11 +989,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                                                                            <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                                                                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                                                                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                                                                            <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                                                                                        `;
+                                                                                                <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                                                                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                                                                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                                                                                <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                                                                            `;
 
                 if (body) {
                     const row = document.createElement('tr');
