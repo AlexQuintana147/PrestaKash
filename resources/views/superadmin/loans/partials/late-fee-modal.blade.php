@@ -89,7 +89,7 @@
                         <div>
                             <label
                                 class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Monto
-                                Fijo Diario</label>
+                                Fijo</label>
                             <div class="relative">
                                 <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric"
                                     class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
@@ -108,7 +108,8 @@
                             <span class="text-[9px] font-bold text-gray-900 dark:text-white" id="lfm_sim_base">—</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-[9px] text-gray-500">Mora estimada (1 día después de gracia)</span>
+                            <span class="text-[9px] text-gray-500" id="lfm_sim_mora_label">Mora estimada (1 día después
+                                de gracia)</span>
                             <span class="text-[9px] font-bold text-orange-500" id="lfm_sim_mora">—</span>
                         </div>
                         <div class="flex justify-between border-t border-gray-100 dark:border-gray-800 pt-1.5 mt-1.5">
@@ -221,12 +222,15 @@
         const cur = window._lfm_currency || 'S/';
 
         const moraRate = amount * (rate / 100);
-        const totalMora = moraRate + daily; // 1 día después de gracia
-        const total = amount + totalMora;
+        const totalMoraPerUnit = moraRate + daily;
+
+        let total = amount + totalMoraPerUnit;
 
         document.getElementById('lfm_sim_base').textContent = cur + ' ' + amount.toFixed(2);
-        document.getElementById('lfm_sim_mora').textContent = '+ ' + cur + ' ' + totalMora.toFixed(2);
+        document.getElementById('lfm_sim_mora').textContent = '+ ' + cur + ' ' + totalMoraPerUnit.toFixed(2);
         document.getElementById('lfm_sim_total').textContent = cur + ' ' + total.toFixed(2);
+
+        document.getElementById('lfm_sim_mora_label').textContent = `Mora estimada (1 día después de gracia)`;
         document.getElementById('lfm_rate_label').textContent = rate.toFixed(2) + '% + ' + cur + ' ' + daily.toFixed(2);
     }
 

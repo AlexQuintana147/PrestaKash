@@ -127,10 +127,9 @@ class LoanController extends Controller
     {
         $loan->update(['status' => 'approved']);
 
-        // Delete existing installments if any (e.g. from previous attempts)
+        // Delete existing installments if any
         $loan->installments()->delete();
 
-        // Generate installments
         $amount = $loan->amount;
         $rate = $loan->interest_rate / 100;
         $system = $loan->amortization_system;
@@ -148,9 +147,12 @@ class LoanController extends Controller
             };
 
             $nTotal = $months * $installmentsPerMonth;
+            $periodicRate = $rate / $installmentsPerMonth;
             $periodicPayment = $loan->monthly_payment;
 
+            $remainingBalance = $amount;
             $currentDate = now();
+
             for ($i = 1; $i <= $nTotal; $i++) {
                 if ($freq === 'diario')
                     $currentDate->addDay();
@@ -161,24 +163,42 @@ class LoanController extends Controller
                 else
                     $currentDate->addMonth();
 
-                // For American system, last installment includes principal
-                $instAmount = $periodicPayment;
-                if ($system === 'americano' && $i === $nTotal) {
-                    $instAmount += $amount;
+                $instInterest = 0;
+                $instCapital = 0;
+
+                if ($system === 'frances') {
+                    $instInterest = $remainingBalance * $periodicRate;
+                    $instCapital = $periodicPayment - $instInterest;
+
+                    // Adjust for rounding on last installment
+                    if ($i === $nTotal) {
+                        $instCapital = $remainingBalance;
+                    }
+
+                    $remainingBalance -= $instCapital;
+                } else {
+                    // American
+                    $instInterest = $amount * $periodicRate;
+                    $instCapital = ($i === $nTotal) ? $amount : 0;
                 }
 
                 $loan->installments()->create([
                     'installment_number' => $i,
-                    'amount' => $instAmount,
+                    'amount' => $instInterest + $instCapital,
+                    'capital' => $instCapital,
+                    'interest' => $instInterest,
                     'due_date' => $currentDate->format('Y-m-d'),
                     'status' => 'pending',
                 ]);
             }
         } else {
             // Pago único
+            $interest = $amount * $rate;
             $loan->installments()->create([
                 'installment_number' => 1,
-                'amount' => $loan->total_amount,
+                'amount' => $amount + $interest,
+                'capital' => $amount,
+                'interest' => $interest,
                 'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
                 'status' => 'pending',
             ]);
@@ -264,7 +284,7 @@ class LoanController extends Controller
         $request->validate([
             'late_fee_enabled' => 'nullable|boolean',
             'grace_days' => 'required|integer|min:0|max:30',
-            'late_fee_rate' => 'required|numeric|min:0|max:100',
+            'late_fee_rate' => 'required|numeric|min:0|max:99.99',
             'late_fee_daily_amount' => 'required|numeric|min:0',
         ]);
 
@@ -273,6 +293,7 @@ class LoanController extends Controller
             'grace_days' => $request->grace_days,
             'late_fee_rate' => $request->late_fee_rate,
             'late_fee_daily_amount' => $request->late_fee_daily_amount,
+            'late_fee_type' => 'diario',
         ]);
 
         return back()->with('success', 'Configuración de mora actualizada.');

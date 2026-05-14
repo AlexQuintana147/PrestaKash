@@ -143,6 +143,9 @@
                 <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">
                     {{ $currency }} {{ number_format($inst->amount, 2) }}
                 </p>
+                <p class="text-[8px] text-gray-400 font-bold mt-0.5">
+                    C: {{ $currency }}{{ number_format($inst->capital, 2) }} • I: {{ $currency }}{{ number_format($inst->interest, 2) }}
+                </p>
                 @if($lateFee > 0)
                     <p class="text-[8px] font-bold text-orange-500 mt-0.5">+ {{ number_format($lateFee, 2) }} mora</p>
                     <p class="text-[9px] font-black text-gray-900 dark:text-white mt-0.5">Total: {{ $currency }}

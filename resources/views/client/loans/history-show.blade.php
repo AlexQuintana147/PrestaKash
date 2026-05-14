@@ -198,9 +198,13 @@
                             <span class="text-[8px] text-gray-400 font-normal block">Incluye {{ $overdueInstallments->count() }} cuotas anteriores + mora</span>
                         @else
                             {{ $cur }} {{ number_format($inst->amount, 2) }}
-                            @if($inst->late_fee > 0)
-                                <span class="text-[10px] text-orange-500 ml-1">+ {{ number_format($inst->late_fee, 2) }} mora</span>
-                            @endif
+                            <span class="text-[8px] text-gray-400 font-normal block">
+                                Capital: {{ $cur }}{{ number_format($inst->capital, 2) }} • 
+                                Interés: {{ $cur }}{{ number_format($inst->interest, 2) }}
+                                @if($inst->late_fee > 0)
+                                    • <span class="text-orange-500">Mora: {{ $cur }}{{ number_format($inst->late_fee, 2) }}</span>
+                                @endif
+                            </span>
                         @endif
                     </p>
                     <p class="text-[9px] {{ $isOverdue ? 'text-red-500' : 'text-gray-400' }} mt-0.5">

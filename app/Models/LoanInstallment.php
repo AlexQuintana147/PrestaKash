@@ -10,6 +10,8 @@ class LoanInstallment extends Model
         'loan_id',
         'installment_number',
         'amount',
+        'capital',
+        'interest',
         'due_date',
         'status',
         'payment_voucher',
@@ -48,13 +50,16 @@ class LoanInstallment extends Model
             ->orderBy('installment_number', 'asc')
             ->first();
 
-        $calculationDays = $daysPast;
+        $limitDate = $today;
         if ($nextInstallment && $today->isAfter($nextInstallment->due_date)) {
-            $calculationDays = $dueDate->diffInDays($nextInstallment->due_date->startOfDay());
+            $limitDate = $nextInstallment->due_date->startOfDay();
         }
 
-        $moraRate = $this->amount * ($loan->late_fee_rate / 100) * $calculationDays;
-        $moraFixed = $loan->late_fee_daily_amount * $calculationDays;
+        $daysForCalculation = $dueDate->diffInDays($limitDate);
+
+        // Diario
+        $moraRate = $this->amount * ($loan->late_fee_rate / 100) * $daysForCalculation;
+        $moraFixed = $loan->late_fee_daily_amount * $daysForCalculation;
 
         return round($moraRate + $moraFixed, 2);
     }
