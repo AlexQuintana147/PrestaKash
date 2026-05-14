@@ -276,7 +276,8 @@
                                                     'interest_rate' => $loan->interest_rate,
                                                     'system' => $loan->amortization_system ?? 'frances',
                                                     'monthly_payment' => $loan->monthly_payment ?? 0,
-                                                    'payment_frequency' => $loan->payment_frequency ?? 'mensual'
+                                                    'payment_frequency' => $loan->payment_frequency ?? 'mensual',
+                                                    'disbursement_date' => $loan->disbursement_date
                                                 ]) }})"
                                                 class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]"
                                                 title="Contra-oferta">
@@ -398,18 +399,19 @@
                                     @if($loan->status === 'pending')
                                         <div class="flex items-center gap-3 pl-6 border-l border-gray-200 dark:border-gray-800">
                                             <button type="button"
-                                                    onclick="openCounterOfferModal({{ json_encode([
-                                                        'id' => $loan->id,
-                                                        'amount' => $loan->amount,
-                                                        'currency' => $loan->currency,
-                                                        'type' => $loan->type,
-                                                        'months' => $loan->months,
-                                                        'payment_days' => $loan->payment_days,
-                                                        'interest_rate' => $loan->interest_rate,
-                                                        'system' => $loan->amortization_system ?? 'frances',
-                                                        'monthly_payment' => $loan->monthly_payment ?? 0,
-                                                        'payment_frequency' => $loan->payment_frequency ?? 'mensual'
-                                                    ]) }})"
+                                                onclick="openCounterOfferModal({{ json_encode([
+                                                    'id' => $loan->id,
+                                                    'amount' => $loan->amount,
+                                                    'currency' => $loan->currency,
+                                                    'type' => $loan->type,
+                                                    'months' => $loan->months,
+                                                    'payment_days' => $loan->payment_days,
+                                                    'interest_rate' => $loan->interest_rate,
+                                                    'system' => $loan->amortization_system ?? 'frances',
+                                                    'monthly_payment' => $loan->monthly_payment ?? 0,
+                                                    'payment_frequency' => $loan->payment_frequency ?? 'mensual',
+                                                    'disbursement_date' => $loan->disbursement_date
+                                                ]) }})"
                                                     class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]"
                                                     title="Contra-oferta">
                                                 <svg class="w-6 h-6" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="currentColor" fill="none"><polyline points="46.81 40.84 46.81 56.26 9.19 56.26 9.19 20.6 21.15 7.74 46.81 7.74 46.81 29.71" stroke-linecap="round"/><polyline points="21.17 7.74 21.15 20.6 9.19 20.6"/><line x1="14.34" y1="47.67" x2="31.35" y2="47.67"/><line x1="14.34" y1="41.14" x2="41.35" y2="41.14"/><line x1="14.34" y1="35.04" x2="35.35" y2="35.04"/><line x1="14.34" y1="28.94" x2="41.35" y2="28.94"/><polyline points="52.21 30.24 57.01 35.04 52.21 39.84" stroke-linecap="round"/><line x1="57.01" y1="35.04" x2="41.38" y2="35.04" stroke-linecap="round"/></svg>
@@ -632,10 +634,27 @@
         <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
             <div class="p-5 md:p-8 flex flex-col min-h-0 overflow-hidden">
-                <div class="mb-6 pr-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                    <div>
-                        <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
-                        <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
+                <div class="mb-6 pr-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
+                            <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
+                        </div>
+                        <!-- Fecha Desembolso -->
+                        <div class="w-full md:w-40 space-y-1">
+                            <label class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
+                            <div class="relative" onclick="this.querySelector('input').showPicker()">
+                                <input type="date" name="disbursement_date" id="modal_disbursement_date"
+                                       min="{{ date('Y-m-d') }}"
+                                       class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1 pr-8 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
+                                       style="color-scheme: dark;">
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="modal_display_amount" class="font-black text-right space-y-0.5"></div>
                 </div>
@@ -838,6 +857,7 @@
         }
 
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
+        document.getElementById('modal_disbursement_date').value = loan.disbursement_date || '';
 
         // Show amount
         const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1156,6 +1176,12 @@
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
+
+    /* Ocultar icono nativo de calendario */
+    .calendar-picker-indicator-none::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+    }
 </style>
 
 <div id="scheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] flex items-center justify-center p-2 md:p-4">

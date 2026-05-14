@@ -39,6 +39,7 @@ class LoanController extends Controller
             'interest_rate' => 'required|numeric|min:0|max:100',
             'months' => 'nullable|integer|min:3|max:24',
             'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
+            'disbursement_date' => 'required|date|after_or_equal:today',
         ]);
 
         $amount = (float) $request->amount;
@@ -89,6 +90,7 @@ class LoanController extends Controller
             'amortization_system' => $system,
             'payment_frequency' => $freq,
             'interest_rate' => $request->interest_rate,
+            'disbursement_date' => $request->disbursement_date,
             'total_amount' => $totalAmount,
             'monthly_payment' => $periodicPayment,
         ]);
