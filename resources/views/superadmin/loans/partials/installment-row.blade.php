@@ -133,14 +133,11 @@
                             ->value('id');
                     @endphp
                     @if($lastApprovedId === $inst->id)
-                        <form action="{{ route('superadmin.installments.unapprove', $inst) }}" method="POST"
-                            onsubmit="return confirm('¿Revertir aprobación de este pago?')">
-                            @csrf
-                            <button type="submit"
-                                class="text-[10px] font-black uppercase tracking-widest text-gray-400 border-b-2 border-gray-300 dark:border-gray-800 pb-0.5 hover:text-orange-500 hover:border-orange-500 transition-all">
-                                Revertir
-                            </button>
-                        </form>
+                        <button type="button"
+                            onclick="openUnapproveModal('{{ route('superadmin.installments.unapprove', $inst) }}')"
+                            class="text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-300 dark:border-gray-800 pb-px hover:text-orange-500 hover:border-orange-500 transition-all">
+                            Revertir
+                        </button>
                     @endif
                 @endif
             </div>

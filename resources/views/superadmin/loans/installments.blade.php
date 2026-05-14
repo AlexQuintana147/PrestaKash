@@ -169,6 +169,9 @@
     <!-- Modal Detalle Préstamo -->
     @include('superadmin.loans.partials.loan-detail-modal')
 
+    <!-- Modal Confirmar Reversión -->
+    @include('superadmin.loans.partials.unapprove-modal')
+
     <script>
         function loadGroupPage(btn) {
             const loanId = btn.dataset.loanId;
