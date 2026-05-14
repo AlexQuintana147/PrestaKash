@@ -1,4 +1,16 @@
 <!-- Modal Configurar Mora -->
+<style>
+    /* Hide spinners */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
 <div id="lateFeeModal"
     class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
     onclick="if(event.target===this) closeLateFeeModal()">
@@ -52,13 +64,13 @@
                         <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Días de
                             Gracia</label>
                         <div class="relative">
-                            <input type="number" name="grace_days" id="lfm_grace" min="0" max="30" value="0"
+                            <input type="number" name="grace_days" id="lfm_grace" min="1" max="30" value="1"
+                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                 class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
                             <span
                                 class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase">días</span>
                         </div>
-                        <p class="text-[8px] text-gray-400 mt-1">Días que se perdonan antes de aplicar mora. Si el
-                            cliente paga dentro de este período, no se cobra mora.</p>
+                        <p class="text-[8px] text-gray-400 mt-1">Días que se perdonan antes de aplicar mora (Mínimo 1, Máximo 30).</p>
                     </div>
 
                     <!-- Tasa de mora -->
@@ -67,8 +79,7 @@
                             <label class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Tasa
                                 de Interés (%)</label>
                             <div class="relative">
-                                <input type="number" name="late_fee_rate" id="lfm_rate" min="0" max="100" step="0.01"
-                                    value="0"
+                                <input type="text" name="late_fee_rate" id="lfm_rate" inputmode="numeric"
                                     class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
                                 <span
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase">%</span>
@@ -79,8 +90,7 @@
                                 class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Monto
                                 Fijo Diario</label>
                             <div class="relative">
-                                <input type="number" name="late_fee_daily_amount" id="lfm_daily" min="0" step="0.01"
-                                    value="0"
+                                <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric"
                                     class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
                                 <span
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase"
@@ -122,10 +132,14 @@
                                 id="lfm_rate_label">0%</span> por cada día de atraso.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">3. Acumulación:</span> La mora se calcula desde el vencimiento hasta la siguiente fecha de pago. Si el cliente no paga en la siguiente fecha, la mora se congela para esa cuota y comienza a correr la mora de la nueva cuota vencida.
+                            <span class="font-bold text-gray-900 dark:text-white">3. Acumulación:</span> La mora se
+                            calcula desde el vencimiento hasta la siguiente fecha de pago. Si el cliente no paga en la
+                            siguiente fecha, la mora se congela para esa cuota y comienza a correr la mora de la nueva
+                            cuota vencida.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">Fórmula:</span> Mora = (Cuota × Tasa% + Monto Fijo) × Días de atraso
+                            <span class="font-bold text-gray-900 dark:text-white">Fórmula:</span> Mora = (Cuota × Tasa%
+                            + Monto Fijo) × Días de atraso
                         </p>
                     </div>
                 </div>
@@ -147,6 +161,21 @@
 </div>
 
 <script>
+    function formatCentsInput(el) {
+        let val = el.value.replace(/\D/g, '');
+        if (val === '') {
+            el.value = '';
+            return 0;
+        }
+        
+        // Remove leading zeros
+        val = parseInt(val, 10).toString();
+        
+        let numericValue = parseFloat(val) / 100;
+        el.value = numericValue.toFixed(2);
+        return numericValue;
+    }
+
     function openLateFeeModal(loanId, loanLabel, currency, installmentAmount, currentEnabled, currentGrace, currentRate, currentDaily) {
         document.getElementById('lfm_title').textContent = 'Mora — Préstamo #' + loanId;
         document.getElementById('lfm_subtitle').textContent = loanLabel;
@@ -154,9 +183,14 @@
 
         const enabledEl = document.getElementById('lfm_enabled');
         enabledEl.checked = !!currentEnabled;
-        document.getElementById('lfm_grace').value = currentGrace || 0;
-        document.getElementById('lfm_rate').value = currentRate || 0;
-        document.getElementById('lfm_daily').value = currentDaily || 0;
+        
+        document.getElementById('lfm_grace').value = currentGrace || 1;
+        
+        const rateEl = document.getElementById('lfm_rate');
+        const dailyEl = document.getElementById('lfm_daily');
+        
+        rateEl.value = (parseFloat(currentRate) || 0).toFixed(2);
+        dailyEl.value = (parseFloat(currentDaily) || 0).toFixed(2);
 
         window._lfm_currency = currency;
         window._lfm_amount = parseFloat(installmentAmount) || 0;
@@ -197,8 +231,28 @@
     }
 
     document.getElementById('lfm_enabled').addEventListener('change', toggleLateFeeFields);
-    document.getElementById('lfm_rate').addEventListener('input', updateLateFeeSimulation);
-    document.getElementById('lfm_daily').addEventListener('input', updateLateFeeSimulation);
+
+    document.getElementById('lfm_rate').addEventListener('input', function(e) {
+        const rate = formatCentsInput(this);
+        
+        // Automatic daily amount calculation
+        const amount = window._lfm_amount || 0;
+        const daily = amount * (rate / 100);
+        document.getElementById('lfm_daily').value = daily.toFixed(2);
+        
+        updateLateFeeSimulation();
+    });
+
+    document.getElementById('lfm_daily').addEventListener('input', function(e) {
+        formatCentsInput(this);
+        updateLateFeeSimulation();
+    });
+
+    document.getElementById('lfm_grace').addEventListener('input', function(e) {
+        let val = parseInt(this.value);
+        if (isNaN(val) || val < 1) this.value = 1;
+        if (val > 30) this.value = 30;
+    });
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !document.getElementById('lateFeeModal').classList.contains('hidden')) {
