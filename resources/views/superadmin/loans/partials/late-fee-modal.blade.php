@@ -162,7 +162,7 @@
 </div>
 
 <script>
-    function formatCentsInput(el) {
+    function formatCentsInput(el, maxVal = null) {
         let val = el.value.replace(/\D/g, '');
         if (val === '') {
             el.value = '';
@@ -173,6 +173,13 @@
         val = parseInt(val, 10).toString();
 
         let numericValue = parseFloat(val) / 100;
+
+        if (maxVal !== null && numericValue > maxVal) {
+            numericValue = maxVal;
+            // Re-format val to match maxVal * 100 for consistent display if needed, 
+            // but simple assignment to el.value is enough for the user.
+        }
+
         el.value = numericValue.toFixed(2);
         return numericValue;
     }
@@ -237,7 +244,7 @@
     document.getElementById('lfm_enabled').addEventListener('change', toggleLateFeeFields);
 
     document.getElementById('lfm_rate').addEventListener('input', function (e) {
-        const rate = formatCentsInput(this);
+        const rate = formatCentsInput(this, 99.99);
 
         // Automatic daily amount calculation
         const amount = window._lfm_amount || 0;
