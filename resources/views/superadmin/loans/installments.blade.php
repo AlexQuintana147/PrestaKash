@@ -3,42 +3,54 @@
 @section('title', 'Cobranzas')
 
 @section('content')
-    <div class="px-4 md:px-10 py-8 max-w-7xl mx-auto">
+    <div class="px-5 md:px-10 py-8">
 
         <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div class="flex items-end justify-between mb-8">
             <div>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] font-bold mb-2">Administración</p>
-                <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">Cobranzas</h1>
-                <p class="text-xs text-gray-400 uppercase font-medium mt-2 tracking-wider">Seguimiento de cuotas y validación de pagos</p>
+                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Cobranzas</h1>
             </div>
-            <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900/50 px-4 py-2 rounded-2xl border border-gray-100 dark:border-gray-800">
-                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                <p class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-widest">{{ now()->format('d M, Y') }}</p>
-            </div>
+            <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
         </div>
 
         @if(session('success'))
-            <div class="mb-8 p-4 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30 rounded-2xl flex items-center gap-3 text-xs text-green-600 dark:text-green-400 uppercase font-black tracking-widest">
-                <div class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center flex-shrink-0">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
+            <div class="mb-6 flex items-center gap-3 text-sm text-green-500">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Filtros -->
-        <div class="flex items-center gap-2 mb-10 p-1 bg-gray-100 dark:bg-gray-900 rounded-2xl w-fit">
-            <a href="{{ route('superadmin.installments.index', ['filter' => 'all']) }}"
-                class="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all rounded-xl {{ $filter === 'all' ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300' }}">
-                Todas las cuotas
-            </a>
-            <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}"
-                class="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all rounded-xl {{ $filter === 'pending_validation' ? 'bg-purple-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300' }}">
-                Por Validar
-            </a>
+        <!-- Filtros Mobile -->
+        <div class="md:hidden mb-8">
+            <div class="grid grid-cols-2 gap-2">
+                @foreach([
+                    'all' => ['label' => 'Todas las cuotas', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'pending_validation' => ['label' => 'Por Validar', 'active' => 'bg-purple-600 text-white', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                ] as $key => $cfg)
+                    <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
+                       class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
+                              {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
+                        {{ $cfg['label'] }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Filtros Desktop -->
+        <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
+            @foreach(['all' => 'Todas las cuotas', 'pending_validation' => 'Por Validar'] as $key => $label)
+                <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
+                    class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
+                              {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                    {{ $label }}
+                    @if($filter === $key)
+                        <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                    @endif
+                </a>
+            @endforeach
         </div>
 
         <!-- Lista de Cuotas -->
