@@ -97,6 +97,7 @@
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
                                         </button>
                                         <form action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
                                             onsubmit="return confirm('¿Eliminar esta caja?')">
@@ -106,6 +107,7 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
                                             </button>
                                         </form>
                                     </div>
@@ -417,32 +419,34 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                    <div class="flex items-center gap-8">
-                                                        <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                                        <div>
-                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                                            ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            `;
+                                                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                                <div class="flex items-center gap-8">
+                                                                    <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                                                    <div>
+                                                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="text-right">
+                                                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                                                        ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
 
         function scrollCarousel(direction) {
-            const cardWidth = cards[0].offsetWidth + 48; // width + gap
+            const firstCard = document.querySelector('.cashbox-card');
+            const cardWidth = firstCard ? firstCard.offsetWidth + 48 : 0;
             carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
         }
 
         function scrollToIndex(index) {
-            const cardWidth = cards[0].offsetWidth + 48;
+            const firstCard = document.querySelector('.cashbox-card');
+            const cardWidth = firstCard ? firstCard.offsetWidth + 48 : 0;
             carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
         }
 
