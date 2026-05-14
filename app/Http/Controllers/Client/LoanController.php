@@ -44,6 +44,7 @@ class LoanController extends Controller
             'type' => 'required|in:cuotas,unico',
             'reason' => 'required|string|min:10|max:1000',
             'bank_account_id' => 'required|exists:bank_accounts,id,user_id,' . Auth::id(),
+            'disbursement_date' => 'required|date|after:today',
         ];
 
         if ($request->type === 'cuotas') {
@@ -128,6 +129,7 @@ class LoanController extends Controller
             'monthly_payment' => $cuota,
             'status' => 'pending',
             'type' => $tipo,
+            'disbursement_date' => $request->disbursement_date,
             'payment_frequency' => $freq,
             'amortization_system' => $system,
             'reason' => $request->reason,

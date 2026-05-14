@@ -57,7 +57,7 @@
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="currency" value="PEN" class="hidden peer" {{ old('currency', 'PEN') === 'PEN' ? 'checked' : '' }}>
                                         <div
-                                            class="flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                            class="flex items-center justify-center gap-2 py-2.5 text-sm text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                             <span>🇵🇪</span>
                                             <span class="font-medium">Soles</span>
                                         </div>
@@ -65,7 +65,7 @@
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="currency" value="USD" class="hidden peer" {{ old('currency') === 'USD' ? 'checked' : '' }}>
                                         <div
-                                            class="flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                            class="flex items-center justify-center gap-2 py-2.5 text-sm text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                             <span>🇺🇸</span>
                                             <span class="font-medium">Dólares</span>
                                         </div>
@@ -80,6 +80,19 @@
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Plazo</p>
 
                         <div class="space-y-6">
+                            <!-- Fecha de desembolso -->
+                            <div>
+                                <label for="disbursement_date"
+                                    class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Fecha estimada de
+                                    desembolso</label>
+                                <input type="date" name="disbursement_date" id="disbursement_date"
+                                    min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                                    value="{{ old('disbursement_date', date('Y-m-d', strtotime('+1 day'))) }}"
+                                    class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
+                                <p class="text-[10px] text-gray-400 mt-1.5 italic">* Debe ser al menos un día después de
+                                    hoy.</p>
+                            </div>
+
                             <!-- Tipo de pago (primero) -->
                             <div>
                                 <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Tipo de pago</label>
@@ -87,14 +100,14 @@
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="type" value="cuotas" class="hidden peer" {{ old('type', 'cuotas') === 'cuotas' ? 'checked' : '' }}>
                                         <div
-                                            class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                            class="text-center py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                             Cuotas mensuales
                                         </div>
                                     </label>
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="type" value="unico" class="hidden peer" {{ old('type') === 'unico' ? 'checked' : '' }}>
                                         <div
-                                            class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                            class="text-center py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                             Pago único
                                         </div>
                                     </label>
@@ -129,7 +142,7 @@
                                         <input type="radio" name="amortization_system" value="frances" class="hidden peer"
                                             {{ old('amortization_system', 'frances') === 'frances' ? 'checked' : '' }}>
                                         <div
-                                            class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                            class="text-center py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                             Francés (Cuota fija)
                                         </div>
                                     </label>
@@ -137,7 +150,7 @@
                                         <input type="radio" name="amortization_system" value="americano" class="hidden peer"
                                             {{ old('amortization_system') === 'americano' ? 'checked' : '' }}>
                                         <div
-                                            class="text-center py-2.5 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                            class="text-center py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                             Americano (Interés mensual)
                                         </div>
                                     </label>
@@ -211,7 +224,7 @@
                                             <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer"
                                                 {{ old('payment_frequency', 'mensual') === $val ? 'checked' : '' }}>
                                             <div
-                                                class="text-center py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 border border-transparent peer-checked:border-green-500/40 peer-checked:text-green-600 dark:peer-checked:text-green-400 peer-checked:bg-green-500/5 transition-all">
+                                                class="text-center py-2 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                                 {{ $label }}
                                             </div>
                                         </label>
@@ -226,7 +239,7 @@
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="payment_days" value="15" class="hidden peer" {{ old('payment_days', '15') == '15' ? 'checked' : '' }}>
                                         <div
-                                            class="text-center py-3 rounded-lg border border-transparent peer-checked:border-green-500/40 peer-checked:bg-green-500/5 transition-all">
+                                            class="text-center py-3 border-b-2 border-transparent peer-checked:border-green-500 transition-all">
                                             <p
                                                 class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">
                                                 15 días</p>
@@ -237,7 +250,7 @@
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="payment_days" value="30" class="hidden peer" {{ old('payment_days') == '30' ? 'checked' : '' }}>
                                         <div
-                                            class="text-center py-3 rounded-lg border border-transparent peer-checked:border-green-500/40 peer-checked:bg-green-500/5 transition-all">
+                                            class="text-center py-3 border-b-2 border-transparent peer-checked:border-green-500 transition-all">
                                             <p
                                                 class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">
                                                 30 días</p>
@@ -405,6 +418,11 @@
                             <div class="flex justify-between text-xs">
                                 <span class="text-gray-400 dark:text-gray-500">Tipo</span>
                                 <span id="simType" class="text-gray-700 dark:text-gray-300">Cuotas</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-400 dark:text-gray-500">Desembolso</span>
+                                <span id="simDisbursementDate"
+                                    class="text-gray-700 dark:text-gray-300 tabular-nums">—</span>
                             </div>
                             <div class="h-px bg-gray-100 dark:bg-gray-800 my-1"></div>
                             <div class="flex justify-between text-xs">
@@ -724,6 +742,8 @@
             const simTotal = document.getElementById('simTotal');
             const simMonthly = document.getElementById('simMonthly');
             const simMonthlyRow = document.getElementById('simMonthlyRow');
+            const simDisbursementDate = document.getElementById('simDisbursementDate');
+            const disbursementDateInput = document.getElementById('disbursement_date');
 
             const sym = () => document.querySelector('input[name="currency"]:checked')?.value === 'USD' ? '$' : 'S/';
             const fmt = n => n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -858,6 +878,7 @@
                 simType.textContent = isCuotas ? (system === 'frances' ? 'Cuotas (Francés - ' + freq + ')' : 'Cuotas (Americano)') : 'Pago único';
                 simInterest.textContent = s + ' ' + fmt(interest);
                 simTotal.textContent = s + ' ' + fmt(total);
+                simDisbursementDate.textContent = disbursementDateInput.value || '—';
 
                 if (isCuotas && system === 'americano') {
                     simMonthly.textContent = s + ' ' + fmt(periodicPayment) + ' (Final: ' + s + ' ' + fmt(a + periodicPayment) + ')';
@@ -948,11 +969,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                                                `;
+                                                                                        <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                                                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                                                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                                                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                                                                    `;
 
                 if (body) {
                     const row = document.createElement('tr');
@@ -1008,6 +1029,7 @@
                 amount.value = amount.value.replace(/,/g, '');
             });
 
+            disbursementDateInput.addEventListener('input', update);
             months.addEventListener('input', update);
             currencyRadios.forEach(r => r.addEventListener('change', () => { filterBankAccounts(); update(); }));
             typeRadios.forEach(r => r.addEventListener('change', () => { toggleBlocks(); update(); }));
