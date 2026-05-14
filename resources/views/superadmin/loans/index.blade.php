@@ -663,7 +663,26 @@
                     <div id="modal_display_amount" class="font-black text-left md:text-right space-y-0.5 text-xs md:text-base w-full md:w-auto"></div>
                 </div>
 
-                <div id="modalInputsGrid" class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-6">
+                <div id="modalInputsGrid" class="grid grid-cols-2 md:grid-cols-6 gap-4 md:gap-6 mb-6">
+                    <!-- Tipo -->
+                    <div class="space-y-2 col-span-2 md:col-span-1">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tipo</label>
+                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="type" value="cuotas" class="hidden peer" onchange="toggleModalTypeFields(); calculatePreview()">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    CUOTAS
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="type" value="unico" class="hidden peer" onchange="toggleModalTypeFields(); calculatePreview()">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    ÚNICO
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- Monto -->
                     <div class="space-y-2 col-span-1 md:col-span-1">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
@@ -681,7 +700,7 @@
                             <input type="date" name="disbursement_date" id="modal_disbursement_date"
                                    min="{{ date('Y-m-d') }}"
                                    onchange="document.getElementById('modal_disbursement_date_desktop').value = this.value"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
+                                   class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
                                    style="color-scheme: dark;">
                             <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -701,6 +720,25 @@
                                    onblur="if(this.value && this.value < 3) this.value = 3; calculatePreview();"
                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">M</span>
+                        </div>
+                    </div>
+
+                    <!-- Pago Único Días -->
+                    <div id="modalDaysWrapper" class="space-y-2 col-span-1 hidden">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Días</label>
+                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="payment_days" value="15" class="hidden peer" onchange="calculatePreview()">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    15 D
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="payment_days" value="30" class="hidden peer" onchange="calculatePreview()">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    30 D
+                                </div>
+                            </label>
                         </div>
                     </div>
 
@@ -848,34 +886,26 @@
 
         document.getElementById('modal_currency_symbol').textContent = loan.currency === 'USD' ? '$' : 'S/';
 
-        if (loan.type === 'unico') {
-            systemWrapper.classList.add('hidden');
-            freqWrapper.classList.add('hidden');
-            monthsWrapper.classList.add('hidden');
-            inputsGrid.classList.remove('md:grid-cols-5');
-            inputsGrid.classList.add('md:grid-cols-2');
-            // Set default to pass backend validation even if hidden
-            const radio = document.querySelector('input[name="amortization_system"][value="frances"]');
-            if (radio) radio.checked = true;
-        } else {
-            systemWrapper.classList.remove('hidden');
-            freqWrapper.classList.remove('hidden');
-            monthsWrapper.classList.remove('hidden');
-            inputsGrid.classList.remove('md:grid-cols-2');
-            inputsGrid.classList.add('md:grid-cols-5');
+        // Set type
+        const typeToSet = loan.type || 'cuotas';
+        const typeRadio = document.querySelector(`input[name="type"][value="${typeToSet}"]`);
+        if (typeRadio) typeRadio.checked = true;
 
-            document.getElementById('modal_months').value = loan.months;
+        document.getElementById('modal_months').value = loan.months || 3;
 
-            const systemToSet = loan.system || 'frances';
-            const radio = document.querySelector(`input[name="amortization_system"][value="${systemToSet}"]`);
-            if (radio) radio.checked = true;
+        const systemToSet = loan.system || 'frances';
+        const radio = document.querySelector(`input[name="amortization_system"][value="${systemToSet}"]`);
+        if (radio) radio.checked = true;
 
-            const freqToSet = loan.payment_frequency || 'mensual';
-            const freqRadio = document.querySelector(`input[name="payment_frequency"][value="${freqToSet}"]`);
-            if (freqRadio) freqRadio.checked = true;
+        const freqToSet = loan.payment_frequency || 'mensual';
+        const freqRadio = document.querySelector(`input[name="payment_frequency"][value="${freqToSet}"]`);
+        if (freqRadio) freqRadio.checked = true;
 
-            toggleModalFrequency();
-        }
+        const daysToSet = loan.payment_days || 15;
+        const daysRadio = document.querySelector(`input[name="payment_days"][value="${daysToSet}"]`);
+        if (daysRadio) daysRadio.checked = true;
+
+        toggleModalTypeFields();
 
         document.getElementById('modal_interest_rate').value = parseFloat(loan.interest_rate).toFixed(2);
         document.getElementById('modal_disbursement_date').value = loan.disbursement_date || '';
@@ -897,11 +927,32 @@
         document.body.style.overflow = 'hidden';
     }
 
+    function toggleModalTypeFields() {
+        const type = document.querySelector('input[name="type"]:checked')?.value;
+        const systemWrapper = document.getElementById('modalSystemWrapper');
+        const freqWrapper = document.getElementById('modalFrequencyWrapper');
+        const monthsWrapper = document.getElementById('modalMonthsWrapper');
+        const daysWrapper = document.getElementById('modalDaysWrapper');
+
+        if (type === 'unico') {
+            systemWrapper.classList.add('hidden');
+            freqWrapper.classList.add('hidden');
+            monthsWrapper.classList.add('hidden');
+            daysWrapper.classList.remove('hidden');
+        } else {
+            systemWrapper.classList.remove('hidden');
+            monthsWrapper.classList.remove('hidden');
+            daysWrapper.classList.add('hidden');
+            toggleModalFrequency();
+        }
+    }
+
     function toggleModalFrequency() {
+        const type = document.querySelector('input[name="type"]:checked')?.value;
         const system = document.querySelector('input[name="amortization_system"]:checked')?.value;
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
         if (freqWrapper) {
-            freqWrapper.style.display = system === 'frances' ? 'block' : 'none';
+            freqWrapper.style.display = (type === 'cuotas' && system === 'frances') ? 'block' : 'none';
         }
     }
 
@@ -958,6 +1009,7 @@
 
         const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, '')) || 0;
         const rate = (parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0) / 12; // Tasa mensual
+        const type = document.querySelector('input[name="type"]:checked')?.value || 'cuotas';
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
         const freqRadio = document.querySelector('input[name="payment_frequency"]:checked');
@@ -974,7 +1026,7 @@
 
         const amountObj = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
 
-        if (currentLoan.type === 'unico') {
+        if (type === 'unico') {
             document.getElementById('previewCuotasContainer').classList.add('hidden');
             document.getElementById('previewUnicoContainer').classList.remove('hidden');
 
@@ -992,7 +1044,7 @@
             document.getElementById('unicoAdminRate').textContent = (flatRate * 100).toFixed(2);
             document.getElementById('unicoAdminTotal').textContent = `${currency} ${adminTotal.toLocaleString('en-US', amountObj)}`;
 
-            const days = parseInt(currentLoan.payment_days) || 15;
+            const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
             const date = new Date();
             date.setDate(date.getDate() + days);
 

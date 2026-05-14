@@ -36,37 +36,42 @@ class LoanController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:100',
-            'amortization_system' => 'required|in:frances,americano',
+            'type' => 'required|in:cuotas,unico',
+            'amortization_system' => 'required_if:type,cuotas|in:frances,americano',
             'interest_rate' => 'required|numeric|min:0|max:100',
             'months' => 'nullable|integer|min:3|max:24',
+            'payment_days' => 'nullable|in:15,30',
             'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
             'disbursement_date' => 'required|date|after_or_equal:today',
         ]);
 
         $amount = (float) $request->amount;
         $rate = $request->interest_rate / 100;
-        $system = $request->amortization_system;
-        $months = $loan->type === 'cuotas' ? ($request->months ?? $loan->months) : null;
-        $freq = ($loan->type === 'cuotas' && $system === 'frances') ? ($request->payment_frequency ?? 'mensual') : 'mensual';
+        $type = $request->type;
+        $system = $type === 'cuotas' ? $request->amortization_system : 'frances';
+        $months = $type === 'cuotas' ? ($request->months ?? $loan->months ?? 3) : null;
+        $paymentDays = $type === 'unico' ? ($request->payment_days ?? $loan->payment_days ?? 15) : null;
+        $freq = ($type === 'cuotas' && $system === 'frances') ? ($request->payment_frequency ?? 'mensual') : 'mensual';
 
         $totalAmount = $amount;
         $periodicPayment = 0;
 
         $updateData = [
             'amount' => $amount,
+            'type' => $type,
             'months' => $months,
+            'payment_days' => $paymentDays,
             'amortization_system' => $system,
             'payment_frequency' => $freq,
             'interest_rate' => $request->interest_rate,
             'disbursement_date' => $request->disbursement_date,
-            'total_amount' => $totalAmount,
-            'monthly_payment' => $periodicPayment,
             'status' => 'counter_offered',
         ];
 
         if (!$loan->original_data) {
             $updateData['original_data'] = [
                 'amount' => $loan->amount,
+                'type' => $loan->type,
                 'interest_rate' => $loan->interest_rate,
                 'months' => $loan->months,
                 'payment_days' => $loan->payment_days,
@@ -77,15 +82,15 @@ class LoanController extends Controller
             ];
         }
 
-        if ($loan->type === 'cuotas') {
+        if ($type === 'cuotas') {
             if ($system === 'frances') {
-                $installmentsPerMonth = 1;
-                if ($freq === 'diario')
-                    $installmentsPerMonth = 30;
-                elseif ($freq === 'semanal')
-                    $installmentsPerMonth = 4;
-                elseif ($freq === 'quincenal')
-                    $installmentsPerMonth = 2;
+                $installmentsPerMonth = match ($freq) {
+                    'diario' => 30,
+                    'semanal' => 4,
+                    'quincenal' => 2,
+                    'mensual' => 1,
+                    default => 1,
+                };
 
                 $nTotal = $months * $installmentsPerMonth;
                 $periodicRate = $rate / $installmentsPerMonth;
