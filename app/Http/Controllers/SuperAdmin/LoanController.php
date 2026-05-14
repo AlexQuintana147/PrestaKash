@@ -52,8 +52,20 @@ class LoanController extends Controller
         $totalAmount = $amount;
         $periodicPayment = 0;
 
+        $updateData = [
+            'amount' => $amount,
+            'months' => $months,
+            'amortization_system' => $system,
+            'payment_frequency' => $freq,
+            'interest_rate' => $request->interest_rate,
+            'disbursement_date' => $request->disbursement_date,
+            'total_amount' => $totalAmount,
+            'monthly_payment' => $periodicPayment,
+            'status' => 'counter_offered',
+        ];
+
         if (!$loan->original_data) {
-            $loan->original_data = [
+            $updateData['original_data'] = [
                 'amount' => $loan->amount,
                 'interest_rate' => $loan->interest_rate,
                 'months' => $loan->months,
@@ -98,17 +110,10 @@ class LoanController extends Controller
             $periodicPayment = $totalAmount;
         }
 
-        $loan->update([
-            'amount' => $amount,
-            'months' => $months,
-            'amortization_system' => $system,
-            'payment_frequency' => $freq,
-            'interest_rate' => $request->interest_rate,
-            'disbursement_date' => $request->disbursement_date,
-            'total_amount' => $totalAmount,
-            'monthly_payment' => $periodicPayment,
-            'status' => 'counter_offered',
-        ]);
+        $updateData['total_amount'] = $totalAmount;
+        $updateData['monthly_payment'] = $periodicPayment;
+
+        $loan->update($updateData);
 
         return back()->with('success', 'Contra-oferta enviada correctamente.');
     }

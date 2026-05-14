@@ -361,51 +361,49 @@
                 </div>
             </div>
 
-            <div id="counterOfferDetailView" class="hidden">
-                <button onclick="showCounterOffersList(lastLoansData)"
-                    class="mb-6 flex items-center gap-1.5 text-xs text-purple-600 font-bold uppercase tracking-widest hover:opacity-70 transition-opacity">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Volver a la lista
-                </button>
+        <div id="counterOfferDetailView" class="hidden">
+            <button onclick="showCounterOffersList(lastLoansData)"
+                class="mb-6 flex items-center gap-1.5 text-xs text-purple-600 font-bold uppercase tracking-widest hover:opacity-70 transition-opacity">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Volver a la lista
+            </button>
 
-                <div class="text-center mb-8">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Comparación de Términos</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Revisa los cambios realizados por el
-                        administrador.</p>
+            <div class="text-center mb-8">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Comparación de Términos</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Revisa los cambios realizados por el administrador.
+                </p>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <div class="grid grid-cols-3 gap-4 py-2 border-b border-gray-50 dark:border-gray-900">
+                    <span class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Concepto</span>
+                    <span class="text-[10px] text-gray-400 uppercase font-black tracking-widest text-center">Antes</span>
+                    <span class="text-[10px] text-purple-600 uppercase font-black tracking-widest text-center">Ahora</span>
                 </div>
-
-                <div class="space-y-4 mb-8">
-                    <div class="grid grid-cols-3 gap-4 py-2 border-b border-gray-50 dark:border-gray-900">
-                        <span class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Concepto</span>
-                        <span
-                            class="text-[10px] text-gray-400 uppercase font-black tracking-widest text-center">Antes</span>
-                        <span
-                            class="text-[10px] text-purple-600 uppercase font-black tracking-widest text-center">Ahora</span>
-                    </div>
-                    <div id="comparisonRows" class="space-y-4">
-                        <!-- JS dynamic rows -->
-                    </div>
-                </div>
-
-                <div class="flex justify-center gap-12">
-                    <form id="rejectCounterForm" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-1 transition-all">
-                            Rechazar
-                        </button>
-                    </form>
-                    <form id="acceptCounterForm" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="text-xs font-black uppercase tracking-widest text-purple-600 hover:text-purple-400 border-b-2 border-purple-600 hover:border-purple-400 pb-1 transition-all">
-                            Aceptar Propuesta
-                        </button>
-                    </form>
+                <div id="comparisonRows" class="space-y-4">
+                    <!-- JS dynamic rows -->
                 </div>
             </div>
+
+            <div class="flex justify-center gap-12">
+                <form id="rejectCounterForm" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-1 transition-all">
+                        Rechazar
+                    </button>
+                </form>
+                <form id="acceptCounterForm" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="text-xs font-black uppercase tracking-widest text-purple-600 hover:text-purple-400 border-b-2 border-purple-600 hover:border-purple-400 pb-1 transition-all">
+                        Aceptar Propuesta
+                    </button>
+                </form>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -448,20 +446,23 @@
             document.getElementById('counterOfferListView').classList.add('hidden');
             document.getElementById('counterOfferDetailView').classList.remove('hidden');
 
-            const fmt = (n) => parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
-            const dateFmt = (d) => d ? new Date(d + 'T00:00:00').toLocaleDateString('es-PE') : '—';
+            const fmt = (n) => (n !== undefined && n !== null && !isNaN(parseFloat(n))) 
+                ? parseFloat(n).toLocaleString('en-US', { minimumFractionDigits: 2 }) 
+                : '—';
+            
+            const dateFmt = (d) => (d && d !== '—') ? new Date(d + 'T00:00:00').toLocaleDateString('es-PE') : '—';
 
             const fields = [
-                { label: 'Monto', old: symbol + ' ' + fmt(original.amount), new: symbol + ' ' + fmt(loan.amount) },
-                { label: 'Tasa %', old: parseFloat(original.interest_rate || 0).toFixed(2) + '%', new: parseFloat(loan.interest_rate).toFixed(2) + '%' },
+                { label: 'Monto', old: original.amount ? symbol + ' ' + fmt(original.amount) : '—', new: symbol + ' ' + fmt(loan.amount) },
+                { label: 'Tasa %', old: original.interest_rate ? parseFloat(original.interest_rate).toFixed(2) + '%' : '—', new: parseFloat(loan.interest_rate).toFixed(2) + '%' },
                 {
                     label: 'Plazo',
-                    old: loan.type === 'cuotas' ? (original.months + ' meses') : (original.payment_days + ' días'),
+                    old: original.months ? (original.months + ' meses') : (original.payment_days ? (original.payment_days + ' días') : '—'),
                     new: loan.type === 'cuotas' ? (loan.months + ' meses') : (loan.payment_days + ' días')
                 },
                 {
                     label: 'Cuota',
-                    old: symbol + ' ' + fmt(original.monthly_payment),
+                    old: original.monthly_payment ? symbol + ' ' + fmt(original.monthly_payment) : '—',
                     new: symbol + ' ' + fmt(loan.monthly_payment)
                 },
                 { label: 'Desembolso', old: dateFmt(original.disbursement_date), new: dateFmt(loan.disbursement_date) }
