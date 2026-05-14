@@ -100,6 +100,26 @@
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
+                                        <!-- Add Movement Button -->
+                                        <button onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}')"
+                                            class="w-10 h-10 flex items-center justify-center rounded-full text-green-500 hover:bg-green-500/10 transition-all"
+                                            title="Registrar Ingreso">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    d="M12 4v16m8-8H4" />
+                                            </svg>
+                                        </button>
+                                        <button onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}')"
+                                            class="w-10 h-10 flex items-center justify-center rounded-full text-red-500 hover:bg-red-500/10 transition-all"
+                                            title="Registrar Egreso">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    d="M20 12H4" />
+                                            </svg>
+                                        </button>
+
+                                        <div class="w-px h-6 bg-gray-100 dark:bg-gray-800 mx-2 self-center"></div>
+
                                         <button onclick='openCashboxModal(@json($cb))'
                                             class="w-10 h-10 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,14 +183,6 @@
                                     <!-- Manual Movements Buttons -->
                                     <div
                                         class="mt-12 flex gap-4 pt-4 border-t border-gray-50 dark:border-gray-900 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
-                                        <button onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}')"
-                                            class="flex-1 py-3 text-[9px] font-black uppercase tracking-widest text-green-600 border border-green-500/20 rounded-2xl hover:bg-green-500 hover:text-white transition-all">
-                                            + Ingreso
-                                        </button>
-                                        <button onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}')"
-                                            class="flex-1 py-3 text-[9px] font-black uppercase tracking-widest text-red-500 border border-red-500/20 rounded-2xl hover:bg-red-500 hover:text-white transition-all">
-                                            - Egreso
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -516,26 +528,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                    <div class="flex items-center gap-8">
-                                                        <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                            <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                        <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                            <div class="flex items-center gap-8">
+                                                                <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                                    <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                                    <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                                        ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-right">
+                                                                <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                                    ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                                ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                            ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            `;
+                                                    `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
