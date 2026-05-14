@@ -197,18 +197,20 @@ class LoanController extends Controller
     {
         $filter = $request->get('filter', 'all');
 
-        $query = Loan::with(['user', 'installments'])
-            ->where('status', 'approved');
+        $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
+            ->whereHas('loan', function ($q) {
+                $q->whereIn('status', ['approved', 'paid']);
+            });
 
         if ($filter === 'pending_validation') {
-            $query->whereHas('installments', function ($q) {
-                $q->where('status', 'processing');
-            });
+            $query->where('status', 'processing');
         }
 
-        $loans = $query->latest()->paginate(15)->withQueryString();
+        $installments = $query->orderBy('due_date', 'asc')
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('superadmin.loans.installments', compact('loans', 'filter'));
+        return view('superadmin.loans.installments', compact('installments', 'filter'));
     }
 
     public function approveInstallment(\App\Models\LoanInstallment $installment)
