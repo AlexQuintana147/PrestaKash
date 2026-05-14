@@ -166,18 +166,48 @@
                                     </div>
 
                                     <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Términos</p>
+                                        <div class="flex items-center justify-between mb-1.5">
+                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest">Términos</p>
+                                            @if($loan->type === 'cuotas')
+                                                <button type="button"
+                                                    onclick="openScheduleModal({{ json_encode([
+                                                        'amount' => $loan->amount,
+                                                        'currency' => $loan->currency,
+                                                        'type' => $loan->type,
+                                                        'months' => $loan->months,
+                                                        'payment_days' => $loan->payment_days,
+                                                        'interest_rate' => $loan->interest_rate,
+                                                        'system' => $loan->amortization_system ?? 'frances',
+                                                        'monthly_payment' => $loan->monthly_payment ?? 0,
+                                                        'payment_frequency' => $loan->payment_frequency ?? 'mensual',
+                                                        'user_name' => $loan->user->name,
+                                                    ]) }})"
+                                                    class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                                                    title="Ver cronograma">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                </button>
+                                            @endif
+                                        </div>
                                         <div class="flex items-center justify-between">
                                             <div>
                                                 <p class="text-[10px] text-gray-900 dark:text-white font-bold">
                                                     @if($loan->type === 'cuotas')
                                                         {{ $loan->months }} meses
+                                                        @php
+                                                            $freqLabel = match($loan->payment_frequency ?? 'mensual') {
+                                                                'diario' => 'día',
+                                                                'semanal' => 'sem',
+                                                                'quincenal' => 'quin',
+                                                                default => 'mes'
+                                                            };
+                                                        @endphp
+                                                        <span class="text-[8px] text-gray-400 font-normal">({{ $loan->amortization_system === 'americano' ? 'americano' : $loan->payment_frequency }})</span>
                                                     @else
                                                         {{ $loan->payment_days }} días
                                                     @endif
                                                 </p>
                                                 <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5">
-                                                    Cuota: {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}
+                                                    Cuota/{{ $freqLabel ?? 'pago' }}: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
                                                 </p>
                                             </div>
                                             <p class="text-[10px] text-green-600 dark:text-green-500 font-bold">
@@ -433,19 +463,50 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Términos</p>
+                                        <div class="flex items-center justify-between mb-1.5">
+                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-[0.15em]">Términos</p>
+                                            @if($loan->type === 'cuotas')
+                                                <button type="button"
+                                                    onclick="openScheduleModal({{ json_encode([
+                                                        'amount' => $loan->amount,
+                                                        'currency' => $loan->currency,
+                                                        'type' => $loan->type,
+                                                        'months' => $loan->months,
+                                                        'payment_days' => $loan->payment_days,
+                                                        'interest_rate' => $loan->interest_rate,
+                                                        'system' => $loan->amortization_system ?? 'frances',
+                                                        'monthly_payment' => $loan->monthly_payment ?? 0,
+                                                        'payment_frequency' => $loan->payment_frequency ?? 'mensual',
+                                                        'user_name' => $loan->user->name,
+                                                    ]) }})"
+                                                    class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                                                    title="Ver cronograma">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                </button>
+                                            @endif
+                                        </div>
                                         <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">
                                             @if($loan->type === 'cuotas')
                                                 {{ $loan->months }} meses
                                                 @if($loan->amortization_system === 'frances')
                                                     <span class="text-[9px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
+                                                @else
+                                                    <span class="text-[9px] text-gray-500 font-normal">(americano)</span>
                                                 @endif
                                             @else
                                                 {{ $loan->payment_days }} días
                                             @endif
                                         </p>
+                                        @php
+                                            $freqLabelDesktop = match($loan->payment_frequency ?? 'mensual') {
+                                                'diario' => 'día',
+                                                'semanal' => 'semana',
+                                                'quincenal' => 'quincena',
+                                                default => 'mes'
+                                            };
+                                        @endphp
                                         <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight">
-                                            Cuota: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
+                                            Cuota/{{ $loan->type === 'cuotas' ? $freqLabelDesktop : 'pago' }}: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
                                         </p>
                                         <p class="text-[9px] text-green-600 dark:text-green-500 font-bold leading-tight mt-0.5">
                                             Ganancia: {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}
@@ -1024,4 +1085,151 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
 </style>
+
+<!-- Modal Cronograma -->
+<div id="scheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <button onclick="closeScheduleModal()" class="absolute top-5 right-5 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="p-6 md:p-8 flex flex-col min-h-0 overflow-hidden">
+            <!-- Header -->
+            <div class="mb-5 pr-10">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Cronograma de Pagos</h3>
+                <div id="scheduleModalMeta" class="flex flex-wrap gap-4 mt-2"></div>
+            </div>
+            <!-- Summary -->
+            <div id="scheduleModalSummary" class="grid grid-cols-3 gap-3 mb-5"></div>
+            <!-- Table -->
+            <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+                <table class="w-full text-[11px] text-left">
+                    <thead class="sticky top-0 bg-white dark:bg-gray-950">
+                        <tr class="text-gray-400 dark:text-gray-600">
+                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">N°</th>
+                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Capital</th>
+                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Interés</th>
+                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Cuota</th>
+                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleModalBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openScheduleModal(loan) {
+        const modal = document.getElementById('scheduleModal');
+        const body = document.getElementById('scheduleModalBody');
+        const meta = document.getElementById('scheduleModalMeta');
+        const summary = document.getElementById('scheduleModalSummary');
+
+        const currency = loan.currency === 'USD' ? '$' : 'S/';
+        const amount = parseFloat(loan.amount);
+        const rate = parseFloat(loan.interest_rate) / 100;
+        const system = loan.system || 'frances';
+        const freq = loan.payment_frequency || 'mensual';
+        const months = parseInt(loan.months) || 1;
+
+        const freqLabels = { diario: 'Diario', semanal: 'Semanal', quincenal: 'Quincenal', mensual: 'Mensual' };
+        const freqLabel = freqLabels[freq] || 'Mensual';
+
+        // Meta info
+        meta.innerHTML = `
+            <span class="text-[10px] text-gray-500 dark:text-gray-500 font-medium">${loan.user_name}</span>
+            <span class="text-[10px] font-black text-gray-900 dark:text-white">${currency} ${amount.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase">${system}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase">${freqLabel}</span>
+        `;
+
+        body.innerHTML = '';
+        let schedule = [];
+        let totalInterest = 0;
+        let totalPrincipal = 0;
+        let periodicPayment = 0;
+
+        const fmt = (n) => parseFloat(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+        if (system === 'frances') {
+            const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
+            const nTotal = months * installmentsPerMonth;
+            const periodicRate = rate / installmentsPerMonth;
+
+            if (amount > 0 && rate > 0) {
+                periodicPayment = amount * (periodicRate * Math.pow(1 + periodicRate, nTotal)) / (Math.pow(1 + periodicRate, nTotal) - 1);
+            } else {
+                periodicPayment = amount / nTotal;
+            }
+
+            let balance = amount;
+            for (let i = 1; i <= nTotal; i++) {
+                const interest = balance * periodicRate;
+                const principal = periodicPayment - interest;
+                balance = Math.max(0, balance - principal);
+                totalInterest += interest;
+                totalPrincipal += principal;
+                schedule.push({ n: i, principal, interest, cuota: periodicPayment, balance });
+            }
+        } else {
+            // Americano: interés fijo mensual, capital al final
+            const interestPerMonth = amount * rate;
+            periodicPayment = interestPerMonth;
+            let balance = amount;
+            for (let i = 1; i <= months; i++) {
+                const principal = (i === months) ? amount : 0;
+                const cuota = (i === months) ? amount + interestPerMonth : interestPerMonth;
+                balance = Math.max(0, balance - principal);
+                totalInterest += interestPerMonth;
+                totalPrincipal += principal;
+                schedule.push({ n: i, principal, interest: interestPerMonth, cuota, balance });
+            }
+        }
+
+        const totalAmount = amount + totalInterest;
+
+        // Summary cards
+        summary.innerHTML = `
+            <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center">
+                <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Total a pagar</p>
+                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(totalAmount)}</p>
+            </div>
+            <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center">
+                <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Cuota / ${freqLabel}</p>
+                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(periodicPayment)}</p>
+            </div>
+            <div class="p-3 rounded-2xl bg-green-50 dark:bg-green-900/10 text-center">
+                <p class="text-[9px] text-green-600 uppercase font-black tracking-widest mb-1">Ganancia</p>
+                <p class="text-sm font-black text-green-600 tabular-nums">${currency} ${fmt(totalInterest)}</p>
+            </div>
+        `;
+
+        // Table rows
+        schedule.forEach(row => {
+            body.innerHTML += `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                    <td class="px-3 py-2.5 font-bold text-center text-gray-900 dark:text-white">${row.n}</td>
+                    <td class="px-3 py-2.5 tabular-nums text-center">${currency}${fmt(row.principal)}</td>
+                    <td class="px-3 py-2.5 tabular-nums text-center text-amber-600 dark:text-amber-500">${currency}${fmt(row.interest)}</td>
+                    <td class="px-3 py-2.5 tabular-nums text-center font-bold text-gray-900 dark:text-white">${currency}${fmt(row.cuota)}</td>
+                    <td class="px-3 py-2.5 tabular-nums text-center">${currency}${fmt(row.balance)}</td>
+                </tr>
+            `;
+        });
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeScheduleModal() {
+        document.getElementById('scheduleModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('scheduleModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('scheduleModal')) closeScheduleModal();
+    });
+</script>
+
 @endsection
