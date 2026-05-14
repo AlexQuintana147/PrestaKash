@@ -48,7 +48,7 @@
                             <!-- Monto y Tipo -->
                             <div class="flex items-center gap-4 lg:gap-6 w-full lg:w-auto lg:min-w-[240px]">
                                 <div
-                                    class="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center text-green-500 bg-green-50/50 dark:bg-green-500/10 rounded-2xl flex-shrink-0">
+                                    class="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center text-green-500 flex-shrink-0">
                                     <svg class="w-7 h-7 lg:w-8 lg:h-8" viewBox="0 0 489.038 489.038" fill="currentColor"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g>

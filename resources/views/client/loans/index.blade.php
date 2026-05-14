@@ -180,18 +180,17 @@
                 </p>
 
                 @if($loans->isEmpty())
-                    <div
-                        class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-10 text-center">
+                    <div class="p-10 text-center">
                         <p class="text-sm text-gray-500 dark:text-gray-400">Aún no has solicitado ningún préstamo.</p>
                         <a href="{{ route('client.loans.create') }}"
                             class="inline-block mt-4 text-xs font-bold text-green-600 dark:text-green-400 hover:underline">Solicita
                             el primero aquí</a>
                     </div>
                 @else
-                    <div class="divide-y divide-gray-100 dark:divide-gray-900">
+                    <div class="space-y-1">
                         @foreach($loans as $loan)
                                     <div
-                                        class="group py-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-colors">
+                                        class="group py-5 px-4 flex flex-col md:flex-row md:items-center justify-between gap-6 rounded-xl hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-all duration-300 ease-in-out">
 
                                         <!-- Izquierda: Info Principal -->
                                         <div class="flex items-center gap-5">
@@ -250,7 +249,7 @@
 
                                         <!-- Centro: Detalles -->
                                         <div
-                                            class="grid grid-cols-1 sm:grid-cols-4 gap-x-8 gap-y-4 xl:border-l xl:border-r border-gray-100 dark:border-gray-900 px-0 xl:px-8 flex-1">
+                                            class="grid grid-cols-1 sm:grid-cols-4 gap-x-8 gap-y-4 px-0 xl:px-8 flex-1">
 
                                             <div class="flex flex-col justify-center">
                                                 <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Progreso
@@ -303,7 +302,7 @@
 
                                         <!-- Derecha: Estado -->
                                         <div
-                                            class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 border-t md:border-t-0 border-gray-50 dark:border-gray-900 pt-4 md:pt-0">
+                                            class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 pt-4 md:pt-0">
                                             <span
                                                 class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.15em]
                                                                                                                                                                                 {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
