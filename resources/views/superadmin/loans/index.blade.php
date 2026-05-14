@@ -201,6 +201,7 @@
                                                 <button type="button"
                                                     onclick="openScheduleModal({{ json_encode([
                                                         'amount' => $loan->amount,
+                                                        'total_amount' => $loan->total_amount,
                                                         'currency' => $loan->currency,
                                                         'type' => $loan->type,
                                                         'months' => $loan->months,
@@ -523,6 +524,7 @@
                                                 <button type="button"
                                                     onclick="openScheduleModal({{ json_encode([
                                                         'amount' => $loan->amount,
+                                                        'total_amount' => $loan->total_amount,
                                                         'currency' => $loan->currency,
                                                         'type' => $loan->type,
                                                         'months' => $loan->months,
@@ -1239,21 +1241,23 @@
             }
         }
 
-        const totalAmount = amount + totalInterest;
+        const totalAmountStored = parseFloat(loan.total_amount) || (amount + totalInterest);
+        const totalGainStored = totalAmountStored - amount;
+        const monthlyPaymentStored = parseFloat(loan.monthly_payment) || periodicPayment;
 
         // Summary cards
         summary.innerHTML = `
             <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
                 <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-1">Total a pagar</p>
-                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(totalAmount)}</p>
+                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(totalAmountStored)}</p>
             </div>
             <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
                 <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-1">Cuota / ${freqLabel}</p>
-                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(periodicPayment)}</p>
+                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(monthlyPaymentStored)}</p>
             </div>
             <div class="p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900/40 text-center">
                 <p class="text-[9px] text-green-600 dark:text-green-500 uppercase font-black tracking-widest mb-1">Ganancia</p>
-                <p class="text-sm font-black text-green-600 dark:text-green-500 tabular-nums">${currency} ${fmt(totalInterest)}</p>
+                <p class="text-sm font-black text-green-600 dark:text-green-500 tabular-nums">${currency} ${fmt(totalGainStored)}</p>
             </div>
         `;
 
