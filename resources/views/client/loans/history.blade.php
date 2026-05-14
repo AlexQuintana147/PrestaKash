@@ -22,8 +22,8 @@
 
         @if($loans->isEmpty())
             <div
-                class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-3xl p-16 text-center shadow-sm">
-                <div class="w-20 h-20 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                class="text-center">
+                <div class="w-20 h-20 flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
