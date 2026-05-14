@@ -12,8 +12,7 @@
     }
 </style>
 <div id="lateFeeModal"
-    class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-    onclick="if(event.target===this) closeLateFeeModal()">
+    class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
 
         <!-- Header -->
@@ -282,9 +281,9 @@
         });
     }
 
-    document.addEventListener('keydown', function (e) {
+    /* document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !document.getElementById('lateFeeModal').classList.contains('hidden')) {
             closeLateFeeModal();
         }
-    });
+    }); */
 </script>
