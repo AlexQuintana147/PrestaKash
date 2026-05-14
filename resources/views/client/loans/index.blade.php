@@ -218,7 +218,7 @@
 
                                 <!-- Centro: Detalles -->
                                 <div
-                                    class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-4 xl:border-l xl:border-r border-gray-100 dark:border-gray-900 px-0 xl:px-8 flex-1">
+                                    class="grid grid-cols-1 sm:grid-cols-4 gap-x-8 gap-y-4 xl:border-l xl:border-r border-gray-100 dark:border-gray-900 px-0 xl:px-8 flex-1">
                                     
                                     <div class="flex flex-col justify-center">
                                         <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Progreso</p>
@@ -249,10 +249,18 @@
                                         <p class="text-xs text-gray-700 dark:text-gray-300">
                                             {{ number_format($loan->interest_rate, 2) }}%</p>
                                     </div>
+
+                                    <div class="flex flex-col justify-center">
+                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Desembolso</p>
+                                        <p class="text-xs text-gray-700 dark:text-gray-300 tabular-nums">
+                                            {{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '—' }}
+                                        </p>
+                                    </div>
+
                                     <div class="flex flex-col justify-center">
                                         <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Motivo</p>
                                         <p class="text-xs text-gray-700 dark:text-gray-300 italic" title="{{ $loan->reason }}">
-                                            "{{ Str::limit($loan->reason, 20) }}"
+                                            "{{ Str::limit($loan->reason, 15) }}"
                                         </p>
                                     </div>
                                 </div>
