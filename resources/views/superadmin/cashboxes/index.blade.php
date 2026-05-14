@@ -13,7 +13,7 @@
                 </h1>
             </div>
             <button onclick="openCashboxModal()"
-                class="bg-gray-900 dark:bg-white text-white dark:text-black px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-80 transition-all shadow-lg shadow-gray-500/20">
+                class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                 Nueva Caja
             </button>
         </div>
