@@ -57,9 +57,11 @@
         @if($filter === 'grouped')
             <!-- Vista Agrupada (2 columnas) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
-                @forelse($installments as $userId => $userInstallments)
+                @forelse($groupedInstallments as $group)
                     @php
-                        $user = $userInstallments->first()->loan->user;
+                        $loan = $group['loan'];
+                        $user = $loan->user;
+                        $userInstallments = $group['installments'];
                     @endphp
                     <div>
                         <div class="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-gray-900 mb-2">
@@ -72,7 +74,7 @@
                             </div>
                             <div>
                                 <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ $user->name }}</h3>
-                                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Total Cuotas: {{ $userInstallments->count() }}</p>
+                                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Préstamo #{{ str_pad($loan->id, 4, '0', STR_PAD_LEFT) }} • Total: {{ $userInstallments->total() }}</p>
                             </div>
                         </div>
                         <div class="divide-y divide-gray-50 dark:divide-gray-900/50">
@@ -80,10 +82,17 @@
                                 @include('superadmin.loans.partials.installment-row-minimal', ['inst' => $inst])
                             @endforeach
                         </div>
+                        
+                        <!-- Paginación Individual -->
+                        @if($userInstallments->hasPages())
+                            <div class="mt-4 flex justify-end">
+                                {{ $userInstallments->links('vendor.pagination.simple-tailwind') }}
+                            </div>
+                        @endif
                     </div>
                 @empty
                     <div class="col-span-full py-24 text-center">
-                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay cuotas registradas</p>
+                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay préstamos activos</p>
                     </div>
                 @endforelse
             </div>

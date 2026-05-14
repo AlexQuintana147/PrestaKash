@@ -197,6 +197,34 @@ class LoanController extends Controller
     {
         $filter = $request->get('filter', 'all');
 
+        if ($filter === 'grouped') {
+            $loans = \App\Models\Loan::with(['user', 'user.documents'])
+                ->whereIn('status', ['approved', 'paid'])
+                ->latest()
+                ->get();
+
+            $groupedInstallments = [];
+            foreach ($loans as $loan) {
+                $pageName = 'p_' . $loan->id;
+                $installments = $loan->installments()
+                    ->orderBy('due_date', 'asc')
+                    ->paginate(5, ['*'], $pageName)
+                    ->withQueryString();
+                
+                if ($installments->total() > 0) {
+                    $groupedInstallments[] = [
+                        'loan' => $loan,
+                        'installments' => $installments
+                    ];
+                }
+            }
+
+            return view('superadmin.loans.installments', [
+                'groupedInstallments' => $groupedInstallments,
+                'filter' => $filter
+            ]);
+        }
+
         $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
             ->whereHas('loan', function ($q) {
                 $q->whereIn('status', ['approved', 'paid']);
@@ -204,11 +232,6 @@ class LoanController extends Controller
 
         if ($filter === 'pending_validation') {
             $query->where('status', 'processing');
-        }
-
-        if ($filter === 'grouped') {
-            $installments = $query->orderBy('due_date', 'asc')->get()->groupBy('loan.user.id');
-            return view('superadmin.loans.installments', compact('installments', 'filter'));
         }
 
         $installments = $query->orderBy('due_date', 'asc')
