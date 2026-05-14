@@ -133,10 +133,9 @@
                                 id="lfm_rate_label">0%</span> por cada día de atraso.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">3. Acumulación:</span> La mora se
-                            calcula desde el vencimiento hasta la siguiente fecha de pago. Si el cliente no paga en la
-                            siguiente fecha, la mora se congela para esa cuota y comienza a correr la mora de la nueva
-                            cuota vencida.
+                            <span class="font-bold text-gray-900 dark:text-white">3. Acumulación:</span> Si el cliente
+                            llega a la siguiente fecha de pago sin haber pagado la anterior, el sistema sumará ambas
+                            cuotas más la mora acumulada en un solo pago total exigible.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
                             <span class="font-bold text-gray-900 dark:text-white">Fórmula:</span> Mora = (Cuota × Tasa%
