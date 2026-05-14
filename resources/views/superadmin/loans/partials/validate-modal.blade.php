@@ -1,4 +1,12 @@
 <!-- Modal Validación de Pago -->
+<style>
+#vm_actions::-webkit-scrollbar { width: 3px; }
+#vm_actions::-webkit-scrollbar-track { background: transparent; }
+#vm_actions::-webkit-scrollbar-thumb { background: rgba(156,163,175,0.35); border-radius: 9999px; }
+#vm_actions::-webkit-scrollbar-thumb:hover { background: rgba(156,163,175,0.6); }
+.dark #vm_actions::-webkit-scrollbar-thumb { background: rgba(75,85,99,0.5); }
+.dark #vm_actions::-webkit-scrollbar-thumb:hover { background: rgba(75,85,99,0.8); }
+</style>
 <div id="validateModal"
     class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-2xl rounded-2xl shadow-2xl relative flex flex-col md:flex-row overflow-hidden"
@@ -28,7 +36,7 @@
         </div>
 
         <!-- Acciones (Derecha) -->
-        <div class="w-full md:w-1/2 p-6 flex flex-col relative overflow-y-auto">
+        <div id="vm_actions" class="w-full md:w-1/2 p-6 flex flex-col relative overflow-y-auto modal-scroll" style="scrollbar-width: thin; scrollbar-color: rgba(156,163,175,0.4) transparent;">
             <button onclick="closeValidateModal()"
                 class="absolute top-4 right-4 text-gray-300 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

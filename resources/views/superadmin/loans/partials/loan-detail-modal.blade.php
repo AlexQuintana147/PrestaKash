@@ -1,8 +1,16 @@
 <!-- Modal Detalle Préstamo -->
+<style>
+#ldm_body::-webkit-scrollbar { width: 3px; }
+#ldm_body::-webkit-scrollbar-track { background: transparent; }
+#ldm_body::-webkit-scrollbar-thumb { background: rgba(156,163,175,0.35); border-radius: 9999px; }
+#ldm_body::-webkit-scrollbar-thumb:hover { background: rgba(156,163,175,0.6); }
+.dark #ldm_body::-webkit-scrollbar-thumb { background: rgba(75,85,99,0.5); }
+.dark #ldm_body::-webkit-scrollbar-thumb:hover { background: rgba(75,85,99,0.8); }
+</style>
 <div id="loanDetailModal"
     class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
     onclick="if(event.target===this) closeLoanDetailModal()">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-md rounded-2xl shadow-2xl flex flex-col" style="max-height: 90vh;">
 
         <!-- Header usuario -->
         <div class="flex items-center gap-4 px-6 pt-6 pb-5 border-b border-gray-100 dark:border-gray-900">
@@ -20,7 +28,7 @@
             </button>
         </div>
 
-        <div class="px-6 py-5 space-y-6 overflow-y-auto" style="max-height: 70vh;">
+        <div id="ldm_body" class="px-6 py-5 space-y-6 overflow-y-auto" style="max-height: 70vh; scrollbar-width: thin; scrollbar-color: rgba(156,163,175,0.4) transparent;">
 
             <!-- Badges email + wssp -->
             <div class="flex flex-wrap gap-2" id="ldm_badges"></div>
