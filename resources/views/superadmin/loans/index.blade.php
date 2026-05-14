@@ -698,7 +698,7 @@
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
                             <input type="text" name="amount" id="modal_amount"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-6 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
                             <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
                         </div>
                     </div>
@@ -775,42 +775,45 @@
                                                 this.setSelectionRange(start, start);
                                             }
                                             calculatePreview();"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-4 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
                             <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                         </div>
                     </div>
 
-                    <!-- Sistema -->
-                    <div id="modalSystemWrapper" class="space-y-2 col-span-2 md:col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
-                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
-                            <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
-                                    FRANCÉS
-                                </div>
-                            </label>
-                            <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
-                                    AMERICANO
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Frecuencia -->
-                    <div id="modalFrequencyWrapper" class="space-y-2 col-span-2 md:col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
-                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
-                            @foreach(['diario' => 'DÍA', 'semanal' => 'SEM', 'quincenal' => 'QUIN', 'mensual' => 'MES'] as $val => $label)
+                    <!-- Sistema y Frecuencia (Agrupados para escritorio) -->
+                    <div class="col-span-2 md:col-span-1 space-y-4">
+                        <!-- Sistema -->
+                        <div id="modalSystemWrapper" class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
+                            <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                                 <label class="flex-1 cursor-pointer group">
-                                    <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer" onchange="calculatePreview()">
+                                    <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
                                     <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
-                                        {{ $label }}
+                                        FRANCÉS
                                     </div>
                                 </label>
-                            @endforeach
+                                <label class="flex-1 cursor-pointer group">
+                                    <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
+                                    <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                        AMERICANO
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Frecuencia -->
+                        <div id="modalFrequencyWrapper" class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
+                            <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
+                                @foreach(['diario' => 'DÍA', 'semanal' => 'SEM', 'quincenal' => 'QUIN', 'mensual' => 'MES'] as $val => $label)
+                                    <label class="flex-1 cursor-pointer group">
+                                        <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer" onchange="calculatePreview()">
+                                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                            {{ $label }}
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -856,10 +859,6 @@
                                 <p class="text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Nueva Oferta (<span id="unicoAdminRate"></span>%)</p>
                                 <p id="unicoAdminTotal" class="text-xl font-black text-purple-600 tabular-nums text-center"></p>
                             </div>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center border border-gray-100 dark:border-gray-800">
-                            <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Fecha límite de pago estimada</p>
-                            <p id="unicoDeadline" class="text-sm font-bold text-gray-900 dark:text-white capitalize"></p>
                         </div>
                     </div>
                 </div>
@@ -1063,13 +1062,6 @@
 
             document.getElementById('unicoAdminRate').textContent = (flatRate * 100).toFixed(2);
             document.getElementById('unicoAdminTotal').textContent = `${currency} ${adminTotal.toLocaleString('en-US', amountObj)}`;
-
-            const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
-            const date = new Date();
-            date.setDate(date.getDate() + days);
-
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('unicoDeadline').textContent = date.toLocaleDateString('es-PE', options);
 
             gainEl.textContent = `${currency} ${(adminTotal - amount).toLocaleString('en-US', amountObj)}`;
             return;
