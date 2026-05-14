@@ -417,32 +417,32 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                <div class="flex items-center gap-8">
-                                                    <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                                    <div>
-                                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                    <div class="flex items-center gap-8">
+                                                        <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                                        <div>
+                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                                            ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <div class="text-right">
-                                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                                        ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        `;
+                                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
 
         function scrollCarousel(direction) {
-            const cardWidth = cards[0].offsetWidth + 32; // width + gap
+            const cardWidth = cards[0].offsetWidth + 48; // width + gap
             carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
         }
 
         function scrollToIndex(index) {
-            const cardWidth = cards[0].offsetWidth + 32;
+            const cardWidth = cards[0].offsetWidth + 48;
             carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
         }
 
