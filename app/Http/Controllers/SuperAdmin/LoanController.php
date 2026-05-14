@@ -22,6 +22,7 @@ class LoanController extends Controller
 
         $counts = [
             'pending' => Loan::where('status', 'pending')->count(),
+            'counter_offered' => Loan::where('status', 'counter_offered')->count(),
             'approved' => Loan::where('status', 'approved')->count(),
             'rejected' => Loan::where('status', 'rejected')->count(),
             'paid' => Loan::where('status', 'paid')->count(),
