@@ -134,7 +134,8 @@
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
                             <span class="font-bold text-gray-900 dark:text-white">3. Cálculo diario:</span> Pasada la
-                            gracia, se suma la tasa % y el monto fijo por cada día de retraso.
+                            gracia, se aplica la tasa % diaria sobre el monto de la cuota. El monto fijo mostrado es el
+                            resultado informativo de este porcentaje por día.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
                             <span class="font-bold text-gray-900 dark:text-white">4. Acumulación:</span> Al vencer una
