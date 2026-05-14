@@ -47,4 +47,27 @@ class Loan extends Model
     {
         return $this->hasMany(LoanInstallment::class);
     }
+
+    public function getOverdueInstallmentsAttribute()
+    {
+        return $this->installments()
+            ->where('status', '!=', 'approved')
+            ->where('due_date', '<', now()->startOfDay())
+            ->get();
+    }
+
+    public function getAccumulatedOverdueDebtAttribute()
+    {
+        $overdue = $this->overdue_installments;
+        return $overdue->sum('amount') + $overdue->sum('late_fee');
+    }
+
+    public function getNextInstallmentAttribute()
+    {
+        return $this->installments()
+            ->where('status', '!=', 'approved')
+            ->where('due_date', '>=', now()->startOfDay())
+            ->orderBy('due_date', 'asc')
+            ->first();
+    }
 }

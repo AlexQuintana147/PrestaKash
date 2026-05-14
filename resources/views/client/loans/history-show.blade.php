@@ -49,6 +49,59 @@
     </div>
 
     <!-- Resumen financiero -->
+    @php
+        $overdueInstallments = $loan->overdue_installments;
+        $accumulatedDebt = $loan->accumulated_overdue_debt;
+        $nextInst = $loan->next_installment;
+        $totalToPayNow = $accumulatedDebt + ($nextInst ? $nextInst->amount : 0);
+    @endphp
+
+    @if($accumulatedDebt > 0)
+        <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Deuda Acumulada</h3>
+                    <p class="text-[11px] text-red-500/80 leading-relaxed mb-4">
+                        Tienes cuotas vencidas. Para regularizar tu situación, debes pagar las cuotas atrasadas más la mora generada y, si lo deseas, la cuota actual.
+                    </p>
+                    
+                    <div class="space-y-2 mb-6">
+                        <div class="flex justify-between text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Cuotas vencidas ({{ $overdueInstallments->count() }})</span>
+                            <span class="font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($overdueInstallments->sum('amount'), 2) }}</span>
+                        </div>
+                        <div class="flex justify-between text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Mora total</span>
+                            <span class="font-black text-orange-500">+ {{ $cur }} {{ number_format($overdueInstallments->sum('late_fee'), 2) }}</span>
+                        </div>
+                        @if($nextInst)
+                        <div class="flex justify-between text-[10px] pt-2 border-t border-red-100 dark:border-red-500/10">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Siguiente cuota ({{ $nextInst->due_date->format('d/m') }})</span>
+                            <span class="font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($nextInst->amount, 2) }}</span>
+                        </div>
+                        @endif
+                        <div class="flex justify-between text-xs pt-2 border-t border-red-200 dark:border-red-500/30">
+                            <span class="text-gray-900 dark:text-white uppercase font-black tracking-widest">Total a pagar hoy</span>
+                            <span class="font-black text-red-600 dark:text-red-400">{{ $cur }} {{ number_format($totalToPayNow, 2) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/50 dark:bg-black/20 rounded-xl p-4">
+                        <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">¿Cómo funciona?</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                            Al no pagar en la fecha correspondiente, se genera una mora diaria según lo acordado. La mora se acumula hasta la fecha de la siguiente cuota. Para evitar que la deuda siga creciendo, te recomendamos realizar el pago total lo antes posible.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="grid grid-cols-3 gap-px bg-gray-100 dark:bg-gray-900 rounded-2xl overflow-hidden mb-6">
         <div class="bg-white dark:bg-gray-950 px-4 py-4">
             <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Prestado</p>
@@ -133,9 +186,15 @@
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-gray-900 dark:text-white">
                         {{ $cur }} {{ number_format($inst->amount, 2) }}
+                        @if($inst->late_fee > 0)
+                            <span class="text-[10px] text-orange-500 ml-1">+ {{ number_format($inst->late_fee, 2) }} mora</span>
+                        @endif
                     </p>
                     <p class="text-[9px] {{ $isOverdue ? 'text-red-500' : 'text-gray-400' }} mt-0.5">
                         {{ $inst->due_date->format('d M Y') }}
+                        @if($inst->late_fee > 0)
+                            <span class="ml-2 text-gray-900 dark:text-white">Total: {{ $cur }} {{ number_format($inst->total_with_mora, 2) }}</span>
+                        @endif
                     </p>
                     @if($inst->status === 'rejected' && $inst->admin_notes)
                         <p class="text-[8px] text-red-500 italic mt-0.5">"{{ $inst->admin_notes }}"</p>
@@ -160,7 +219,7 @@
 
                     @if($canPay)
                         <button type="button"
-                            onclick="openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($inst->amount, 2) }}')"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($inst->amount, 2) }}', {{ $inst->late_fee }})"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-px hover:opacity-60 transition-opacity">
                             Pagar
                         </button>
@@ -292,8 +351,12 @@ function changePage(delta) {
     document.getElementById('installments-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function openUploadModal(instId, amount) {
-    document.getElementById('modal_amount_text').textContent = amount;
+function openUploadModal(instId, amount, lateFee = 0) {
+    const total = parseFloat(amount.replace(/[^0-9.-]+/g,"")) + lateFee;
+    document.getElementById('modal_amount_text').textContent = amount + (lateFee > 0 ? ` + ${lateFee.toFixed(2)} mora` : '');
+    if(lateFee > 0) {
+        document.getElementById('modal_amount_text').innerHTML += `<br><span class="text-xs text-gray-500">Total: ${window._cur || ''} ${total.toFixed(2)}</span>`;
+    }
     document.getElementById('uploadForm').action = `/panel/historial-crediticio/pagar/${instId}`;
     document.getElementById('uploadModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
