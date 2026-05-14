@@ -90,7 +90,8 @@
                                 class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Monto
                                 Fijo</label>
                             <div class="relative">
-                                <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric" readonly
+                                <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric"
+                                    readonly
                                     class="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed focus:outline-none transition-colors">
                                 <span
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase"
@@ -240,12 +241,10 @@
         if (!rateEl || !dailyEl || !baseEl || !moraEl || !totalEl || !labelEl) return;
 
         const rate = parseFloat(rateEl.value) || 0;
-        const daily = parseFloat(dailyEl.value) || 0;
         const amount = window._lfm_amount || 0;
         const cur = window._lfm_currency || 'S/';
 
-        const moraRate = amount * (rate / 100);
-        const totalMoraPerUnit = moraRate + daily;
+        const totalMoraPerUnit = amount * (rate / 100);
 
         let total = amount + totalMoraPerUnit;
 

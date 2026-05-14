@@ -57,11 +57,10 @@ class LoanInstallment extends Model
 
         $daysForCalculation = $dueDate->diffInDays($limitDate);
 
-        // Diario
+        // Cálculo diario basado en la tasa porcentual
         $moraRate = $this->amount * ($loan->late_fee_rate / 100) * $daysForCalculation;
-        $moraFixed = $loan->late_fee_daily_amount * $daysForCalculation;
 
-        return round($moraRate + $moraFixed, 2);
+        return round($moraRate, 2);
     }
 
     public function getTotalWithMoraAttribute()
