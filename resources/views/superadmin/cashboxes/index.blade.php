@@ -6,11 +6,11 @@
     <div class="px-5 md:px-10 py-8">
 
         <!-- Header -->
-        <div class="flex items-end justify-between mb-8">
+        <div class="flex items-end justify-between mb-12">
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo</p>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
-                </h1>
+                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-[0.2em] mb-1">Panel Administrativo</p>
+                <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Gestión
+                    de Cajas</h1>
             </div>
             <button onclick="openCashboxModal()"
                 class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
@@ -19,102 +19,142 @@
         </div>
 
         @if(session('success'))
-            <div class="mb-6 flex items-center gap-3 text-sm text-green-500">
+            <div
+                class="mb-8 flex items-center gap-3 text-sm text-green-500 font-bold uppercase tracking-widest animate-in fade-in slide-in-from-top-2 duration-300">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                 </svg>
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Grid de Cajas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse($cashboxes as $cb)
-                <div
-                    class="group relative bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-xl transition-all duration-300">
-                    <!-- Color Indicator -->
-                    <div class="absolute top-0 left-0 w-full h-1.5 rounded-t-3xl" style="background-color: {{ $cb->color }}">
-                    </div>
+        <!-- Carousel de Cajas -->
+        <div class="relative mb-16">
+            <div id="cashboxCarousel"
+                class="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[10%] md:px-[30%] py-4">
+                @forelse($cashboxes as $cb)
+                    <div class="cashbox-card flex-shrink-0 w-full max-w-lg snap-center transition-all duration-500 scale-90 opacity-40 hover:opacity-100"
+                        data-id="{{ $cb->id }}" data-movements="{{ json_encode($cb->movements) }}">
+                        <div
+                            class="relative bg-white dark:bg-gray-900 rounded-[3rem] border border-gray-100 dark:border-gray-800 p-10 shadow-2xl overflow-hidden group">
+                            <!-- Color Accent -->
+                            <div class="absolute top-0 left-0 w-full h-2 transition-transform duration-500 group-hover:scale-y-150"
+                                style="background-color: {{ $cb->color }}"></div>
 
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">
-                                {{ $cb->name }}
-                            </h3>
-                            <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">{{ $cb->bank_name }}</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="openCashboxModal({{ json_encode($cb) }})"
-                                class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                            </button>
-                            <form action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
-                                onsubmit="return confirm('¿Eliminar esta caja?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="text-gray-400 hover:text-red-500 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-end">
-                            <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Saldo Actual</p>
-                            <p class="text-xl font-black text-gray-900 dark:text-white tabular-nums">
-                                {{ $cb->currency === 'USD' ? '$' : 'S/' }} {{ number_format($cb->balance, 2) }}
-                            </p>
-                        </div>
-
-                        <div class="pt-3 border-t border-gray-50 dark:border-gray-800 space-y-1">
-                            @if($cb->account_number)
-                                <div class="flex justify-between text-[10px]">
-                                    <span class="text-gray-400 font-bold uppercase">N° Cuenta</span>
-                                    <span class="text-gray-900 dark:text-gray-300 font-mono">{{ $cb->account_number }}</span>
+                            <div class="flex justify-between items-start mb-10">
+                                <div>
+                                    <h3
+                                        class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-1">
+                                        {{ $cb->name }}</h3>
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $cb->bank_name }}</span>
+                                        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                        <span
+                                            class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $cb->currency }}</span>
+                                    </div>
                                 </div>
-                            @endif
-                            @if($cb->cci)
-                                <div class="flex justify-between text-[10px]">
-                                    <span class="text-gray-400 font-bold uppercase">CCI</span>
-                                    <span class="text-gray-900 dark:text-gray-300 font-mono">{{ $cb->cci }}</span>
+                                <div class="flex gap-4">
+                                    <button onclick="openCashboxModal({{ json_encode($cb) }})"
+                                        class="text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+                                    <form action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
+                                        onsubmit="return confirm('¿Eliminar esta caja?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="text-gray-300 hover:text-red-500 transition-colors">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
                                 </div>
-                            @endif
+                            </div>
+
+                            <div class="space-y-8">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-2">Saldo
+                                        Disponible</p>
+                                    <p class="text-5xl font-black text-gray-900 dark:text-white tracking-tighter tabular-nums">
+                                        <span
+                                            class="text-2xl font-bold opacity-30 mr-1">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>{{ number_format($cb->balance, 2) }}
+                                    </p>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-50 dark:border-gray-800">
+                                    @if($cb->account_number)
+                                        <div>
+                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">N° Cuenta
+                                            </p>
+                                            <p class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tight">
+                                                {{ $cb->account_number }}</p>
+                                        </div>
+                                    @endif
+                                    @if($cb->cci)
+                                        <div>
+                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">CCI</p>
+                                            <p class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tight">
+                                                {{ $cb->cci }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="col-span-full py-20 text-center">
-                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                        </svg>
+                @empty
+                    <div class="col-span-full py-20 text-center w-full">
+                        <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest mb-1">No hay cajas
+                            registradas</h3>
+                        <p class="text-xs text-gray-500">Comienza creando una caja para gestionar la liquidez.</p>
                     </div>
-                    <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest mb-1">No hay cajas
-                        registradas</h3>
-                    <p class="text-xs text-gray-500">Comienza creando una caja para gestionar la liquidez.</p>
+                @endforelse
+            </div>
+
+            <!-- Indicadores de Scroll -->
+            <div class="flex justify-center gap-2 mt-6">
+                @foreach($cashboxes as $index => $cb)
+                    <div class="carousel-dot w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-800 transition-all duration-300"
+                        data-index="{{ $index }}"></div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Últimos Movimientos -->
+        <div id="movementsSection" class="max-w-4xl mx-auto opacity-0 translate-y-4 transition-all duration-700">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-widest">Últimos Movimientos
+                </h2>
+                <button
+                    class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-800 pb-0.5 transition-colors">
+                    Ver reporte completo
+                </button>
+            </div>
+
+            <div
+                class="bg-white dark:bg-gray-950 rounded-[2.5rem] border border-gray-100 dark:border-gray-900 overflow-hidden shadow-sm">
+                <div id="movementsList" class="divide-y divide-gray-50 dark:divide-gray-900/50">
+                    <!-- JS populated -->
                 </div>
-            @endforelse
+                <div id="noMovements" class="hidden py-20 text-center">
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Sin movimientos recientes</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Modal Caja -->
+    <!-- Modal Caja Minimalista -->
     <div id="cashboxModal"
-        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div
-            class="bg-white dark:bg-gray-950 w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div class="px-10 pt-10 pb-8">
-                <div class="flex items-center justify-between mb-8">
+            class="bg-white dark:bg-gray-950 w-full max-w-md rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="px-12 pt-12 pb-10">
+                <div class="flex items-center justify-between mb-10">
                     <h3 id="modalTitle"
-                        class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">
-                        Nueva Caja</h3>
+                        class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Nueva Caja</h3>
                     <button onclick="closeCashboxModal()"
                         class="text-gray-300 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,28 +164,28 @@
                     </button>
                 </div>
 
-                <form id="cashboxForm" method="POST" class="space-y-6">
+                <form id="cashboxForm" method="POST" class="space-y-8">
                     @csrf
                     <div id="methodField"></div>
 
-                    <div class="space-y-5">
+                    <div class="space-y-6">
                         <!-- Nombre -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Nombre
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Nombre
                                 de la Caja</label>
-                            <input type="text" name="name" id="cb_name" required placeholder="Ej: Caja Principal"
+                            <input type="text" name="name" id="cb_name" required placeholder="Solo letras"
                                 oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
                         </div>
 
                         <!-- Banco -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Banco
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Banco
                                 / Entidad</label>
                             <select id="cb_bank_select" required onchange="toggleCustomBank(this.value)"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
                                 <option value="" disabled selected>Seleccionar banco</option>
                                 <option value="BCP">BCP</option>
                                 <option value="Interbank">Interbank</option>
@@ -165,23 +205,23 @@
                             <input type="hidden" name="bank_name" id="cb_bank">
                         </div>
 
-                        <!-- Banco Personalizado (Oculto por defecto) -->
+                        <!-- Banco Personalizado -->
                         <div id="customBankWrapper" class="hidden animate-in slide-in-from-top-2 duration-200">
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Nombre
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Nombre
                                 del Banco</label>
-                            <input type="text" id="cb_bank_custom" placeholder="Nombre del banco"
+                            <input type="text" id="cb_bank_custom" placeholder="Solo letras"
                                 oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
                         </div>
 
-                        <div class="grid grid-cols-2 gap-8">
+                        <div class="grid grid-cols-2 gap-10">
                             <!-- Moneda -->
                             <div>
                                 <label
-                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Moneda</label>
+                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Moneda</label>
                                 <select name="currency" id="cb_currency" required
-                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
+                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
                                     <option value="PEN">Soles (S/)</option>
                                     <option value="USD">Dólares ($)</option>
                                 </select>
@@ -189,12 +229,12 @@
                             <!-- Color -->
                             <div>
                                 <label
-                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Color</label>
+                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Color</label>
                                 <div class="relative h-[42px] border-b border-gray-100 dark:border-gray-900">
                                     <input type="color" name="color" id="cb_color" value="#000000"
                                         class="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer overflow-hidden p-0 opacity-0 z-10">
                                     <div id="colorPreview"
-                                        class="absolute inset-y-2 left-0 w-full rounded-lg transition-colors border border-gray-100 dark:border-gray-800"
+                                        class="absolute inset-y-2 left-0 w-full rounded-full transition-colors border border-gray-100 dark:border-gray-800"
                                         style="background-color: #000000"></div>
                                 </div>
                             </div>
@@ -203,29 +243,28 @@
                         <!-- N° Cuenta -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Número
-                                de Cuenta (Opcional)</label>
-                            <input type="text" name="account_number" id="cb_account" placeholder="000-0000000-0-00"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Número
+                                de Cuenta</label>
+                            <input type="text" name="account_number" id="cb_account" placeholder="Opcional"
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
                         </div>
 
                         <!-- CCI -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">CCI
-                                (Opcional)</label>
-                            <input type="text" name="cci" id="cb_cci" placeholder="000-000-000000000000-00"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">CCI</label>
+                            <input type="text" name="cci" id="cb_cci" placeholder="Opcional"
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
                         </div>
                     </div>
 
-                    <div class="pt-6 flex items-center justify-between">
+                    <div class="pt-10 flex items-center justify-between">
                         <button type="button" onclick="closeCashboxModal()"
-                            class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Cancelar
                         </button>
                         <button type="submit"
-                            class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
+                            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                             Guardar Caja
                         </button>
                     </div>
@@ -234,7 +273,119 @@
         </div>
     </div>
 
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #cashboxCarousel {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+
+        .cashbox-card.active {
+            scale: 1;
+            opacity: 1;
+        }
+
+        /* Custom color picker circle */
+        #colorPreview {
+            width: 24px;
+            height: 24px;
+            margin-top: 4px;
+        }
+    </style>
+
     <script>
+        const carousel = document.getElementById('cashboxCarousel');
+        const cards = document.querySelectorAll('.cashbox-card');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const movementsSection = document.getElementById('movementsSection');
+        const movementsList = document.getElementById('movementsList');
+        const noMovements = document.getElementById('noMovements');
+
+        function updateActiveCard() {
+            let activeIndex = 0;
+            let minDistance = Infinity;
+
+            cards.forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                const distance = Math.abs(rect.left + rect.width / 2 - window.innerWidth / 2);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    activeIndex = index;
+                }
+                card.classList.remove('active');
+            });
+
+            if (cards[activeIndex]) {
+                cards[activeIndex].classList.add('active');
+
+                // Update dots
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('bg-gray-900', index === activeIndex);
+                    dot.classList.toggle('dark:bg-white', index === activeIndex);
+                    dot.classList.toggle('w-4', index === activeIndex);
+                });
+
+                // Update movements
+                const movements = JSON.parse(cards[activeIndex].dataset.movements);
+                renderMovements(movements);
+            }
+        }
+
+        function renderMovements(movements) {
+            movementsSection.classList.remove('opacity-0', 'translate-y-4');
+            movementsList.innerHTML = '';
+
+            if (movements.length === 0) {
+                noMovements.classList.remove('hidden');
+                return;
+            }
+
+            noMovements.classList.add('hidden');
+            movements.forEach(m => {
+                const isIncome = m.type === 'income';
+                const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                const html = `
+                        <div class="px-10 py-8 flex items-center justify-between group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                            <div class="flex items-center gap-6">
+                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${isIncome ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${isIncome ? 'M19 14l-7 7m0 0l-7-7m7 7V3' : 'M5 10l7-7m0 0l7 7m-7-7v18'}" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-base font-bold text-gray-900 dark:text-white">${m.description}</p>
+                                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-1">${date} • ${m.reference_type || 'Manual'}</p>
+                                </div>
+                            </div>
+                            <p class="text-lg font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                ${isIncome ? '+' : '-'} S/ ${parseFloat(m.amount).toFixed(2)}
+                            </p>
+                        </div>
+                    `;
+                movementsList.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        carousel.addEventListener('scroll', () => {
+            clearTimeout(window.scrollTimeout);
+            window.scrollTimeout = setTimeout(updateActiveCard, 50);
+        });
+
+        // Init
+        if (cards.length > 0) {
+            setTimeout(updateActiveCard, 100);
+        }
+
         function toggleCustomBank(value) {
             const wrapper = document.getElementById('customBankWrapper');
             const customInput = document.getElementById('cb_bank_custom');
@@ -314,7 +465,6 @@
             document.body.style.overflow = '';
         }
 
-        // Cerrar modal al hacer click fuera
         document.getElementById('cashboxModal').addEventListener('click', function (e) {
             if (e.target === this) closeCashboxModal();
         });

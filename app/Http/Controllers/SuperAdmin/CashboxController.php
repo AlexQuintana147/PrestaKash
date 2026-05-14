@@ -10,7 +10,12 @@ class CashboxController extends Controller
 {
     public function index()
     {
-        $cashboxes = Cashbox::orderBy('created_at', 'desc')->get();
+        $cashboxes = Cashbox::with([
+            'movements' => function ($q) {
+                $q->latest()->limit(10);
+            }
+        ])->orderBy('created_at', 'desc')->get();
+
         return view('superadmin.cashboxes.index', compact('cashboxes'));
     }
 

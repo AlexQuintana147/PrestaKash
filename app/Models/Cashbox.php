@@ -21,4 +21,9 @@ class Cashbox extends Model
         'balance' => 'decimal:2',
         'is_active' => 'boolean',
     ];
+
+    public function movements()
+    {
+        return $this->hasMany(CashboxMovement::class);
+    }
 }
