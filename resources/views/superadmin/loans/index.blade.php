@@ -1088,31 +1088,31 @@
 
 <!-- Modal Cronograma -->
 <div id="scheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
-        <button onclick="closeScheduleModal()" class="absolute top-5 right-5 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    <div class="bg-white dark:bg-black border border-gray-200 dark:border-gray-900 w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <button onclick="closeScheduleModal()" class="absolute top-5 right-5 md:top-7 md:right-7 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
         <div class="p-6 md:p-8 flex flex-col min-h-0 overflow-hidden">
             <!-- Header -->
             <div class="mb-5 pr-10">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Cronograma de Pagos</h3>
-                <div id="scheduleModalMeta" class="flex flex-wrap gap-4 mt-2"></div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Cronograma de Pagos</h3>
+                <div id="scheduleModalMeta" class="flex flex-wrap items-center gap-2 mt-2"></div>
             </div>
             <!-- Summary -->
             <div id="scheduleModalSummary" class="grid grid-cols-3 gap-3 mb-5"></div>
             <!-- Table -->
-            <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+            <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar rounded-xl border border-gray-100 dark:border-gray-900">
                 <table class="w-full text-[11px] text-left">
-                    <thead class="sticky top-0 bg-white dark:bg-gray-950">
+                    <thead class="sticky top-0 bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
                         <tr class="text-gray-400 dark:text-gray-600">
-                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">N°</th>
-                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Capital</th>
-                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Interés</th>
-                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Cuota</th>
-                            <th class="px-3 py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
+                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">N°</th>
+                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Capital</th>
+                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Interés</th>
+                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Cuota</th>
+                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
                         </tr>
                     </thead>
-                    <tbody id="scheduleModalBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400"></tbody>
+                    <tbody id="scheduleModalBody" class="divide-y divide-gray-50 dark:divide-gray-900"></tbody>
                 </table>
             </div>
         </div>
@@ -1138,16 +1138,16 @@
 
         // Meta info
         meta.innerHTML = `
-            <span class="text-[10px] text-gray-500 dark:text-gray-500 font-medium">${loan.user_name}</span>
+            <span class="text-[10px] text-gray-500 dark:text-gray-400 font-medium">${loan.user_name}</span>
+            <span class="text-gray-300 dark:text-gray-700">•</span>
             <span class="text-[10px] font-black text-gray-900 dark:text-white">${currency} ${amount.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase">${system}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase">${freqLabel}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase border border-gray-200 dark:border-gray-800">${system}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase border border-gray-200 dark:border-gray-800">${freqLabel}</span>
         `;
 
         body.innerHTML = '';
-        let schedule = [];
+        let fullSchedule = [];
         let totalInterest = 0;
-        let totalPrincipal = 0;
         let periodicPayment = 0;
 
         const fmt = (n) => parseFloat(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -1157,11 +1157,9 @@
             const nTotal = months * installmentsPerMonth;
             const periodicRate = rate / installmentsPerMonth;
 
-            if (amount > 0 && rate > 0) {
-                periodicPayment = amount * (periodicRate * Math.pow(1 + periodicRate, nTotal)) / (Math.pow(1 + periodicRate, nTotal) - 1);
-            } else {
-                periodicPayment = amount / nTotal;
-            }
+            periodicPayment = (amount > 0 && rate > 0)
+                ? amount * (periodicRate * Math.pow(1 + periodicRate, nTotal)) / (Math.pow(1 + periodicRate, nTotal) - 1)
+                : amount / nTotal;
 
             let balance = amount;
             for (let i = 1; i <= nTotal; i++) {
@@ -1169,11 +1167,9 @@
                 const principal = periodicPayment - interest;
                 balance = Math.max(0, balance - principal);
                 totalInterest += interest;
-                totalPrincipal += principal;
-                schedule.push({ n: i, principal, interest, cuota: periodicPayment, balance });
+                fullSchedule.push({ n: i, principal, interest, cuota: periodicPayment, balance });
             }
         } else {
-            // Americano: interés fijo mensual, capital al final
             const interestPerMonth = amount * rate;
             periodicPayment = interestPerMonth;
             let balance = amount;
@@ -1182,8 +1178,7 @@
                 const cuota = (i === months) ? amount + interestPerMonth : interestPerMonth;
                 balance = Math.max(0, balance - principal);
                 totalInterest += interestPerMonth;
-                totalPrincipal += principal;
-                schedule.push({ n: i, principal, interest: interestPerMonth, cuota, balance });
+                fullSchedule.push({ n: i, principal, interest: interestPerMonth, cuota, balance });
             }
         }
 
@@ -1191,29 +1186,53 @@
 
         // Summary cards
         summary.innerHTML = `
-            <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center">
-                <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Total a pagar</p>
+            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
+                <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-1">Total a pagar</p>
                 <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(totalAmount)}</p>
             </div>
-            <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-900 text-center">
-                <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1">Cuota / ${freqLabel}</p>
+            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
+                <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-1">Cuota / ${freqLabel}</p>
                 <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(periodicPayment)}</p>
             </div>
-            <div class="p-3 rounded-2xl bg-green-50 dark:bg-green-900/10 text-center">
-                <p class="text-[9px] text-green-600 uppercase font-black tracking-widest mb-1">Ganancia</p>
-                <p class="text-sm font-black text-green-600 tabular-nums">${currency} ${fmt(totalInterest)}</p>
+            <div class="p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900/40 text-center">
+                <p class="text-[9px] text-green-600 dark:text-green-500 uppercase font-black tracking-widest mb-1">Ganancia</p>
+                <p class="text-sm font-black text-green-600 dark:text-green-500 tabular-nums">${currency} ${fmt(totalInterest)}</p>
             </div>
         `;
 
-        // Table rows
-        schedule.forEach(row => {
+        // Truncate: show first 10, ellipsis, last 5 (only if total > 15)
+        const SHOW_FIRST = 10;
+        const SHOW_LAST = 5;
+        let displayRows = fullSchedule;
+        let truncated = false;
+
+        if (fullSchedule.length > SHOW_FIRST + SHOW_LAST) {
+            displayRows = [
+                ...fullSchedule.slice(0, SHOW_FIRST),
+                null, // spacer
+                ...fullSchedule.slice(-SHOW_LAST)
+            ];
+            truncated = true;
+        }
+
+        displayRows.forEach(row => {
+            if (row === null) {
+                body.innerHTML += `
+                    <tr class="bg-gray-50 dark:bg-gray-900/50">
+                        <td colspan="5" class="px-4 py-2 text-center text-[10px] text-gray-400 dark:text-gray-600 font-bold tracking-widest">
+                            · · · ${fullSchedule.length - SHOW_FIRST - SHOW_LAST} cuotas intermedias · · ·
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             body.innerHTML += `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
-                    <td class="px-3 py-2.5 font-bold text-center text-gray-900 dark:text-white">${row.n}</td>
-                    <td class="px-3 py-2.5 tabular-nums text-center">${currency}${fmt(row.principal)}</td>
-                    <td class="px-3 py-2.5 tabular-nums text-center text-amber-600 dark:text-amber-500">${currency}${fmt(row.interest)}</td>
-                    <td class="px-3 py-2.5 tabular-nums text-center font-bold text-gray-900 dark:text-white">${currency}${fmt(row.cuota)}</td>
-                    <td class="px-3 py-2.5 tabular-nums text-center">${currency}${fmt(row.balance)}</td>
+                    <td class="px-4 py-2.5 font-bold text-center text-gray-900 dark:text-white">${row.n}</td>
+                    <td class="px-4 py-2.5 tabular-nums text-center text-gray-600 dark:text-gray-400">${currency}${fmt(row.principal)}</td>
+                    <td class="px-4 py-2.5 tabular-nums text-center text-amber-600 dark:text-amber-500">${currency}${fmt(row.interest)}</td>
+                    <td class="px-4 py-2.5 tabular-nums text-center font-bold text-gray-900 dark:text-white">${currency}${fmt(row.cuota)}</td>
+                    <td class="px-4 py-2.5 tabular-nums text-center text-gray-600 dark:text-gray-400">${currency}${fmt(row.balance)}</td>
                 </tr>
             `;
         });
