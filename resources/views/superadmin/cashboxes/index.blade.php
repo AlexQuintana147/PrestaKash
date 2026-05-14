@@ -3,12 +3,13 @@
 @section('title', 'Gestión de Cajas')
 
 @section('content')
-    <div class="px-5 md:px-10 py-8">
+    <div class="px-6 md:px-12 py-10 max-w-[1600px] mx-auto">
 
-        <!-- Header -->
-        <div class="flex items-end justify-between mb-8">
+        <!-- Header: Refined Typography & Alignment -->
+        <div class="flex items-end justify-between mb-4">
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-[0.2em] mb-1">Panel Administrativo</p>
+                <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] mb-1">Panel
+                    Administrativo</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
                 </h1>
             </div>
@@ -20,272 +21,294 @@
 
         @if(session('success'))
             <div
-                class="mb-8 flex items-center gap-3 text-sm text-green-500 font-bold uppercase tracking-widest animate-in fade-in slide-in-from-top-2 duration-300">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                </svg>
+                class="mb-12 flex items-center gap-3 text-xs font-bold text-green-500 uppercase tracking-widest animate-in fade-in slide-in-from-top-2 duration-500">
+                <div class="w-1 h-1 rounded-full bg-green-500"></div>
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Carousel de Cajas -->
-        <div class="relative mb-16 group/carousel">
-            <!-- Navigation Arrows -->
-            <button onclick="scrollCarousel(-1)"
-                class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
-            <button onclick="scrollCarousel(1)"
-                class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md border border-gray-100 dark:border-gray-800 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
+        <!-- Main Workspace: Card + Movements -->
+        <div class="space-y-12">
 
-            <div id="cashboxCarousel"
-                class="flex gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[10%] md:px-[30%] py-4">
-                @forelse($cashboxes as $cb)
-                    <div class="cashbox-card flex-shrink-0 w-full max-w-lg snap-center transition-all duration-700 scale-90 opacity-20"
-                        data-id="{{ $cb->id }}" data-movements="{{ json_encode($cb->movements) }}">
-                        <div
-                            class="relative bg-white dark:bg-gray-900 rounded-[3.5rem] border border-gray-100 dark:border-gray-800 p-12 overflow-hidden group">
-                            <!-- Color Accent -->
-                            <div class="absolute top-0 left-0 w-full h-1.5" style="background-color: {{ $cb->color }}"></div>
+            <!-- Carousel Section -->
+            <div class="relative group/carousel">
+                <!-- Navigation: Floating Glassmorphism -->
+                <div
+                    class="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex justify-between items-center px-4 md:px-10">
+                    <button onclick="scrollCarousel(-1)"
+                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-4 group-hover/carousel:translate-x-0 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button onclick="scrollCarousel(1)"
+                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-4 group-hover/carousel:translate-x-0 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
 
-                            <div class="flex justify-between items-start mb-12">
-                                <div>
-                                    <h3
-                                        class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-1 leading-none">
-                                        {{ $cb->name }}
-                                    </h3>
-                                    <div class="flex items-center gap-3">
-                                        <span
-                                            class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $cb->bank_name }}</span>
-                                        <span class="w-1 h-1 rounded-full bg-gray-200 dark:bg-gray-800"></span>
-                                        <span
-                                            class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
+                <!-- Carousel Track -->
+                <div id="cashboxCarousel"
+                    class="flex gap-12 md:gap-20 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[5%] md:px-[20%] py-4 items-center min-h-[350px]">
+                    @forelse($cashboxes as $cb)
+                        <div class="cashbox-card flex-shrink-0 w-full max-w-3xl snap-center transition-all duration-700 scale-90 opacity-20"
+                            data-id="{{ $cb->id }}" data-movements="{{ json_encode($cb->movements) }}">
+
+                            <!-- The "Physical Card" Design -->
+                            <div
+                                class="relative bg-white dark:bg-gray-900 rounded-[2.5rem] border-2 border-gray-100 dark:border-gray-800 p-10 md:p-12 overflow-hidden transition-all duration-500 hover:border-gray-300 dark:hover:border-gray-600">
+                                <!-- Prominent Color Accent: Left vertical bar -->
+                                <div class="absolute inset-y-0 left-0 w-4 transition-all duration-500"
+                                    style="background-color: {{ $cb->color }}"></div>
+
+                                <!-- Subtle Background Glow -->
+                                <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
+                                    style="background-color: {{ $cb->color }}"></div>
+
+                                <!-- Card Header -->
+                                <div class="flex justify-between items-start mb-12 pl-4">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-3">
+                                            <!-- Card Chip Simulation -->
+                                            <div
+                                                class="w-10 h-7 rounded-md bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex flex-col justify-around p-1.5 opacity-50">
+                                                <div class="w-full h-px bg-gray-300 dark:bg-gray-600"></div>
+                                                <div class="w-full h-px bg-gray-300 dark:bg-gray-600"></div>
+                                                <div class="w-full h-px bg-gray-300 dark:bg-gray-600"></div>
+                                            </div>
+                                            <h3
+                                                class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
+                                                {{ $cb->name }}</h3>
+                                        </div>
+                                        <div class="flex items-center gap-3 ml-1">
+                                            <span
+                                                class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->bank_name }}</span>
+                                            <div class="w-1 h-1 rounded-full bg-gray-200 dark:bg-gray-800"></div>
+                                            <span
+                                                class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex gap-4">
-                                    <button onclick="openCashboxModal({{ json_encode($cb) }})"
-                                        class="text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                    </button>
-                                    <form action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
-                                        onsubmit="return confirm('¿Eliminar esta caja?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="text-gray-300 hover:text-red-500 transition-colors">
+                                    <div class="flex gap-2">
+                                        <button onclick="openCashboxModal({{ json_encode($cb) }})"
+                                            class="w-10 h-10 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <div class="space-y-10">
-                                <div>
-                                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-[0.3em] mb-3 ml-1">Saldo
-                                        Disponible</p>
-                                    <p
-                                        class="text-6xl font-black text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
-                                        <span
-                                            class="text-3xl font-bold opacity-20 mr-1">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>{{ number_format($cb->balance, 2) }}
-                                    </p>
+                                        <form action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
+                                            onsubmit="return confirm('¿Eliminar esta caja?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit"
+                                                class="w-10 h-10 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-10 pt-10 border-t border-gray-50 dark:border-gray-800/50">
-                                    @if($cb->account_number)
-                                        <div>
-                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1.5">N°
-                                                Cuenta</p>
-                                            <p class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tight">
-                                                {{ $cb->account_number }}
-                                            </p>
+                                <!-- Balance: Hero Typography -->
+                                <div class="space-y-10 pl-4">
+                                    <div>
+                                        <p
+                                            class="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] mb-4 opacity-60">
+                                            Balance Total</p>
+                                        <div class="flex items-baseline gap-2">
+                                            <span
+                                                class="text-3xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
+                                            <span
+                                                class="text-6xl md:text-7xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
+                                                {{ number_format($cb->balance, 2) }}
+                                            </span>
                                         </div>
-                                    @endif
-                                    @if($cb->cci)
-                                        <div>
-                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1.5">CCI</p>
-                                            <p class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tight">
-                                                {{ $cb->cci }}
-                                            </p>
-                                        </div>
-                                    @endif
+                                    </div>
+
+                                    <!-- Footer Data: Monospaced -->
+                                    <div class="grid grid-cols-2 gap-12 pt-8 border-t border-gray-50 dark:border-gray-900">
+                                        @if($cb->account_number)
+                                            <div class="space-y-1">
+                                                <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">N° Cuenta
+                                                </p>
+                                                <p
+                                                    class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tighter">
+                                                    {{ $cb->account_number }}</p>
+                                            </div>
+                                        @endif
+                                        @if($cb->cci)
+                                            <div class="space-y-1">
+                                                <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">CCI</p>
+                                                <p
+                                                    class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tighter">
+                                                    {{ $cb->cci }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @empty
-                    <div class="col-span-full py-20 text-center w-full">
-                        <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest mb-1">No hay cajas
-                            registradas</h3>
-                        <p class="text-xs text-gray-500">Comienza creando una caja para gestionar la liquidez.</p>
-                    </div>
-                @endforelse
+                    @empty
+                        <div class="col-span-full py-32 text-center w-full">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">No hay cajas registradas
+                            </p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Pagination Dots -->
+                <div class="flex justify-center gap-3 mt-10">
+                    @foreach($cashboxes as $index => $cb)
+                        <button onclick="scrollToIndex({{ $index }})"
+                            class="carousel-dot w-2 h-2 rounded-full bg-gray-200 dark:bg-gray-800 transition-all duration-500"
+                            data-index="{{ $index }}"></button>
+                    @endforeach
+                </div>
             </div>
 
-            <!-- Indicadores de Scroll -->
-            <div class="flex justify-center gap-2 mt-6">
-                @foreach($cashboxes as $index => $cb)
-                    <div class="carousel-dot w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-800 transition-all duration-300"
-                        data-index="{{ $index }}"></div>
-                @endforeach
-            </div>
-        </div>
+            <!-- Movements Section: Editorial List -->
+            <div id="movementsSection" class="max-w-4xl mx-auto opacity-0 translate-y-8 transition-all duration-1000">
+                <div class="flex items-center justify-between mb-12 border-b border-gray-100 dark:border-gray-900 pb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tighter">Actividad
+                        Reciente</h2>
+                    <button
+                        class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        Historial Completo
+                    </button>
+                </div>
 
-        <!-- Últimos Movimientos -->
-        <div id="movementsSection" class="max-w-4xl mx-auto opacity-0 translate-y-4 transition-all duration-700">
-            <div class="flex items-center justify-between mb-8">
-                <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-widest">Últimos Movimientos
-                </h2>
-                <button
-                    class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-800 pb-0.5 transition-colors">
-                    Ver reporte completo
-                </button>
-            </div>
-
-            <div
-                class="bg-white dark:bg-gray-950 rounded-[2.5rem] border border-gray-100 dark:border-gray-900 overflow-hidden shadow-sm">
-                <div id="movementsList" class="divide-y divide-gray-50 dark:divide-gray-900/50">
+                <div id="movementsList" class="space-y-2">
                     <!-- JS populated -->
                 </div>
-                <div id="noMovements" class="hidden py-20 text-center">
-                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Sin movimientos recientes</p>
+
+                <div id="noMovements" class="hidden py-32 text-center">
+                    <p class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-[0.3em]">Sin
+                        movimientos</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Caja Minimalista -->
+    <!-- Modal: Minimalist refinement -->
     <div id="cashboxModal"
-        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div
-            class="bg-white dark:bg-gray-950 w-full max-w-md rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div class="px-12 pt-12 pb-10">
-                <div class="flex items-center justify-between mb-10">
-                    <h3 id="modalTitle"
-                        class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Nueva Caja</h3>
+        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        <div class="w-full max-w-lg animate-in fade-in zoom-in duration-500">
+            <div class="px-10 py-12">
+                <div class="flex items-center justify-between mb-16">
+                    <h3 id="modalTitle" class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">
+                        Nueva Caja</h3>
                     <button onclick="closeCashboxModal()"
-                        class="text-gray-300 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
 
-                <form id="cashboxForm" method="POST" class="space-y-8">
+                <form id="cashboxForm" method="POST" class="space-y-12">
                     @csrf
                     <div id="methodField"></div>
 
-                    <div class="space-y-6">
-                        <!-- Nombre -->
-                        <div>
-                            <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Nombre
-                                de la Caja</label>
-                            <input type="text" name="name" id="cb_name" required placeholder="Solo letras"
-                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
-                        </div>
-
-                        <!-- Banco -->
-                        <div>
-                            <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Banco
-                                / Entidad</label>
-                            <select id="cb_bank_select" required onchange="toggleCustomBank(this.value)"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
-                                <option value="" disabled selected>Seleccionar banco</option>
-                                <option value="BCP">BCP</option>
-                                <option value="Interbank">Interbank</option>
-                                <option value="BBVA">BBVA</option>
-                                <option value="Scotiabank">Scotiabank</option>
-                                <option value="BanBif">BanBif</option>
-                                <option value="Banco de la Nación">Banco de la Nación</option>
-                                <option value="Mibanco">Mibanco</option>
-                                <option value="GNB">GNB</option>
-                                <option value="Falabella">Falabella</option>
-                                <option value="Ripley">Ripley</option>
-                                <option value="Pichincha">Pichincha</option>
-                                <option value="Comercio">Comercio</option>
-                                <option value="Efectivo">Efectivo</option>
-                                <option value="Otros">Otros</option>
-                            </select>
-                            <input type="hidden" name="bank_name" id="cb_bank">
-                        </div>
-
-                        <!-- Banco Personalizado -->
-                        <div id="customBankWrapper" class="hidden animate-in slide-in-from-top-2 duration-200">
-                            <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Nombre
-                                del Banco</label>
-                            <input type="text" id="cb_bank_custom" placeholder="Solo letras"
-                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-10">
-                            <!-- Moneda -->
-                            <div>
+                    <div class="space-y-10">
+                        <!-- Inputs: Underline only, bold text -->
+                        <div class="space-y-8">
+                            <div class="group">
                                 <label
-                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Moneda</label>
-                                <select name="currency" id="cb_currency" required
-                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
-                                    <option value="PEN">Soles (S/)</option>
-                                    <option value="USD">Dólares ($)</option>
-                                </select>
+                                    class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-2">Nombre</label>
+                                <input type="text" name="name" id="cb_name" required placeholder="Letras únicamente"
+                                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
                             </div>
-                            <!-- Color -->
-                            <div>
+
+                            <div class="group">
                                 <label
-                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Color</label>
-                                <div class="relative h-[42px] group/color">
-                                    <input type="color" name="color" id="cb_color" value="#000000"
-                                        class="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer overflow-hidden p-0 opacity-0 z-10">
-                                    <div id="colorPreview"
-                                        class="absolute inset-0 rounded-xl transition-all border border-gray-100 dark:border-gray-800 flex items-center justify-center"
-                                        style="background-color: #000000">
-                                        <span
-                                            class="text-[8px] font-black text-white mix-blend-difference uppercase tracking-widest opacity-0 group-hover/color:opacity-100 transition-opacity">Cambiar</span>
+                                    class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-2">Entidad</label>
+                                <select id="cb_bank_select" required onchange="toggleCustomBank(this.value)"
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Elegir banco</option>
+                                    <option value="BCP">BCP</option>
+                                    <option value="Interbank">Interbank</option>
+                                    <option value="BBVA">BBVA</option>
+                                    <option value="Scotiabank">Scotiabank</option>
+                                    <option value="BanBif">BanBif</option>
+                                    <option value="Banco de la Nación">Banco de la Nación</option>
+                                    <option value="Mibanco">Mibanco</option>
+                                    <option value="GNB">GNB</option>
+                                    <option value="Falabella">Falabella</option>
+                                    <option value="Ripley">Ripley</option>
+                                    <option value="Pichincha">Pichincha</option>
+                                    <option value="Comercio">Comercio</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
+                                <input type="hidden" name="bank_name" id="cb_bank">
+                            </div>
+
+                            <div id="customBankWrapper" class="hidden animate-in slide-in-from-top-2 duration-300">
+                                <label
+                                    class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Nombre
+                                    del Banco</label>
+                                <input type="text" id="cb_bank_custom" placeholder="Solo letras"
+                                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-16">
+                                <div>
+                                    <label
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Moneda</label>
+                                    <select name="currency" id="cb_currency" required
+                                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all appearance-none cursor-pointer">
+                                        <option value="PEN">Soles (S/)</option>
+                                        <option value="USD">Dólares ($)</option>
+                                    </select>
+                                </div>
+                                <!-- Color -->
+                                <div>
+                                    <label
+                                        class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Color</label>
+                                    <div
+                                        class="relative h-[60px] border-b-2 border-gray-100 dark:border-gray-900 group/color">
+                                        <input type="color" name="color" id="cb_color" value="#000000"
+                                            class="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer overflow-hidden p-0 opacity-0 z-10">
+                                        <div id="colorPreview"
+                                            class="absolute inset-y-3 left-0 w-full rounded-2xl transition-all border border-gray-100 dark:border-white/10 flex items-center justify-center"
+                                            style="background-color: #000000">
+                                            <span
+                                                class="text-[8px] font-black text-white mix-blend-difference uppercase tracking-widest opacity-0 group-hover/color:opacity-100 transition-opacity">Personalizar</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- N° Cuenta -->
-                        <div>
-                            <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Número
-                                de Cuenta</label>
-                            <input type="text" name="account_number" id="cb_account" placeholder="Opcional"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
-                        </div>
-
-                        <!-- CCI -->
-                        <div>
-                            <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">CCI</label>
-                            <input type="text" name="cci" id="cb_cci" placeholder="Opcional"
-                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">N°
+                                        Cuenta</label>
+                                    <input type="text" name="account_number" id="cb_account" placeholder="Opcional"
+                                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
+                                </div>
+                                <div>
+                                    <label
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">CCI</label>
+                                    <input type="text" name="cci" id="cb_cci" placeholder="Opcional"
+                                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="pt-10 flex items-center justify-between">
                         <button type="button" onclick="closeCashboxModal()"
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
-                            Cancelar
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                            Cerrar
                         </button>
                         <button type="submit"
-                            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
-                            Guardar Caja
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
+                            Confirmar Caja
                         </button>
                     </div>
                 </form>
@@ -311,6 +334,23 @@
         .cashbox-card.active {
             scale: 1;
             opacity: 1;
+        }
+
+        .movement-item {
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 
@@ -344,7 +384,9 @@
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('bg-gray-900', index === activeIndex);
                     dot.classList.toggle('dark:bg-white', index === activeIndex);
-                    dot.classList.toggle('w-4', index === activeIndex);
+                    dot.classList.toggle('w-6', index === activeIndex);
+                    dot.classList.toggle('opacity-100', index === activeIndex);
+                    dot.classList.toggle('opacity-20', index !== activeIndex);
                 });
 
                 // Update movements
@@ -354,7 +396,7 @@
         }
 
         function renderMovements(movements) {
-            movementsSection.classList.remove('opacity-0', 'translate-y-4');
+            movementsSection.classList.remove('opacity-0', 'translate-y-8');
             movementsList.innerHTML = '';
 
             if (movements.length === 0) {
@@ -363,30 +405,38 @@
             }
 
             noMovements.classList.add('hidden');
-            movements.forEach(m => {
+            movements.forEach((m, i) => {
                 const isIncome = m.type === 'income';
-                const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+                const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                                        <div class="px-10 py-8 flex items-center justify-between group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
-                                            <div class="flex items-center gap-6">
-                                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${isIncome ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">
-                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${isIncome ? 'M19 14l-7 7m0 0l-7-7m7 7V3' : 'M5 10l7-7m0 0l7 7m-7-7v18'}" />
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <p class="text-base font-bold text-gray-900 dark:text-white">${m.description}</p>
-                                                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-1">${date} • ${m.reference_type || 'Manual'}</p>
-                                                </div>
-                                            </div>
-                                            <p class="text-lg font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                                ${isIncome ? '+' : '-'} S/ ${parseFloat(m.amount).toFixed(2)}
-                                            </p>
-                                        </div>
-                                    `;
+                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                <div class="flex items-center gap-8">
+                                    <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                    <div>
+                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                        ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                    </p>
+                                </div>
+                            </div>
+                        `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
+        }
+
+        function scrollCarousel(direction) {
+            const cardWidth = cards[0].offsetWidth + 32; // width + gap
+            carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+        }
+
+        function scrollToIndex(index) {
+            const cardWidth = cards[0].offsetWidth + 32;
+            carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
         }
 
         carousel.addEventListener('scroll', () => {
@@ -397,11 +447,6 @@
         // Init
         if (cards.length > 0) {
             setTimeout(updateActiveCard, 100);
-        }
-
-        function scrollCarousel(direction) {
-            const cardWidth = cards[0].offsetWidth + 48; // width + gap
-            carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
         }
 
         function toggleCustomBank(value) {
@@ -446,7 +491,6 @@
                 methodField.innerHTML = '@method("PUT")';
                 document.getElementById('cb_name').value = cb.name;
 
-                // Lógica para el banco
                 const banks = ['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Mibanco', 'GNB', 'Falabella', 'Ripley', 'Pichincha', 'Comercio', 'Efectivo'];
                 if (banks.includes(cb.bank_name)) {
                     bankSelect.value = cb.bank_name;
