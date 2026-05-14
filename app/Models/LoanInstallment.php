@@ -91,15 +91,20 @@ class LoanInstallment extends Model
         $dueDate = $this->due_date->startOfDay();
         $paidDate = $this->paid_at->startOfDay();
 
-        if ($paidDate->isSameDay($dueDate) || $paidDate->isBefore($dueDate)) {
-            return ['label' => 'A tiempo', 'color' => 'green'];
+        if ($paidDate->isBefore($dueDate)) {
+            $daysBefore = $paidDate->diffInDays($dueDate);
+            return ['label' => "{$daysBefore}d antes", 'color' => 'green', 'type' => 'before'];
+        }
+
+        if ($paidDate->isSameDay($dueDate)) {
+            return ['label' => 'El mismo día', 'color' => 'green', 'type' => 'same_day'];
         }
 
         $daysLate = $dueDate->diffInDays($paidDate);
         if ($daysLate <= $this->loan->grace_days) {
-            return ['label' => 'Salvado por gracia', 'color' => 'blue', 'days' => $daysLate];
+            return ['label' => 'Salvado por gracia', 'color' => 'blue', 'days' => $daysLate, 'type' => 'grace'];
         }
 
-        return ['label' => 'Pagado con mora', 'color' => 'orange', 'days' => $daysLate];
+        return ['label' => 'Pagado con mora', 'color' => 'orange', 'days' => $daysLate, 'type' => 'late'];
     }
 }

@@ -205,19 +205,30 @@
 
                 <!-- Estado / Acción -->
                 <div class="flex items-center gap-3 flex-shrink-0">
-                    <span class="text-[8px] font-black uppercase tracking-widest
-                        {{ $inst->status === 'approved'   ? 'text-green-500' : '' }}
-                        {{ $inst->status === 'pending'    ? 'text-gray-300 dark:text-gray-700' : '' }}
-                        {{ $inst->status === 'processing' ? 'text-yellow-500' : '' }}
-                        {{ $inst->status === 'rejected'   ? 'text-red-500' : '' }}">
-                        {{ match($inst->status) {
-                            'approved'   => 'Pagado',
-                            'pending'    => 'Pendiente',
-                            'processing' => 'En revisión',
-                            'rejected'   => 'Rechazado',
-                            default      => $inst->status
-                        } }}
-                    </span>
+                    <div class="text-right">
+                        <span class="block text-[8px] font-black uppercase tracking-widest
+                            {{ $inst->status === 'approved'   ? 'text-green-500' : '' }}
+                            {{ $inst->status === 'pending'    ? 'text-gray-300 dark:text-gray-700' : '' }}
+                            {{ $inst->status === 'processing' ? 'text-yellow-500' : '' }}
+                            {{ $inst->status === 'rejected'   ? 'text-red-500' : '' }}">
+                            {{ match($inst->status) {
+                                'approved'   => 'Pagado',
+                                'pending'    => 'Pendiente',
+                                'processing' => 'En revisión',
+                                'rejected'   => 'Rechazado',
+                                default      => $inst->status
+                            } }}
+                        </span>
+                        @if($inst->status === 'approved' && $inst->payment_status_detail)
+                            @php $detail = $inst->payment_status_detail; @endphp
+                            <span class="block text-[7px] font-bold mt-0.5
+                                {{ $detail['type'] === 'before' || $detail['type'] === 'same_day' ? 'text-green-400' : '' }}
+                                {{ $detail['type'] === 'grace' ? 'text-blue-500' : '' }}
+                                {{ $detail['type'] === 'late' ? 'text-orange-500' : '' }}">
+                                {{ $detail['label'] }}
+                            </span>
+                        @endif
+                    </div>
 
                     @if($canPay)
                         <button type="button"

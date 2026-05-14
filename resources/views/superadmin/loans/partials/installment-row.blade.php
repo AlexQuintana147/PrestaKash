@@ -130,10 +130,10 @@
                     @endphp
                     @if($detail)
                         <p class="text-[8px] font-bold mt-0.5 
-                            {{ $detail['color'] === 'green' ? 'text-green-400' : '' }}
-                            {{ $detail['color'] === 'blue' ? 'text-blue-500' : '' }}
-                            {{ $detail['color'] === 'orange' ? 'text-orange-500' : '' }}">
-                            {{ $detail['label'] }} @if(isset($detail['days'])) ({{ $detail['days'] }}d) @endif
+                            {{ $detail['type'] === 'before' || $detail['type'] === 'same_day' ? 'text-green-400' : '' }}
+                            {{ $detail['type'] === 'grace' ? 'text-blue-500' : '' }}
+                            {{ $detail['type'] === 'late' ? 'text-orange-500' : '' }}">
+                            {{ $detail['label'] }}
                         </p>
                     @endif
                 </div>
