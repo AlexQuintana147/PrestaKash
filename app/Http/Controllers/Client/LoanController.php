@@ -315,7 +315,29 @@ class LoanController extends Controller
             'payment_voucher' => 'required|image|max:5120',
         ]);
 
-        $path = $request->file('payment_voucher')->store('vouchers/' . Auth::id(), 'public');
+        // Convertir a WebP con GD para reducir tamaño
+        $file     = $request->file('payment_voucher');
+        $mime     = $file->getMimeType();
+        $resource = match(true) {
+            str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->getRealPath()),
+            str_contains($mime, 'png')  => imagecreatefrompng($file->getRealPath()),
+            str_contains($mime, 'gif')  => imagecreatefromgif($file->getRealPath()),
+            str_contains($mime, 'webp') => imagecreatefromwebp($file->getRealPath()),
+            default                     => imagecreatefromjpeg($file->getRealPath()),
+        };
+
+        $dir      = 'vouchers/' . Auth::id();
+        $filename = $dir . '/' . uniqid() . '.webp';
+        $fullPath = storage_path('app/public/' . $filename);
+
+        if (!file_exists(storage_path('app/public/' . $dir))) {
+            mkdir(storage_path('app/public/' . $dir), 0755, true);
+        }
+
+        imagewebp($resource, $fullPath, 82);
+        imagedestroy($resource);
+
+        $path = $filename;
 
         $installment->update([
             'payment_voucher' => $path,
@@ -332,7 +354,7 @@ class LoanController extends Controller
             abort(403);
         }
 
-        $loan->update(['status' => 'pending']); // User accepted, back to pending for admin approval? 
+        $loan->update(['status' => 'pending']); // User accepted, back to pending for admin approval?
         // User said: "en caso se le acepte, recien pasará a la parte de historial crediticio"
         // Usually admin approves it after user accepts. Or maybe user acceptance IS final approval?
         // "recien pasará a la parte de historial crediticio" means it's approved.
