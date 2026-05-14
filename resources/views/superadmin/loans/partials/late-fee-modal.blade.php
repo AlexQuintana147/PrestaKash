@@ -90,8 +90,8 @@
                                 class="text-[9px] font-black uppercase tracking-widest text-gray-400 block mb-2">Monto
                                 Fijo</label>
                             <div class="relative">
-                                <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric"
-                                    class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
+                                <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric" readonly
+                                    class="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed focus:outline-none transition-colors">
                                 <span
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase"
                                     id="lfm_daily_cur">S/</span>
@@ -269,14 +269,6 @@
             const dailyEl = document.getElementById('lfm_daily');
             if (dailyEl) dailyEl.value = daily.toFixed(2);
 
-            updateLateFeeSimulation();
-        });
-    }
-
-    const lfmDaily = document.getElementById('lfm_daily');
-    if (lfmDaily) {
-        lfmDaily.addEventListener('input', function (e) {
-            formatCentsInput(this);
             updateLateFeeSimulation();
         });
     }
