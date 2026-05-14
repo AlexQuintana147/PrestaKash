@@ -192,4 +192,75 @@ class LoanController extends Controller
         $loan->update(['status' => 'rejected']);
         return back()->with('success', 'Préstamo rechazado.');
     }
+
+    public function installmentsIndex(Request $request)
+    {
+        $filter = $request->get('filter', 'all');
+
+        $query = Loan::with(['user', 'installments'])
+            ->where('status', 'approved');
+
+        if ($filter === 'pending_validation') {
+            $query->whereHas('installments', function ($q) {
+                $q->where('status', 'processing');
+            });
+        }
+
+        $loans = $query->latest()->paginate(15)->withQueryString();
+
+        return view('superadmin.loans.installments', compact('loans', 'filter'));
+    }
+
+    public function approveInstallment(\App\Models\LoanInstallment $installment)
+    {
+        $installment->update([
+            'status' => 'approved',
+            'paid_at' => now()
+        ]);
+
+        // Check if all installments are paid
+        $loan = $installment->loan;
+        $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
+        if ($remaining === 0) {
+            $loan->update(['status' => 'paid']);
+        }
+
+        return back()->with('success', 'Pago aprobado correctamente.');
+    }
+
+    public function rejectInstallment(Request $request, \App\Models\LoanInstallment $installment)
+    {
+        $request->validate([
+            'reason' => 'required|string|max:500'
+        ]);
+
+        // Delete voucher from storage
+        if ($installment->payment_voucher) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($installment->payment_voucher);
+        }
+
+        $installment->update([
+            'status' => 'rejected',
+            'payment_voucher' => null,
+            'admin_notes' => $request->reason,
+            'paid_at' => null
+        ]);
+
+        return back()->with('success', 'Pago rechazado. El cliente deberá subirlo nuevamente.');
+    }
+
+    public function unapproveInstallment(\App\Models\LoanInstallment $installment)
+    {
+        $installment->update([
+            'status' => 'processing'
+        ]);
+
+        // If loan was marked as paid, move it back to approved
+        $loan = $installment->loan;
+        if ($loan->status === 'paid') {
+            $loan->update(['status' => 'approved']);
+        }
+
+        return back()->with('success', 'Aprobación revertida. El pago vuelve a estar en revisión.');
+    }
 }

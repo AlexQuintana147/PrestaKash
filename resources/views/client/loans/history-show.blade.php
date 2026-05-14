@@ -170,19 +170,26 @@
                                                             {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount, 2) }}</td>
                                                         <td class="py-5 pl-4 text-right">
                                                             <div class="flex items-center justify-end gap-4">
-                                                                <span class="text-[9px] font-black uppercase tracking-widest
-                                                                            {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
-                                                                            {{ $inst->status === 'pending' ? 'text-gray-400' : '' }}
-                                                                            {{ $inst->status === 'processing' ? 'text-yellow-500' : '' }}
-                                                                            {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}">
-                                                                    {{ match ($inst->status) {
-                                    'approved' => 'Pagado',
-                                    'pending' => 'Pendiente',
-                                    'processing' => 'Revisión',
-                                    'rejected' => 'Rechazado',
-                                    default => $inst->status
-                                } }}
-                                                                </span>
+                                                                <div class="flex flex-col items-end gap-1">
+                                                                    <span class="text-[9px] font-black uppercase tracking-widest
+                                                                                {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
+                                                                                {{ $inst->status === 'pending' ? 'text-gray-400' : '' }}
+                                                                                {{ $inst->status === 'processing' ? 'text-yellow-500' : '' }}
+                                                                                {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}">
+                                                                        {{ match ($inst->status) {
+                                                                            'approved' => 'Pagado',
+                                                                            'pending' => 'Pendiente',
+                                                                            'processing' => 'Revisión',
+                                                                            'rejected' => 'Rechazado',
+                                                                            default => $inst->status
+                                                                        } }}
+                                                                    </span>
+                                                                    @if($inst->status === 'rejected' && $inst->admin_notes)
+                                                                        <p class="text-[8px] text-red-500 font-bold max-w-[120px] leading-tight text-right italic">
+                                                                            "{{ $inst->admin_notes }}"
+                                                                        </p>
+                                                                    @endif
+                                                                </div>
 
                                                                 @if($inst->status === 'pending' || $inst->status === 'rejected')
                                                                     @php $canPay = !$hasAnyProcessing && ($firstNonApproved && $firstNonApproved->id === $inst->id); @endphp

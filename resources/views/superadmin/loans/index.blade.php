@@ -298,19 +298,31 @@
                                         </button>
                                     </div>
                                 @else
-                                    <span class="text-xs font-black uppercase tracking-widest
-                                                {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
-                                                {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
-                                                {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
-                                        {{ match($loan->status) {
-                                            'approved' => 'Aprobado',
-                                            'pending'  => 'En revisión',
-                                            'counter_offered' => 'Contra-oferta',
-                                            'rejected' => 'Rechazado',
-                                            'paid'     => 'Pagado',
-                                            default    => $loan->status
-                                        } }}
-                                    </span>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xs font-black uppercase tracking-widest
+                                                    {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
+                                                    {{ $loan->status === 'counter_offered' ? 'text-purple-600' : '' }}
+                                                    {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
+                                                    {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
+                                            {{ match($loan->status) {
+                                                'approved' => 'Aprobado',
+                                                'pending'  => 'En revisión',
+                                                'counter_offered' => 'Contra-oferta',
+                                                'rejected' => 'Rechazado',
+                                                'paid'     => 'Pagado',
+                                                default    => $loan->status
+                                            } }}
+                                        </span>
+                                        @php
+                                            $hasProcessing = $loan->installments->where('status', 'processing')->count() > 0;
+                                        @endphp
+                                        @if($hasProcessing)
+                                            <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}" 
+                                               class="px-2 py-0.5 bg-purple-100 text-purple-600 text-[8px] font-black rounded-full animate-pulse">
+                                                PAGO PENDIENTE
+                                            </a>
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -432,7 +444,7 @@
                                             </button>
                                         </div>
                                     @else
-                                        <div class="pl-6 border-l border-gray-200 dark:border-gray-800">
+                                        <div class="pl-6 border-l border-gray-200 dark:border-gray-800 flex flex-col items-end gap-1">
                                             <span class="text-xs font-black uppercase tracking-widest
                                                         {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
                                                         {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
@@ -446,6 +458,15 @@
                                                     default    => $loan->status
                                                 } }}
                                             </span>
+                                            @php
+                                                $hasProcessing = $loan->installments->where('status', 'processing')->count() > 0;
+                                            @endphp
+                                            @if($hasProcessing)
+                                                <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}" 
+                                                   class="px-2 py-0.5 bg-purple-100 text-purple-600 text-[8px] font-black rounded-full animate-pulse">
+                                                    PAGO PENDIENTE
+                                                </a>
+                                            @endif
                                         </div>
                                     @endif
                                 </div>
