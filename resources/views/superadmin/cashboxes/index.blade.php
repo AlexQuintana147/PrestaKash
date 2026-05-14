@@ -39,7 +39,8 @@
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <h3 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">
-                                {{ $cb->name }}</h3>
+                                {{ $cb->name }}
+                            </h3>
                             <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">{{ $cb->bank_name }}</p>
                         </div>
                         <div class="flex gap-2">
@@ -89,8 +90,7 @@
                 </div>
             @empty
                 <div class="col-span-full py-20 text-center">
-                    <div
-                        class="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -112,7 +112,8 @@
             class="bg-white dark:bg-gray-950 w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div class="px-10 pt-10 pb-8">
                 <div class="flex items-center justify-between mb-8">
-                    <h3 id="modalTitle" class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">
+                    <h3 id="modalTitle"
+                        class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">
                         Nueva Caja</h3>
                     <button onclick="closeCashboxModal()"
                         class="text-gray-300 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -131,20 +132,20 @@
                         <!-- Nombre -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">Nombre
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Nombre
                                 de la Caja</label>
                             <input type="text" name="name" id="cb_name" required placeholder="Ej: Caja Principal"
                                 oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                                class="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
                         </div>
 
                         <!-- Banco -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">Banco
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Banco
                                 / Entidad</label>
                             <select id="cb_bank_select" required onchange="toggleCustomBank(this.value)"
-                                class="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all appearance-none cursor-pointer">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
                                 <option value="" disabled selected>Seleccionar banco</option>
                                 <option value="BCP">BCP</option>
                                 <option value="Interbank">Interbank</option>
@@ -167,19 +168,20 @@
                         <!-- Banco Personalizado (Oculto por defecto) -->
                         <div id="customBankWrapper" class="hidden animate-in slide-in-from-top-2 duration-200">
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">Nombre del Banco</label>
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Nombre
+                                del Banco</label>
                             <input type="text" id="cb_bank_custom" placeholder="Nombre del banco"
                                 oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
-                                class="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
                         </div>
 
-                        <div class="grid grid-cols-2 gap-5">
+                        <div class="grid grid-cols-2 gap-8">
                             <!-- Moneda -->
                             <div>
                                 <label
-                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">Moneda</label>
+                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Moneda</label>
                                 <select name="currency" id="cb_currency" required
-                                    class="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all appearance-none cursor-pointer">
+                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors appearance-none cursor-pointer">
                                     <option value="PEN">Soles (S/)</option>
                                     <option value="USD">Dólares ($)</option>
                                 </select>
@@ -187,11 +189,13 @@
                             <!-- Color -->
                             <div>
                                 <label
-                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">Color</label>
-                                <div class="relative h-[52px]">
+                                    class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Color</label>
+                                <div class="relative h-[42px] border-b border-gray-100 dark:border-gray-900">
                                     <input type="color" name="color" id="cb_color" value="#000000"
-                                        class="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer rounded-2xl overflow-hidden p-0">
-                                    <div class="absolute inset-0 pointer-events-none rounded-2xl border-2 border-gray-100 dark:border-gray-800"></div>
+                                        class="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer overflow-hidden p-0 opacity-0 z-10">
+                                    <div id="colorPreview"
+                                        class="absolute inset-y-2 left-0 w-full rounded-lg transition-colors border border-gray-100 dark:border-gray-800"
+                                        style="background-color: #000000"></div>
                                 </div>
                             </div>
                         </div>
@@ -199,29 +203,29 @@
                         <!-- N° Cuenta -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">Número
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">Número
                                 de Cuenta (Opcional)</label>
                             <input type="text" name="account_number" id="cb_account" placeholder="000-0000000-0-00"
-                                class="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
                         </div>
 
                         <!-- CCI -->
                         <div>
                             <label
-                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2 ml-1">CCI
+                                class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-1 ml-1">CCI
                                 (Opcional)</label>
                             <input type="text" name="cci" id="cb_cci" placeholder="000-000-000000000000-00"
-                                class="w-full bg-gray-50 dark:bg-gray-900/50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                                class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 px-1 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder:text-gray-300 dark:placeholder:text-gray-700">
                         </div>
                     </div>
 
-                    <div class="pt-6 flex items-center justify-between gap-4">
+                    <div class="pt-6 flex items-center justify-between">
                         <button type="button" onclick="closeCashboxModal()"
-                            class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            class="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Cancelar
                         </button>
                         <button type="submit"
-                            class="bg-gray-900 dark:bg-white text-white dark:text-black px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:opacity-80 transition-all shadow-xl shadow-gray-500/20">
+                            class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                             Guardar Caja
                         </button>
                     </div>
@@ -247,10 +251,14 @@
             }
         }
 
-        document.getElementById('cb_bank_custom').addEventListener('input', function() {
+        document.getElementById('cb_bank_custom').addEventListener('input', function () {
             if (document.getElementById('cb_bank_select').value === 'Otros') {
                 document.getElementById('cb_bank').value = this.value;
             }
+        });
+
+        document.getElementById('cb_color').addEventListener('input', function () {
+            document.getElementById('colorPreview').style.backgroundColor = this.value;
         });
 
         function openCashboxModal(cb = null) {
@@ -260,13 +268,15 @@
             const methodField = document.getElementById('methodField');
             const bankSelect = document.getElementById('cb_bank_select');
             const customInput = document.getElementById('cb_bank_custom');
+            const colorInput = document.getElementById('cb_color');
+            const colorPreview = document.getElementById('colorPreview');
 
             if (cb) {
                 title.textContent = 'Editar Caja';
                 form.action = `/gestion-interna/cajas/${cb.id}`;
                 methodField.innerHTML = '@method("PUT")';
                 document.getElementById('cb_name').value = cb.name;
-                
+
                 // Lógica para el banco
                 const banks = ['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Mibanco', 'GNB', 'Falabella', 'Ripley', 'Pichincha', 'Comercio', 'Efectivo'];
                 if (banks.includes(cb.bank_name)) {
@@ -280,7 +290,8 @@
                 }
 
                 document.getElementById('cb_currency').value = cb.currency;
-                document.getElementById('cb_color').value = cb.color;
+                colorInput.value = cb.color;
+                colorPreview.style.backgroundColor = cb.color;
                 document.getElementById('cb_account').value = cb.account_number || '';
                 document.getElementById('cb_cci').value = cb.cci || '';
             } else {
@@ -290,7 +301,8 @@
                 form.reset();
                 bankSelect.value = "";
                 toggleCustomBank("");
-                document.getElementById('cb_color').value = '#000000';
+                colorInput.value = '#000000';
+                colorPreview.style.backgroundColor = '#000000';
             }
 
             modal.classList.remove('hidden');
