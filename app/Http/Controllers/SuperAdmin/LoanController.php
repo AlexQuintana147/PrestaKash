@@ -234,6 +234,10 @@ class LoanController extends Controller
             $query->where('status', 'processing');
         }
 
+        if ($filter === 'paid') {
+            $query->where('status', 'approved');
+        }
+
         $installments = $query->orderBy('due_date', 'asc')
             ->paginate(10)
             ->withQueryString();

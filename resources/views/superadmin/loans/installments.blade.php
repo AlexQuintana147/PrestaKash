@@ -25,11 +25,22 @@
 
         <!-- Filtros Mobile -->
         <div class="md:hidden mb-8">
-            <div class="grid grid-cols-3 gap-2">
+            <div class="grid grid-cols-2 gap-2 mb-2">
                 @foreach([
-                    'all' => ['label' => 'Todas', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'all'     => ['label' => 'Todas',     'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'grouped' => ['label' => 'Por Grupo', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
-                    'pending_validation' => ['label' => 'Validar', 'active' => 'bg-purple-600 text-white', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                ] as $key => $cfg)
+                    <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
+                       class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
+                              {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
+                        {{ $cfg['label'] }}
+                    </a>
+                @endforeach
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                @foreach([
+                    'pending_validation' => ['label' => 'Por Validar', 'active' => 'bg-purple-600 text-white',                                                          'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'paid'               => ['label' => 'Pagadas',     'active' => 'bg-green-600 text-white',                                                           'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                 ] as $key => $cfg)
                     <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
                        class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
@@ -42,13 +53,13 @@
 
         <!-- Filtros Desktop -->
         <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
-            @foreach(['all' => 'Todas las cuotas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar'] as $key => $label)
+            @foreach(['all' => 'Todas las cuotas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas'] as $key => $label)
                 <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
                     class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
                               {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
                     {{ $label }}
                     @if($filter === $key)
-                        <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                        <span class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'paid' ? 'bg-green-500' : 'bg-gray-900 dark:bg-white' }}"></span>
                     @endif
                 </a>
             @endforeach
