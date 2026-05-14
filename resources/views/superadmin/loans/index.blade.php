@@ -188,10 +188,18 @@
                                     </div>
 
                                     <!-- Banco y Términos -->
-                                    <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Destino</p>
-                                        <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $loan->bank_name }}</p>
-                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5">{{ ucfirst($loan->account_type) }} • {{ $loan->account_number }}</p>
+                                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                                        <div>
+                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Destino</p>
+                                            <p class="text-[10px] font-bold text-gray-900 dark:text-white leading-tight">{{ $loan->bank_name }}</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5 leading-tight">{{ ucfirst($loan->account_type) }} • {{ Str::limit($loan->account_number, 12) }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Desembolso</p>
+                                            <p class="text-[10px] font-bold text-gray-900 dark:text-white tabular-nums leading-tight">
+                                                {{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '—' }}
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
@@ -508,7 +516,7 @@
                                 </div>
 
                                 <!-- Fila 3: Detalles del Préstamo -->
-                                <div class="grid grid-cols-3 gap-6">
+                                <div class="grid grid-cols-4 gap-6">
                                     <div>
                                         <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Destino</p>
                                         <p class="text-[10px] font-bold text-gray-900 dark:text-white uppercase leading-tight mb-0.5">{{ $loan->bank_name }}</p>
@@ -516,6 +524,12 @@
                                         @if($loan->cci)
                                             <p class="text-[8px] font-mono text-gray-400 dark:text-gray-600 leading-tight mt-0.5">{{ $loan->cci }}</p>
                                         @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Desembolso</p>
+                                        <p class="text-[10px] font-bold text-gray-900 dark:text-white tabular-nums leading-tight">
+                                            {{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '—' }}
+                                        </p>
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-1.5 mb-1.5">
