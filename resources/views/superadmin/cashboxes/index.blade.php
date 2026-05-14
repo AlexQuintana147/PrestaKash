@@ -36,17 +36,15 @@
                 <div
                     class="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex justify-between items-center px-4 md:px-10">
                     <button id="prevBtn" onclick="scrollCarousel(-1)"
-                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-4 group-hover/carousel:translate-x-0 shadow-sm disabled:hidden">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        class="pointer-events-auto w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-4 group-hover/carousel:translate-x-0 disabled:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
                     <button id="nextBtn" onclick="scrollCarousel(1)"
-                        class="pointer-events-auto w-14 h-14 flex items-center justify-center rounded-full bg-white/5 dark:bg-black/5 backdrop-blur-xl border border-gray-100/50 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-4 group-hover/carousel:translate-x-0 shadow-sm disabled:hidden">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        class="pointer-events-auto w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-4 group-hover/carousel:translate-x-0 disabled:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
                 </div>
@@ -421,21 +419,21 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                                                                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                                                <div class="flex items-center gap-8">
-                                                                                    <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                                                                    <div>
-                                                                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                                                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                                                        <div class="flex items-center gap-8">
+                                                                                            <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                                                                            <div>
+                                                                                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="text-right">
+                                                                                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                                                                                ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                                                                            </p>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="text-right">
-                                                                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                                                                        ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        `;
+                                                                                `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
