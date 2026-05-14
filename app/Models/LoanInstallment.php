@@ -26,4 +26,41 @@ class LoanInstallment extends Model
     {
         return $this->belongsTo(Loan::class);
     }
+
+    public function getLateFeeAttribute()
+    {
+        $loan = $this->loan;
+        if (!$loan->late_fee_enabled || $this->status === 'approved' || $this->due_date->isFuture()) {
+            return 0;
+        }
+
+        $today = now()->startOfDay();
+        $dueDate = $this->due_date->startOfDay();
+        $daysPast = $dueDate->diffInDays($today);
+
+        if ($daysPast <= $loan->grace_days) {
+            return 0;
+        }
+
+        // Determinar hasta qué día se calcula la mora
+        $nextInstallment = $loan->installments()
+            ->where('installment_number', '>', $this->installment_number)
+            ->orderBy('installment_number', 'asc')
+            ->first();
+
+        $calculationDays = $daysPast;
+        if ($nextInstallment && $today->isAfter($nextInstallment->due_date)) {
+            $calculationDays = $dueDate->diffInDays($nextInstallment->due_date->startOfDay());
+        }
+
+        $moraRate = $this->amount * ($loan->late_fee_rate / 100) * $calculationDays;
+        $moraFixed = $loan->late_fee_daily_amount * $calculationDays;
+
+        return round($moraRate + $moraFixed, 2);
+    }
+
+    public function getTotalWithMoraAttribute()
+    {
+        return $this->amount + $this->late_fee;
+    }
 }

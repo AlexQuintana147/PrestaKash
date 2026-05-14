@@ -259,6 +259,25 @@ class LoanController extends Controller
         ]);
     }
 
+    public function updateLateFee(Request $request, \App\Models\Loan $loan)
+    {
+        $request->validate([
+            'late_fee_enabled' => 'nullable|boolean',
+            'grace_days' => 'required|integer|min:0|max:30',
+            'late_fee_rate' => 'required|numeric|min:0|max:100',
+            'late_fee_daily_amount' => 'required|numeric|min:0',
+        ]);
+
+        $loan->update([
+            'late_fee_enabled' => $request->has('late_fee_enabled'),
+            'grace_days' => $request->grace_days,
+            'late_fee_rate' => $request->late_fee_rate,
+            'late_fee_daily_amount' => $request->late_fee_daily_amount,
+        ]);
+
+        return back()->with('success', 'Configuración de mora actualizada.');
+    }
+
     public function approveInstallment(\App\Models\LoanInstallment $installment)
     {
         $installment->update([

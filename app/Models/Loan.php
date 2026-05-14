@@ -28,6 +28,10 @@ class Loan extends Model
         'account_type',
         'cci',
         'original_data',
+        'late_fee_enabled',
+        'grace_days',
+        'late_fee_rate',
+        'late_fee_daily_amount',
     ];
 
     protected $casts = [

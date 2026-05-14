@@ -318,7 +318,7 @@
                                         @endphp
                                         @if($hasProcessing)
                                             <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}" 
-                                               class="px-2 py-0.5 bg-purple-100 text-purple-600 text-[8px] font-black rounded-full animate-pulse">
+                                               class="px-2 py-0.5 text-purple-600 text-[8px] font-black rounded-full">
                                                 PAGO PENDIENTE
                                             </a>
                                         @endif
@@ -463,7 +463,7 @@
                                             @endphp
                                             @if($hasProcessing)
                                                 <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}" 
-                                                   class="px-2 py-0.5 bg-purple-100 text-purple-600 text-[8px] font-black rounded-full animate-pulse">
+                                                   class="px-2 py-0.5 text-purple-600 text-[8px] font-black rounded-full">
                                                     PAGO PENDIENTE
                                                 </a>
                                             @endif
