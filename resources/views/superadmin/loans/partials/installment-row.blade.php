@@ -82,6 +82,22 @@
                     {{ $inst->due_date->format('d/m/Y') }}
                 </p>
             </div>
+            @if($inst->status === 'approved' && $inst->paid_at)
+            <div>
+                <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Pagó el</p>
+                <p class="text-xs font-bold text-green-500 tabular-nums">
+                    {{ $inst->paid_at->format('d/m/Y') }}
+                </p>
+                @php $daysLate = $inst->due_date->diffInDays($inst->paid_at, false); @endphp
+                @if($daysLate > 0)
+                    <p class="text-[8px] font-bold text-red-400 mt-0.5">{{ $daysLate }}d tarde</p>
+                @elseif($daysLate < 0)
+                    <p class="text-[8px] font-bold text-green-400 mt-0.5">{{ abs($daysLate) }}d antes</p>
+                @else
+                    <p class="text-[8px] font-bold text-gray-400 mt-0.5">A tiempo</p>
+                @endif
+            </div>
+            @endif
             <div>
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Monto</p>
                 <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">
