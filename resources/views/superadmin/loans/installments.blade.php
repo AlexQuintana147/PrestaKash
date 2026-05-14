@@ -141,13 +141,15 @@
             document.getElementById('modal_voucher_link').href = data.voucher;
 
             document.getElementById('modal_info_text').innerHTML = `
-                <p class="text-sm text-gray-500 font-medium">Usuario: <span class="text-gray-900 dark:text-white font-black">${data.user}</span></p>
-                <p class="text-sm text-gray-500 font-medium">Cuota: <span class="text-gray-900 dark:text-white font-black">#${data.number}</span></p>
-                <p class="text-sm text-gray-500 font-medium">Monto esperado: <span class="text-purple-600 font-black">${data.amount}</span></p>
+                <p class="text-xs text-gray-500">Usuario: <span class="text-gray-900 dark:text-white font-black">${data.user}</span></p>
+                <p class="text-xs text-gray-500">Cuota: <span class="text-gray-900 dark:text-white font-black">#${data.number}</span></p>
+                <p class="text-xs text-gray-500">Monto esperado: <span class="text-purple-600 font-black">${data.amount}</span></p>
             `;
 
             document.getElementById('approveForm').action = `/gestion-interna/pagos/${data.id}/approve`;
             document.getElementById('rejectForm').action = `/gestion-interna/pagos/${data.id}/reject`;
+
+            if (typeof _resetVoucherZoom === 'function') _resetVoucherZoom();
 
             document.getElementById('validateModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
