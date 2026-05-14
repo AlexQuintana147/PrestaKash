@@ -63,4 +63,43 @@ class LoanInstallment extends Model
     {
         return $this->amount + $this->late_fee;
     }
+
+    public function getGraceDaysRemainingAttribute()
+    {
+        $loan = $this->loan;
+        if (!$loan->late_fee_enabled || $this->status === 'approved' || $this->due_date->isFuture()) {
+            return 0;
+        }
+
+        $today = now()->startOfDay();
+        $dueDate = $this->due_date->startOfDay();
+        $daysPast = $dueDate->diffInDays($today);
+
+        if ($daysPast >= $loan->grace_days) {
+            return 0;
+        }
+
+        return $loan->grace_days - $daysPast;
+    }
+
+    public function getPaymentStatusDetailAttribute()
+    {
+        if ($this->status !== 'approved' || !$this->paid_at) {
+            return null;
+        }
+
+        $dueDate = $this->due_date->startOfDay();
+        $paidDate = $this->paid_at->startOfDay();
+
+        if ($paidDate->isSameDay($dueDate) || $paidDate->isBefore($dueDate)) {
+            return ['label' => 'A tiempo', 'color' => 'green'];
+        }
+
+        $daysLate = $dueDate->diffInDays($paidDate);
+        if ($daysLate <= $this->loan->grace_days) {
+            return ['label' => 'Salvado por gracia', 'color' => 'blue', 'days' => $daysLate];
+        }
+
+        return ['label' => 'Pagado con mora', 'color' => 'orange', 'days' => $daysLate];
+    }
 }

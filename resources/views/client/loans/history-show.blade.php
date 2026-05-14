@@ -194,6 +194,8 @@
                         {{ $inst->due_date->format('d M Y') }}
                         @if($inst->late_fee > 0)
                             <span class="ml-2 text-gray-900 dark:text-white">Total: {{ $cur }} {{ number_format($inst->total_with_mora, 2) }}</span>
+                        @elseif($inst->grace_days_remaining > 0)
+                            <span class="ml-2 text-blue-500 font-bold uppercase tracking-widest">Quedan {{ $inst->grace_days_remaining }} días de gracia</span>
                         @endif
                     </p>
                     @if($inst->status === 'rejected' && $inst->admin_notes)

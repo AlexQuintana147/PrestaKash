@@ -125,13 +125,16 @@
                     <p class="text-xs font-bold text-green-500 tabular-nums">
                         {{ $inst->paid_at->format('d/m/Y') }}
                     </p>
-                    @php $daysLate = (int) $inst->due_date->diffInDays($inst->paid_at, false); @endphp
-                    @if($daysLate > 0)
-                        <p class="text-[8px] font-bold text-red-400 mt-0.5">{{ $daysLate }}d tarde</p>
-                    @elseif($daysLate < 0)
-                        <p class="text-[8px] font-bold text-green-400 mt-0.5">{{ abs($daysLate) }}d antes</p>
-                    @else
-                        <p class="text-[8px] font-bold text-gray-400 mt-0.5">A tiempo</p>
+                    @php 
+                        $detail = $inst->payment_status_detail;
+                    @endphp
+                    @if($detail)
+                        <p class="text-[8px] font-bold mt-0.5 
+                            {{ $detail['color'] === 'green' ? 'text-green-400' : '' }}
+                            {{ $detail['color'] === 'blue' ? 'text-blue-500' : '' }}
+                            {{ $detail['color'] === 'orange' ? 'text-orange-500' : '' }}">
+                            {{ $detail['label'] }} @if(isset($detail['days'])) ({{ $detail['days'] }}d) @endif
+                        </p>
                     @endif
                 </div>
             @endif
