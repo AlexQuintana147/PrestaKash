@@ -22,8 +22,7 @@
                 <div>
                     <p class="text-[8px] font-black uppercase tracking-widest text-orange-500 mb-1">Interés por mora</p>
                     <h3 class="text-base font-black text-gray-900 dark:text-white tracking-tight" id="lfm_title">
-                        Configurar mo
-                        ra</h3>
+                        Configurar mora</h3>
                     <p class="text-[9px] text-gray-400 mt-0.5" id="lfm_subtitle"></p>
                 </div>
                 <button onclick="closeLateFeeModal()"
@@ -125,22 +124,21 @@
                         <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-2">¿Cómo funciona?
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">1. Días de gracia:</span> Si el
-                            cliente paga dentro de este período, no se cobra mora.
+                            <span class="font-bold text-gray-900 dark:text-white">1. Composición:</span> La mora se
+                            calcula sobre el monto total de la cuota (Capital + Interés).
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">2. Mora diaria:</span> Pasados los
-                            días de gracia, se cobra <span class="font-bold text-orange-500"
-                                id="lfm_rate_label">0%</span> por cada día de atraso.
+                            <span class="font-bold text-gray-900 dark:text-white">2. Días de gracia:</span> Días de
+                            espera antes de empezar a cobrar mora. Si paga en este lapso, se salva de la mora.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">3. Acumulación:</span> Si el cliente
-                            llega a la siguiente fecha de pago sin haber pagado la anterior, el sistema sumará ambas
-                            cuotas más la mora acumulada en un solo pago total exigible.
+                            <span class="font-bold text-gray-900 dark:text-white">3. Cálculo diario:</span> Pasada la
+                            gracia, se suma la tasa % y el monto fijo por cada día de retraso.
                         </p>
                         <p class="text-[9px] text-gray-500 leading-relaxed">
-                            <span class="font-bold text-gray-900 dark:text-white">Fórmula:</span> Mora = (Cuota × Tasa%
-                            + Monto Fijo) × Días de atraso
+                            <span class="font-bold text-gray-900 dark:text-white">4. Acumulación:</span> Al vencer una
+                            nueva cuota sin haber pagado la anterior, el sistema consolida toda la deuda (cuotas +
+                            moras) en un solo pago total.
                         </p>
                     </div>
                 </div>
@@ -176,8 +174,6 @@
 
         if (maxVal !== null && numericValue > maxVal) {
             numericValue = maxVal;
-            // Re-format val to match maxVal * 100 for consistent display if needed, 
-            // but simple assignment to el.value is enough for the user.
         }
 
         el.value = numericValue.toFixed(2);
@@ -185,30 +181,37 @@
     }
 
     function openLateFeeModal(loanId, loanLabel, currency, installmentAmount, currentEnabled, currentGrace, currentRate, currentDaily) {
-        document.getElementById('lfm_title').textContent = 'Mora — Préstamo #' + loanId;
-        document.getElementById('lfm_subtitle').textContent = loanLabel;
-        document.getElementById('lateFeeForm').action = '/gestion-interna/pagos/mora/' + loanId;
-
+        const titleEl = document.getElementById('lfm_title');
+        const subtitleEl = document.getElementById('lfm_subtitle');
+        const formEl = document.getElementById('lateFeeForm');
         const enabledEl = document.getElementById('lfm_enabled');
-        enabledEl.checked = !!currentEnabled;
-
-        document.getElementById('lfm_grace').value = currentGrace !== undefined ? currentGrace : 0;
-
+        const graceEl = document.getElementById('lfm_grace');
         const rateEl = document.getElementById('lfm_rate');
         const dailyEl = document.getElementById('lfm_daily');
+        const curEl = document.getElementById('lfm_daily_cur');
+        const modalEl = document.getElementById('lateFeeModal');
 
-        rateEl.value = (parseFloat(currentRate) || 0).toFixed(2);
-        dailyEl.value = (parseFloat(currentDaily) || 0).toFixed(2);
+        if (titleEl) titleEl.textContent = 'Mora — Préstamo #' + loanId;
+        if (subtitleEl) subtitleEl.textContent = loanLabel;
+        if (formEl) formEl.action = '/gestion-interna/pagos/mora/' + loanId;
+
+        if (enabledEl) enabledEl.checked = !!currentEnabled;
+        if (graceEl) graceEl.value = currentGrace !== undefined ? currentGrace : 0;
+
+        if (rateEl) rateEl.value = (parseFloat(currentRate) || 0).toFixed(2);
+        if (dailyEl) dailyEl.value = (parseFloat(currentDaily) || 0).toFixed(2);
 
         window._lfm_currency = currency;
         window._lfm_amount = parseFloat(installmentAmount) || 0;
-        document.getElementById('lfm_daily_cur').textContent = currency;
+        if (curEl) curEl.textContent = currency;
 
         updateLateFeeSimulation();
         toggleLateFeeFields();
 
-        document.getElementById('lateFeeModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        if (modalEl) {
+            modalEl.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     function closeLateFeeModal() {
@@ -217,14 +220,27 @@
     }
 
     function toggleLateFeeFields() {
-        const enabled = document.getElementById('lfm_enabled').checked;
-        document.getElementById('lfm_fields').style.opacity = enabled ? '1' : '0.4';
-        document.getElementById('lfm_fields').style.pointerEvents = enabled ? '' : 'none';
+        const enabledEl = document.getElementById('lfm_enabled');
+        const fieldsEl = document.getElementById('lfm_fields');
+        if (!enabledEl || !fieldsEl) return;
+
+        const enabled = enabledEl.checked;
+        fieldsEl.style.opacity = enabled ? '1' : '0.4';
+        fieldsEl.style.pointerEvents = enabled ? '' : 'none';
     }
 
     function updateLateFeeSimulation() {
-        const rate = parseFloat(document.getElementById('lfm_rate').value) || 0;
-        const daily = parseFloat(document.getElementById('lfm_daily').value) || 0;
+        const rateEl = document.getElementById('lfm_rate');
+        const dailyEl = document.getElementById('lfm_daily');
+        const baseEl = document.getElementById('lfm_sim_base');
+        const moraEl = document.getElementById('lfm_sim_mora');
+        const totalEl = document.getElementById('lfm_sim_total');
+        const labelEl = document.getElementById('lfm_sim_mora_label');
+
+        if (!rateEl || !dailyEl || !baseEl || !moraEl || !totalEl || !labelEl) return;
+
+        const rate = parseFloat(rateEl.value) || 0;
+        const daily = parseFloat(dailyEl.value) || 0;
         const amount = window._lfm_amount || 0;
         const cur = window._lfm_currency || 'S/';
 
@@ -233,37 +249,46 @@
 
         let total = amount + totalMoraPerUnit;
 
-        document.getElementById('lfm_sim_base').textContent = cur + ' ' + amount.toFixed(2);
-        document.getElementById('lfm_sim_mora').textContent = '+ ' + cur + ' ' + totalMoraPerUnit.toFixed(2);
-        document.getElementById('lfm_sim_total').textContent = cur + ' ' + total.toFixed(2);
-
-        document.getElementById('lfm_sim_mora_label').textContent = `Mora estimada (1 día después de gracia)`;
-        document.getElementById('lfm_rate_label').textContent = rate.toFixed(2) + '% + ' + cur + ' ' + daily.toFixed(2);
+        baseEl.textContent = cur + ' ' + amount.toFixed(2);
+        moraEl.textContent = '+ ' + cur + ' ' + totalMoraPerUnit.toFixed(2);
+        totalEl.textContent = cur + ' ' + total.toFixed(2);
+        labelEl.textContent = `Mora estimada (1 día después de gracia)`;
     }
 
-    document.getElementById('lfm_enabled').addEventListener('change', toggleLateFeeFields);
+    const lfmEnabled = document.getElementById('lfm_enabled');
+    if (lfmEnabled) lfmEnabled.addEventListener('change', toggleLateFeeFields);
 
-    document.getElementById('lfm_rate').addEventListener('input', function (e) {
-        const rate = formatCentsInput(this, 99.99);
+    const lfmRate = document.getElementById('lfm_rate');
+    if (lfmRate) {
+        lfmRate.addEventListener('input', function (e) {
+            const rate = formatCentsInput(this, 99.99);
 
-        // Automatic daily amount calculation
-        const amount = window._lfm_amount || 0;
-        const daily = amount * (rate / 100);
-        document.getElementById('lfm_daily').value = daily.toFixed(2);
+            // Automatic daily amount calculation
+            const amount = window._lfm_amount || 0;
+            const daily = amount * (rate / 100);
+            const dailyEl = document.getElementById('lfm_daily');
+            if (dailyEl) dailyEl.value = daily.toFixed(2);
 
-        updateLateFeeSimulation();
-    });
+            updateLateFeeSimulation();
+        });
+    }
 
-    document.getElementById('lfm_daily').addEventListener('input', function (e) {
-        formatCentsInput(this);
-        updateLateFeeSimulation();
-    });
+    const lfmDaily = document.getElementById('lfm_daily');
+    if (lfmDaily) {
+        lfmDaily.addEventListener('input', function (e) {
+            formatCentsInput(this);
+            updateLateFeeSimulation();
+        });
+    }
 
-    document.getElementById('lfm_grace').addEventListener('input', function (e) {
-        let val = parseInt(this.value);
-        if (isNaN(val) || val < 0) this.value = 0;
-        if (val > 30) this.value = 30;
-    });
+    const lfmGrace = document.getElementById('lfm_grace');
+    if (lfmGrace) {
+        lfmGrace.addEventListener('input', function (e) {
+            let val = parseInt(this.value);
+            if (isNaN(val) || val < 0) this.value = 0;
+            if (val > 30) this.value = 30;
+        });
+    }
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && !document.getElementById('lateFeeModal').classList.contains('hidden')) {
