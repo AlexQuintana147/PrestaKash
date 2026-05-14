@@ -299,11 +299,18 @@ class LoanController extends Controller
 
     public function unapproveInstallment(\App\Models\LoanInstallment $installment)
     {
-        $installment->update([
-            'status' => 'processing'
-        ]);
+        // Solo se puede revertir la última cuota aprobada del préstamo
+        $lastApproved = $installment->loan->installments()
+            ->where('status', 'approved')
+            ->orderBy('installment_number', 'desc')
+            ->first();
 
-        // If loan was marked as paid, move it back to approved
+        if (!$lastApproved || $lastApproved->id !== $installment->id) {
+            return back()->withErrors(['unapprove' => 'Solo puedes revertir el último pago aprobado del préstamo.']);
+        }
+
+        $installment->update(['status' => 'processing']);
+
         $loan = $installment->loan;
         if ($loan->status === 'paid') {
             $loan->update(['status' => 'approved']);
