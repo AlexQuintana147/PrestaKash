@@ -96,7 +96,7 @@
                                                 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->bank_name }}</span>
                                             <div class="w-1 h-1 rounded-full bg-gray-200 dark:bg-gray-800"></div>
                                             <span
-                                                class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
+                                                class="cb-currency-label text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
@@ -159,6 +159,19 @@
                                             </div>
                                         @endif
                                     </div>
+
+                                    <!-- Manual Movements Buttons -->
+                                    <div
+                                        class="mt-12 flex gap-4 pt-4 border-t border-gray-50 dark:border-gray-900 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                                        <button onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}')"
+                                            class="flex-1 py-3 text-[9px] font-black uppercase tracking-widest text-green-600 border border-green-500/20 rounded-2xl hover:bg-green-500 hover:text-white transition-all">
+                                            + Ingreso
+                                        </button>
+                                        <button onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}')"
+                                            class="flex-1 py-3 text-[9px] font-black uppercase tracking-widest text-red-500 border border-red-500/20 rounded-2xl hover:bg-red-500 hover:text-white transition-all">
+                                            - Egreso
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -203,10 +216,10 @@
         </div>
     </div>
 
-    <!-- Modal: Minimalist refinement -->
+    <!-- Modal Caja Minimalista -->
     <div id="cashboxModal"
         class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
-        <div class="w-full max-w-lg animate-in fade-in zoom-in duration-500">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500">
             <div class="px-10 py-12">
                 <div class="flex items-center justify-between mb-16">
                     <h3 id="modalTitle" class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">
@@ -327,6 +340,65 @@
         </div>
     </div>
 
+    <!-- Modal Movimiento Minimalista -->
+    <div id="movementModal"
+        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        <div class="w-full max-w-md animate-in fade-in zoom-in duration-500">
+            <div class="px-10 py-12">
+                <div class="flex items-center justify-between mb-16">
+                    <h3 id="movModalTitle"
+                        class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Movimiento</h3>
+                    <button onclick="closeMovementModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="movementForm" method="POST" class="space-y-12">
+                    @csrf
+                    <input type="hidden" name="type" id="mov_type">
+
+                    <div class="space-y-10">
+                        <!-- Monto con Máscara -->
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Monto a
+                                Registrar</label>
+                            <div class="relative">
+                                <input type="text" name="amount" id="mov_amount" required placeholder="0.00"
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
+                                <span id="mov_currency_label"
+                                    class="absolute right-0 bottom-4 text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
+                            </div>
+                        </div>
+
+                        <!-- Motivo / Descripción -->
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Motivo
+                                / Origen</label>
+                            <input type="text" name="description" id="mov_description" required
+                                placeholder="Ej: Pago de servicios, Inyección de capital..."
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
+                        </div>
+                    </div>
+
+                    <div class="pt-10 flex items-center justify-between">
+                        <button type="button" onclick="closeMovementModal()"
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="movSubmitBtn"
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
+                            Confirmar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <style>
         .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -351,6 +423,11 @@
             scale: 1;
             opacity: 1;
             filter: blur(0);
+        }
+
+        .cashbox-card.active .mt-12 {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .movement-item {
@@ -395,7 +472,8 @@
             });
 
             if (cards[activeIndex]) {
-                cards[activeIndex].classList.add('active');
+                const activeCard = cards[activeIndex];
+                activeCard.classList.add('active');
 
                 // Update dots
                 dots.forEach((dot, index) => {
@@ -413,12 +491,14 @@
                 if (nextBtn) nextBtn.disabled = activeIndex === cards.length - 1;
 
                 // Update movements
-                const movements = JSON.parse(cards[activeIndex].dataset.movements);
-                renderMovements(movements);
+                const movements = JSON.parse(activeCard.dataset.movements);
+                const currency = activeCard.querySelector('.cb-currency-label').textContent;
+                const symbol = currency === 'USD' ? '$' : 'S/';
+                renderMovements(movements, symbol);
             }
         }
 
-        function renderMovements(movements) {
+        function renderMovements(movements, symbol) {
             movementsSection.classList.remove('opacity-0', 'translate-y-8');
             movementsList.innerHTML = '';
 
@@ -430,24 +510,32 @@
             noMovements.classList.add('hidden');
             movements.forEach((m, i) => {
                 const isIncome = m.type === 'income';
-                const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
+                const dateObj = new Date(m.date);
+                const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
+                const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+                const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                                                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                                                                    <div class="flex items-center gap-8">
-                                                                                                        <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                                                                                        <div>
-                                                                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div class="text-right">
-                                                                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                                                                                            ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                                                                                        </p>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            `;
+                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                    <div class="flex items-center gap-8">
+                                                        <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                            <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                                ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                            ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
@@ -551,5 +639,40 @@
             document.getElementById('cashboxModal').classList.add('hidden');
             document.body.style.overflow = '';
         }
+
+        function openMovementModal(cashboxId, type, currency) {
+            const modal = document.getElementById('movementModal');
+            const form = document.getElementById('movementForm');
+            const title = document.getElementById('movModalTitle');
+            const typeInput = document.getElementById('mov_type');
+            const currencyLabel = document.getElementById('mov_currency_label');
+            const amountInput = document.getElementById('mov_amount');
+
+            typeInput.value = type;
+            currencyLabel.textContent = currency;
+            form.action = `/gestion-interna/cajas/${cashboxId}/movimiento`;
+            title.textContent = type === 'income' ? 'Registrar Ingreso' : 'Registrar Egreso';
+
+            amountInput.value = '';
+            document.getElementById('mov_description').value = '';
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMovementModal() {
+            document.getElementById('movementModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('mov_amount').addEventListener('input', function (e) {
+            formatCentsInput(this);
+        });
+
+        document.getElementById('movementForm').addEventListener('submit', function (e) {
+            const btn = document.getElementById('movSubmitBtn');
+            btn.disabled = true;
+            btn.opacity = '0.5';
+        });
     </script>
 @endsection

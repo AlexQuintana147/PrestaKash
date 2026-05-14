@@ -8,6 +8,7 @@ class CashboxMovement extends Model
 {
     protected $fillable = [
         'cashbox_id',
+        'user_id',
         'type',
         'amount',
         'description',
@@ -24,5 +25,10 @@ class CashboxMovement extends Model
     public function cashbox()
     {
         return $this->belongsTo(Cashbox::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

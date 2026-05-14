@@ -12,7 +12,7 @@ class CashboxController extends Controller
     {
         $cashboxes = Cashbox::with([
             'movements' => function ($q) {
-                $q->latest()->limit(10);
+                $q->with('user')->latest()->limit(10);
             }
         ])->orderBy('id', 'desc')->get();
 
@@ -55,5 +55,39 @@ class CashboxController extends Controller
     {
         $cashbox->delete();
         return back()->with('success', 'Caja eliminada correctamente.');
+    }
+
+    public function addMovement(Request $request, Cashbox $cashbox)
+    {
+        $request->validate([
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'required|string|max:255',
+        ]);
+
+        $amount = (float) $request->amount;
+
+        if ($request->type === 'expense' && $cashbox->balance < $amount) {
+            return back()->withErrors(['amount' => 'Saldo insuficiente en la caja.']);
+        }
+
+        \DB::transaction(function () use ($request, $cashbox, $amount) {
+            $cashbox->movements()->create([
+                'user_id' => auth()->id(),
+                'type' => $request->type,
+                'amount' => $amount,
+                'description' => $request->description,
+                'reference_type' => 'manual',
+                'date' => now(),
+            ]);
+
+            if ($request->type === 'income') {
+                $cashbox->increment('balance', $amount);
+            } else {
+                $cashbox->decrement('balance', $amount);
+            }
+        });
+
+        return back()->with('success', 'Movimiento registrado correctamente.');
     }
 }
