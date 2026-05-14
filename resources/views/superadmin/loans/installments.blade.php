@@ -8,8 +8,9 @@
         <!-- Header -->
         <div class="flex items-end justify-between mb-8">
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-1">Panel Administrativo</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Cobranzas</h1>
+                <p class="text-[10px] text-gray-500 uppercase font-medium mt-1">Gestión de pagos y validación de comprobantes</p>
             </div>
             <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
         </div>
