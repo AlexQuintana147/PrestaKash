@@ -103,8 +103,27 @@
 
                             <!-- Sistema de Amortización (Solo si es cuotas) -->
                             <div id="amortizationSystemBlock">
-                                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Sistema de
-                                    amortización</label>
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <label class="block text-xs text-gray-500 dark:text-gray-400">Sistema de
+                                        amortización</label>
+                                    <div class="relative group">
+                                        <svg class="w-3 h-3 text-gray-300 dark:text-gray-700 cursor-help" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none leading-relaxed">
+                                            Define cómo se distribuyen los pagos: en el <span
+                                                class="text-green-400 font-bold">Francés</span> pagas cuotas iguales, en el
+                                            <span class="text-amber-400 font-bold">Americano</span> pagas solo intereses y
+                                            el capital al final.
+                                            <div
+                                                class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="flex gap-2">
                                     <label class="cursor-pointer flex-1">
                                         <input type="radio" name="amortization_system" value="frances" class="hidden peer"
@@ -128,8 +147,26 @@
                             <!-- Cuotas: slider de meses (3-24) -->
                             <div id="cuotasBlock">
                                 <div class="flex items-center justify-between mb-3">
-                                    <label for="months" class="text-xs text-gray-500 dark:text-gray-400">Fraccionar
-                                        en</label>
+                                    <div class="flex items-center gap-1.5">
+                                        <label for="months" class="text-xs text-gray-500 dark:text-gray-400">Plazo del
+                                            préstamo</label>
+                                        <div class="relative group">
+                                            <svg class="w-3 h-3 text-gray-300 dark:text-gray-700 cursor-help" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <div
+                                                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none leading-relaxed">
+                                                Selecciona la cantidad de <span
+                                                    class="text-green-400 font-bold">meses</span> en los que deseas devolver
+                                                el préstamo.
+                                                <div
+                                                    class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <span id="monthsDisplay"
                                         class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">12 meses</span>
                                 </div>
@@ -147,8 +184,27 @@
 
                             <!-- Frecuencia de pago (Solo para Francés) -->
                             <div id="frequencyBlock">
-                                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Frecuencia de
-                                    pago</label>
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <label class="block text-xs text-gray-500 dark:text-gray-400">Frecuencia de pago</label>
+                                    <div class="relative group">
+                                        <svg class="w-3 h-3 text-gray-300 dark:text-gray-700 cursor-help" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-[9px] rounded-lg shadow-2xl z-[100] text-center pointer-events-none leading-relaxed">
+                                            Indica cada cuánto tiempo realizarás los pagos: <span
+                                                class="text-green-400 font-bold">diario</span>, <span
+                                                class="text-green-400 font-bold">semanal</span>, <span
+                                                class="text-green-400 font-bold">quincenal</span> o <span
+                                                class="text-green-400 font-bold">mensual</span>.
+                                            <div
+                                                class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                     @foreach(['diario' => 'Diario', 'semanal' => 'Semanal', 'quincenal' => 'Quincenal', 'mensual' => 'Mensual'] as $val => $label)
                                         <label class="cursor-pointer">
@@ -892,11 +948,11 @@
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                        <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                                    `;
+                                                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                                `;
 
                 if (body) {
                     const row = document.createElement('tr');
