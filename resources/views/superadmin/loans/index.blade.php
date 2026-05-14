@@ -634,8 +634,8 @@
         <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
             <div class="p-4 md:p-8 flex flex-col min-h-0 overflow-hidden">
-                <div class="mb-6 pr-10 md:pr-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                <div class="mb-6 pr-10 md:pr-12 flex flex-col md:flex-row items-start md:items-center md:justify-between gap-6">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 w-full md:w-auto">
                         <div>
                             <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
                             <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
