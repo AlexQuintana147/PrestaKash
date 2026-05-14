@@ -1144,30 +1144,29 @@
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
 </style>
 
-<!-- Modal Cronograma -->
-<div id="scheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-black border border-gray-200 dark:border-gray-900 w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
-        <button onclick="closeScheduleModal()" class="absolute top-5 right-5 md:top-7 md:right-7 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+<div id="scheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] flex items-center justify-center p-2 md:p-4">
+    <div class="bg-white dark:bg-black border border-gray-200 dark:border-gray-900 w-full max-w-2xl max-h-[95vh] md:max-h-[90vh] flex flex-col rounded-2xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <button onclick="closeScheduleModal()" class="absolute top-3 right-3 md:top-7 md:right-7 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-4 h-4 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
-        <div class="p-6 md:p-8 flex flex-col min-h-0 overflow-hidden">
+        <div class="p-4 md:p-8 flex flex-col min-h-0 overflow-hidden">
             <!-- Header -->
-            <div class="mb-5 pr-10">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Cronograma de Pagos</h3>
-                <div id="scheduleModalMeta" class="flex flex-wrap items-center gap-2 mt-2"></div>
+            <div class="mb-4 md:mb-5 pr-8 md:pr-10">
+                <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white tracking-tight">Cronograma de Pagos</h3>
+                <div id="scheduleModalMeta" class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 md:mt-2"></div>
             </div>
             <!-- Summary -->
-            <div id="scheduleModalSummary" class="grid grid-cols-3 gap-3 mb-5"></div>
+            <div id="scheduleModalSummary" class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-4 md:mb-5"></div>
             <!-- Table -->
-            <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar rounded-xl border border-gray-100 dark:border-gray-900">
-                <table class="w-full text-[11px] text-left">
+            <div class="flex-1 min-h-0 overflow-x-auto overflow-y-auto custom-scrollbar rounded-xl border border-gray-100 dark:border-gray-900">
+                <table class="w-full text-[10px] md:text-[11px] text-left min-w-[400px] md:min-w-0">
                     <thead class="sticky top-0 bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
                         <tr class="text-gray-400 dark:text-gray-600">
-                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">N°</th>
-                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Capital</th>
-                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Interés</th>
-                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Cuota</th>
-                            <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
+                            <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">N°</th>
+                            <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">Capital</th>
+                            <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">Interés</th>
+                            <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">Cuota</th>
+                            <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
                         </tr>
                     </thead>
                     <tbody id="scheduleModalBody" class="divide-y divide-gray-50 dark:divide-gray-900"></tbody>
@@ -1247,17 +1246,17 @@
 
         // Summary cards
         summary.innerHTML = `
-            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
-                <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-1">Total a pagar</p>
-                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(totalAmountStored)}</p>
+            <div class="p-2 md:p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
+                <p class="text-[8px] md:text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-0.5 md:mb-1">Total a pagar</p>
+                <p class="text-xs md:text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(totalAmountStored)}</p>
             </div>
-            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
-                <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-1">Cuota / ${freqLabel}</p>
-                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(monthlyPaymentStored)}</p>
+            <div class="p-2 md:p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-center">
+                <p class="text-[8px] md:text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest mb-0.5 md:mb-1">Cuota / ${freqLabel}</p>
+                <p class="text-xs md:text-sm font-black text-gray-900 dark:text-white tabular-nums">${currency} ${fmt(monthlyPaymentStored)}</p>
             </div>
-            <div class="p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900/40 text-center">
-                <p class="text-[9px] text-green-600 dark:text-green-500 uppercase font-black tracking-widest mb-1">Ganancia</p>
-                <p class="text-sm font-black text-green-600 dark:text-green-500 tabular-nums">${currency} ${fmt(totalGainStored)}</p>
+            <div class="p-2 md:p-3 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-100 dark:border-green-900/40 text-center col-span-2 md:col-span-1">
+                <p class="text-[8px] md:text-[9px] text-green-600 dark:text-green-500 uppercase font-black tracking-widest mb-0.5 md:mb-1">Ganancia</p>
+                <p class="text-xs md:text-sm font-black text-green-600 dark:text-green-500 tabular-nums">${currency} ${fmt(totalGainStored)}</p>
             </div>
         `;
 
@@ -1265,7 +1264,6 @@
         const SHOW_FIRST = 10;
         const SHOW_LAST = 5;
         let displayRows = fullSchedule;
-        let truncated = false;
 
         if (fullSchedule.length > SHOW_FIRST + SHOW_LAST) {
             displayRows = [
@@ -1273,14 +1271,14 @@
                 null, // spacer
                 ...fullSchedule.slice(-SHOW_LAST)
             ];
-            truncated = true;
         }
 
+        body.innerHTML = ''; // Clear body before adding rows
         displayRows.forEach(row => {
             if (row === null) {
                 body.innerHTML += `
                     <tr class="bg-gray-50 dark:bg-gray-900/50">
-                        <td colspan="5" class="px-4 py-2 text-center text-[10px] text-gray-400 dark:text-gray-600 font-bold tracking-widest">
+                        <td colspan="5" class="px-2 md:px-4 py-2 text-center text-[9px] md:text-[10px] text-gray-400 dark:text-gray-600 font-bold tracking-widest">
                             · · · ${fullSchedule.length - SHOW_FIRST - SHOW_LAST} cuotas intermedias · · ·
                         </td>
                     </tr>
@@ -1289,11 +1287,11 @@
             }
             body.innerHTML += `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
-                    <td class="px-4 py-2.5 font-bold text-center text-gray-900 dark:text-white">${row.n}</td>
-                    <td class="px-4 py-2.5 tabular-nums text-center text-gray-600 dark:text-gray-400">${currency}${fmt(row.principal)}</td>
-                    <td class="px-4 py-2.5 tabular-nums text-center text-amber-600 dark:text-amber-500">${currency}${fmt(row.interest)}</td>
-                    <td class="px-4 py-2.5 tabular-nums text-center font-bold text-gray-900 dark:text-white">${currency}${fmt(row.cuota)}</td>
-                    <td class="px-4 py-2.5 tabular-nums text-center text-gray-600 dark:text-gray-400">${currency}${fmt(row.balance)}</td>
+                    <td class="px-2 md:px-4 py-2 md:py-2.5 font-bold text-center text-gray-900 dark:text-white">${row.n}</td>
+                    <td class="px-2 md:px-4 py-2 md:py-2.5 tabular-nums text-center text-gray-600 dark:text-gray-400">${currency}${fmt(row.principal)}</td>
+                    <td class="px-2 md:px-4 py-2 md:py-2.5 tabular-nums text-center text-amber-600 dark:text-amber-500">${currency}${fmt(row.interest)}</td>
+                    <td class="px-2 md:px-4 py-2 md:py-2.5 tabular-nums text-center font-bold text-gray-900 dark:text-white">${currency}${fmt(row.cuota)}</td>
+                    <td class="px-2 md:px-4 py-2 md:py-2.5 tabular-nums text-center text-gray-600 dark:text-gray-400">${currency}${fmt(row.balance)}</td>
                 </tr>
             `;
         });

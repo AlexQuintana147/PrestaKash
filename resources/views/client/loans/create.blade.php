@@ -369,8 +369,8 @@
                                         class="text-[10px] text-green-600 font-bold hover:underline">VER DETALLE</button>
                                 </div>
                                 <div id="fullSchedule"
-                                    class="hidden overflow-visible rounded-lg border border-gray-100 dark:border-gray-800">
-                                    <table class="w-full text-[10px] text-left">
+                                    class="hidden overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-800">
+                                    <table class="w-full text-[10px] text-left min-w-[300px]">
                                         <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
                                             <tr>
                                                 <th class="px-2 py-2 font-medium">N°</th>
@@ -508,8 +508,8 @@
                         </button>
                     </div>
 
-                    <div class="overflow-visible rounded-2xl border border-gray-100 dark:border-gray-800">
-                        <table class="w-full text-xs text-left">
+                    <div class="overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-800">
+                        <table class="w-full text-xs text-left min-w-[320px]">
                             <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400">
                                 <tr>
                                     <th class="px-3 py-3 font-medium">N°</th>
@@ -744,7 +744,7 @@
                 const s = sym();
                 const isCuotas = document.querySelector('input[name="type"]:checked')?.value === 'cuotas';
                 const system = document.querySelector('input[name="amortization_system"]:checked')?.value || 'frances';
-                const freq = (isCuotas && system === 'frances') 
+                const freq = (isCuotas && system === 'frances')
                     ? (document.querySelector('input[name="payment_frequency"]:checked')?.value || 'mensual')
                     : 'mensual';
 
@@ -840,28 +840,30 @@
                 modalBody.innerHTML = '';
 
                 let balance = principal;
+                const SHOW_FIRST = 10;
+                const SHOW_LAST = 5;
+                const limitTruncate = totalInstallments > (SHOW_FIRST + SHOW_LAST);
 
                 if (system === 'frances') {
                     const periodicPayment = (principal * periodicRate) / (1 - Math.pow(1 + periodicRate, -totalInstallments));
-
-                    // Si son demasiadas cuotas (diario), limitamos la vista previa pero no el modal
-                    const limitPreview = totalInstallments > 30;
 
                     for (let i = 1; i <= totalInstallments; i++) {
                         const interest = balance * periodicRate;
                         const capital = periodicPayment - interest;
                         balance -= capital;
 
-                        if (!limitPreview || i <= 10 || i > totalInstallments - 5) {
+                        if (!limitTruncate || i <= SHOW_FIRST || i > totalInstallments - SHOW_LAST) {
                             renderRow(i, capital, interest, balance, body, modalBody, symbol);
-                        } else if (limitPreview && i === 11) {
+                        } else if (limitTruncate && i === SHOW_FIRST + 1) {
+                            const spacerHtml = `<td colspan="4" class="text-center py-4 text-gray-400 font-medium italic">... ${totalInstallments - SHOW_FIRST - SHOW_LAST} cuotas intermedias ocultas ...</td>`;
+
                             const row = document.createElement('tr');
-                            row.innerHTML = `<td colspan="4" class="text-center py-2 text-gray-400">... ${totalInstallments - 15} cuotas intermedias ocultas ...</td>`;
+                            row.innerHTML = spacerHtml;
                             body.appendChild(row);
-                            // Modal always shows all
-                            renderRow(i, capital, interest, balance, null, modalBody, symbol);
-                        } else {
-                            renderRow(i, capital, interest, balance, null, modalBody, symbol);
+
+                            const modalRow = document.createElement('tr');
+                            modalRow.innerHTML = spacerHtml;
+                            modalBody.appendChild(modalRow);
                         }
                     }
                 } else {
@@ -870,18 +872,31 @@
                         const interest = principal * periodicRate;
                         const capital = (i === totalInstallments) ? principal : 0;
                         balance = (i === totalInstallments) ? 0 : principal;
-                        renderRow(i, capital, interest, balance, body, modalBody, symbol);
+
+                        if (!limitTruncate || i <= SHOW_FIRST || i > totalInstallments - SHOW_LAST) {
+                            renderRow(i, capital, interest, balance, body, modalBody, symbol);
+                        } else if (limitTruncate && i === SHOW_FIRST + 1) {
+                            const spacerHtml = `<td colspan="4" class="text-center py-4 text-gray-400 font-medium italic">... ${totalInstallments - SHOW_FIRST - SHOW_LAST} cuotas intermedias ocultas ...</td>`;
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = spacerHtml;
+                            body.appendChild(row);
+
+                            const modalRow = document.createElement('tr');
+                            modalRow.innerHTML = spacerHtml;
+                            modalBody.appendChild(modalRow);
+                        }
                     }
                 }
             }
 
             function renderRow(i, capital, interest, balance, body, modalBody, symbol) {
                 const html = `
-                                    <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
-                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
-                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
-                                    <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
-                                `;
+                                        <td class="px-2 py-2 font-medium text-gray-900 dark:text-white">${i}</td>
+                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(capital)}</td>
+                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(interest)}</td>
+                                        <td class="px-2 py-2 whitespace-nowrap">${symbol} ${fmt(Math.max(0, balance))}</td>
+                                    `;
 
                 if (body) {
                     const row = document.createElement('tr');
