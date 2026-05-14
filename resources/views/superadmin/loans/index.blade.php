@@ -657,7 +657,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="modal_display_amount" class="font-black text-left md:text-right space-y-0.5 text-xs md:text-base"></div>
+                    <div id="modal_display_amount" class="font-black text-left md:text-right space-y-0.5 text-xs md:text-base w-full md:w-auto"></div>
                 </div>
 
                 <div id="modalInputsGrid" class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-6">

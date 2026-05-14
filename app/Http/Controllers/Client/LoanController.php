@@ -321,4 +321,80 @@ class LoanController extends Controller
 
         return back()->with('success', 'Comprobante enviado. En breve será verificado por un administrador.');
     }
+
+    public function acceptCounterOffer(Loan $loan)
+    {
+        if ($loan->user_id !== Auth::id() || $loan->status !== 'counter_offered') {
+            abort(403);
+        }
+
+        $loan->update(['status' => 'pending']); // User accepted, back to pending for admin approval? 
+        // User said: "en caso se le acepte, recien pasará a la parte de historial crediticio"
+        // Usually admin approves it after user accepts. Or maybe user acceptance IS final approval?
+        // "recien pasará a la parte de historial crediticio" means it's approved.
+
+        // Let's assume user acceptance means it's approved by the system now.
+        $loan->update(['status' => 'approved']);
+
+        // Logic from SuperAdmin approve method to generate installments
+        $loan->installments()->delete();
+        $amount = $loan->amount;
+        $rate = $loan->interest_rate / 100;
+        $system = $loan->amortization_system;
+        $type = $loan->type;
+        $freq = $loan->payment_frequency;
+        $months = $loan->months;
+
+        if ($type === 'cuotas') {
+            $installmentsPerMonth = match ($freq) {
+                'diario' => 30,
+                'semanal' => 4,
+                'quincenal' => 2,
+                'mensual' => 1,
+                default => 1,
+            };
+            $nTotal = $months * $installmentsPerMonth;
+            $periodicPayment = $loan->monthly_payment;
+            $currentDate = now();
+            for ($i = 1; $i <= $nTotal; $i++) {
+                if ($freq === 'diario')
+                    $currentDate->addDay();
+                elseif ($freq === 'semanal')
+                    $currentDate->addWeek();
+                elseif ($freq === 'quincenal')
+                    $currentDate->addDays(15);
+                else
+                    $currentDate->addMonth();
+                $instAmount = $periodicPayment;
+                if ($system === 'americano' && $i === $nTotal)
+                    $instAmount += $amount;
+                $loan->installments()->create([
+                    'installment_number' => $i,
+                    'amount' => $instAmount,
+                    'due_date' => $currentDate->format('Y-m-d'),
+                    'status' => 'pending',
+                ]);
+            }
+        } else {
+            $loan->installments()->create([
+                'installment_number' => 1,
+                'amount' => $loan->total_amount,
+                'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
+                'status' => 'pending',
+            ]);
+        }
+
+        return back()->with('success', 'Has aceptado la contra-oferta. Tu préstamo ha sido aprobado.');
+    }
+
+    public function rejectCounterOffer(Loan $loan)
+    {
+        if ($loan->user_id !== Auth::id() || $loan->status !== 'counter_offered') {
+            abort(403);
+        }
+
+        $loan->update(['status' => 'rejected']);
+
+        return back()->with('success', 'Has rechazado la contra-oferta.');
+    }
 }

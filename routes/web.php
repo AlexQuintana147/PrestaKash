@@ -116,6 +116,8 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::post('/prestamos/perfil', [\App\Http\Controllers\Client\LoanController::class, 'storeProfile'])->name('loans.profile.store');
     Route::get('/prestamos/perfil/editar', [\App\Http\Controllers\Client\LoanController::class, 'editProfile'])->name('loans.profile.edit');
     Route::put('/prestamos/perfil', [\App\Http\Controllers\Client\LoanController::class, 'updateProfile'])->name('loans.profile.update');
+    Route::post('/prestamos/{loan}/aceptar-contraoferta', [\App\Http\Controllers\Client\LoanController::class, 'acceptCounterOffer'])->name('loans.accept-counter');
+    Route::post('/prestamos/{loan}/rechazar-contraoferta', [\App\Http\Controllers\Client\LoanController::class, 'rejectCounterOffer'])->name('loans.reject-counter');
     Route::get('/referidos', [\App\Http\Controllers\Client\ReferralController::class, 'index'])->name('referidos');
     Route::get('/invertir', [\App\Http\Controllers\Client\DashboardController::class, 'invest'])->name('invertir');
     Route::get('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'create'])->name('invest.apply');

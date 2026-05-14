@@ -93,6 +93,7 @@ class LoanController extends Controller
             'disbursement_date' => $request->disbursement_date,
             'total_amount' => $totalAmount,
             'monthly_payment' => $periodicPayment,
+            'status' => 'counter_offered',
         ]);
 
         return back()->with('success', 'Contra-oferta enviada correctamente.');
