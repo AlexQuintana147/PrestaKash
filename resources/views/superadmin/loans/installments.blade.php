@@ -77,18 +77,13 @@
                                 <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Préstamo #{{ str_pad($loan->id, 4, '0', STR_PAD_LEFT) }} • Total: {{ $userInstallments->total() }}</p>
                             </div>
                         </div>
-                        <div class="divide-y divide-gray-50 dark:divide-gray-900/50">
-                            @foreach($userInstallments as $inst)
-                                @include('superadmin.loans.partials.installment-row-minimal', ['inst' => $inst])
-                            @endforeach
+                        <!-- Contenedor de filas + paginación, reemplazado por fetch -->
+                        <div id="group-rows-{{ $loan->id }}">
+                            @include('superadmin.loans.partials.installments-group-rows', [
+                                'loan' => $loan,
+                                'userInstallments' => $userInstallments,
+                            ])
                         </div>
-                        
-                        <!-- Paginación Individual -->
-                        @if($userInstallments->hasPages())
-                            <div class="mt-4 flex justify-end">
-                                {{ $userInstallments->links('vendor.pagination.simple-tailwind') }}
-                            </div>
-                        @endif
                     </div>
                 @empty
                     <div class="col-span-full py-24 text-center">
@@ -121,10 +116,30 @@
     @include('superadmin.loans.partials.validate-modal')
 
     <script>
+        function loadGroupPage(btn) {
+            const loanId = btn.dataset.loanId;
+            const page   = btn.dataset.page;
+            const container = document.getElementById('group-rows-' + loanId);
+            if (!container) return;
+
+            container.style.opacity = '0.4';
+            container.style.pointerEvents = 'none';
+
+            fetch(`/gestion-interna/pagos/grupo/${loanId}?page=${page}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(r => r.text())
+            .then(html => {
+                container.innerHTML = html;
+                container.style.opacity = '';
+                container.style.pointerEvents = '';
+            });
+        }
+
         function openValidateModal(data) {
             document.getElementById('modal_voucher_img').src = data.voucher;
             document.getElementById('modal_voucher_link').href = data.voucher;
-            
+
             document.getElementById('modal_info_text').innerHTML = `
                 <p class="text-sm text-gray-500 font-medium">Usuario: <span class="text-gray-900 dark:text-white font-black">${data.user}</span></p>
                 <p class="text-sm text-gray-500 font-medium">Cuota: <span class="text-gray-900 dark:text-white font-black">#${data.number}</span></p>

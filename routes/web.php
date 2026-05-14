@@ -97,6 +97,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
 
     // Gestión de pagos
     Route::get('/pagos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsIndex'])->name('installments.index');
+    Route::get('/pagos/grupo/{loan}', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsGroup'])->name('installments.group');
     Route::post('/pagos/{installment}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approveInstallment'])->name('installments.approve');
     Route::post('/pagos/{installment}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'rejectInstallment'])->name('installments.reject');
     Route::post('/pagos/{installment}/unapprove', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'unapproveInstallment'])->name('installments.unapprove');

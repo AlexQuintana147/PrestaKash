@@ -210,7 +210,7 @@ class LoanController extends Controller
                     ->orderBy('due_date', 'asc')
                     ->paginate(5, ['*'], $pageName)
                     ->withQueryString();
-                
+
                 if ($installments->total() > 0) {
                     $groupedInstallments[] = [
                         'loan' => $loan,
@@ -239,6 +239,20 @@ class LoanController extends Controller
             ->withQueryString();
 
         return view('superadmin.loans.installments', compact('installments', 'filter'));
+    }
+
+    public function installmentsGroup(Request $request, \App\Models\Loan $loan)
+    {
+        $page = (int) $request->get('page', 1);
+
+        $installments = $loan->installments()
+            ->orderBy('due_date', 'asc')
+            ->paginate(5, ['*'], 'page', $page);
+
+        return view('superadmin.loans.partials.installments-group-rows', [
+            'loan' => $loan,
+            'userInstallments' => $installments,
+        ]);
     }
 
     public function approveInstallment(\App\Models\LoanInstallment $installment)
