@@ -52,6 +52,19 @@ class LoanController extends Controller
         $totalAmount = $amount;
         $periodicPayment = 0;
 
+        if (!$loan->original_data) {
+            $loan->original_data = [
+                'amount' => $loan->amount,
+                'interest_rate' => $loan->interest_rate,
+                'months' => $loan->months,
+                'payment_days' => $loan->payment_days,
+                'monthly_payment' => $loan->monthly_payment,
+                'payment_frequency' => $loan->payment_frequency,
+                'amortization_system' => $loan->amortization_system,
+                'disbursement_date' => $loan->disbursement_date,
+            ];
+        }
+
         if ($loan->type === 'cuotas') {
             if ($system === 'frances') {
                 $installmentsPerMonth = 1;

@@ -27,6 +27,11 @@ class Loan extends Model
         'account_number',
         'account_type',
         'cci',
+        'original_data',
+    ];
+
+    protected $casts = [
+        'original_data' => 'array',
     ];
 
     public function user()
