@@ -49,6 +49,14 @@
                     </button>
                 </div>
 
+                <!-- Edge Blurs -->
+                <div
+                    class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px]">
+                </div>
+                <div
+                    class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px]">
+                </div>
+
                 <!-- Carousel Track -->
                 <div id="cashboxCarousel"
                     class="flex gap-12 md:gap-20 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[5%] md:px-[20%] py-4 items-center min-h-[350px]">
@@ -334,9 +342,15 @@
             scroll-behavior: smooth;
         }
 
+        .cashbox-card {
+            filter: blur(8px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         .cashbox-card.active {
             scale: 1;
             opacity: 1;
+            filter: blur(0);
         }
 
         .movement-item {
@@ -419,21 +433,21 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
 
                 const html = `
-                                                                                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                                                        <div class="flex items-center gap-8">
-                                                                                            <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
-                                                                                            <div>
-                                                                                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="text-right">
-                                                                                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                                                                                ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                `;
+                                                                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                                                                    <div class="flex items-center gap-8">
+                                                                                                        <div class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-widest tabular-nums w-12">${date}</div>
+                                                                                                        <div>
+                                                                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">${m.reference_type || 'Operación'} • ID: ${m.reference_id || '---'}</p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="text-right">
+                                                                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                                                                                            ${isIncome ? '+' : '-'} ${parseFloat(m.amount).toFixed(2)}
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
