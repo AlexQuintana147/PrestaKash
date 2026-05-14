@@ -625,6 +625,16 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 <!-- Modal Contra-Oferta -->
 <div id="counterOfferModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
@@ -939,6 +949,9 @@
             freqWrapper.classList.add('hidden');
             monthsWrapper.classList.add('hidden');
             daysWrapper.classList.remove('hidden');
+            // Force monthly for single payment
+            const monthlyRadio = document.querySelector('input[name="payment_frequency"][value="mensual"]');
+            if (monthlyRadio) monthlyRadio.checked = true;
         } else {
             systemWrapper.classList.remove('hidden');
             monthsWrapper.classList.remove('hidden');
@@ -952,7 +965,14 @@
         const system = document.querySelector('input[name="amortization_system"]:checked')?.value;
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
         if (freqWrapper) {
-            freqWrapper.style.display = (type === 'cuotas' && system === 'frances') ? 'block' : 'none';
+            if (type === 'cuotas' && system === 'frances') {
+                freqWrapper.classList.remove('hidden');
+            } else {
+                freqWrapper.classList.add('hidden');
+                // Ensure it stays monthly if hidden
+                const monthlyRadio = document.querySelector('input[name="payment_frequency"][value="mensual"]');
+                if (monthlyRadio) monthlyRadio.checked = true;
+            }
         }
     }
 
