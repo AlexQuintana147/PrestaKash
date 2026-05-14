@@ -899,7 +899,7 @@
         if (months > 24) months = 24;
 
         const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, '')) || 0;
-        const rate = parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0;
+        const rate = (parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0) / 12; // Tasa mensual
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
         const freqRadio = document.querySelector('input[name="payment_frequency"]:checked');
@@ -922,12 +922,16 @@
 
             const rateClient = parseFloat(currentLoan.interest_rate) || 0;
             const clientTotal = parseFloat(currentLoan.amount) + (parseFloat(currentLoan.amount) * (rateClient / 100));
-            const adminTotal = amount + (amount * rate);
+            
+            // Para préstamo único, la tasa suele ser flat (no anualizada por defecto en este contexto)
+            // Si el admin ingresa una nueva tasa, la tratamos como flat para tipo único
+            const flatRate = (parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0);
+            const adminTotal = amount + (amount * flatRate);
 
             document.getElementById('unicoClientRate').textContent = rateClient.toFixed(2);
             document.getElementById('unicoClientTotal').textContent = `${currency} ${clientTotal.toLocaleString('en-US', amountObj)}`;
 
-            document.getElementById('unicoAdminRate').textContent = (rate * 100).toFixed(2);
+            document.getElementById('unicoAdminRate').textContent = (flatRate * 100).toFixed(2);
             document.getElementById('unicoAdminTotal').textContent = `${currency} ${adminTotal.toLocaleString('en-US', amountObj)}`;
 
             const days = parseInt(currentLoan.payment_days) || 15;
@@ -945,12 +949,7 @@
         }
 
         // Loan with installments
-        let installmentsPerMonth = 1;
-        if (system === 'frances') {
-            if (freq === 'diario') installmentsPerMonth = 30;
-            else if (freq === 'semanal') installmentsPerMonth = 4;
-            else if (freq === 'quincenal') installmentsPerMonth = 2;
-        }
+        const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
 
         const n = months * installmentsPerMonth;
         const periodicRate = rate / installmentsPerMonth;
@@ -983,15 +982,18 @@
             pmtText = `${currency}${periodicPayment.toFixed(2)} / ${freq}`;
         } else {
             // American: Fixed interest payments, principal at the end
-            const interestPerMonth = amount * rate;
-            periodicPayment = interestPerMonth;
+            periodicPayment = amount * periodicRate;
             let balance = amount;
-            for (let i = 1; i <= months; i++) {
-                const interest = interestPerMonth;
-                const principal = (i === months) ? amount : 0;
+            for (let i = 1; i <= n; i++) {
+                const interest = periodicPayment;
+                const principal = (i === n) ? amount : 0;
                 balance -= principal;
                 totalInterest += interest;
-                schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
+                if (i <= 10 || i > n - 5) {
+                    schedule.push({ n: i, principal, interest, balance: Math.max(0, balance) });
+                } else if (i === 11) {
+                    schedule.push({ n: '...', principal: 0, interest: 0, balance: 0, spacer: true });
+                }
             }
             const finalPmt = amount + periodicPayment;
             pmtText = `${currency}${periodicPayment.toFixed(2)} (Final: ${currency}${finalPmt.toFixed(2)})`;
@@ -1182,7 +1184,7 @@
 
         const currency = loan.currency === 'USD' ? '$' : 'S/';
         const amount = parseFloat(loan.amount);
-        const rate = parseFloat(loan.interest_rate) / 100;
+        const rate = (parseFloat(loan.interest_rate) / 100) / 12; // Tasa mensual (Anual / 12)
         const system = loan.system || 'frances';
         const freq = loan.payment_frequency || 'mensual';
         const months = parseInt(loan.months) || 1;
@@ -1206,11 +1208,11 @@
 
         const fmt = (n) => parseFloat(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-        if (system === 'frances') {
-            const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
-            const nTotal = months * installmentsPerMonth;
-            const periodicRate = rate / installmentsPerMonth;
+        const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
+        const nTotal = months * installmentsPerMonth;
+        const periodicRate = rate / installmentsPerMonth;
 
+        if (system === 'frances') {
             periodicPayment = (amount > 0 && rate > 0)
                 ? amount * (periodicRate * Math.pow(1 + periodicRate, nTotal)) / (Math.pow(1 + periodicRate, nTotal) - 1)
                 : amount / nTotal;
@@ -1224,15 +1226,16 @@
                 fullSchedule.push({ n: i, principal, interest, cuota: periodicPayment, balance });
             }
         } else {
-            const interestPerMonth = amount * rate;
-            periodicPayment = interestPerMonth;
+            // Americano: intereses periódicos, capital al final
+            periodicPayment = amount * periodicRate;
             let balance = amount;
-            for (let i = 1; i <= months; i++) {
-                const principal = (i === months) ? amount : 0;
-                const cuota = (i === months) ? amount + interestPerMonth : interestPerMonth;
+            for (let i = 1; i <= nTotal; i++) {
+                const interest = periodicPayment;
+                const principal = (i === nTotal) ? amount : 0;
+                const cuota = (i === nTotal) ? amount + interest : interest;
                 balance = Math.max(0, balance - principal);
-                totalInterest += interestPerMonth;
-                fullSchedule.push({ n: i, principal, interest: interestPerMonth, cuota, balance });
+                totalInterest += interest;
+                fullSchedule.push({ n: i, principal, interest, cuota, balance });
             }
         }
 
