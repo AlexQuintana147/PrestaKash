@@ -6,11 +6,11 @@
     <div class="px-5 md:px-10 py-8">
 
         <!-- Header -->
-        <div class="flex items-end justify-between mb-12">
+        <div class="flex items-end justify-between mb-8">
             <div>
                 <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-[0.2em] mb-1">Panel Administrativo</p>
-                <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">Gestión
-                    de Cajas</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
+                </h1>
             </div>
             <button onclick="openCashboxModal()"
                 class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
@@ -247,12 +247,15 @@
                             <div>
                                 <label
                                     class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Color</label>
-                                <div class="relative h-[42px] border-b border-gray-100 dark:border-gray-900">
+                                <div class="relative h-[42px] group/color">
                                     <input type="color" name="color" id="cb_color" value="#000000"
                                         class="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer overflow-hidden p-0 opacity-0 z-10">
                                     <div id="colorPreview"
-                                        class="absolute inset-y-2 left-0 w-full rounded-full transition-colors border border-gray-100 dark:border-gray-800"
-                                        style="background-color: #000000"></div>
+                                        class="absolute inset-0 rounded-xl transition-all border border-gray-100 dark:border-gray-800 flex items-center justify-center"
+                                        style="background-color: #000000">
+                                        <span
+                                            class="text-[8px] font-black text-white mix-blend-difference uppercase tracking-widest opacity-0 group-hover/color:opacity-100 transition-opacity">Cambiar</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -308,13 +311,6 @@
         .cashbox-card.active {
             scale: 1;
             opacity: 1;
-        }
-
-        /* Custom color picker circle */
-        #colorPreview {
-            width: 24px;
-            height: 24px;
-            margin-top: 4px;
         }
     </style>
 
@@ -372,23 +368,23 @@
                 const date = new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
 
                 const html = `
-                                <div class="px-10 py-8 flex items-center justify-between group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
-                                    <div class="flex items-center gap-6">
-                                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${isIncome ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${isIncome ? 'M19 14l-7 7m0 0l-7-7m7 7V3' : 'M5 10l7-7m0 0l7 7m-7-7v18'}" />
-                                            </svg>
+                                        <div class="px-10 py-8 flex items-center justify-between group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                                            <div class="flex items-center gap-6">
+                                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${isIncome ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${isIncome ? 'M19 14l-7 7m0 0l-7-7m7 7V3' : 'M5 10l7-7m0 0l7 7m-7-7v18'}" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-base font-bold text-gray-900 dark:text-white">${m.description}</p>
+                                                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-1">${date} • ${m.reference_type || 'Manual'}</p>
+                                                </div>
+                                            </div>
+                                            <p class="text-lg font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
+                                                ${isIncome ? '+' : '-'} S/ ${parseFloat(m.amount).toFixed(2)}
+                                            </p>
                                         </div>
-                                        <div>
-                                            <p class="text-base font-bold text-gray-900 dark:text-white">${m.description}</p>
-                                            <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-1">${date} • ${m.reference_type || 'Manual'}</p>
-                                        </div>
-                                    </div>
-                                    <p class="text-lg font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-gray-900 dark:text-white'}">
-                                        ${isIncome ? '+' : '-'} S/ ${parseFloat(m.amount).toFixed(2)}
-                                    </p>
-                                </div>
-                            `;
+                                    `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
