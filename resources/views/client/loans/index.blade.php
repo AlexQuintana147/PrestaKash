@@ -19,7 +19,7 @@
 
             @if($counterOfferLoans->isNotEmpty())
                 <button type="button" onclick="showCounterOffersList({{ json_encode($counterOfferLoans->values()) }})"
-                    class="flex items-center gap-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-xl transition-all animate-pulse shadow-lg shadow-purple-500/20">
+                    class="flex items-center gap-3 bg-black border border-purple-600 hover:bg-gray-900 text-white px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-purple-500/20">
                     <div>
                         <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
