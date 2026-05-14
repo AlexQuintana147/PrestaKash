@@ -90,7 +90,7 @@
             @empty
                 <div class="col-span-full py-20 text-center">
                     <div
-                        class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        class="w-16 h-16 flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
