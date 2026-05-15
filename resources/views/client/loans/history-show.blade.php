@@ -305,6 +305,51 @@
 
         <form id="uploadForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
+            
+            <!-- Payment Method -->
+            <div class="space-y-3">
+                <p class="text-[8px] font-black uppercase tracking-widest text-gray-400">Método de pago</p>
+                <div class="flex gap-2">
+                    <label class="flex-1 cursor-pointer group">
+                        <input type="radio" name="payment_method" value="transfer" class="hidden peer" checked onchange="togglePaymentFields(this.value)">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                            TRANSFERENCIA
+                        </div>
+                    </label>
+                    <label class="flex-1 cursor-pointer group">
+                        <input type="radio" name="payment_method" value="cash" class="hidden peer" onchange="togglePaymentFields(this.value)">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-green-600 transition-all border-b-2 border-transparent peer-checked:border-green-600 hover:text-gray-600 dark:hover:text-gray-400">
+                            EFECTIVO
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Transfer Details -->
+            <div id="transfer-details" class="space-y-4">
+                <div class="group">
+                    <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Banco emisor</label>
+                    <select name="bank_name" id="modal_bank_name" class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer">
+                        <option value="" disabled selected>Elegir banco</option>
+                        <option value="BCP">BCP</option>
+                        <option value="Interbank">Interbank</option>
+                        <option value="BBVA">BBVA</option>
+                        <option value="Scotiabank">Scotiabank</option>
+                        <option value="Banco de la Nación">Banco de la Nación</option>
+                        <option value="Yape">Yape</option>
+                        <option value="Plin">Plin</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                <div class="group">
+                    <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">N° de operación</label>
+                    <input type="text" name="operation_number" id="modal_operation_number" placeholder="Ej: 123456"
+                           maxlength="25"
+                           oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
+                           class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                </div>
+            </div>
+
             <label for="payment_voucher" class="cursor-pointer block">
                 <div class="border border-dashed border-gray-200 dark:border-gray-800 rounded-xl p-8 text-center hover:border-gray-400 dark:hover:border-gray-600 transition-colors">
                     <div id="previewContainer" class="hidden mb-3">
@@ -314,7 +359,7 @@
                         <svg class="w-6 h-6 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Subir comprobante</p>
+                        <p id="upload-label" class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Subir comprobante</p>
                     </div>
                 </div>
                 <input type="file" name="payment_voucher" id="payment_voucher" class="hidden" accept="image/*" onchange="previewImage(this)">
@@ -403,6 +448,26 @@ function closeUploadModal() {
     document.getElementById('uploadForm').reset();
     document.getElementById('previewContainer').classList.add('hidden');
     document.getElementById('uploadPlaceholder').classList.remove('hidden');
+    togglePaymentFields('transfer');
+}
+
+function togglePaymentFields(method) {
+    const details = document.getElementById('transfer-details');
+    const label = document.getElementById('upload-label');
+    const bankInput = document.getElementById('modal_bank_name');
+    const opInput = document.getElementById('modal_operation_number');
+
+    if (method === 'cash') {
+        details.classList.add('hidden');
+        label.textContent = 'Subir foto del dinero';
+        bankInput.required = false;
+        opInput.required = false;
+    } else {
+        details.classList.remove('hidden');
+        label.textContent = 'Subir comprobante';
+        bankInput.required = true;
+        opInput.required = true;
+    }
 }
 
 function previewImage(input) {

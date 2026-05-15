@@ -15,6 +15,9 @@ class LoanInstallment extends Model
         'due_date',
         'status',
         'payment_voucher',
+        'payment_method',
+        'bank_name',
+        'operation_number',
         'paid_at',
         'admin_notes',
     ];

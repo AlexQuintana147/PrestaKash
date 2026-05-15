@@ -259,6 +259,19 @@
                 <p class="text-xs text-gray-500">Monto esperado: <span class="text-purple-600 font-black">${data.amount}</span></p>
             `;
 
+            // Populate new payment details
+            const methodLabel = data.method === 'cash' ? 'Efectivo' : 'Transferencia';
+            document.getElementById('v_method').textContent = methodLabel;
+            
+            const transferFields = document.getElementById('v_transfer_fields');
+            if (data.method === 'cash') {
+                transferFields.classList.add('hidden');
+            } else {
+                transferFields.classList.remove('hidden');
+                document.getElementById('v_bank').textContent = data.bank || 'N/A';
+                document.getElementById('v_op').textContent = data.operation || 'N/A';
+            }
+
             document.getElementById('approveForm').action = `/gestion-interna/pagos/${data.id}/approve`;
             document.getElementById('rejectForm').action = `/gestion-interna/pagos/${data.id}/reject`;
 

@@ -47,7 +47,10 @@
                 'user' => $inst->loan->user->name,
                 'number' => $inst->installment_number,
                 'voucher' => Storage::url($inst->payment_voucher),
-                'currency' => $loan->currency
+                'currency' => $loan->currency,
+                'method' => $inst->payment_method,
+                'bank' => $inst->bank_name,
+                'operation' => $inst->operation_number,
             ]) }})"
                     class="text-[8px] font-black uppercase tracking-widest text-purple-600 border-b border-purple-600 pb-0.5 hover:opacity-60 transition-opacity">
                     Revisar

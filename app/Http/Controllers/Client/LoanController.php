@@ -314,12 +314,18 @@ class LoanController extends Controller
 
         $request->validate([
             'payment_voucher' => 'required|image|max:5120',
+            'payment_method' => 'required|in:transfer,cash',
+            'bank_name' => 'required_if:payment_method,transfer|nullable|string|max:255',
+            'operation_number' => 'required_if:payment_method,transfer|nullable|alpha_num|max:25',
         ]);
 
         $path = $imageService->storeAsWebp($request->file('payment_voucher'), 'vouchers/' . Auth::id(), 1200);
 
         $installment->update([
             'payment_voucher' => $path,
+            'payment_method' => $request->payment_method,
+            'bank_name' => $request->payment_method === 'cash' ? 'Efectivo' : $request->bank_name,
+            'operation_number' => $request->operation_number,
             'status' => 'processing',
             'paid_at' => now(),
         ]);

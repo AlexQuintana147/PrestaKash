@@ -69,7 +69,28 @@
             <div class="mb-6 pr-6">
                 <p class="text-[8px] font-black uppercase tracking-widest text-purple-500 mb-2">Validación</p>
                 <h3 class="text-lg font-black text-gray-900 dark:text-white tracking-tight mb-4">Revisar Pago</h3>
-                <div id="modal_info_text" class="space-y-1.5"></div>
+                <div id="modal_info_text" class="space-y-1.5 mb-4"></div>
+
+                <!-- New Payment Details -->
+                <div id="modal_payment_details"
+                    class="p-3 bg-gray-50 dark:bg-gray-900 rounded-xl space-y-1.5 border border-gray-100 dark:border-gray-800">
+                    <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Detalles del depósito
+                    </p>
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-gray-500 uppercase font-bold tracking-widest">Método:</span>
+                        <span id="v_method" class="font-black text-gray-900 dark:text-white uppercase"></span>
+                    </div>
+                    <div id="v_transfer_fields" class="space-y-1.5">
+                        <div class="flex justify-between items-center text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Banco:</span>
+                            <span id="v_bank" class="font-black text-gray-900 dark:text-white uppercase"></span>
+                        </div>
+                        <div class="flex justify-between items-center text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Operación:</span>
+                            <span id="v_op" class="font-black text-gray-900 dark:text-white uppercase"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-auto space-y-4">

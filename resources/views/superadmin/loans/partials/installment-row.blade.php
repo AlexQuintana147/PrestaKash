@@ -65,7 +65,11 @@
                         #{{ $inst->installment_number }}</span>
                     <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
                     <span
-                        class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $loan->bank_name }}</span>
+                        class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $inst->bank_name ?? $loan->bank_name }}</span>
+                    @if($inst->operation_number)
+                        <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
+                        <span class="text-[9px] text-purple-500 font-black uppercase tracking-widest">OP: {{ $inst->operation_number }}</span>
+                    @endif
                 </div>
                 <div class="flex flex-wrap gap-1.5 mt-2">
                     <a href="mailto:{{ $user->email }}"
@@ -184,6 +188,9 @@
                             'number' => $inst->installment_number,
                             'voucher' => Storage::url($inst->payment_voucher),
                             'currency' => $loan->currency,
+                            'method' => $inst->payment_method,
+                            'bank' => $inst->bank_name,
+                            'operation' => $inst->operation_number,
                         ];
                     @endphp
                     <button type="button" onclick="openValidateModal({{ json_encode($validateData) }})"
