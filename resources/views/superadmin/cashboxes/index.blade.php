@@ -101,7 +101,8 @@
                                     </div>
                                     <div class="flex gap-0 md:gap-1">
                                         <!-- Add Movement Button -->
-                                        <button onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}')"
+                                        <button
+                                            onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}', {{ $cb->balance }})"
                                             class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-green-500 hover:bg-green-500/10 transition-all"
                                             title="Registrar Ingreso">
                                             <svg class="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" stroke="currentColor"
@@ -110,7 +111,8 @@
                                                     d="M12 4v16m8-8H4" />
                                             </svg>
                                         </button>
-                                        <button onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}')"
+                                        <button
+                                            onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}', {{ $cb->balance }})"
                                             class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-red-500 hover:bg-red-500/10 transition-all"
                                             title="Registrar Egreso">
                                             <svg class="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" stroke="currentColor"
@@ -395,6 +397,10 @@
                                 <span id="mov_currency_label"
                                     class="absolute right-0 bottom-4 text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
                             </div>
+                            <p id="mov_error"
+                                class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
+                                Saldo insuficiente en caja
+                            </p>
                         </div>
 
                         <!-- Motivo / Descripción -->
@@ -553,26 +559,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.05}s">
-                        <div class="flex items-center gap-8">
-                            <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
-                            </div>
-                            <div>
-                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                    ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
-                            </p>
-                        </div>
-                    </div>
-                `;
+                                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.05}s">
+                                        <div class="flex items-center gap-8">
+                                            <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                    ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
 
@@ -587,34 +593,34 @@
 
             // Previous button
             html += `
-                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-            `;
+                                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                            `;
 
             // Page numbers (simplified for now, showing all if few, or range)
             for (let i = 1; i <= totalPages; i++) {
                 const isActive = i === currentPage;
                 html += `
-                    <button onclick="changePage(${i})" 
-                        class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
-                        ${i}
-                    </button>
-                `;
+                                    <button onclick="changePage(${i})" 
+                                        class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
+                                        ${i}
+                                    </button>
+                                `;
             }
 
             // Next button
             html += `
-                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-            `;
+                                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            `;
 
             movementsPagination.innerHTML = html;
         }
@@ -624,7 +630,7 @@
             if (page < 1 || page > totalPages) return;
             currentPage = page;
             renderMovements();
-            
+
             // Scroll to movements section top
             movementsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -729,14 +735,18 @@
             document.body.style.overflow = '';
         }
 
-        function openMovementModal(cashboxId, type, currency) {
+        let currentCashboxBalance = 0;
+
+        function openMovementModal(cashboxId, type, currency, balance) {
             const modal = document.getElementById('movementModal');
             const form = document.getElementById('movementForm');
             const title = document.getElementById('movModalTitle');
             const typeInput = document.getElementById('mov_type');
             const currencyLabel = document.getElementById('mov_currency_label');
             const amountInput = document.getElementById('mov_amount');
+            const errorMsg = document.getElementById('mov_error');
 
+            currentCashboxBalance = balance;
             typeInput.value = type;
             currencyLabel.textContent = currency;
             form.action = `/gestion-interna/cajas/${cashboxId}/movimiento`;
@@ -744,6 +754,7 @@
 
             amountInput.value = '';
             document.getElementById('mov_description').value = '';
+            errorMsg.classList.add('hidden');
 
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -772,9 +783,19 @@
 
         document.getElementById('movementForm').addEventListener('submit', function (e) {
             const amountInput = document.getElementById('mov_amount');
-            // Remove commas before submit so Laravel validates numeric
-            amountInput.value = amountInput.value.replace(/,/g, '');
+            const typeInput = document.getElementById('mov_type');
+            const errorMsg = document.getElementById('mov_error');
 
+            // Remove commas before submit so Laravel validates numeric
+            const cleanAmount = parseFloat(amountInput.value.replace(/,/g, ''));
+
+            if (typeInput.value === 'expense' && cleanAmount > currentCashboxBalance) {
+                e.preventDefault();
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            amountInput.value = cleanAmount;
             const btn = document.getElementById('movSubmitBtn');
             btn.disabled = true;
             btn.opacity = '0.5';
