@@ -392,6 +392,7 @@
                                 / Origen</label>
                             <input type="text" name="description" id="mov_description" required
                                 placeholder="Ej: Pago de servicios, Inyección de capital..."
+                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
                                 class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
                         </div>
                     </div>
@@ -528,26 +529,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                                    <div class="flex items-center gap-8">
-                                                                        <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                                            <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                                        <div class="flex items-center gap-8">
+                                                                            <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                                                <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                            </div>
+                                                                            <div>
+                                                                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                                                    ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                                </p>
+                                                                            </div>
                                                                         </div>
-                                                                        <div>
-                                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                                                ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                        <div class="text-right">
+                                                                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                                                ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
                                                                             </p>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="text-right">
-                                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                                            ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            `;
+                                                                `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
