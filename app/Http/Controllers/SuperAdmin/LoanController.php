@@ -14,6 +14,8 @@ class LoanController extends Controller
         $loanId = $request->get('loan_id');
         $search = $request->get('search');
         $currency = $request->get('currency');
+        $fromDate = $request->get('from_date');
+        $toDate = $request->get('to_date');
 
         $query = Loan::with(['user.documents', 'user.clientProfile'])->latest();
 
@@ -29,12 +31,21 @@ class LoanController extends Controller
                 $query->whereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('ruc', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             }
 
             if ($currency) {
                 $query->where('currency', $currency);
+            }
+
+            if ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            }
+
+            if ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
             }
         }
 

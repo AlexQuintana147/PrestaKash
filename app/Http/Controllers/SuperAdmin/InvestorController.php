@@ -13,6 +13,8 @@ class InvestorController extends Controller
     {
         $filter = $request->get('filter', 'pending');
         $search = $request->get('search');
+        $fromDate = $request->get('from_date');
+        $toDate = $request->get('to_date');
 
         $query = InvestorApplication::with('user.documents')->orderBy('created_at', 'desc');
 
@@ -23,8 +25,17 @@ class InvestorController extends Controller
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('dni', 'like', "%{$search}%");
+                    ->orWhere('dni', 'like', "%{$search}%")
+                    ->orWhere('ruc', 'like', "%{$search}%");
             });
+        }
+
+        if ($fromDate) {
+            $query->whereDate('created_at', '>=', $fromDate);
+        }
+
+        if ($toDate) {
+            $query->whereDate('created_at', '<=', $toDate);
         }
 
         $applications = $query->paginate(10)->withQueryString();

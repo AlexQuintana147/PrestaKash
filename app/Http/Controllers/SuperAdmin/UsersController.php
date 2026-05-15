@@ -17,6 +17,8 @@ class UsersController extends Controller
     {
         $filter = $request->get('filter', 'all');
         $search = $request->get('search');
+        $fromDate = $request->get('from_date');
+        $toDate = $request->get('to_date');
 
         $blockedUsers = collect();
 
@@ -30,6 +32,12 @@ class UsersController extends Controller
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             }
+            if ($fromDate) {
+                $queryBlocked->whereDate('created_at', '>=', $fromDate);
+            }
+            if ($toDate) {
+                $queryBlocked->whereDate('created_at', '<=', $toDate);
+            }
             $blockedUsers = $queryBlocked->paginate(10)->withQueryString();
         } else {
             $query = User::with(['documents', 'role', 'referrer'])
@@ -40,8 +48,17 @@ class UsersController extends Controller
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('ruc', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
+            }
+
+            if ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            }
+
+            if ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
             }
 
             if ($filter === 'ghosts') {

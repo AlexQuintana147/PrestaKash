@@ -46,40 +46,71 @@
             </div>
 
             <!-- Filtros Desktop -->
-            <div class="hidden md:flex items-center justify-between border-b border-gray-200 dark:border-gray-800 mb-8">
-                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
-                    @foreach(['pending' => 'Pendientes', 'counter_offered' => 'Contra-ofertas', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
-                        <a href="{{ route('superadmin.loans.index', ['filter' => $key, 'search' => request('search'), 'currency' => request('currency')]) }}"
-                            class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
-                                      {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                            {{ $label }}
-                            @if($counts[$key] > 0)
-                                <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
-                            @endif
-                            @if($filter === $key)
-                                <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
-                            @endif
-                        </a>
-                    @endforeach
+            <div class="hidden md:flex flex-col border-b border-gray-200 dark:border-gray-800 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
+                        @foreach(['pending' => 'Pendientes', 'counter_offered' => 'Contra-ofertas', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
+                            <a href="{{ route('superadmin.loans.index', ['filter' => $key, 'search' => request('search'), 'currency' => request('currency'), 'from_date' => request('from_date'), 'to_date' => request('to_date')]) }}"
+                                class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
+                                          {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                                {{ $label }}
+                                @if($counts[$key] > 0)
+                                    <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                                @endif
+                                @if($filter === $key)
+                                    <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
                 
-                <form action="{{ route('superadmin.loans.index') }}" method="GET" class="flex items-center gap-3 px-4">
+                <form id="filterForm" action="{{ route('superadmin.loans.index') }}" method="GET" class="flex flex-wrap items-center gap-4 px-4 py-4 bg-gray-50/50 dark:bg-white/5 rounded-2xl mt-2">
                     <input type="hidden" name="filter" value="{{ $filter }}">
+                    
+                    <!-- Búsqueda -->
                     <div class="relative group">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre o DNI..." 
-                               class="bg-gray-50 dark:bg-gray-900 border-0 rounded-xl px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white w-40 md:w-56 transition-all placeholder:text-gray-400">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Nombre, DNI o RUC..." 
+                               oninput="this.value = this.value.replace(/[^a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s]/g, ''); debounceSubmit()"
+                               class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white w-56 transition-all placeholder:text-gray-400">
                         @if(request('search'))
-                            <a href="{{ route('superadmin.loans.index', ['filter' => $filter, 'currency' => request('currency')]) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                            <a href="{{ route('superadmin.loans.index', ['filter' => $filter, 'currency' => request('currency'), 'from_date' => request('from_date'), 'to_date' => request('to_date')]) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </a>
                         @endif
                     </div>
+
+                    <!-- Moneda -->
                     <select name="currency" onchange="this.form.submit()" 
-                            class="bg-gray-50 dark:bg-gray-900 border-0 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white cursor-pointer appearance-none">
+                            class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white cursor-pointer appearance-none">
                         <option value="">MONEDA</option>
                         <option value="PEN" {{ request('currency') === 'PEN' ? 'selected' : '' }}>PEN (S/)</option>
                         <option value="USD" {{ request('currency') === 'USD' ? 'selected' : '' }}>USD ($)</option>
                     </select>
+
+                    <!-- Fechas -->
+                    <div class="flex items-center gap-2">
+                        <div onclick="this.querySelector('input').showPicker()" class="relative cursor-pointer group">
+                            <input type="date" name="from_date" value="{{ request('from_date') }}" onchange="this.form.submit()"
+                                   class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-[10px] font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all calendar-picker-indicator-none"
+                                   style="color-scheme: {{ request()->cookie('theme') === 'dark' ? 'dark' : 'light' }};">
+                            <span class="absolute -top-2 left-3 px-1 bg-gray-50 dark:bg-gray-950 text-[7px] font-black text-gray-400 uppercase tracking-widest">Desde</span>
+                        </div>
+                        <div onclick="this.querySelector('input').showPicker()" class="relative cursor-pointer group">
+                            <input type="date" name="to_date" value="{{ request('to_date') }}" onchange="this.form.submit()"
+                                   class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-[10px] font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all calendar-picker-indicator-none"
+                                   style="color-scheme: {{ request()->cookie('theme') === 'dark' ? 'dark' : 'light' }};">
+                            <span class="absolute -top-2 left-3 px-1 bg-gray-50 dark:bg-gray-950 text-[7px] font-black text-gray-400 uppercase tracking-widest">Hasta</span>
+                        </div>
+                    </div>
+
+                    @if(request('from_date') || request('to_date') || request('currency') || request('search'))
+                        <a href="{{ route('superadmin.loans.index', ['filter' => $filter]) }}" 
+                           class="text-[9px] font-black text-red-500 uppercase tracking-widest hover:opacity-70 transition-opacity ml-auto">
+                            Limpiar Filtros
+                        </a>
+                    @endif
                 </form>
             </div>
 
@@ -934,6 +965,14 @@
     <script>
         let currentLoan = null;
         const allCashboxes = @json($cashboxes);
+
+        let debounceTimer;
+        function debounceSubmit() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                document.getElementById('filterForm').submit();
+            }, 500);
+        }
 
         function openCounterOfferModal(loan) {
             currentLoan = loan;
