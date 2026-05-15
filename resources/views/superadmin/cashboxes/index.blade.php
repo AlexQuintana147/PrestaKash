@@ -34,7 +34,7 @@
             <div class="relative group/carousel">
                 <!-- Navigation: Floating Glassmorphism -->
                 <div
-                    class="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 flex justify-between items-center px-4 md:px-10">
+                    class="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 hidden md:flex justify-between items-center px-4 md:px-10">
                     <button id="prevBtn" onclick="scrollCarousel(-1)"
                         class="pointer-events-auto w-12 h-12 flex items-center justify-center rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-4 group-hover/carousel:translate-x-0 disabled:hidden">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,24 +51,24 @@
 
                 <!-- Edge Blurs -->
                 <div
-                    class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px]">
+                    class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px] hidden md:block">
                 </div>
                 <div
-                    class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px]">
+                    class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px] hidden md:block">
                 </div>
 
                 <!-- Carousel Track -->
                 <div id="cashboxCarousel"
-                    class="flex gap-8 md:gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[5%] md:px-[20%] py-4 items-center min-h-[280px]">
+                    class="flex gap-6 md:gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-4 md:px-[20%] py-4 items-center min-h-[250px] md:min-h-[280px]">
                     @forelse($cashboxes as $cb)
-                        <div class="cashbox-card flex-shrink-0 w-full max-w-2xl snap-center transition-all duration-700 scale-90 opacity-20"
+                        <div class="cashbox-card flex-shrink-0 w-[85%] md:w-full max-w-2xl snap-center transition-all duration-700 scale-95 md:scale-90 opacity-40 md:opacity-20"
                             data-id="{{ $cb->id }}" data-movements='@json($cb->movements)'>
 
                             <!-- The "Physical Card" Design -->
                             <div
-                                class="relative bg-white dark:bg-gray-900 rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 p-6 md:p-8 overflow-hidden transition-all duration-500 hover:border-gray-300 dark:hover:border-gray-600">
+                                class="relative bg-white dark:bg-gray-900 rounded-[1.5rem] md:rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 p-5 md:p-8 overflow-hidden transition-all duration-500 hover:border-gray-300 dark:hover:border-gray-600">
                                 <!-- Prominent Color Accent: Left vertical bar -->
-                                <div class="absolute inset-y-0 left-0 w-2.5 transition-all duration-500"
+                                <div class="absolute inset-y-0 left-0 w-2 md:w-2.5 transition-all duration-500"
                                     style="background-color: {{ $cb->color }}"></div>
 
                                 <!-- Subtle Background Glow -->
@@ -76,53 +76,57 @@
                                     style="background-color: {{ $cb->color }}"></div>
 
                                 <!-- Card Header -->
-                                <div class="flex justify-between items-start mb-6 pl-4">
+                                <div class="flex justify-between items-start mb-4 md:mb-6 pl-3 md:pl-4">
                                     <div class="space-y-1">
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-2 md:gap-3">
                                             <!-- Card Chip Simulation -->
                                             <div
-                                                class="w-10 h-7 rounded-md bg-yellow-400 border border-yellow-500 flex flex-col justify-around p-1.5 opacity-100">
+                                                class="w-8 h-5 md:w-10 md:h-7 rounded-sm md:rounded-md bg-yellow-400 border border-yellow-500 flex flex-col justify-around p-1 md:p-1.5 opacity-100">
                                                 <div class="w-full h-px bg-yellow-700"></div>
                                                 <div class="w-full h-px bg-yellow-700"></div>
                                                 <div class="w-full h-px bg-yellow-700"></div>
                                             </div>
                                             <h3
-                                                class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
+                                                class="text-lg md:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
                                                 {{ $cb->name }}
                                             </h3>
                                         </div>
-                                        <div class="flex items-center gap-3 ml-1">
+                                        <div class="flex items-center gap-2 md:gap-3 ml-1">
                                             <span
-                                                class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->bank_name }}</span>
+                                                class="text-[8px] md:text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->bank_name }}</span>
                                             <div class="w-1 h-1 rounded-full bg-gray-200 dark:bg-gray-800"></div>
                                             <span
-                                                class="cb-currency-label text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
+                                                class="cb-currency-label text-[8px] md:text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
                                         </div>
                                     </div>
-                                    <div class="flex gap-1">
+                                    <div class="flex gap-0.5 md:gap-1">
                                         <!-- Add Movement Button -->
                                         <button onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}')"
-                                            class="w-8 h-8 flex items-center justify-center rounded-full text-green-500 hover:bg-green-500/10 transition-all"
+                                            class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-green-500 hover:bg-green-500/10 transition-all"
                                             title="Registrar Ingreso">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M12 4v16m8-8H4" />
                                             </svg>
                                         </button>
                                         <button onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}')"
-                                            class="w-8 h-8 flex items-center justify-center rounded-full text-red-500 hover:bg-red-500/10 transition-all"
+                                            class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-red-500 hover:bg-red-500/10 transition-all"
                                             title="Registrar Egreso">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M20 12H4" />
                                             </svg>
                                         </button>
 
-                                        <div class="w-px h-5 bg-gray-100 dark:bg-gray-800 mx-1 self-center"></div>
+                                        <div class="w-px h-4 md:h-5 bg-gray-100 dark:bg-gray-800 mx-0.5 md:mx-1 self-center">
+                                        </div>
 
                                         <button onclick='openCashboxModal(@json($cb))'
-                                            class="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">
+                                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
@@ -131,8 +135,9 @@
                                             onsubmit="return confirm('¿Eliminar esta caja?')">
                                             @csrf @method('DELETE')
                                             <button type="submit"
-                                                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
+                                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -142,23 +147,24 @@
                                 </div>
 
                                 <!-- Balance: Hero Typography -->
-                                <div class="space-y-4 pl-4">
+                                <div class="space-y-3 md:space-y-4 pl-3 md:pl-4">
                                     <div>
                                         <p
-                                            class="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] mb-2 opacity-60">
+                                            class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] mb-1 md:mb-2 opacity-60">
                                             Balance Total</p>
-                                        <div class="flex items-baseline gap-2">
+                                        <div class="flex items-baseline gap-1 md:gap-2">
                                             <span
-                                                class="text-2xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
+                                                class="text-xl md:text-2xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
                                             <span
-                                                class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
+                                                class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
                                                 {{ number_format($cb->balance, 2) }}
                                             </span>
                                         </div>
                                     </div>
 
                                     <!-- Footer Data: Monospaced -->
-                                    <div class="grid grid-cols-2 gap-8 pt-6 border-t border-gray-50 dark:border-gray-900">
+                                    <div
+                                        class="grid grid-cols-2 gap-4 md:gap-8 pt-4 md:pt-6 border-t border-gray-50 dark:border-gray-900">
                                         @if($cb->account_number)
                                             <div class="space-y-1">
                                                 <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">N° Cuenta
@@ -529,26 +535,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                                                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                                        <div class="flex items-center gap-8">
-                                                                            <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                                                <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                        <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                                            <div class="flex items-center gap-8">
+                                                                                <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                                                    <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                                                    <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                                                        ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                                    </p>
+                                                                                </div>
                                                                             </div>
-                                                                            <div>
-                                                                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                                                    ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                            <div class="text-right">
+                                                                                <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                                                    ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
                                                                                 </p>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="text-right">
-                                                                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                                                ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                `;
+                                                                    `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
