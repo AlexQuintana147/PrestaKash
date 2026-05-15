@@ -52,39 +52,54 @@
             </div>
 
             <!-- Desktop: tabs horizontales -->
-            <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
-                @foreach([
-                    'all'      => 'Todos', 
-                    'pending'  => 'Pendientes', 
-                    'approved' => 'Aprobados', 
-                    'rejected' => 'Rechazados',
-                    'ghosts'   => 'Fantasmas',
-                    'blocked'  => 'Bloqueados'
-                ] as $key => $label)
-                    @php
-                        $isActive = $filter === $key;
-                        $colorClass = match($key) {
-                            'ghosts'  => $isActive ? 'text-purple-600' : 'text-gray-600 dark:text-gray-400 hover:text-purple-500',
-                            'blocked' => $isActive ? 'text-red-500'    : 'text-gray-600 dark:text-gray-400 hover:text-red-500',
-                            default   => $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400',
-                        };
-                        $lineClass = match($key) {
-                            'ghosts'  => 'bg-purple-600',
-                            'blocked' => 'bg-red-500',
-                            default   => 'bg-gray-900 dark:bg-white',
-                        };
-                    @endphp
-                    <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" 
-                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors {{ $colorClass }}">
-                        {{ $label }}
-                        @if($counts[$key] > 0)
-                            <span class="ml-1.5 text-xs opacity-60">{{ $counts[$key] }}</span>
+            <div class="hidden md:flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center gap-0">
+                    @foreach([
+                        'all'      => 'Todos', 
+                        'pending'  => 'Pendientes', 
+                        'approved' => 'Aprobados', 
+                        'rejected' => 'Rechazados',
+                        'ghosts'   => 'Fantasmas',
+                        'blocked'  => 'Bloqueados'
+                    ] as $key => $label)
+                        @php
+                            $isActive = $filter === $key;
+                            $colorClass = match($key) {
+                                'ghosts'  => $isActive ? 'text-purple-600' : 'text-gray-600 dark:text-gray-400 hover:text-purple-500',
+                                'blocked' => $isActive ? 'text-red-500'    : 'text-gray-600 dark:text-gray-400 hover:text-red-500',
+                                default   => $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400',
+                            };
+                            $lineClass = match($key) {
+                                'ghosts'  => 'bg-purple-600',
+                                'blocked' => 'bg-red-500',
+                                default   => 'bg-gray-900 dark:bg-white',
+                            };
+                        @endphp
+                        <a href="{{ route('superadmin.users.index', ['filter' => $key, 'search' => request('search')]) }}" 
+                           class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors {{ $colorClass }}">
+                            {{ $label }}
+                            @if($counts[$key] > 0)
+                                <span class="ml-1.5 text-xs opacity-60">{{ $counts[$key] }}</span>
+                            @endif
+                            @if($isActive)
+                                <span class="absolute bottom-0 left-0 right-0 h-px {{ $lineClass }}"></span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+
+                <form action="{{ route('superadmin.users.index') }}" method="GET" class="flex items-center gap-3 px-4 py-2">
+                    <input type="hidden" name="filter" value="{{ $filter }}">
+                    <div class="relative group">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, DNI o Email..." 
+                               class="bg-gray-50 dark:bg-gray-900 border-0 rounded-xl px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white w-48 md:w-72 transition-all placeholder:text-gray-400">
+                        @if(request('search'))
+                            <a href="{{ route('superadmin.users.index', ['filter' => $filter]) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </a>
                         @endif
-                        @if($isActive)
-                            <span class="absolute bottom-0 left-0 right-0 h-px {{ $lineClass }}"></span>
-                        @endif
-                    </a>
-                @endforeach
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -357,18 +372,36 @@
         @endif
 
         <!-- Paginación -->
-        @if($filter !== 'blocked' && $users->hasPages())
+        @if($filter === 'blocked' && $blockedUsers->hasPages())
+            <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                <span>{{ $blockedUsers->firstItem() }}–{{ $blockedUsers->lastItem() }} de {{ $blockedUsers->total() }}</span>
+                <div class="flex items-center gap-5">
+                    @if($blockedUsers->onFirstPage())
+                        <span class="opacity-30">← Anterior</span>
+                    @else
+                        <a href="{{ $blockedUsers->appends(request()->query())->previousPageUrl() }}"
+                            class="hover:text-gray-900 dark:hover:text-white transition-colors">← Anterior</a>
+                    @endif
+                    @if($blockedUsers->hasMorePages())
+                        <a href="{{ $blockedUsers->appends(request()->query())->nextPageUrl() }}"
+                            class="hover:text-gray-900 dark:hover:text-white transition-colors">Siguiente →</a>
+                    @else
+                        <span class="opacity-30">Siguiente →</span>
+                    @endif
+                </div>
+            </div>
+        @elseif($filter !== 'blocked' && $users->hasPages())
             <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
                 <span>{{ $users->firstItem() }}–{{ $users->lastItem() }} de {{ $users->total() }}</span>
                 <div class="flex items-center gap-5">
                     @if($users->onFirstPage())
                         <span class="opacity-30">← Anterior</span>
                     @else
-                        <a href="{{ $users->previousPageUrl() }}"
+                        <a href="{{ $users->appends(request()->query())->previousPageUrl() }}"
                             class="hover:text-gray-900 dark:hover:text-white transition-colors">← Anterior</a>
                     @endif
                     @if($users->hasMorePages())
-                        <a href="{{ $users->nextPageUrl() }}"
+                        <a href="{{ $users->appends(request()->query())->nextPageUrl() }}"
                             class="hover:text-gray-900 dark:hover:text-white transition-colors">Siguiente →</a>
                     @else
                         <span class="opacity-30">Siguiente →</span>

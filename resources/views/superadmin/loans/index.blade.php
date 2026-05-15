@@ -46,20 +46,41 @@
             </div>
 
             <!-- Filtros Desktop -->
-            <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 overflow-x-auto no-scrollbar">
-                @foreach(['pending' => 'Pendientes', 'counter_offered' => 'Contra-ofertas', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
-                    <a href="{{ route('superadmin.loans.index', ['filter' => $key]) }}"
-                        class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
-                                  {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                        {{ $label }}
-                        @if($counts[$key] > 0)
-                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+            <div class="hidden md:flex items-center justify-between border-b border-gray-200 dark:border-gray-800 mb-8">
+                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
+                    @foreach(['pending' => 'Pendientes', 'counter_offered' => 'Contra-ofertas', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
+                        <a href="{{ route('superadmin.loans.index', ['filter' => $key, 'search' => request('search'), 'currency' => request('currency')]) }}"
+                            class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
+                                      {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                            {{ $label }}
+                            @if($counts[$key] > 0)
+                                <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                            @endif
+                            @if($filter === $key)
+                                <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+                
+                <form action="{{ route('superadmin.loans.index') }}" method="GET" class="flex items-center gap-3 px-4">
+                    <input type="hidden" name="filter" value="{{ $filter }}">
+                    <div class="relative group">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre o DNI..." 
+                               class="bg-gray-50 dark:bg-gray-900 border-0 rounded-xl px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white w-40 md:w-56 transition-all placeholder:text-gray-400">
+                        @if(request('search'))
+                            <a href="{{ route('superadmin.loans.index', ['filter' => $filter, 'currency' => request('currency')]) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </a>
                         @endif
-                        @if($filter === $key)
-                            <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
-                        @endif
-                    </a>
-                @endforeach
+                    </div>
+                    <select name="currency" onchange="this.form.submit()" 
+                            class="bg-gray-50 dark:bg-gray-900 border-0 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white cursor-pointer appearance-none">
+                        <option value="">MONEDA</option>
+                        <option value="PEN" {{ request('currency') === 'PEN' ? 'selected' : '' }}>PEN (S/)</option>
+                        <option value="USD" {{ request('currency') === 'USD' ? 'selected' : '' }}>USD ($)</option>
+                    </select>
+                </form>
             </div>
 
             <!-- Lista de préstamos -->
@@ -631,7 +652,7 @@
 
             <!-- Paginación -->
             <div class="mt-10">
-                {{ $loans->links() }}
+                {{ $loans->appends(request()->query())->links() }}
             </div>
 
         </div>

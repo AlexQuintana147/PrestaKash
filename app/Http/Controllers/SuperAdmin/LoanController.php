@@ -12,17 +12,33 @@ class LoanController extends Controller
     {
         $filter = $request->get('filter', 'pending');
         $loanId = $request->get('loan_id');
+        $search = $request->get('search');
+        $currency = $request->get('currency');
 
         $query = Loan::with(['user.documents', 'user.clientProfile'])->latest();
 
         if ($loanId) {
             $query->where('id', $loanId);
             $filter = 'all';
-        } elseif ($filter !== 'all') {
-            $query->where('status', $filter);
+        } else {
+            if ($filter !== 'all') {
+                $query->where('status', $filter);
+            }
+
+            if ($search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+
+            if ($currency) {
+                $query->where('currency', $currency);
+            }
         }
 
-        $loans = $query->paginate(15)->withQueryString();
+        $loans = $query->paginate(10)->withQueryString();
 
         $counts = [
             'pending' => Loan::where('status', 'pending')->count(),

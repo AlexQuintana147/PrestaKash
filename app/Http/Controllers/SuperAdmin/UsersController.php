@@ -16,16 +16,33 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         $filter = $request->get('filter', 'all');
+        $search = $request->get('search');
 
         $blockedUsers = collect();
 
         if ($filter === 'blocked') {
-            $users = collect(); // no hay paginación para bloqueados por ahora
-            $blockedUsers = BlockedUser::latest()->get();
+            $users = collect();
+            $queryBlocked = BlockedUser::latest();
+            if ($search) {
+                $queryBlocked->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+            $blockedUsers = $queryBlocked->paginate(10)->withQueryString();
         } else {
             $query = User::with(['documents', 'role', 'referrer'])
                 ->whereHas('role', fn($q) => $q->where('name', '!=', 'superadmin'))
                 ->where('profile_completed', true);
+
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
 
             if ($filter === 'ghosts') {
                 $query->where('is_ghost', true);
@@ -41,7 +58,7 @@ class UsersController extends Controller
                 }
             }
 
-            $users = $query->latest()->paginate(15)->withQueryString();
+            $users = $query->latest()->paginate(10)->withQueryString();
         }
 
         $counts = [

@@ -44,22 +44,37 @@
         </div>
 
         <!-- Desktop: tabs horizontales -->
-        <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
-            @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados', 'rejected' => 'Rechazados'] as $key => $label)
-                <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
-                   class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                          {{ $filter === $key
-                              ? 'text-gray-900 dark:text-white'
-                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                    {{ $label }}
-                    @if($counts[$key] > 0)
-                        <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+        <div class="hidden md:flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center gap-0">
+                @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados', 'rejected' => 'Rechazados'] as $key => $label)
+                    <a href="{{ route('superadmin.investors.index', ['filter' => $key, 'search' => request('search')]) }}"
+                       class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
+                              {{ $filter === $key
+                                  ? 'text-gray-900 dark:text-white'
+                                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                        {{ $label }}
+                        @if($counts[$key] > 0)
+                            <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                        @endif
+                        @if($filter === $key)
+                            <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+
+            <form action="{{ route('superadmin.investors.index') }}" method="GET" class="flex items-center gap-3 px-4 py-2">
+                <input type="hidden" name="filter" value="{{ $filter }}">
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre o DNI..." 
+                           class="bg-gray-50 dark:bg-gray-900 border-0 rounded-xl px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white w-48 md:w-64 transition-all placeholder:text-gray-400">
+                    @if(request('search'))
+                        <a href="{{ route('superadmin.investors.index', ['filter' => $filter]) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
                     @endif
-                    @if($filter === $key)
-                        <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
-                    @endif
-                </a>
-            @endforeach
+                </div>
+            </form>
         </div>
     </div>
 
@@ -182,10 +197,10 @@
             @if($applications->onFirstPage())
                 <span class="opacity-30">← Anterior</span>
             @else
-                <a href="{{ $applications->previousPageUrl() }}" class="hover:text-gray-900 dark:hover:text-white transition-colors">← Anterior</a>
+                <a href="{{ $applications->appends(request()->query())->previousPageUrl() }}" class="hover:text-gray-900 dark:hover:text-white transition-colors">← Anterior</a>
             @endif
             @if($applications->hasMorePages())
-                <a href="{{ $applications->nextPageUrl() }}" class="hover:text-gray-900 dark:hover:text-white transition-colors">Siguiente →</a>
+                <a href="{{ $applications->appends(request()->query())->nextPageUrl() }}" class="hover:text-gray-900 dark:hover:text-white transition-colors">Siguiente →</a>
             @else
                 <span class="opacity-30">Siguiente →</span>
             @endif

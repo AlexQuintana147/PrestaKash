@@ -12,6 +12,7 @@ class InvestorController extends Controller
     public function index(Request $request)
     {
         $filter = $request->get('filter', 'pending');
+        $search = $request->get('search');
 
         $query = InvestorApplication::with('user.documents')->orderBy('created_at', 'desc');
 
@@ -19,7 +20,14 @@ class InvestorController extends Controller
             $query->where('status', $filter);
         }
 
-        $applications = $query->paginate(15);
+        if ($search) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('dni', 'like', "%{$search}%");
+            });
+        }
+
+        $applications = $query->paginate(10)->withQueryString();
 
         $counts = [
             'all' => InvestorApplication::count(),
@@ -34,7 +42,7 @@ class InvestorController extends Controller
     public function approve(InvestorApplication $application)
     {
         $application->update(['status' => 'approved']);
-        
+
         // Marcar al usuario como inversor
         $application->user->update(['is_investor' => true]);
 
@@ -44,7 +52,7 @@ class InvestorController extends Controller
     public function unapprove(InvestorApplication $application)
     {
         $application->update(['status' => 'pending']);
-        
+
         // Quitar marca de inversor al usuario
         $application->user->update(['is_investor' => false]);
 
