@@ -36,4 +36,9 @@ class CashboxMovement extends Model
     {
         return $this->belongsTo(Loan::class, 'reference_id');
     }
+
+    public function installment()
+    {
+        return $this->belongsTo(LoanInstallment::class, 'reference_id');
+    }
 }
