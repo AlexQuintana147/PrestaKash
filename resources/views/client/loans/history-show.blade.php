@@ -329,7 +329,9 @@
             <div id="transfer-details" class="space-y-4">
                 <div class="group">
                     <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Banco emisor</label>
-                    <select name="bank_name" id="modal_bank_name" class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer">
+                    <select name="bank_name" id="modal_bank_name" 
+                            onchange="toggleCustomBank(this.value)"
+                            class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer">
                         <option value="" disabled selected>Elegir banco</option>
                         <option value="BCP">BCP</option>
                         <option value="Interbank">Interbank</option>
@@ -340,6 +342,12 @@
                         <option value="Plin">Plin</option>
                         <option value="Otros">Otros</option>
                     </select>
+                </div>
+                <div id="modal_bank_custom_container" class="group hidden">
+                    <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Nombre del banco</label>
+                    <input type="text" name="bank_name_custom" id="modal_bank_name_custom" placeholder="Ej: Mi Banco"
+                           oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚ\s]/g, '')"
+                           class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
                 </div>
                 <div class="group">
                     <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">N° de operación</label>
@@ -449,6 +457,7 @@ function closeUploadModal() {
     document.getElementById('previewContainer').classList.add('hidden');
     document.getElementById('uploadPlaceholder').classList.remove('hidden');
     togglePaymentFields('transfer');
+    toggleCustomBank('');
 }
 
 function togglePaymentFields(method) {
@@ -462,11 +471,27 @@ function togglePaymentFields(method) {
         label.textContent = 'Subir foto del dinero';
         bankInput.required = false;
         opInput.required = false;
+        toggleCustomBank('');
     } else {
         details.classList.remove('hidden');
         label.textContent = 'Subir comprobante';
         bankInput.required = true;
         opInput.required = true;
+        toggleCustomBank(bankInput.value);
+    }
+}
+
+function toggleCustomBank(value) {
+    const container = document.getElementById('modal_bank_custom_container');
+    const input = document.getElementById('modal_bank_name_custom');
+    
+    if (value === 'Otros') {
+        container.classList.remove('hidden');
+        input.required = true;
+    } else {
+        container.classList.add('hidden');
+        input.required = false;
+        input.value = '';
     }
 }
 
