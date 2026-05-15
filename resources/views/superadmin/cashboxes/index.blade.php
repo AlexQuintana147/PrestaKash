@@ -59,16 +59,16 @@
 
                 <!-- Carousel Track -->
                 <div id="cashboxCarousel"
-                    class="flex gap-12 md:gap-20 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[5%] md:px-[20%] py-4 items-center min-h-[350px]">
+                    class="flex gap-8 md:gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[5%] md:px-[20%] py-4 items-center min-h-[280px]">
                     @forelse($cashboxes as $cb)
-                        <div class="cashbox-card flex-shrink-0 w-full max-w-3xl snap-center transition-all duration-700 scale-90 opacity-20"
+                        <div class="cashbox-card flex-shrink-0 w-full max-w-2xl snap-center transition-all duration-700 scale-90 opacity-20"
                             data-id="{{ $cb->id }}" data-movements='@json($cb->movements)'>
 
                             <!-- The "Physical Card" Design -->
                             <div
-                                class="relative bg-white dark:bg-gray-900 rounded-[2.5rem] border-2 border-gray-100 dark:border-gray-800 p-10 md:p-12 overflow-hidden transition-all duration-500 hover:border-gray-300 dark:hover:border-gray-600">
+                                class="relative bg-white dark:bg-gray-900 rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 p-6 md:p-8 overflow-hidden transition-all duration-500 hover:border-gray-300 dark:hover:border-gray-600">
                                 <!-- Prominent Color Accent: Left vertical bar -->
-                                <div class="absolute inset-y-0 left-0 w-4 transition-all duration-500"
+                                <div class="absolute inset-y-0 left-0 w-2.5 transition-all duration-500"
                                     style="background-color: {{ $cb->color }}"></div>
 
                                 <!-- Subtle Background Glow -->
@@ -76,8 +76,8 @@
                                     style="background-color: {{ $cb->color }}"></div>
 
                                 <!-- Card Header -->
-                                <div class="flex justify-between items-start mb-12 pl-4">
-                                    <div class="space-y-3">
+                                <div class="flex justify-between items-start mb-6 pl-4">
+                                    <div class="space-y-1">
                                         <div class="flex items-center gap-3">
                                             <!-- Card Chip Simulation -->
                                             <div
@@ -99,10 +99,10 @@
                                                 class="cb-currency-label text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">{{ $cb->currency }}</span>
                                         </div>
                                     </div>
-                                    <div class="flex gap-2">
+                                    <div class="flex gap-1">
                                         <!-- Add Movement Button -->
                                         <button onclick="openMovementModal({{ $cb->id }}, 'income', '{{ $cb->currency }}')"
-                                            class="w-10 h-10 flex items-center justify-center rounded-full text-green-500 hover:bg-green-500/10 transition-all"
+                                            class="w-8 h-8 flex items-center justify-center rounded-full text-green-500 hover:bg-green-500/10 transition-all"
                                             title="Registrar Ingreso">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -110,7 +110,7 @@
                                             </svg>
                                         </button>
                                         <button onclick="openMovementModal({{ $cb->id }}, 'expense', '{{ $cb->currency }}')"
-                                            class="w-10 h-10 flex items-center justify-center rounded-full text-red-500 hover:bg-red-500/10 transition-all"
+                                            class="w-8 h-8 flex items-center justify-center rounded-full text-red-500 hover:bg-red-500/10 transition-all"
                                             title="Registrar Egreso">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -118,11 +118,11 @@
                                             </svg>
                                         </button>
 
-                                        <div class="w-px h-6 bg-gray-100 dark:bg-gray-800 mx-2 self-center"></div>
+                                        <div class="w-px h-5 bg-gray-100 dark:bg-gray-800 mx-1 self-center"></div>
 
                                         <button onclick='openCashboxModal(@json($cb))'
-                                            class="w-10 h-10 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
@@ -131,8 +131,8 @@
                                             onsubmit="return confirm('¿Eliminar esta caja?')">
                                             @csrf @method('DELETE')
                                             <button type="submit"
-                                                class="w-10 h-10 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -142,23 +142,23 @@
                                 </div>
 
                                 <!-- Balance: Hero Typography -->
-                                <div class="space-y-10 pl-4">
+                                <div class="space-y-4 pl-4">
                                     <div>
                                         <p
-                                            class="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] mb-4 opacity-60">
+                                            class="text-[9px] text-gray-400 font-black uppercase tracking-[0.3em] mb-2 opacity-60">
                                             Balance Total</p>
                                         <div class="flex items-baseline gap-2">
                                             <span
-                                                class="text-3xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
+                                                class="text-2xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
                                             <span
-                                                class="text-6xl md:text-7xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
+                                                class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
                                                 {{ number_format($cb->balance, 2) }}
                                             </span>
                                         </div>
                                     </div>
 
                                     <!-- Footer Data: Monospaced -->
-                                    <div class="grid grid-cols-2 gap-12 pt-8 border-t border-gray-50 dark:border-gray-900">
+                                    <div class="grid grid-cols-2 gap-8 pt-6 border-t border-gray-50 dark:border-gray-900">
                                         @if($cb->account_number)
                                             <div class="space-y-1">
                                                 <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">N° Cuenta
@@ -182,7 +182,7 @@
 
                                     <!-- Manual Movements Buttons -->
                                     <div
-                                        class="mt-12 flex gap-4 pt-4 border-t border-gray-50 dark:border-gray-900 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                                        class="mt-6 flex gap-4 pt-4 border-t border-gray-50 dark:border-gray-900 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                                     </div>
                                 </div>
                             </div>
@@ -528,26 +528,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                                        <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                            <div class="flex items-center gap-8">
-                                                                <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                                    <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                                    <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
+                                                                    <div class="flex items-center gap-8">
+                                                                        <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                                            <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                                                ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                                            ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
+                                                                        </p>
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                                        ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="text-right">
-                                                                <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                                    ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    `;
+                                                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
         }
@@ -678,10 +678,26 @@
         }
 
         document.getElementById('mov_amount').addEventListener('input', function (e) {
-            formatCentsInput(this);
+            let value = this.value.replace(/\D/g, '');
+            if (value === '') {
+                this.value = '';
+                return;
+            }
+
+            let cents = parseInt(value);
+            let formatted = (cents / 100).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            this.value = formatted;
         });
 
         document.getElementById('movementForm').addEventListener('submit', function (e) {
+            const amountInput = document.getElementById('mov_amount');
+            // Remove commas before submit so Laravel validates numeric
+            amountInput.value = amountInput.value.replace(/,/g, '');
+
             const btn = document.getElementById('movSubmitBtn');
             btn.disabled = true;
             btn.opacity = '0.5';
