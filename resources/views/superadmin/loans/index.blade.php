@@ -932,6 +932,9 @@
                 ).join('');
             }
 
+            cashboxSelect.onchange = () => validateCounterCashbox();
+            validateCounterCashbox();
+
             // Set initial values
             const systemWrapper = document.getElementById('modalSystemWrapper');
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
@@ -1053,6 +1056,7 @@
     document.getElementById('modal_amount').addEventListener('input', function(e) {
         formatAmountInput(this.value);
         calculatePreview();
+        validateCounterCashbox();
     });
 
     document.getElementById('modal_amount').addEventListener('keydown', function(e) {
@@ -1221,8 +1225,73 @@
             ).join('');
         }
 
+        cashboxSelect.onchange = () => validateApproveCashbox();
+        validateApproveCashbox();
+
         document.getElementById('approveConfirmModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+    }
+
+    function validateApproveCashbox() {
+        const select = document.getElementById('approve_cashbox_id');
+        const btn = document.getElementById('approve_submit_btn');
+        const errorMsg = document.getElementById('approve_cashbox_error');
+        
+        if (!select.value) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            return;
+        }
+
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance);
+        const amountStr = document.getElementById('approve_modal_amount').textContent.replace(/[^0-9.]/g, '');
+        const amount = parseFloat(amountStr);
+
+        if (amount > balance) {
+            errorMsg.classList.remove('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            btn.classList.add('bg-gray-400');
+        } else {
+            errorMsg.classList.add('hidden');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+        }
+    }
+
+    function validateCounterCashbox() {
+        const select = document.getElementById('counter_cashbox_id');
+        const errorMsg = document.getElementById('counter_cashbox_error');
+        const btn = document.querySelector('button[onclick="openCounterOfferConfirmModal()"]');
+        
+        if (!select.value) {
+            if (btn) btn.disabled = true;
+            return;
+        }
+
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance);
+        const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, '')) || 0;
+
+        if (amount > balance) {
+            errorMsg.classList.remove('hidden');
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                btn.classList.add('text-gray-400', 'border-gray-400');
+            }
+        } else {
+            errorMsg.classList.add('hidden');
+            if (btn) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed', 'text-gray-400', 'border-gray-400');
+                btn.classList.add('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+            }
+        }
     }
 
     document.getElementById('approveConfirmForm').addEventListener('submit', function(e) {
