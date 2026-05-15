@@ -450,13 +450,28 @@ class LoanController extends Controller
             return back()->withErrors(['unapprove' => 'Solo puedes revertir el último pago aprobado del préstamo.']);
         }
 
-        $installment->update(['status' => 'processing']);
+        \DB::transaction(function () use ($installment) {
+            $installment->update(['status' => 'processing']);
 
-        $loan = $installment->loan;
-        if ($loan->status === 'paid') {
-            $loan->update(['status' => 'approved']);
-        }
+            $loan = $installment->loan;
+            if ($loan->status === 'paid') {
+                $loan->update(['status' => 'approved']);
+            }
 
-        return back()->with('success', 'Aprobación revertida. El pago vuelve a estar en revisión.');
+            // Find and delete the associated cashbox movement
+            $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                ->where('reference_id', $installment->id)
+                ->first();
+
+            if ($movement) {
+                $cashbox = $movement->cashbox;
+                if ($cashbox) {
+                    $cashbox->decrement('balance', $movement->amount);
+                }
+                $movement->delete();
+            }
+        });
+
+        return back()->with('success', 'Aprobación revertida. El ingreso en caja ha sido eliminado y el pago vuelve a estar en revisión.');
     }
 }
