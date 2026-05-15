@@ -316,17 +316,17 @@ class LoanController extends Controller
         ]);
 
         // Convertir a WebP con GD para reducir tamaño
-        $file     = $request->file('payment_voucher');
-        $mime     = $file->getMimeType();
-        $resource = match(true) {
+        $file = $request->file('payment_voucher');
+        $mime = $file->getMimeType();
+        $resource = match (true) {
             str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->getRealPath()),
-            str_contains($mime, 'png')  => imagecreatefrompng($file->getRealPath()),
-            str_contains($mime, 'gif')  => imagecreatefromgif($file->getRealPath()),
+            str_contains($mime, 'png') => imagecreatefrompng($file->getRealPath()),
+            str_contains($mime, 'gif') => imagecreatefromgif($file->getRealPath()),
             str_contains($mime, 'webp') => imagecreatefromwebp($file->getRealPath()),
-            default                     => imagecreatefromjpeg($file->getRealPath()),
+            default => imagecreatefromjpeg($file->getRealPath()),
         };
 
-        $dir      = 'vouchers/' . Auth::id();
+        $dir = 'vouchers/' . Auth::id();
         $filename = $dir . '/' . uniqid() . '.webp';
         $fullPath = storage_path('app/public/' . $filename);
 
@@ -354,12 +354,11 @@ class LoanController extends Controller
             abort(403);
         }
 
-        $loan->update(['status' => 'pending']); // User accepted, back to pending for admin approval?
-        // User said: "en caso se le acepte, recien pasará a la parte de historial crediticio"
-        // Usually admin approves it after user accepts. Or maybe user acceptance IS final approval?
-        // "recien pasará a la parte de historial crediticio" means it's approved.
+        // The expense was already registered when the admin sent the counter-offer
+        // according to the requirement "at the time of accepting or resending counteroffer [by admin]"
+        // Wait, re-reading: "a la hora de aceptar o de reenviar contraoferta, se debe elegir a que caja se registrará"
+        // This could mean when Admin accepts a request OR when Admin sends a counter-offer.
 
-        // Let's assume user acceptance means it's approved by the system now.
         $loan->update(['status' => 'approved']);
 
         // Logic from SuperAdmin approve method to generate installments
@@ -379,9 +378,14 @@ class LoanController extends Controller
                 'mensual' => 1,
                 default => 1,
             };
+
             $nTotal = $months * $installmentsPerMonth;
+            $periodicRate = $rate / $installmentsPerMonth;
             $periodicPayment = $loan->monthly_payment;
+
+            $remainingBalance = $amount;
             $currentDate = now();
+
             for ($i = 1; $i <= $nTotal; $i++) {
                 if ($freq === 'diario')
                     $currentDate->addDay();
@@ -391,20 +395,40 @@ class LoanController extends Controller
                     $currentDate->addDays(15);
                 else
                     $currentDate->addMonth();
-                $instAmount = $periodicPayment;
-                if ($system === 'americano' && $i === $nTotal)
-                    $instAmount += $amount;
+
+                $instInterest = 0;
+                $instCapital = 0;
+
+                if ($system === 'frances') {
+                    $instInterest = $remainingBalance * $periodicRate;
+                    $instCapital = $periodicPayment - $instInterest;
+
+                    if ($i === $nTotal) {
+                        $instCapital = $remainingBalance;
+                    }
+
+                    $remainingBalance -= $instCapital;
+                } else {
+                    $instInterest = $amount * $periodicRate;
+                    $instCapital = ($i === $nTotal) ? $amount : 0;
+                }
+
                 $loan->installments()->create([
                     'installment_number' => $i,
-                    'amount' => $instAmount,
+                    'amount' => $instInterest + $instCapital,
+                    'capital' => $instCapital,
+                    'interest' => $instInterest,
                     'due_date' => $currentDate->format('Y-m-d'),
                     'status' => 'pending',
                 ]);
             }
         } else {
+            $interest = $amount * $rate;
             $loan->installments()->create([
                 'installment_number' => 1,
-                'amount' => $loan->total_amount,
+                'amount' => $amount + $interest,
+                'capital' => $amount,
+                'interest' => $interest,
                 'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
                 'status' => 'pending',
             ]);

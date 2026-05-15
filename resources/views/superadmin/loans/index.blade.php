@@ -884,7 +884,17 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex flex-col md:flex-row justify-end gap-3 flex-shrink-0">
+                <div class="mt-6 flex flex-col md:flex-row items-end justify-between gap-6 flex-shrink-0">
+                    <div class="w-full md:w-64 text-left space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                        <select name="cashbox_id" id="counter_cashbox_id" required
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none cursor-pointer">
+                            <!-- JS populated -->
+                        </select>
+                        <p id="counter_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">
+                            Saldo insuficiente en caja
+                        </p>
+                    </div>
                     <button type="button" onclick="openCounterOfferConfirmModal()" class="w-full md:w-auto text-sm font-bold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 pb-1 hover:opacity-70 transition-all uppercase tracking-widest bg-transparent">
                         Confirmar y Enviar Contra-oferta
                     </button>
@@ -894,18 +904,36 @@
     </div>
 </div>
 
-<script>
-    let currentLoan = null;
+    <script>
+        let currentLoan = null;
+        const allCashboxes = @json($cashboxes);
 
-    function openCounterOfferModal(loan) {
-        currentLoan = loan;
-        const modal = document.getElementById('counterOfferModal');
-        const form = document.getElementById('counterOfferForm');
+        function openCounterOfferModal(loan) {
+            currentLoan = loan;
+            const modal = document.getElementById('counterOfferModal');
+            const form = document.getElementById('counterOfferForm');
 
-        form.action = `/gestion-interna/prestamos/${loan.id}/counter-offer`;
+            form.action = `/gestion-interna/prestamos/${loan.id}/counter-offer`;
 
-        // Set initial values
-        const systemWrapper = document.getElementById('modalSystemWrapper');
+            // Populate cashboxes
+            const cashboxSelect = document.getElementById('counter_cashbox_id');
+            const errorMsg = document.getElementById('counter_cashbox_error');
+            errorMsg.classList.add('hidden');
+            
+            const filteredCashboxes = allCashboxes.filter(cb => cb.currency === loan.currency);
+            
+            if (filteredCashboxes.length === 0) {
+                cashboxSelect.innerHTML = `<option value="">Crear caja de ${loan.currency}</option>`;
+                cashboxSelect.disabled = true;
+            } else {
+                cashboxSelect.disabled = false;
+                cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
+                    `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
+                ).join('');
+            }
+
+            // Set initial values
+            const systemWrapper = document.getElementById('modalSystemWrapper');
         const freqWrapper = document.getElementById('modalFrequencyWrapper');
         const monthsWrapper = document.getElementById('modalMonthsWrapper');
         const inputsGrid = document.getElementById('modalInputsGrid');
@@ -1168,12 +1196,60 @@
     });
 
     function openApproveModal(loanId, amount, user) {
+        // Find loan in the list to get currency
+        const loanData = @json($loans->items()).find(l => l.id == loanId);
+        if (!loanData) return;
+
         document.getElementById('approve_modal_amount').textContent = amount;
         document.getElementById('approve_modal_user').textContent = user;
         document.getElementById('approveConfirmForm').action = `/gestion-interna/prestamos/${loanId}/approve`;
+
+        // Populate cashboxes
+        const cashboxSelect = document.getElementById('approve_cashbox_id');
+        const errorMsg = document.getElementById('approve_cashbox_error');
+        errorMsg.classList.add('hidden');
+        
+        const filteredCashboxes = allCashboxes.filter(cb => cb.currency === loanData.currency);
+        
+        if (filteredCashboxes.length === 0) {
+            cashboxSelect.innerHTML = `<option value="">Crear caja de ${loanData.currency}</option>`;
+            cashboxSelect.disabled = true;
+        } else {
+            cashboxSelect.disabled = false;
+            cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
+                `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
+            ).join('');
+        }
+
         document.getElementById('approveConfirmModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
+
+    document.getElementById('approveConfirmForm').addEventListener('submit', function(e) {
+        const select = document.getElementById('approve_cashbox_id');
+        if (!select.value) {
+            e.preventDefault();
+            alert('Debe seleccionar una caja');
+            return;
+        }
+
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance);
+        
+        // Get amount from text (hacky but works if we don't have it elsewhere)
+        // Better: store it in a variable when opening modal
+        const amountStr = document.getElementById('approve_modal_amount').textContent.replace(/[^0-9.]/g, '');
+        const amount = parseFloat(amountStr);
+
+        if (amount > balance) {
+            e.preventDefault();
+            document.getElementById('approve_cashbox_error').classList.remove('hidden');
+            return;
+        }
+        
+        document.getElementById('approve_submit_btn').disabled = true;
+        document.getElementById('approve_submit_btn').opacity = '0.5';
+    });
 
     function closeApproveModal() {
         document.getElementById('approveConfirmModal').classList.add('hidden');
@@ -1194,6 +1270,21 @@
     }
 
     function openCounterOfferConfirmModal() {
+        const select = document.getElementById('counter_cashbox_id');
+        if (!select.value) {
+            alert('Debe seleccionar una caja');
+            return;
+        }
+
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance);
+        const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, ''));
+
+        if (amount > balance) {
+            document.getElementById('counter_cashbox_error').classList.remove('hidden');
+            return;
+        }
+
         document.getElementById('counterOfferConfirmModal').classList.remove('hidden');
     }
 
@@ -1240,17 +1331,29 @@
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
             ¿Confirmas la aprobación del préstamo por <span id="approve_modal_amount" class="font-bold text-gray-900 dark:text-white"></span> para <span id="approve_modal_user" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
-        <div class="flex gap-3">
-            <button onclick="closeApproveModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
-                Cancelar
-            </button>
-            <form id="approveConfirmForm" method="POST" class="flex-1">
-                @csrf
-                <button type="submit" class="w-full py-3 rounded-xl bg-green-600 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20">
+
+        <form id="approveConfirmForm" method="POST" class="space-y-6">
+            @csrf
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                <select name="cashbox_id" id="approve_cashbox_id" required
+                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
+                    <!-- JS populated -->
+                </select>
+                <p id="approve_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
+                    Saldo insuficiente en caja
+                </p>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="closeApproveModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit" id="approve_submit_btn" class="flex-1 py-3 rounded-xl bg-green-600 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20">
                     Aprobar
                 </button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 

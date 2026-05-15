@@ -32,6 +32,7 @@ class Loan extends Model
         'grace_days',
         'late_fee_rate',
         'late_fee_daily_amount',
+        'cashbox_id',
     ];
 
     protected $casts = [
