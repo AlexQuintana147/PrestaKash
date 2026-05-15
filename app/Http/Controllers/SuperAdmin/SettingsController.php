@@ -4,12 +4,11 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CompanySetting;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class SettingsController extends Controller
 {
@@ -48,7 +47,7 @@ class SettingsController extends Controller
     {
         $request->validate([
             'current_password' => 'required',
-            'password'         => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if (!Hash::check($request->current_password, Auth::user()->password)) {
@@ -60,7 +59,7 @@ class SettingsController extends Controller
         return back()->with('success_password', 'Contraseña actualizada correctamente.');
     }
 
-    public function updateCompanySettings(Request $request)
+    public function updateCompanySettings(Request $request, ImageService $imageService)
     {
         $request->validate([
             'company_ruc' => 'nullable|numeric|digits_between:8,20',
@@ -89,31 +88,27 @@ class SettingsController extends Controller
             'representative_dni.digits' => 'El DNI debe tener 8 dígitos.',
         ]);
 
-        $manager = new ImageManager(new Driver());
-
         if ($request->hasFile('company_logo')) {
             $logo = $request->file('company_logo');
-            $img = $manager->read($logo->getRealPath())->encodeByExtension('webp');
-            $path = 'company/logo_' . time() . '.webp';
-            
+            $path = $imageService->storeAsWebp($logo, 'company', 800);
+
             // Delete old logo if exists
             $oldLogo = CompanySetting::get('company_logo');
-            if ($oldLogo) Storage::disk('public')->delete($oldLogo);
-            
-            Storage::disk('public')->put($path, $img->toString());
+            if ($oldLogo)
+                Storage::disk('public')->delete($oldLogo);
+
             CompanySetting::set('company_logo', $path);
         }
 
         if ($request->hasFile('company_signature')) {
             $signature = $request->file('company_signature');
-            $img = $manager->read($signature->getRealPath())->encodeByExtension('webp');
-            $path = 'company/signature_' . time() . '.webp';
+            $path = $imageService->storeAsWebp($signature, 'company', 800);
 
             // Delete old signature if exists
             $oldSignature = CompanySetting::get('company_signature');
-            if ($oldSignature) Storage::disk('public')->delete($oldSignature);
+            if ($oldSignature)
+                Storage::disk('public')->delete($oldSignature);
 
-            Storage::disk('public')->put($path, $img->toString());
             CompanySetting::set('company_signature', $path);
         }
 

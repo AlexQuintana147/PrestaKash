@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\ClientProfile;
 use App\Models\Loan;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -287,7 +288,7 @@ class LoanController extends Controller
         return view('client.loans.history-show', compact('loan'));
     }
 
-    public function uploadVoucher(Request $request, \App\Models\LoanInstallment $installment)
+    public function uploadVoucher(Request $request, \App\Models\LoanInstallment $installment, ImageService $imageService)
     {
         if ($installment->loan->user_id !== Auth::id())
             abort(403);
@@ -315,29 +316,7 @@ class LoanController extends Controller
             'payment_voucher' => 'required|image|max:5120',
         ]);
 
-        // Convertir a WebP con GD para reducir tamaño
-        $file = $request->file('payment_voucher');
-        $mime = $file->getMimeType();
-        $resource = match (true) {
-            str_contains($mime, 'jpeg') => imagecreatefromjpeg($file->getRealPath()),
-            str_contains($mime, 'png') => imagecreatefrompng($file->getRealPath()),
-            str_contains($mime, 'gif') => imagecreatefromgif($file->getRealPath()),
-            str_contains($mime, 'webp') => imagecreatefromwebp($file->getRealPath()),
-            default => imagecreatefromjpeg($file->getRealPath()),
-        };
-
-        $dir = 'vouchers/' . Auth::id();
-        $filename = $dir . '/' . uniqid() . '.webp';
-        $fullPath = storage_path('app/public/' . $filename);
-
-        if (!file_exists(storage_path('app/public/' . $dir))) {
-            mkdir(storage_path('app/public/' . $dir), 0755, true);
-        }
-
-        imagewebp($resource, $fullPath, 82);
-        imagedestroy($resource);
-
-        $path = $filename;
+        $path = $imageService->storeAsWebp($request->file('payment_voucher'), 'vouchers/' . Auth::id(), 1200);
 
         $installment->update([
             'payment_voucher' => $path,

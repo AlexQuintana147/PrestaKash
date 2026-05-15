@@ -33,7 +33,7 @@ class ImageService
      * @param  int     $maxWidth Ancho máximo en px
      * @return string  Ruta relativa guardada
      */
-    public function storeBase64AsWebp(string $base64, string $folder, int $maxWidth = 1200): string
+    public function storeBase64AsWebp(string $base64, string $folder, int $maxWidth = 1200, int $quality = 75): string
     {
         // Eliminar el prefijo data URI si existe
         $base64 = preg_replace('/^data:image\/\w+;base64,/', '', $base64);
@@ -46,17 +46,17 @@ class ImageService
         }
 
         $filename = Str::uuid() . '.webp';
-        $path     = $folder . '/' . $filename;
+        $path = $folder . '/' . $filename;
 
         Storage::disk('public')->put(
             $path,
-            $image->toWebp(quality: 82)->toString()
+            $image->toWebp(quality: $quality)->toString()
         );
 
         return $path;
     }
 
-    public function storeAsWebp(UploadedFile $file, string $folder, int $maxWidth = 1200): string
+    public function storeAsWebp(UploadedFile $file, string $folder, int $maxWidth = 1200, int $quality = 75): string
     {
         $image = $this->manager->read($file->getRealPath());
 
@@ -66,11 +66,11 @@ class ImageService
         }
 
         $filename = Str::uuid() . '.webp';
-        $path     = $folder . '/' . $filename;
+        $path = $folder . '/' . $filename;
 
         Storage::disk('public')->put(
             $path,
-            $image->toWebp(quality: 82)->toString()
+            $image->toWebp(quality: $quality)->toString()
         );
 
         return $path;
