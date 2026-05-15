@@ -183,6 +183,7 @@
                             'user' => $user->name,
                             'number' => $inst->installment_number,
                             'voucher' => Storage::url($inst->payment_voucher),
+                            'currency' => $loan->currency,
                         ];
                     @endphp
                     <button type="button" onclick="openValidateModal({{ json_encode($validateData) }})"

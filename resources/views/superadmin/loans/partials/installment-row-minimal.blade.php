@@ -46,7 +46,8 @@
                 'amount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($inst->amount, 2),
                 'user' => $inst->loan->user->name,
                 'number' => $inst->installment_number,
-                'voucher' => Storage::url($inst->payment_voucher)
+                'voucher' => Storage::url($inst->payment_voucher),
+                'currency' => $loan->currency
             ]) }})"
                     class="text-[8px] font-black uppercase tracking-widest text-purple-600 border-b border-purple-600 pb-0.5 hover:opacity-60 transition-opacity">
                     Revisar

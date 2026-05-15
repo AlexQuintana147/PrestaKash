@@ -262,6 +262,7 @@ class LoanController extends Controller
     public function installmentsIndex(Request $request)
     {
         $filter = $request->get('filter', 'all');
+        $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
         if ($filter === 'grouped') {
             $loans = \App\Models\Loan::with(['user', 'user.documents'])
@@ -287,7 +288,8 @@ class LoanController extends Controller
 
             return view('superadmin.loans.installments', [
                 'groupedInstallments' => $groupedInstallments,
-                'filter' => $filter
+                'filter' => $filter,
+                'cashboxes' => $cashboxes
             ]);
         }
 
@@ -308,7 +310,7 @@ class LoanController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('superadmin.loans.installments', compact('installments', 'filter'));
+        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes'));
     }
 
     public function installmentsGroup(Request $request, \App\Models\Loan $loan)
@@ -345,21 +347,43 @@ class LoanController extends Controller
         return back()->with('success', 'Configuración de mora actualizada.');
     }
 
-    public function approveInstallment(\App\Models\LoanInstallment $installment)
+    public function approveInstallment(Request $request, \App\Models\LoanInstallment $installment)
     {
-        $installment->update([
-            'status' => 'approved',
-            'paid_at' => now()
+        $request->validate([
+            'cashbox_id' => 'required|exists:cashboxes,id',
         ]);
 
-        // Check if all installments are paid
-        $loan = $installment->loan;
-        $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
-        if ($remaining === 0) {
-            $loan->update(['status' => 'paid']);
-        }
+        $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
+        $amount = $installment->amount + ($installment->late_fee ?? 0);
 
-        return back()->with('success', 'Pago aprobado correctamente.');
+        \DB::transaction(function () use ($installment, $cashbox, $amount) {
+            $installment->update([
+                'status' => 'approved',
+                'paid_at' => now()
+            ]);
+
+            // Register movement
+            $cashbox->movements()->create([
+                'user_id' => auth()->id(),
+                'type' => 'income',
+                'amount' => $amount,
+                'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo #{$installment->loan_id} de {$installment->loan->user->name}",
+                'reference_type' => 'loan_installment',
+                'reference_id' => $installment->id,
+                'date' => now(),
+            ]);
+
+            $cashbox->increment('balance', $amount);
+
+            // Check if all installments are paid
+            $loan = $installment->loan;
+            $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
+            if ($remaining === 0) {
+                $loan->update(['status' => 'paid']);
+            }
+        });
+
+        return back()->with('success', 'Pago aprobado e ingreso registrado correctamente.');
     }
 
     public function rejectInstallment(Request $request, \App\Models\LoanInstallment $installment)

@@ -227,6 +227,8 @@
     @include('superadmin.loans.partials.unapprove-modal')
 
     <script>
+        const allCashboxes = @json($cashboxes);
+
         function loadGroupPage(btn) {
             const loanId = btn.dataset.loanId;
             const page   = btn.dataset.page;
@@ -259,6 +261,30 @@
 
             document.getElementById('approveForm').action = `/gestion-interna/pagos/${data.id}/approve`;
             document.getElementById('rejectForm').action = `/gestion-interna/pagos/${data.id}/reject`;
+
+            // Populate cashboxes
+            const cashboxSelect = document.getElementById('validate_cashbox_id');
+            const cashboxContainer = document.getElementById('validate_cashbox_container');
+            const createBtn = document.getElementById('validate_create_cashbox_btn');
+            
+            // Extract currency from amount string (e.g., "$ 1,000.00" or "S/ 1,000.00")
+            const currency = data.amount.includes('$') ? 'USD' : 'PEN';
+            const filteredCashboxes = allCashboxes.filter(cb => cb.currency === currency);
+            
+            if (filteredCashboxes.length === 0) {
+                cashboxContainer.classList.add('hidden');
+                createBtn.classList.remove('hidden');
+                createBtn.querySelector('.currency-label').textContent = currency;
+                cashboxSelect.innerHTML = '';
+                cashboxSelect.required = false;
+            } else {
+                cashboxContainer.classList.remove('hidden');
+                createBtn.classList.add('hidden');
+                cashboxSelect.required = true;
+                cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
+                    `<option value="${cb.id}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
+                ).join('');
+            }
 
             if (typeof _resetVoucherZoom === 'function') _resetVoucherZoom();
 
