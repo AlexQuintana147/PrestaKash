@@ -19,6 +19,23 @@ class CashboxController extends Controller
         return view('superadmin.cashboxes.index', compact('cashboxes'));
     }
 
+    public function history(Request $request, Cashbox $cashbox)
+    {
+        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user'])->latest();
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('date', '>=', $request->from_date);
+        }
+
+        $movements = $query->paginate(10);
+
+        return response()->json($movements);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
