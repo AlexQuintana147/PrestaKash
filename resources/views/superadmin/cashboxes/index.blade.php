@@ -133,17 +133,19 @@
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
-                                        <form action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
-                                            onsubmit="return confirm('¿Eliminar esta caja?')">
+                                        <button type="button"
+                                            onclick="confirmDelete({{ $cb->id }}, {{ count($cb->movements) }})"
+                                            class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
+                                            <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                        <form id="delete-form-{{ $cb->id }}"
+                                            action="{{ route('superadmin.cashboxes.destroy', $cb) }}" method="POST"
+                                            class="hidden">
                                             @csrf @method('DELETE')
-                                            <button type="submit"
-                                                class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 transition-all">
-                                                <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -420,11 +422,67 @@
                             Cancelar
                         </button>
                         <button type="submit" id="movSubmitBtn"
-                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
+                            class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                             Confirmar
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminación Peligrosa -->
+    <div id="dangerousDeleteModal"
+        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 border-2 border-red-500/20">
+            <div class="px-10 py-12">
+                <div class="flex items-center justify-between mb-12">
+                    <h3 class="text-3xl font-bold text-red-600 tracking-tighter uppercase">Acción Peligrosa</h3>
+                    <button onclick="closeDangerousDeleteModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="p-6 bg-red-50 dark:bg-red-500/5 rounded-3xl border border-red-100 dark:border-red-500/10">
+                        <p class="text-sm font-bold text-red-900 dark:text-red-200 leading-relaxed">
+                            Esta caja contiene movimientos registrados. Eliminarla causará:
+                        </p>
+                        <ul class="mt-4 space-y-3">
+                            <li class="flex items-start gap-3 text-[10px] font-black text-red-700 dark:text-red-400 uppercase tracking-widest">
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-500 mt-1"></div>
+                                Pérdida total del historial de transacciones.
+                            </li>
+                            <li class="flex items-start gap-3 text-[10px] font-black text-red-700 dark:text-red-400 uppercase tracking-widest">
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-500 mt-1"></div>
+                                Desajuste en los balances generales del sistema.
+                            </li>
+                            <li class="flex items-start gap-3 text-[10px] font-black text-red-700 dark:text-red-400 uppercase tracking-widest">
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-500 mt-1"></div>
+                                Esta acción es irreversible y no se puede recuperar.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center">
+                        ¿Estás absolutamente seguro de continuar?
+                    </p>
+                </div>
+
+                <div class="pt-12 flex items-center justify-between">
+                    <button type="button" onclick="closeDangerousDeleteModal()"
+                        class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                        Cancelar
+                    </button>
+                    <button id="confirmDangerousDeleteBtn"
+                        class="text-[10px] font-black uppercase tracking-[0.3em] text-red-600 border-b-2 border-red-600 pb-1 hover:opacity-60 transition-opacity">
+                        Eliminar Definitivamente
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -559,26 +617,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.05}s">
-                                        <div class="flex items-center gap-8">
-                                            <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                        <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.05}s">
+                                            <div class="flex items-center gap-8">
+                                                <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                                    <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                                    <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                </div>
+                                                <div>
+                                                    <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                                        ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                    ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                            <div class="text-right">
+                                                <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                                    ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="text-right">
-                                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                `;
+                                    `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
 
@@ -593,34 +651,34 @@
 
             // Previous button
             html += `
-                                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </button>
-                            `;
+                                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                                        class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button>
+                                `;
 
             // Page numbers (simplified for now, showing all if few, or range)
             for (let i = 1; i <= totalPages; i++) {
                 const isActive = i === currentPage;
                 html += `
-                                    <button onclick="changePage(${i})" 
-                                        class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
-                                        ${i}
-                                    </button>
-                                `;
+                                        <button onclick="changePage(${i})" 
+                                            class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
+                                            ${i}
+                                        </button>
+                                    `;
             }
 
             // Next button
             html += `
-                                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </button>
-                            `;
+                                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                                        class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                `;
 
             movementsPagination.innerHTML = html;
         }
@@ -762,6 +820,29 @@
 
         function closeMovementModal() {
             document.getElementById('movementModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function confirmDelete(id, movementsCount) {
+            if (movementsCount > 0) {
+                const modal = document.getElementById('dangerousDeleteModal');
+                const confirmBtn = document.getElementById('confirmDangerousDeleteBtn');
+                
+                confirmBtn.onclick = () => {
+                    document.getElementById(`delete-form-${id}`).submit();
+                };
+                
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                if (confirm('¿Eliminar esta caja?')) {
+                    document.getElementById(`delete-form-${id}`).submit();
+                }
+            }
+        }
+
+        function closeDangerousDeleteModal() {
+            document.getElementById('dangerousDeleteModal').classList.add('hidden');
             document.body.style.overflow = '';
         }
 
