@@ -245,7 +245,7 @@
 
     <!-- Modal Caja Minimalista -->
     <div id="cashboxModal"
-        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500">
             <div class="px-10 py-12">
                 <div class="flex items-center justify-between mb-16">
@@ -369,7 +369,7 @@
 
     <!-- Modal Movimiento Minimalista -->
     <div id="movementModal"
-        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="w-full max-w-md animate-in fade-in zoom-in duration-500">
             <div class="px-10 py-12">
                 <div class="flex items-center justify-between mb-16">
@@ -433,7 +433,7 @@
 
     <!-- Modal Eliminación Peligrosa -->
     <div id="dangerousDeleteModal"
-        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div
             class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 border-2 border-red-500/20">
             <div class="px-10 py-12">
@@ -493,7 +493,7 @@
 
     <!-- Modal Eliminación Simple -->
     <div id="simpleDeleteModal"
-        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-sm animate-in fade-in zoom-in duration-500">
             <div class="px-10 py-12">
                 <div class="flex items-center justify-between mb-12">
@@ -528,7 +528,7 @@
 
     <!-- Modal Detalle de Préstamo -->
     <div id="loanDetailModal"
-        class="hidden fixed inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500">
             <div class="px-10 py-12">
                 <div class="flex items-center justify-between mb-12">
@@ -687,35 +687,35 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                        <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-2xl md:rounded-3xl" style="animation-delay: ${i * 0.05}s">
-                            <div class="flex items-center gap-4 md:gap-8">
-                                <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
-                                    <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
-                                    <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
+                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-2xl md:rounded-3xl" style="animation-delay: ${i * 0.05}s">
+                                <div class="flex items-center gap-4 md:gap-8">
+                                    <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
+                                        <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
+                                        <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
+                                    </div>
+                                    <div>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
+                                        ${m.reference_type === 'loan' && m.loan ? `
+                                            <button onclick="showLoanDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                        <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
+                                            ${m.reference_type || 'Operación'} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                <div class="flex items-center gap-2">
-                                    <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
-                                    ${m.reference_type === 'loan' && m.loan ? `
-                                        <button onclick="showLoanDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        </button>
-                                    ` : ''}
-                                </div>
-                                    <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
-                                        ${m.reference_type || 'Operación'} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                <div class="text-right ml-2">
+                                    <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
+                                        ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
                                     </p>
                                 </div>
                             </div>
-                            <div class="text-right ml-2">
-                                <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
-                                    ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
-                                </p>
-                            </div>
-                        </div>
-                    `;
+                        `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
 
@@ -730,34 +730,34 @@
 
             // Previous button
             html += `
-                                                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                                                        class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                                        </svg>
-                                                    </button>
-                                                `;
+                                                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                            </svg>
+                                                        </button>
+                                                    `;
 
             // Page numbers (simplified for now, showing all if few, or range)
             for (let i = 1; i <= totalPages; i++) {
                 const isActive = i === currentPage;
                 html += `
-                                                        <button onclick="changePage(${i})" 
-                                                            class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
-                                                            ${i}
-                                                        </button>
-                                                    `;
+                                                            <button onclick="changePage(${i})" 
+                                                                class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
+                                                                ${i}
+                                                            </button>
+                                                        `;
             }
 
             // Next button
             html += `
-                                                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                                                        class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                                        </svg>
-                                                    </button>
-                                                `;
+                                                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                            </svg>
+                                                        </button>
+                                                    `;
 
             movementsPagination.innerHTML = html;
         }
@@ -939,44 +939,44 @@
         function showLoanDetail(movementId) {
             const movement = currentMovements.find(m => m.id === movementId);
             if (!movement || !movement.loan) return;
-            
+
             const loan = movement.loan;
             const modal = document.getElementById('loanDetailModal');
             const content = document.getElementById('loanDetailContent');
             const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
 
             content.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto Solicitado</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tipo de Préstamo</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${loan.type}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tasa Aplicada</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.interest_rate}%</p>
+                        </div>
+                        <div class="col-span-1 md:col-span-2">
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo del Préstamo</p>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Destino</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° Cuenta / CCI</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.account_number} ${loan.cci ? ` / ${loan.cci}` : ''}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto Solicitado</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tipo de Préstamo</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${loan.type}</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tasa Aplicada</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.interest_rate}%</p>
-                    </div>
-                    <div class="col-span-1 md:col-span-2">
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo del Préstamo</p>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Destino</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° Cuenta / CCI</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.account_number} ${loan.cci ? ` / ${loan.cci}` : ''}</p>
-                    </div>
-                </div>
-            `;
+                `;
 
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
