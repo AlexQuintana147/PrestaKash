@@ -378,6 +378,19 @@ class LoanController extends Controller
         return back()->with('success', 'Configuración de mora actualizada.');
     }
 
+    public function updateOperationNumber(Request $request, \App\Models\LoanInstallment $installment)
+    {
+        $request->validate([
+            'operation_number' => 'nullable|alpha_num|max:25',
+        ]);
+
+        $installment->update([
+            'operation_number' => $request->operation_number,
+        ]);
+
+        return back()->with('success', 'Número de operación actualizado correctamente.');
+    }
+
     public function approveInstallment(Request $request, \App\Models\LoanInstallment $installment)
     {
         $request->validate([

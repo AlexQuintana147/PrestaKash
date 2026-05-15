@@ -226,6 +226,46 @@
     <!-- Modal Confirmar Reversión -->
     @include('superadmin.loans.partials.unapprove-modal')
 
+    <!-- Modal Editar Número de Operación -->
+    <div id="editOperationModal"
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[130] flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-[2rem] p-8 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeEditOperationModal()"
+                class="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-tight">Editar Operación</h3>
+
+            <form id="editOperationForm" method="POST" class="space-y-6">
+                @csrf
+                @method('PATCH')
+                <div>
+                    <label
+                        class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">N°
+                        de operación</label>
+                    <input type="text" name="operation_number" id="edit_modal_operation_number" placeholder="Ej: 123456"
+                        maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
+                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeEditOperationModal()"
+                        class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="flex-1 py-3 rounded-xl bg-purple-600 text-white text-xs font-black uppercase tracking-widest hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/20">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const allCashboxes = @json($cashboxes);
 
@@ -250,6 +290,7 @@
         }
 
         function openValidateModal(data) {
+            window.currentValidateData = data;
             document.getElementById('modal_voucher_img').src = data.voucher;
             document.getElementById('modal_voucher_link').href = data.voucher;
 
@@ -269,7 +310,7 @@
             } else {
                 transferFields.classList.remove('hidden');
                 document.getElementById('v_bank').textContent = data.bank || 'N/A';
-                document.getElementById('v_op').textContent = data.operation || 'N/A';
+                document.getElementById('v_op').textContent = data.operation || 'Sin OP';
             }
 
             document.getElementById('approveForm').action = `/gestion-interna/pagos/${data.id}/approve`;
@@ -314,6 +355,33 @@
         document.getElementById('validateModal').addEventListener('click', e => {
             if (e.target === document.getElementById('validateModal')) closeValidateModal();
         });
+
+        function openEditOperationModal(id, currentOp) {
+            const modal = document.getElementById('editOperationModal');
+            const form = document.getElementById('editOperationForm');
+            const input = document.getElementById('edit_modal_operation_number');
+
+            form.action = `/gestion-interna/pagos/${id}/numero-operacion`;
+            input.value = currentOp || '';
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditOperationModal() {
+            document.getElementById('editOperationModal').classList.add('hidden');
+            if (!document.getElementById('validateModal').classList.contains('hidden')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function openEditOperationModalFromValidate() {
+            if (window.currentValidateData) {
+                openEditOperationModal(window.currentValidateData.id, window.currentValidateData.operation);
+            }
+        }
 
         // Highlight from URL parameter
         window.addEventListener('DOMContentLoaded', () => {
