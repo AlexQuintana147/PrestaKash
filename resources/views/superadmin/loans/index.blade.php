@@ -887,10 +887,16 @@
                 <div class="mt-6 flex flex-col md:flex-row items-end justify-between gap-6 flex-shrink-0">
                     <div class="w-full md:w-64 text-left space-y-2">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
-                        <select name="cashbox_id" id="counter_cashbox_id" required
-                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none cursor-pointer">
-                            <!-- JS populated -->
-                        </select>
+                        <div id="counter_cashbox_container">
+                            <select name="cashbox_id" id="counter_cashbox_id" required
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none cursor-pointer">
+                                <!-- JS populated -->
+                            </select>
+                        </div>
+                        <a href="{{ route('superadmin.cashboxes.index') }}" id="counter_create_cashbox_btn" 
+                           class="hidden w-full block text-center py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
+                            Crear caja de <span class="currency-label"></span>
+                        </a>
                         <p id="counter_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">
                             Saldo insuficiente en caja
                         </p>
@@ -917,16 +923,23 @@
 
             // Populate cashboxes
             const cashboxSelect = document.getElementById('counter_cashbox_id');
+            const cashboxContainer = document.getElementById('counter_cashbox_container');
+            const createBtn = document.getElementById('counter_create_cashbox_btn');
             const errorMsg = document.getElementById('counter_cashbox_error');
             errorMsg.classList.add('hidden');
             
             const filteredCashboxes = allCashboxes.filter(cb => cb.currency === loan.currency);
             
             if (filteredCashboxes.length === 0) {
-                cashboxSelect.innerHTML = `<option value="">Crear caja de ${loan.currency}</option>`;
-                cashboxSelect.disabled = true;
+                cashboxContainer.classList.add('hidden');
+                createBtn.classList.remove('hidden');
+                createBtn.querySelector('.currency-label').textContent = loan.currency;
+                cashboxSelect.innerHTML = '';
+                cashboxSelect.required = false;
             } else {
-                cashboxSelect.disabled = false;
+                cashboxContainer.classList.remove('hidden');
+                createBtn.classList.add('hidden');
+                cashboxSelect.required = true;
                 cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
                     `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
                 ).join('');
@@ -1210,16 +1223,23 @@
 
         // Populate cashboxes
         const cashboxSelect = document.getElementById('approve_cashbox_id');
+        const cashboxContainer = document.getElementById('approve_cashbox_container');
+        const createBtn = document.getElementById('approve_create_cashbox_btn');
         const errorMsg = document.getElementById('approve_cashbox_error');
         errorMsg.classList.add('hidden');
         
         const filteredCashboxes = allCashboxes.filter(cb => cb.currency === loanData.currency);
         
         if (filteredCashboxes.length === 0) {
-            cashboxSelect.innerHTML = `<option value="">Crear caja de ${loanData.currency}</option>`;
-            cashboxSelect.disabled = true;
+            cashboxContainer.classList.add('hidden');
+            createBtn.classList.remove('hidden');
+            createBtn.querySelector('.currency-label').textContent = loanData.currency;
+            cashboxSelect.innerHTML = '';
+            cashboxSelect.required = false;
         } else {
-            cashboxSelect.disabled = false;
+            cashboxContainer.classList.remove('hidden');
+            createBtn.classList.add('hidden');
+            cashboxSelect.required = true;
             cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
                 `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
             ).join('');
@@ -1236,7 +1256,15 @@
         const select = document.getElementById('approve_cashbox_id');
         const btn = document.getElementById('approve_submit_btn');
         const errorMsg = document.getElementById('approve_cashbox_error');
+        const createBtn = document.getElementById('approve_create_cashbox_btn');
         
+        if (createBtn && !createBtn.classList.contains('hidden')) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+            btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            return;
+        }
+
         if (!select.value) {
             btn.disabled = true;
             btn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -1266,6 +1294,17 @@
         const select = document.getElementById('counter_cashbox_id');
         const errorMsg = document.getElementById('counter_cashbox_error');
         const btn = document.querySelector('button[onclick="openCounterOfferConfirmModal()"]');
+        const createBtn = document.getElementById('counter_create_cashbox_btn');
+
+        if (createBtn && !createBtn.classList.contains('hidden')) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                btn.classList.add('text-gray-400', 'border-gray-400');
+            }
+            return;
+        }
         
         if (!select.value) {
             if (btn) btn.disabled = true;
@@ -1405,10 +1444,16 @@
             @csrf
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
-                <select name="cashbox_id" id="approve_cashbox_id" required
-                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
-                    <!-- JS populated -->
-                </select>
+                <div id="approve_cashbox_container">
+                    <select name="cashbox_id" id="approve_cashbox_id" required
+                            class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
+                        <!-- JS populated -->
+                    </select>
+                </div>
+                <a href="{{ route('superadmin.cashboxes.index') }}" id="approve_create_cashbox_btn" 
+                   class="hidden w-full block text-center py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
+                    Crear caja de <span class="currency-label"></span>
+                </a>
                 <p id="approve_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
                     Saldo insuficiente en caja
                 </p>
