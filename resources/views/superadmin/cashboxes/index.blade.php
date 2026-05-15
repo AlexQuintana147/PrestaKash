@@ -656,26 +656,26 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                            <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.05}s">
-                                                <div class="flex items-center gap-8">
-                                                    <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                        <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                        <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                                                <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-2xl md:rounded-3xl" style="animation-delay: ${i * 0.05}s">
+                                                    <div class="flex items-center gap-4 md:gap-8">
+                                                        <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
+                                                            <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
+                                                            <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
+                                                            <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
+                                                                ${m.reference_type || 'Operación'} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                        <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                            ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                    <div class="text-right ml-2">
+                                                        <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
+                                                            ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div class="text-right">
-                                                    <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                        ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        `;
+                                            `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
 
@@ -690,34 +690,34 @@
 
             // Previous button
             html += `
-                                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                            </svg>
-                                        </button>
-                                    `;
+                                            <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                                                class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                </svg>
+                                            </button>
+                                        `;
 
             // Page numbers (simplified for now, showing all if few, or range)
             for (let i = 1; i <= totalPages; i++) {
                 const isActive = i === currentPage;
                 html += `
-                                            <button onclick="changePage(${i})" 
-                                                class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
-                                                ${i}
-                                            </button>
-                                        `;
+                                                <button onclick="changePage(${i})" 
+                                                    class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
+                                                    ${i}
+                                                </button>
+                                            `;
             }
 
             // Next button
             html += `
-                                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </button>
-                                    `;
+                                            <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                                                class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </button>
+                                        `;
 
             movementsPagination.innerHTML = html;
         }
@@ -866,21 +866,21 @@
             if (movementsCount > 0) {
                 const modal = document.getElementById('dangerousDeleteModal');
                 const confirmBtn = document.getElementById('confirmDangerousDeleteBtn');
-                
+
                 confirmBtn.onclick = () => {
                     document.getElementById(`delete-form-${id}`).submit();
                 };
-                
+
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             } else {
                 const modal = document.getElementById('simpleDeleteModal');
                 const confirmBtn = document.getElementById('confirmSimpleDeleteBtn');
-                
+
                 confirmBtn.onclick = () => {
                     document.getElementById(`delete-form-${id}`).submit();
                 };
-                
+
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             }
