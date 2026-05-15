@@ -226,6 +226,11 @@
                     <!-- JS populated -->
                 </div>
 
+                <!-- Pagination Container -->
+                <div id="movementsPagination" class="mt-12 flex items-center justify-center gap-4">
+                    <!-- JS populated -->
+                </div>
+
                 <div id="noMovements" class="hidden py-32 text-center">
                     <p class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-[0.3em]">Sin
                         movimientos</p>
@@ -474,6 +479,12 @@
         const movementsSection = document.getElementById('movementsSection');
         const movementsList = document.getElementById('movementsList');
         const noMovements = document.getElementById('noMovements');
+        const movementsPagination = document.getElementById('movementsPagination');
+
+        let currentMovements = [];
+        let currentSymbol = 'S/';
+        let currentPage = 1;
+        const itemsPerPage = 10;
 
         function updateActiveCard() {
             let activeIndex = 0;
@@ -510,24 +521,31 @@
                 if (nextBtn) nextBtn.disabled = activeIndex === cards.length - 1;
 
                 // Update movements
-                const movements = JSON.parse(activeCard.dataset.movements);
+                currentMovements = JSON.parse(activeCard.dataset.movements);
                 const currency = activeCard.querySelector('.cb-currency-label').textContent;
-                const symbol = currency === 'USD' ? '$' : 'S/';
-                renderMovements(movements, symbol);
+                currentSymbol = currency === 'USD' ? '$' : 'S/';
+                currentPage = 1;
+                renderMovements();
             }
         }
 
-        function renderMovements(movements, symbol) {
+        function renderMovements() {
             movementsSection.classList.remove('opacity-0', 'translate-y-8');
             movementsList.innerHTML = '';
+            movementsPagination.innerHTML = '';
 
-            if (movements.length === 0) {
+            if (currentMovements.length === 0) {
                 noMovements.classList.remove('hidden');
                 return;
             }
 
             noMovements.classList.add('hidden');
-            movements.forEach((m, i) => {
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = currentMovements.slice(start, end);
+
+            paginatedItems.forEach((m, i) => {
                 const isIncome = m.type === 'income';
                 const dateObj = new Date(m.date);
                 const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
@@ -535,28 +553,80 @@
                 const userName = m.user ? m.user.name : 'Sistema';
 
                 const html = `
-                                                                        <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.1}s">
-                                                                            <div class="flex items-center gap-8">
-                                                                                <div class="flex flex-col items-center w-12 flex-shrink-0">
-                                                                                    <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
-                                                                                    <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
-                                                                                    <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                                                                        ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="text-right">
-                                                                                <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
-                                                                                    ${isIncome ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toFixed(2)}
-                                                                                </p>
-                                                                            </div>
-                                                                        </div>
-                                                                    `;
+                    <div class="movement-item px-6 md:px-12 py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-3xl" style="animation-delay: ${i * 0.05}s">
+                        <div class="flex items-center gap-8">
+                            <div class="flex flex-col items-center w-12 flex-shrink-0">
+                                <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums">${date}</span>
+                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${time}</span>
+                            </div>
+                            <div>
+                                <p class="text-base font-bold text-gray-900 dark:text-white tracking-tight">${m.description}</p>
+                                <p class="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
+                                    ${m.reference_type || 'Operación'} • Registrado por: <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                                ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
+                            </p>
+                        </div>
+                    </div>
+                `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(currentMovements.length / itemsPerPage);
+            if (totalPages <= 1) return;
+
+            let html = '';
+
+            // Previous button
+            html += `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+            `;
+
+            // Page numbers (simplified for now, showing all if few, or range)
+            for (let i = 1; i <= totalPages; i++) {
+                const isActive = i === currentPage;
+                html += `
+                    <button onclick="changePage(${i})" 
+                        class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            // Next button
+            html += `
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                    class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            `;
+
+            movementsPagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(currentMovements.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderMovements();
+            
+            // Scroll to movements section top
+            movementsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function scrollCarousel(direction) {
