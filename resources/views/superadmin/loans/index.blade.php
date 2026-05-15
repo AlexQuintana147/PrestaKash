@@ -65,7 +65,7 @@
             <!-- Lista de préstamos -->
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($loans as $loan)
-                    <div class="group py-6 md:py-8 transition-colors">
+                    <div id="loan-{{ $loan->id }}" class="group py-6 md:py-8 transition-colors">
                         <!-- Layout Mobile: Stack vertical -->
                         <div class="flex flex-col gap-6 lg:hidden">
                             <!-- Usuario e Info Principal -->
@@ -1671,6 +1671,23 @@
 
     document.getElementById('scheduleModal').addEventListener('click', e => {
         if (e.target === document.getElementById('scheduleModal')) closeScheduleModal();
+    });
+
+    // Highlight from URL parameter
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const loanId = urlParams.get('loan_id');
+        if (loanId) {
+            const el = document.getElementById('loan-' + loanId);
+            if (el) {
+                el.classList.add('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400', 'rounded-2xl');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Remove highlight after 3 seconds
+                setTimeout(() => {
+                    el.classList.remove('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
+                }, 3000);
+            }
+        }
     });
 </script>
 

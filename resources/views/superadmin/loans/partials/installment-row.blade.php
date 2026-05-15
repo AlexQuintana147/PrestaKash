@@ -29,7 +29,7 @@
         'reason' => $loan->reason,
     ];
 @endphp
-<div class="py-6 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20">
+<div id="installment-{{ $inst->id }}" class="py-6 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20">
     <div class="flex flex-col md:flex-row md:items-center gap-6">
 
         <!-- Usuario & Préstamo -->

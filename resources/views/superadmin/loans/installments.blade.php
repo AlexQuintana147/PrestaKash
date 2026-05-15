@@ -301,5 +301,22 @@
         document.getElementById('validateModal').addEventListener('click', e => {
             if (e.target === document.getElementById('validateModal')) closeValidateModal();
         });
+
+        // Highlight from URL parameter
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const instId = urlParams.get('installment_id');
+            if (instId) {
+                const el = document.getElementById('installment-' + instId);
+                if (el) {
+                    el.classList.add('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400', 'rounded-2xl');
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Remove highlight after 3 seconds
+                    setTimeout(() => {
+                        el.classList.remove('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
+                    }, 3000);
+                }
+            }
+        });
     </script>
 @endsection

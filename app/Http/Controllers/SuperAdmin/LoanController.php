@@ -11,10 +11,14 @@ class LoanController extends Controller
     public function index(Request $request)
     {
         $filter = $request->get('filter', 'pending');
+        $loanId = $request->get('loan_id');
 
         $query = Loan::with(['user.documents', 'user.clientProfile'])->latest();
 
-        if ($filter !== 'all') {
+        if ($loanId) {
+            $query->where('id', $loanId);
+            $filter = 'all';
+        } elseif ($filter !== 'all') {
             $query->where('status', $filter);
         }
 
@@ -262,9 +266,18 @@ class LoanController extends Controller
     public function installmentsIndex(Request $request)
     {
         $filter = $request->get('filter', 'all');
+        $instId = $request->get('installment_id');
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
-        if ($filter === 'grouped') {
+        $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
+            ->whereHas('loan', function ($q) {
+                $q->whereIn('status', ['approved', 'paid']);
+            });
+
+        if ($instId) {
+            $query->where('id', $instId);
+            $filter = 'all';
+        } elseif ($filter === 'grouped') {
             $loans = \App\Models\Loan::with(['user', 'user.documents'])
                 ->whereIn('status', ['approved', 'paid'])
                 ->latest()
@@ -291,18 +304,9 @@ class LoanController extends Controller
                 'filter' => $filter,
                 'cashboxes' => $cashboxes
             ]);
-        }
-
-        $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
-            ->whereHas('loan', function ($q) {
-                $q->whereIn('status', ['approved', 'paid']);
-            });
-
-        if ($filter === 'pending_validation') {
+        } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
-        }
-
-        if ($filter === 'paid') {
+        } elseif ($filter === 'paid') {
             $query->where('status', 'approved');
         }
 
