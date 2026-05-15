@@ -58,8 +58,18 @@
                 </div>
 
                 <!-- Carousel Track -->
+                <div class="text-center mb-2 md:block hidden">
+                    <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-50">
+                        <svg class="w-3 h-3 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        Desliza para navegar entre cajas
+                    </p>
+                </div>
                 <div id="cashboxCarousel"
-                    class="flex gap-4 md:gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-4 md:px-[20%] py-2 md:py-4 items-center min-h-[220px] md:min-h-[280px]">
+                    class="flex gap-4 md:gap-12 overflow-x-auto no-scrollbar snap-x snap-mandatory px-[7.5%] md:px-[20%] py-2 md:py-4 items-center min-h-[220px] md:min-h-[280px]">
                     @forelse($cashboxes as $cb)
                         <div class="cashbox-card flex-shrink-0 w-[85%] md:w-full max-w-2xl snap-center transition-all duration-700 scale-95 md:scale-90 opacity-40 md:opacity-20"
                             data-id="{{ $cb->id }}" data-movements='@json($cb->movements)'>
@@ -570,6 +580,19 @@
         #cashboxCarousel {
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
+            scroll-padding: 0 7.5%;
+            cursor: grab;
+            user-select: none;
+        }
+
+        #cashboxCarousel:active {
+            cursor: grabbing;
+        }
+
+        @media (min-width: 768px) {
+            #cashboxCarousel {
+                scroll-padding: 0 20%;
+            }
         }
 
         .cashbox-card {
@@ -623,10 +646,13 @@
         function updateActiveCard() {
             let activeIndex = 0;
             let minDistance = Infinity;
+            const carouselRect = carousel.getBoundingClientRect();
+            const carouselCenter = carouselRect.left + carouselRect.width / 2;
 
             cards.forEach((card, index) => {
                 const rect = card.getBoundingClientRect();
-                const distance = Math.abs(rect.left + rect.width / 2 - window.innerWidth / 2);
+                const cardCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(cardCenter - carouselCenter);
 
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -694,35 +720,35 @@
                 const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
 
                 const html = `
-                                        <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-2xl md:rounded-3xl" style="animation-delay: ${i * 0.05}s">
-                                            <div class="flex items-center gap-4 md:gap-8">
-                                                <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
-                                                    <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
-                                                    <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
-                                                </div>
-                                                <div>
-                                            <div class="flex items-center gap-2">
-                                                <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
-                                                ${(m.reference_type === 'loan' && m.loan) || (m.reference_type === 'loan_installment' && m.installment) ? `
-                                                    <button onclick="showLoanDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
-                                                    </button>
-                                                ` : ''}
-                                            </div>
-                                                    <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
-                                                        ${displayType} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="text-right ml-2">
-                                                <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
-                                                    ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    `;
+                                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-500 rounded-2xl md:rounded-3xl" style="animation-delay: ${i * 0.05}s">
+                                                                <div class="flex items-center gap-4 md:gap-8">
+                                                                    <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
+                                                                        <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
+                                                                        <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
+                                                                    </div>
+                                                                    <div>
+                                                                <div class="flex items-center gap-2">
+                                                                    <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
+                                                                    ${(m.reference_type === 'loan' && m.loan) || (m.reference_type === 'loan_installment' && m.installment) ? `
+                                                                        <button onclick="showLoanDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    ` : ''}
+                                                                </div>
+                                                                        <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
+                                                                            ${displayType} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="text-right ml-2">
+                                                                    <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
+                                                                        ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
 
@@ -737,34 +763,34 @@
 
             // Previous button
             html += `
-                                                                    <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                                                                        class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                                                        </svg>
-                                                                    </button>
-                                                                `;
+                                                                                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                                                                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                                                            </svg>
+                                                                                        </button>
+                                                                                    `;
 
             // Page numbers (simplified for now, showing all if few, or range)
             for (let i = 1; i <= totalPages; i++) {
                 const isActive = i === currentPage;
                 html += `
-                                                                        <button onclick="changePage(${i})" 
-                                                                            class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
-                                                                            ${i}
-                                                                        </button>
-                                                                    `;
+                                                                                            <button onclick="changePage(${i})" 
+                                                                                                class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
+                                                                                                ${i}
+                                                                                            </button>
+                                                                                        `;
             }
 
             // Next button
             html += `
-                                                                    <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                                                                        class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                                                        </svg>
-                                                                    </button>
-                                                                `;
+                                                                                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                                                                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
+                                                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                                                            </svg>
+                                                                                        </button>
+                                                                                    `;
 
             movementsPagination.innerHTML = html;
         }
@@ -780,21 +806,91 @@
         }
 
         function scrollCarousel(direction) {
-            const firstCard = document.querySelector('.cashbox-card');
-            const cardWidth = firstCard ? firstCard.offsetWidth + 48 : 0;
-            carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+            const activeCard = document.querySelector('.cashbox-card.active');
+            if (!activeCard) return;
+
+            let currentIndex = Array.from(cards).indexOf(activeCard);
+            let nextIndex = currentIndex + direction;
+
+            if (nextIndex >= 0 && nextIndex < cards.length) {
+                scrollToIndex(nextIndex);
+            }
         }
 
         function scrollToIndex(index) {
-            const firstCard = document.querySelector('.cashbox-card');
-            const cardWidth = firstCard ? firstCard.offsetWidth + 48 : 0;
-            carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
+            const card = cards[index];
+            if (!card) return;
+
+            const scrollLeft = card.offsetLeft - (carousel.offsetWidth / 2) + (card.offsetWidth / 2);
+            carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' });
         }
 
         carousel.addEventListener('scroll', () => {
             clearTimeout(window.scrollTimeout);
             window.scrollTimeout = setTimeout(updateActiveCard, 50);
         });
+
+        // Mouse Drag-to-Scroll logic
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        let isDragging = false;
+
+        carousel.addEventListener('mousedown', (e) => {
+            isDown = true;
+            isDragging = false;
+            carousel.style.scrollBehavior = 'auto';
+            carousel.style.scrollSnapType = 'none';
+            startX = e.pageX - carousel.offsetLeft;
+            scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            if (!isDown) return;
+            isDown = false;
+            carousel.style.scrollBehavior = 'smooth';
+            carousel.style.scrollSnapType = 'x mandatory';
+        });
+
+        carousel.addEventListener('mouseup', (e) => {
+            if (!isDown) return;
+            isDown = false;
+            carousel.style.scrollBehavior = 'smooth';
+            carousel.style.scrollSnapType = 'x mandatory';
+
+            if (isDragging) {
+                // Prevent accidental clicks if we were dragging
+                e.preventDefault();
+            }
+
+            // Snap to nearest card
+            updateActiveCard();
+            const activeCard = document.querySelector('.cashbox-card.active');
+            if (activeCard) {
+                scrollToIndex(Array.from(cards).indexOf(activeCard));
+            }
+        });
+
+        carousel.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            const x = e.pageX - carousel.offsetLeft;
+            const walk = (x - startX); // 1:1 ratio
+            if (Math.abs(walk) > 5) {
+                isDragging = true;
+            }
+            if (isDragging) {
+                e.preventDefault();
+                carousel.scrollLeft = scrollLeft - walk;
+            }
+        });
+
+        // Prevent clicks on children while dragging
+        carousel.addEventListener('click', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
 
         // Init
         if (cards.length > 0) {
@@ -957,37 +1053,37 @@
                 title.textContent = 'Detalle de Aprobación';
 
                 content.innerHTML = `
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto Solicitado</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tipo de Préstamo</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${loan.type === 'cuotas' ? 'Cuotas' : 'Pago Único'}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tasa Aplicada</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.interest_rate}%</p>
-                            </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo del Préstamo</p>
-                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Destino</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° Cuenta / CCI</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.account_number} ${loan.cci ? ` / ${loan.cci}` : ''}</p>
-                            </div>
-                        </div>
-                    `;
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto Solicitado</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tipo de Préstamo</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${loan.type === 'cuotas' ? 'Cuotas' : 'Pago Único'}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tasa Aplicada</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.interest_rate}%</p>
+                                                </div>
+                                                <div class="col-span-1 md:col-span-2">
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo del Préstamo</p>
+                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Destino</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° Cuenta / CCI</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.account_number} ${loan.cci ? ` / ${loan.cci}` : ''}</p>
+                                                </div>
+                                            </div>
+                                        `;
             } else if (movement.reference_type === 'loan_installment' && movement.installment) {
                 const inst = movement.installment;
                 const loan = inst.loan;
@@ -995,33 +1091,33 @@
                 title.textContent = 'Detalle de Cobranza';
 
                 content.innerHTML = `
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto de Cuota</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inst.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° de Cuota</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Fecha de Pago</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${new Date(movement.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
-                            </div>
-                        </div>
-                    `;
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto de Cuota</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inst.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° de Cuota</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Fecha de Pago</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${new Date(movement.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                                                </div>
+                                            </div>
+                                        `;
             } else {
                 return;
             }
