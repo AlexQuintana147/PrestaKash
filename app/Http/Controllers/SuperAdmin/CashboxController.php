@@ -12,7 +12,7 @@ class CashboxController extends Controller
     {
         $cashboxes = Cashbox::with([
             'movements' => function ($q) {
-                $q->with('user')->latest()->limit(10);
+                $q->with(['user', 'loan.user'])->latest()->limit(10);
             }
         ])->orderBy('id', 'desc')->get();
 
