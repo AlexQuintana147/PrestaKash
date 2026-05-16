@@ -810,7 +810,13 @@
                 if (m.reference_type === 'loan') {
                     redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
                 } else if (m.reference_type === 'loan_installment') {
-                    redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
+                    const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
+                    const loanId = m.installment?.loan?.id;
+                    if (isInterestOnly && loanId) {
+                        redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${loanId}&installment_id=${m.reference_id}`;
+                    } else {
+                        redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
+                    }
                 }
 
                 const html = `
@@ -1206,8 +1212,13 @@
                             redirectUrl =
                                 `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
                         } else if (m.reference_type === 'loan_installment') {
-                            redirectUrl =
-                                `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
+                            const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
+                            const loanId = m.installment?.loan?.id;
+                            if (isInterestOnly && loanId) {
+                                redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${loanId}&installment_id=${m.reference_id}`;
+                            } else {
+                                redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
+                            }
                         }
 
                         const html = `
