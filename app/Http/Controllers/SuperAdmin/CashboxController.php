@@ -107,4 +107,54 @@ class CashboxController extends Controller
 
         return back()->with('success', 'Movimiento registrado correctamente.');
     }
+
+    public function transfer(Request $request)
+    {
+        $request->validate([
+            'from_cashbox_id' => 'required|exists:cashboxes,id',
+            'to_cashbox_id' => 'required|exists:cashboxes,id|different:from_cashbox_id',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'required|string|max:255',
+        ]);
+
+        $from = Cashbox::findOrFail($request->from_cashbox_id);
+        $to = Cashbox::findOrFail($request->to_cashbox_id);
+
+        if ($from->currency !== $to->currency) {
+            return back()->withErrors(['to_cashbox_id' => 'Solo se puede desplazar dinero entre cajas de la misma moneda.']);
+        }
+
+        $amount = (float) $request->amount;
+
+        if ($from->balance < $amount) {
+            return back()->withErrors(['amount' => 'Saldo insuficiente en la caja origen.']);
+        }
+
+        \DB::transaction(function () use ($from, $to, $amount, $request) {
+            $from->movements()->create([
+                'user_id' => auth()->id(),
+                'type' => 'expense',
+                'amount' => $amount,
+                'description' => "Desplazamiento a {$to->name}: {$request->description}",
+                'reference_type' => 'transfer',
+                'reference_id' => $to->id,
+                'date' => now(),
+            ]);
+
+            $to->movements()->create([
+                'user_id' => auth()->id(),
+                'type' => 'income',
+                'amount' => $amount,
+                'description' => "Desplazamiento desde {$from->name}: {$request->description}",
+                'reference_type' => 'transfer',
+                'reference_id' => $from->id,
+                'date' => now(),
+            ]);
+
+            $from->decrement('balance', $amount);
+            $to->increment('balance', $amount);
+        });
+
+        return back()->with('success', "Desplazamiento de {$from->currency} {$amount} realizado correctamente.");
+    }
 }

@@ -131,6 +131,16 @@
                                                     d="M20 12H4" />
                                             </svg>
                                         </button>
+                                        <button
+                                            onclick="openTransferModal({{ $cb->id }}, '{{ $cb->currency }}', {{ $cb->balance }})"
+                                            class="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full text-blue-500 hover:bg-blue-500/10 transition-all"
+                                            title="Desplazar a otra caja">
+                                            <svg class="w-3.5 h-3.5 md:w-5 md:h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                            </svg>
+                                        </button>
 
                                         <div class="w-px h-3.5 md:h-5 bg-gray-100 dark:bg-gray-800 mx-0.5 md:mx-1 self-center">
                                         </div>
@@ -434,6 +444,75 @@
                         <button type="submit" id="movSubmitBtn"
                             class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                             Confirmar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Desplazar entre Cajas -->
+    <div id="transferModal"
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-md animate-in fade-in zoom-in duration-500">
+            <div class="px-10 py-12">
+                <div class="flex items-center justify-between mb-16">
+                    <h3 class="text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tighter uppercase">Desplazar</h3>
+                    <button onclick="closeTransferModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="transferForm" method="POST" class="space-y-12">
+                    @csrf
+                    <input type="hidden" name="from_cashbox_id" id="transfer_from_id">
+
+                    <div class="space-y-10">
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Caja Destino</label>
+                            <select name="to_cashbox_id" id="transfer_to_cashbox" required
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
+                                <option value="" disabled selected>Seleccionar caja destino</option>
+                            </select>
+                            <p id="transfer_currency_hint"
+                                class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-2">
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Monto a Desplazar</label>
+                            <div class="relative">
+                                <input type="text" name="amount" id="transfer_amount" required placeholder="0.00"
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all tabular-nums">
+                                <span id="transfer_currency_label"
+                                    class="absolute right-0 bottom-4 text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
+                            </div>
+                            <p id="transfer_error"
+                                class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
+                                Saldo insuficiente en caja origen
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Descripción</label>
+                            <input type="text" name="description" id="transfer_description" required
+                                placeholder="Ej: Traslado de fondos..."
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="pt-10 flex items-center justify-between">
+                        <button type="button" onclick="closeTransferModal()"
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 pb-1 hover:opacity-60 transition-opacity">
+                            Desplazar
                         </button>
                     </div>
                 </form>
@@ -802,7 +881,8 @@
                 const typeLabels = {
                     'loan': 'PRÉSTAMO',
                     'loan_installment': 'COBRANZA',
-                    'manual': 'MANUAL'
+                    'manual': 'MANUAL',
+                    'transfer': 'DESPLAZAMIENTO'
                 };
                 const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                 const isLoanRelated = m.reference_type === 'loan' || m.reference_type === 'loan_installment';
@@ -1107,6 +1187,47 @@
             document.body.style.overflow = '';
         }
 
+        let transferSourceBalance = 0;
+        const allCashboxesData = @json($cashboxes);
+
+        function openTransferModal(cashboxId, currency, balance) {
+            const modal = document.getElementById('transferModal');
+            const form = document.getElementById('transferForm');
+            const select = document.getElementById('transfer_to_cashbox');
+            const currencyLabel = document.getElementById('transfer_currency_label');
+            const currencyHint = document.getElementById('transfer_currency_hint');
+            const errorMsg = document.getElementById('transfer_error');
+
+            transferSourceBalance = balance;
+            document.getElementById('transfer_from_id').value = cashboxId;
+            currencyLabel.textContent = currency;
+            currencyHint.textContent = `Solo cajas en ${currency === 'PEN' ? 'Soles' : 'Dólares'}`;
+
+            select.innerHTML = '<option value="" disabled selected>Seleccionar caja destino</option>';
+            allCashboxesData.forEach(cb => {
+                if (cb.id !== cashboxId && cb.currency === currency) {
+                    const opt = document.createElement('option');
+                    opt.value = cb.id;
+                    opt.textContent = `${cb.name} — ${cb.bank_name} (${currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})})`;
+                    select.appendChild(opt);
+                }
+            });
+
+            document.getElementById('transfer_amount').value = '';
+            document.getElementById('transfer_description').value = '';
+            errorMsg.classList.add('hidden');
+
+            form.action = "{{ route('superadmin.cashboxes.transfer') }}";
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
         function confirmDelete(id, movementsCount) {
             if (movementsCount > 0) {
                 const modal = document.getElementById('dangerousDeleteModal');
@@ -1201,7 +1322,8 @@
                         const typeLabels = {
                             'loan': 'PRÉSTAMO',
                             'loan_installment': 'COBRANZA',
-                            'manual': 'MANUAL'
+                            'manual': 'MANUAL',
+                            'transfer': 'DESPLAZAMIENTO'
                         };
                         const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                         const isLoanRelated = m.reference_type === 'loan' || m.reference_type ===
@@ -1571,6 +1693,31 @@
             const btn = document.getElementById('movSubmitBtn');
             btn.disabled = true;
             btn.opacity = '0.5';
+        });
+
+        document.getElementById('transfer_amount').addEventListener('input', function (e) {
+            let value = this.value.replace(/\D/g, '');
+            if (value === '') {
+                this.value = '';
+                return;
+            }
+            const num = parseInt(value) / 100;
+            this.value = num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        });
+
+        document.getElementById('transferForm').addEventListener('submit', function (e) {
+            const amountInput = document.getElementById('transfer_amount');
+            const errorMsg = document.getElementById('transfer_error');
+
+            const cleanAmount = parseFloat(amountInput.value.replace(/,/g, ''));
+
+            if (cleanAmount > transferSourceBalance) {
+                e.preventDefault();
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            amountInput.value = cleanAmount;
         });
     </script>
 @endsection
