@@ -298,7 +298,7 @@ class LoanController extends Controller
         $highlightInterest = $request->get('highlight_interest', false);
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
-        $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
+        $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents', 'interestPayments'])
             ->whereHas('loan', function ($q) {
                 $q->whereIn('status', ['approved', 'paid']);
             });
@@ -349,13 +349,28 @@ class LoanController extends Controller
         $expandedInstallments = collect();
         foreach ($installments as $inst) {
             if ($inst->interest_payments_count > 0) {
-                // Create separate rows for each interest payment
-                for ($i = 1; $i <= $inst->interest_payments_count; $i++) {
-                    $virtualInst = clone $inst;
-                    $virtualInst->is_interest_payment = true;
-                    $virtualInst->interest_payment_number = $i;
-                    $virtualInst->total_interest_payments = $inst->interest_payments_count;
-                    $expandedInstallments->push($virtualInst);
+                // Load actual interest payments
+                $interestPayments = $inst->interestPayments;
+                // If interest_payments table has data, use it
+                if ($interestPayments->isNotEmpty()) {
+                    foreach ($interestPayments as $index => $interestPayment) {
+                        $virtualInst = clone $inst;
+                        $virtualInst->is_interest_payment = true;
+                        $virtualInst->interest_payment_number = $index + 1;
+                        $virtualInst->total_interest_payments = $inst->interest_payments_count;
+                        $virtualInst->interest_payment = $interestPayment;
+                        $expandedInstallments->push($virtualInst);
+                    }
+                } else {
+                    // Fallback: create virtual rows without interest_payment object (for backward compatibility)
+                    for ($i = 1; $i <= $inst->interest_payments_count; $i++) {
+                        $virtualInst = clone $inst;
+                        $virtualInst->is_interest_payment = true;
+                        $virtualInst->interest_payment_number = $i;
+                        $virtualInst->total_interest_payments = $inst->interest_payments_count;
+                        $virtualInst->interest_payment = null;
+                        $expandedInstallments->push($virtualInst);
+                    }
                 }
             } else {
                 $inst->is_interest_payment = false;

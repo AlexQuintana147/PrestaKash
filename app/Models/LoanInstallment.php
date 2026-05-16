@@ -34,6 +34,11 @@ class LoanInstallment extends Model
         return $this->belongsTo(Loan::class);
     }
 
+    public function interestPayments()
+    {
+        return $this->hasMany(\App\Models\InterestPayment::class, 'loan_installment_id')->orderBy('paid_at', 'asc');
+    }
+
     public function getLateFeeAttribute()
     {
         $loan = $this->loan;
