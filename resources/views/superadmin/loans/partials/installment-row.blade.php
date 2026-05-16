@@ -258,7 +258,7 @@
                                 </svg>
                         </button>
                     @endif
-                    @if($lastApprovedId === $inst->id)
+                    @if($lastApprovedId === $inst->id && $inst->interest_payments_count === 0)
                         <button type="button"
                             onclick="openUnapproveModal('{{ route('superadmin.installments.unapprove', $inst) }}')"
                             class="text-[10px] font-black uppercase tracking-widest text-red-500 border-b border-red-400 pb-px hover:opacity-60 transition-opacity">

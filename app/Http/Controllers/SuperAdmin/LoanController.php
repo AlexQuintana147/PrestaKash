@@ -566,6 +566,11 @@ class LoanController extends Controller
                     'paid_at'             => now(),
                 ]);
 
+                // Delete voucher file to save storage space
+                if ($savedVoucher) {
+                    \Illuminate\Support\Facades\Storage::delete($savedVoucher);
+                }
+
                 // Reset current installment and mark interest payment
                 $installment->update([
                     'status' => 'pending',
