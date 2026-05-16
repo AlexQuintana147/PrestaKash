@@ -978,7 +978,7 @@
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
                         <div id="counter_cashbox_container">
                             <select name="cashbox_id" id="counter_cashbox_id" required
-                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none cursor-pointer">
+                                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors appearance-none cursor-pointer">
                                 <!-- JS populated -->
                             </select>
                         </div>
@@ -1567,7 +1567,7 @@
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
                 <div id="approve_cashbox_container">
                     <select name="cashbox_id" id="approve_cashbox_id" required
-                            class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
+                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors appearance-none cursor-pointer">
                         <!-- JS populated -->
                     </select>
                 </div>
