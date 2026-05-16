@@ -335,6 +335,18 @@ class LoanController extends Controller
             ]);
         } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
+            // For each user/loan combination, only show the most recent installment
+            $installments = $query->orderBy('updated_at', 'desc')->get();
+            $latestPerUserLoan = [];
+            foreach ($installments as $inst) {
+                $key = $inst->loan->user_id . '-' . $inst->loan_id;
+                if (!isset($latestPerUserLoan[$key])) {
+                    $latestPerUserLoan[$key] = $inst;
+                }
+            }
+            $installments = collect($latestPerUserLoan)->values();
+            // Skip the expansion logic and pagination for pending_validation
+            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest'));
         } elseif ($filter === 'paid') {
             $query->where(function ($q) {
                 $q->where('status', 'approved')
