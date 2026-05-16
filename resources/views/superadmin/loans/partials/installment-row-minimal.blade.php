@@ -6,10 +6,19 @@
 <div class="py-3 flex items-center justify-between gap-4">
     <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-tight">Cuota
-                #{{ $inst->installment_number }}</span>
-            <span class="text-[9px] text-gray-400 font-bold tabular-nums">
-                {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount, 2) }}
+            <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                @if($inst->interest_payments_count > 0)
+                    Interés #{{ $inst->installment_number }}
+                @else
+                    Cuota #{{ $inst->installment_number }}
+                @endif
+            </span>
+            <span class="text-[9px] {{ $inst->interest_payments_count > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400' }} font-bold tabular-nums">
+                @if($inst->interest_payments_count > 0)
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
+                @else
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount, 2) }}
+                @endif
                 @if($lateFee > 0)
                     <span class="text-orange-500 ml-1">+ {{ number_format($lateFee, 2) }} mora</span>
                 @endif
@@ -44,16 +53,21 @@
     <div class="flex items-center gap-4">
         <span class="text-[8px] font-black uppercase tracking-widest
             {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
-            {{ $inst->status === 'pending' ? 'text-gray-400' : '' }}
+            {{ $inst->status === 'pending' && $inst->interest_payments_count === 0 ? 'text-gray-400' : '' }}
             {{ $inst->status === 'processing' ? 'text-purple-600 animate-pulse' : '' }}
-            {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}">
-            {{ match ($inst->status) {
+            {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}
+            {{ $inst->status === 'pending' && $inst->interest_payments_count > 0 ? 'text-amber-500' : '' }}">
+            @if($inst->status === 'pending' && $inst->interest_payments_count > 0)
+                Interés pagado
+            @else
+                {{ match ($inst->status) {
     'approved' => 'Pagado',
     'pending' => 'Pendiente',
     'processing' => 'Validar',
     'rejected' => 'Rechazado',
     default => $inst->status
 } }}
+            @endif
         </span>
         @if($inst->interest_payments_count > 0)
             <span class="block text-[7px] font-bold mt-0.5 text-purple-500">

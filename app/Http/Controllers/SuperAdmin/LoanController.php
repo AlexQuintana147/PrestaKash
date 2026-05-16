@@ -334,7 +334,10 @@ class LoanController extends Controller
         } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
         } elseif ($filter === 'paid') {
-            $query->where('status', 'approved');
+            $query->where(function ($q) {
+                $q->where('status', 'approved')
+                  ->orWhere('interest_payments_count', '>', 0);
+            });
         }
 
         $installments = $query->orderBy('due_date', 'asc')

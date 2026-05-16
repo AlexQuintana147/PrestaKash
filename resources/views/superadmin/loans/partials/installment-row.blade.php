@@ -61,8 +61,13 @@
                     <span
                         class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">L-{{ str_pad($loan->id, 4, '0', STR_PAD_LEFT) }}</span>
                     <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Cuota
-                        #{{ $inst->installment_number }}</span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">
+                        @if($inst->interest_payments_count > 0)
+                            Interés #{{ $inst->installment_number }}
+                        @else
+                            Cuota #{{ $inst->installment_number }}
+                        @endif
+                    </span>
                     <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
                     <span
                         class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $inst->bank_name ?? $loan->bank_name }}</span>
@@ -152,12 +157,12 @@
             @endif
             <div>
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Monto</p>
-                @if($inst->requested_type === 'interest')
+                @if($inst->requested_type === 'interest' || $inst->interest_payments_count > 0)
                     <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
                         {{ $currency }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
                     </p>
                     <p class="text-[8px] text-amber-500/80 font-bold mt-0.5 uppercase tracking-tighter">
-                        Solo Interés (Postergado)
+                        Solo Interés ({{ $inst->interest_payments_count }}x pagado)
                     </p>
                 @else
                     <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">
@@ -180,16 +185,21 @@
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Estado</p>
                 <span class="text-[9px] font-black uppercase tracking-widest
                     {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
-                    {{ $inst->status === 'pending' ? 'text-gray-400' : '' }}
+                    {{ $inst->status === 'pending' && $inst->interest_payments_count === 0 ? 'text-gray-400' : '' }}
                     {{ $inst->status === 'processing' ? 'text-purple-600 animate-pulse' : '' }}
-                    {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}">
-                    {{ match ($inst->status) {
-    'approved' => 'Pagado',
-    'pending' => 'Pendiente',
-    'processing' => 'Validar',
-    'rejected' => 'Rechazado',
-    default => $inst->status
-} }}
+                    {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}
+                    {{ $inst->status === 'pending' && $inst->interest_payments_count > 0 ? 'text-amber-500' : '' }}">
+                    @if($inst->status === 'pending' && $inst->interest_payments_count > 0)
+                        Interés pagado
+                    @else
+                        {{ match ($inst->status) {
+        'approved' => 'Pagado',
+        'pending' => 'Pendiente',
+        'processing' => 'Validar',
+        'rejected' => 'Rechazado',
+        default => $inst->status
+    } }}
+                    @endif
                 </span>
                 @if($inst->interest_payments_count > 0)
                     <span class="block text-[7px] font-bold mt-0.5 text-purple-500">
