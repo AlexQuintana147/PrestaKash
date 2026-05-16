@@ -475,7 +475,7 @@
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Caja Destino</label>
                             <select name="to_cashbox_id" id="transfer_to_cashbox" required
-                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
+                                class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
                                 <option value="" disabled selected>Seleccionar caja destino</option>
                             </select>
                             <p id="transfer_currency_hint"
@@ -1203,11 +1203,12 @@
             currencyLabel.textContent = currency;
             currencyHint.textContent = `Solo cajas en ${currency === 'PEN' ? 'Soles' : 'Dólares'}`;
 
-            select.innerHTML = '<option value="" disabled selected>Seleccionar caja destino</option>';
+            select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar caja destino</option>';
             allCashboxesData.forEach(cb => {
                 if (cb.id !== cashboxId && cb.currency === currency) {
                     const opt = document.createElement('option');
                     opt.value = cb.id;
+                    opt.className = 'dark:bg-gray-950 dark:text-white';
                     opt.textContent = `${cb.name} — ${cb.bank_name} (${currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})})`;
                     select.appendChild(opt);
                 }
