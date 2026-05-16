@@ -241,14 +241,8 @@
                         class="text-[10px] font-black uppercase tracking-widest text-purple-600 border-b-2 border-purple-600 pb-0.5 hover:opacity-60 transition-opacity">
                         Revisar
                     </button>
-                @elseif($inst->status === 'approved')
-                    @php
-                        $lastApprovedId = $loan->installments()
-                            ->where('status', 'approved')
-                            ->orderBy('installment_number', 'desc')
-                            ->value('id');
-                    @endphp
-                    @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->payment_voucher)
+                @elseif($inst->status === 'pending' && isset($inst->is_interest_payment) && $inst->is_interest_payment && ($inst->payment_voucher || (isset($inst->interest_payment) && $inst->interest_payment && $inst->interest_payment->payment_voucher)))
+                    @if(isset($inst->interest_payment) && $inst->interest_payment && $inst->interest_payment->payment_voucher)
                         <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->interest_payment->payment_voucher) }}')"
                             class="text-amber-600 dark:text-amber-400 hover:opacity-60 transition-opacity" title="Ver comprobante de interés">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -256,6 +250,40 @@
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </button>
+                    @elseif($inst->payment_voucher)
+                        <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->payment_voucher) }}')"
+                            class="text-amber-600 dark:text-amber-400 hover:opacity-60 transition-opacity" title="Ver comprobante">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                    @endif
+                @elseif($inst->status === 'approved')
+                    @php
+                        $lastApprovedId = $loan->installments()
+                            ->where('status', 'approved')
+                            ->orderBy('installment_number', 'desc')
+                            ->value('id');
+                    @endphp
+                    @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && ($inst->payment_voucher || (isset($inst->interest_payment) && $inst->interest_payment && $inst->interest_payment->payment_voucher)))
+                        @if(isset($inst->interest_payment) && $inst->interest_payment && $inst->interest_payment->payment_voucher)
+                            <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->interest_payment->payment_voucher) }}')"
+                                class="text-amber-600 dark:text-amber-400 hover:opacity-60 transition-opacity" title="Ver comprobante de interés">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                        @elseif($inst->payment_voucher)
+                            <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->payment_voucher) }}')"
+                                class="text-amber-600 dark:text-amber-400 hover:opacity-60 transition-opacity" title="Ver comprobante">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                        @endif
                     @elseif($inst->payment_voucher)
                         <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->payment_voucher) }}')"
                             class="text-gray-900 dark:text-white hover:opacity-60 transition-opacity" title="Ver comprobante">
