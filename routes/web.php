@@ -103,6 +103,8 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/pagos/{installment}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approveInstallment'])->name('installments.approve');
     Route::post('/pagos/{installment}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'rejectInstallment'])->name('installments.reject');
     Route::post('/pagos/{installment}/unapprove', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'unapproveInstallment'])->name('installments.unapprove');
+    Route::post('/pagos/comprobantes/vista-previa', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'previewVoucherCleanup'])->name('installments.vouchers.preview');
+    Route::post('/pagos/comprobantes/limpiar', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'cleanupVouchers'])->name('installments.vouchers.cleanup');
 
     // Gestión de cajas
     Route::get('/cajas', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'index'])->name('cashboxes.index');

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
+use App\Services\VoucherCleanupService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -664,5 +666,37 @@ class LoanController extends Controller
         });
 
         return back()->with('success', 'Aprobación revertida. El ingreso en caja ha sido eliminado y el pago vuelve a estar en revisión.');
+    }
+
+    public function previewVoucherCleanup(Request $request, VoucherCleanupService $cleanup)
+    {
+        $data = $request->validate([
+            'from_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+        ]);
+
+        return response()->json(
+            $cleanup->preview(
+                Carbon::parse($data['from_date']),
+                Carbon::parse($data['to_date'])
+            )
+        );
+    }
+
+    public function cleanupVouchers(Request $request, VoucherCleanupService $cleanup)
+    {
+        $data = $request->validate([
+            'from_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+        ]);
+
+        $from = Carbon::parse($data['from_date']);
+        $to = Carbon::parse($data['to_date']);
+
+        $result = $cleanup->cleanup($from, $to);
+
+        return redirect()
+            ->route('superadmin.installments.index', ['filter' => 'paid'])
+            ->with('success', "Se eliminaron {$result['deleted_count']} comprobante(s) y se liberaron {$result['freed_human']}.");
     }
 }

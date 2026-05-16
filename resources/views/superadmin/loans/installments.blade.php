@@ -200,6 +200,15 @@
                 </div>
             @endif
         @else
+            @if($filter === 'paid')
+                <div class="flex justify-end mb-6">
+                    <button type="button" onclick="openVoucherCleanupModal()"
+                        class="text-[10px] font-black uppercase tracking-widest text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-60 transition-opacity">
+                        Limpiar comprobantes
+                    </button>
+                </div>
+            @endif
+
             <!-- Vista Lista Simple -->
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($installments as $inst)
@@ -231,6 +240,10 @@
 
     <!-- Modal Confirmar Reversión -->
     @include('superadmin.loans.partials.unapprove-modal')
+
+    @if($filter === 'paid')
+        @include('superadmin.loans.partials.voucher-cleanup-modal')
+    @endif
 
     <!-- Modal Editar Número de Operación -->
     <div id="editOperationModal"
