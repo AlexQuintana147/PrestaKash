@@ -87,8 +87,8 @@
                                     desembolso</label>
                                 <div class="relative">
                                     <input type="date" name="disbursement_date" id="disbursement_date"
-                                        min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                        value="{{ old('disbursement_date', date('Y-m-d', strtotime('+1 day'))) }}"
+                                        min="{{ date('Y-m-d') }}"
+                                        value="{{ old('disbursement_date', date('Y-m-d')) }}"
                                         class="w-full pl-0 pr-10 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-all cursor-pointer appearance-none calendar-picker-indicator-none">
                                     <div
                                         class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-green-500 transition-colors">
@@ -98,13 +98,6 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <p class="text-[10px] text-gray-400 mt-2 italic flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Mínimo un día después de hoy.
-                                </p>
                             </div>
 
                             <!-- Tipo de pago (primero) -->

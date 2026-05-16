@@ -45,7 +45,7 @@ class LoanController extends Controller
             'type' => 'required|in:cuotas,unico',
             'reason' => 'required|string|min:10|max:1000',
             'bank_account_id' => 'required|exists:bank_accounts,id,user_id,' . Auth::id(),
-            'disbursement_date' => 'required|date|after:today',
+            'disbursement_date' => 'required|date|after_or_equal:today',
         ];
 
         if ($request->type === 'cuotas') {
