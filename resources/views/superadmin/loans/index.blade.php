@@ -1684,6 +1684,7 @@
             <span class="text-[10px] font-black text-gray-900 dark:text-white">${currency} ${amount.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
             <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase border border-gray-200 dark:border-gray-800">${system}</span>
             <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase border border-gray-200 dark:border-gray-800">${freqLabel}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold uppercase border border-purple-200 dark:border-purple-800">${parseFloat(loan.interest_rate).toFixed(2)}%</span>
         `;
 
         body.innerHTML = '';
