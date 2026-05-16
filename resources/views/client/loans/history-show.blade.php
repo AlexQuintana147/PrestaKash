@@ -95,7 +95,7 @@
 
                     @if($firstPayable && in_array($firstPayable->status, ['pending', 'rejected']))
                     <button type="button"
-                        onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($firstPayable->amount, 2) }}', {{ $firstPayable->late_fee }})"
+                        onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($firstPayable->amount, 2) }}', {{ $firstPayable->late_fee }}, {{ $firstPayable->interest }})"
                         class="w-full py-3 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-red-500/20 mb-6">
                         Pagar cuota pendiente
                     </button>
@@ -253,9 +253,10 @@
                             $isNextWithOverdue = $inst->id === ($nextInst ? $nextInst->id : null) && $overdueInstallments->count() > 0;
                             $payAmount = $isNextWithOverdue ? $inst->accumulated_debt['base'] : $inst->amount;
                             $payMora = $isNextWithOverdue ? $inst->accumulated_debt['mora'] : $inst->late_fee;
+                            $payInterest = $isNextWithOverdue ? $inst->accumulated_debt['mora'] + $inst->interest : $inst->interest; // For now, if overdue, interest only might be complex, but let's pass it.
                         @endphp
                         <button type="button"
-                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }})"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }}, {{ $inst->interest }})"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-px hover:opacity-60 transition-opacity">
                             Pagar
                         </button>
@@ -306,6 +307,30 @@
 
         <form id="uploadForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
+
+            <!-- Payment Type (Only for French system) -->
+            @if($loan->amortization_system === 'frances')
+            <div class="space-y-3">
+                <p class="text-[8px] font-black uppercase tracking-widest text-gray-400">Tipo de pago</p>
+                <div class="flex gap-2">
+                    <label class="flex-1 cursor-pointer group">
+                        <input type="radio" name="requested_type" value="full" class="hidden peer" checked onchange="updateModalAmount('full')">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                            CUOTA COMPLETA
+                        </div>
+                    </label>
+                    <label class="flex-1 cursor-pointer group">
+                        <input type="radio" name="requested_type" value="interest" class="hidden peer" onchange="updateModalAmount('interest')">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-amber-600 transition-all border-b-2 border-transparent peer-checked:border-amber-600 hover:text-gray-600 dark:hover:text-gray-400">
+                            SOLO INTERÉS
+                        </div>
+                    </label>
+                </div>
+                <p id="interest-only-warning" class="hidden text-[8px] text-amber-500 font-bold uppercase leading-tight italic">
+                    * Esta opción es exclusiva si no puedes pagar la cuota pactada. Se cobrará solo el interés y todas las cuotas se postergarán un periodo.
+                </p>
+            </div>
+            @endif
             
             <!-- Payment Method -->
             <div class="space-y-3">
@@ -440,15 +465,47 @@ function changePage(delta) {
     document.getElementById('installments-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function openUploadModal(instId, amount, lateFee = 0) {
-    const total = parseFloat(amount.replace(/[^0-9.-]+/g,"")) + lateFee;
-    document.getElementById('modal_amount_text').textContent = amount + (lateFee > 0 ? ` + ${lateFee.toFixed(2)} mora` : '');
-    if(lateFee > 0) {
-        document.getElementById('modal_amount_text').innerHTML += `<br><span class="text-xs text-gray-500">Total: ${window._cur || ''} ${total.toFixed(2)}</span>`;
-    }
+let _currentInstData = null;
+
+function openUploadModal(instId, amount, lateFee = 0, interest = 0) {
+    const baseAmount = parseFloat(amount.replace(/[^0-9.-]+/g,""));
+    _currentInstData = {
+        id: instId,
+        fullAmount: baseAmount + lateFee,
+        interestAmount: interest + lateFee,
+        amountStr: amount,
+        lateFee: lateFee
+    };
+
+    updateModalAmount('full');
+
     document.getElementById('uploadForm').action = `/panel/historial-crediticio/pagar/${instId}`;
     document.getElementById('uploadModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+}
+
+function updateModalAmount(type) {
+    if (!_currentInstData) return;
+
+    const amountEl = document.getElementById('modal_amount_text');
+    const warningEl = document.getElementById('interest-only-warning');
+    const isInterest = type === 'interest';
+
+    const amountToDisplay = isInterest ? _currentInstData.interestAmount : _currentInstData.fullAmount;
+    
+    amountEl.textContent = (window._cur || '') + ' ' + amountToDisplay.toFixed(2);
+    
+    if (_currentInstData.lateFee > 0) {
+        amountEl.innerHTML += `<br><span class="text-[10px] text-orange-500 uppercase font-bold">Incluye ${_currentInstData.lateFee.toFixed(2)} de mora</span>`;
+    }
+
+    if (warningEl) {
+        if (isInterest) {
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
 }
 
 function closeUploadModal() {

@@ -398,36 +398,87 @@ class LoanController extends Controller
         ]);
 
         $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
-        $amount = $installment->amount + ($installment->late_fee ?? 0);
+        $isInterestOnly = $installment->requested_type === 'interest';
+        $amount = $isInterestOnly
+            ? $installment->interest + ($installment->late_fee ?? 0)
+            : $installment->amount + ($installment->late_fee ?? 0);
 
-        \DB::transaction(function () use ($installment, $cashbox, $amount) {
-            $installment->update([
-                'status' => 'approved',
-                'paid_at' => now()
-            ]);
-
-            // Register movement
-            $cashbox->movements()->create([
-                'user_id' => auth()->id(),
-                'type' => 'income',
-                'amount' => $amount,
-                'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo #{$installment->loan_id} de {$installment->loan->user->name}",
-                'reference_type' => 'loan_installment',
-                'reference_id' => $installment->id,
-                'date' => now(),
-            ]);
-
-            $cashbox->increment('balance', $amount);
-
-            // Check if all installments are paid
+        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly) {
             $loan = $installment->loan;
-            $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
-            if ($remaining === 0) {
-                $loan->update(['status' => 'paid']);
+
+            if ($isInterestOnly) {
+                // Register movement
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+
+                // Shift dates for all PENDING or REJECTED installments of this loan
+                $freq = $loan->payment_frequency;
+                $installmentsToShift = $loan->installments()
+                    ->whereIn('status', ['pending', 'rejected', 'processing'])
+                    ->get();
+
+                foreach ($installmentsToShift as $inst) {
+                    $date = $inst->due_date;
+                    if ($freq === 'diario')
+                        $date->addDay();
+                    elseif ($freq === 'semanal')
+                        $date->addWeek();
+                    elseif ($freq === 'quincenal')
+                        $date->addDays(15);
+                    else
+                        $date->addMonth();
+
+                    $inst->update(['due_date' => $date]);
+                }
+
+                // Reset current installment to pending since only interest was paid
+                $installment->update([
+                    'status' => 'pending',
+                    'payment_voucher' => null,
+                    'payment_method' => null,
+                    'bank_name' => null,
+                    'operation_number' => null,
+                    'requested_type' => 'full',
+                    'paid_at' => null
+                ]);
+
+            } else {
+                $installment->update([
+                    'status' => 'approved',
+                    'paid_at' => now()
+                ]);
+
+                // Register movement
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+
+                // Check if all installments are paid
+                $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
+                if ($remaining === 0) {
+                    $loan->update(['status' => 'paid']);
+                }
             }
         });
 
-        return back()->with('success', 'Pago aprobado e ingreso registrado correctamente.');
+        return back()->with('success', $isInterestOnly ? 'Pago de interés aprobado y fechas postergadas.' : 'Pago aprobado e ingreso registrado correctamente.');
     }
 
     public function rejectInstallment(Request $request, \App\Models\LoanInstallment $installment)

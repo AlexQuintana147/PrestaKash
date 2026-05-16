@@ -77,6 +77,10 @@
                     <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Detalles del depósito
                     </p>
                     <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-gray-500 uppercase font-bold tracking-widest">Tipo:</span>
+                        <span id="v_type" class="font-black text-purple-600 dark:text-purple-400 uppercase"></span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px]">
                         <span class="text-gray-500 uppercase font-bold tracking-widest">Método:</span>
                         <span id="v_method" class="font-black text-gray-900 dark:text-white uppercase"></span>
                     </div>

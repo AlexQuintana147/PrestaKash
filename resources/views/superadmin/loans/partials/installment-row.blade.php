@@ -189,9 +189,13 @@
             <div class="flex items-center gap-3">
                 @if($inst->status === 'processing')
                     @php
+                        $displayAmount = $inst->requested_type === 'interest' 
+                            ? $inst->interest + ($inst->late_fee ?? 0)
+                            : $inst->amount + ($inst->late_fee ?? 0);
+
                         $validateData = [
                             'id' => $inst->id,
-                            'amount' => $currency . number_format($inst->amount, 2),
+                            'amount' => $currency . number_format($displayAmount, 2),
                             'user' => $user->name,
                             'number' => $inst->installment_number,
                             'voucher' => Storage::url($inst->payment_voucher),
@@ -199,6 +203,7 @@
                             'method' => $inst->payment_method,
                             'bank' => $inst->bank_name,
                             'operation' => $inst->operation_number,
+                            'requested_type' => $inst->requested_type,
                         ];
                     @endphp
                     <button type="button" onclick="openValidateModal({{ json_encode($validateData) }})"

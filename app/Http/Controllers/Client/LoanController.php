@@ -315,6 +315,7 @@ class LoanController extends Controller
             'bank_name' => 'required_if:payment_method,transfer|nullable|string|max:255',
             'bank_name_custom' => 'required_if:bank_name,Otros|nullable|string|max:255',
             'operation_number' => 'required_if:payment_method,transfer|nullable|alpha_num|max:25',
+            'requested_type' => 'nullable|in:full,interest',
         ]);
 
         $path = $imageService->storeAsWebp($request->file('payment_voucher'), 'vouchers/' . Auth::id(), 1200);
@@ -329,6 +330,7 @@ class LoanController extends Controller
             'payment_method' => $request->payment_method,
             'bank_name' => $bankName,
             'operation_number' => $request->operation_number,
+            'requested_type' => $request->requested_type ?? 'full',
             'status' => 'processing',
             'paid_at' => now(),
         ]);

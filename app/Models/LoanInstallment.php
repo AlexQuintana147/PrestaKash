@@ -18,6 +18,7 @@ class LoanInstallment extends Model
         'payment_method',
         'bank_name',
         'operation_number',
+        'requested_type',
         'paid_at',
         'admin_notes',
     ];

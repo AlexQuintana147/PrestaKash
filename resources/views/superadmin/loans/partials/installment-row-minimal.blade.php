@@ -57,9 +57,14 @@
         </span>
 
         @if($inst->status === 'processing')
+                @php
+                    $displayAmount = $inst->requested_type === 'interest' 
+                        ? $inst->interest + ($inst->late_fee ?? 0)
+                        : $inst->amount + ($inst->late_fee ?? 0);
+                @endphp
                 <button type="button" onclick="openValidateModal({{ json_encode([
                 'id' => $inst->id,
-                'amount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($inst->amount, 2),
+                'amount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($displayAmount, 2),
                 'user' => $inst->loan->user->name,
                 'number' => $inst->installment_number,
                 'voucher' => Storage::url($inst->payment_voucher),
@@ -67,6 +72,7 @@
                 'method' => $inst->payment_method,
                 'bank' => $inst->bank_name,
                 'operation' => $inst->operation_number,
+                'requested_type' => $inst->requested_type,
             ]) }})"
                     class="text-[8px] font-black uppercase tracking-widest text-purple-600 border-b border-purple-600 pb-0.5 hover:opacity-60 transition-opacity">
                     Revisar

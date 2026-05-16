@@ -304,6 +304,14 @@
             const methodLabel = data.method === 'cash' ? 'Efectivo' : 'Transferencia';
             document.getElementById('v_method').textContent = methodLabel;
             
+            const typeLabel = data.requested_type === 'interest' ? 'Solo Interés (Postergación)' : 'Cuota Completa';
+            document.getElementById('v_type').textContent = typeLabel;
+            if (data.requested_type === 'interest') {
+                document.getElementById('v_type').classList.replace('text-purple-600', 'text-amber-500');
+            } else {
+                document.getElementById('v_type').classList.replace('text-amber-500', 'text-purple-600');
+            }
+
             const transferFields = document.getElementById('v_transfer_fields');
             if (data.method === 'cash') {
                 transferFields.classList.add('hidden');
