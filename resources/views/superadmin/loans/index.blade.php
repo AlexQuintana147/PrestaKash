@@ -374,6 +374,15 @@
                                                 PAGO PENDIENTE
                                             </a>
                                         @endif
+                                        @if(in_array($loan->status, ['approved', 'paid']))
+                                            <form method="POST" action="{{ route('superadmin.loans.toggle-default', $loan) }}" class="inline-block">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="px-2 py-0.5 text-[8px] font-black rounded-full transition-colors {{ $loan->in_default ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-orange-500' }}">
+                                                    {{ $loan->in_default ? 'EN MORA' : 'MARCAR MORA' }}
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -518,6 +527,15 @@
                                                    class="px-2 py-0.5 text-purple-600 text-[8px] font-black rounded-full">
                                                     PAGO PENDIENTE
                                                 </a>
+                                            @endif
+                                            @if(in_array($loan->status, ['approved', 'paid']))
+                                                <form method="POST" action="{{ route('superadmin.loans.toggle-default', $loan) }}" class="inline-block">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="px-2 py-0.5 text-[8px] font-black rounded-full transition-colors {{ $loan->in_default ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-orange-500' }}">
+                                                        {{ $loan->in_default ? 'EN MORA' : 'MARCAR MORA' }}
+                                                    </button>
+                                                </form>
                                             @endif
                                         </div>
                                     @endif

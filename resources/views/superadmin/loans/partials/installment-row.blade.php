@@ -166,7 +166,21 @@
             @endif
             <div>
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Monto</p>
-                @if($inst->requested_type === 'interest' || (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->interest_payments_count > 0)
+                @if($inst->requested_type === 'mora_interest')
+                    <p class="text-sm font-black text-red-600 dark:text-red-400 tabular-nums">
+                        {{ $currency }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
+                    </p>
+                    <p class="text-[8px] text-red-500/80 font-bold mt-0.5 uppercase tracking-tighter">
+                        Mora + Interés
+                    </p>
+                @elseif($inst->requested_type === 'mora_full')
+                    <p class="text-sm font-black text-orange-600 dark:text-orange-400 tabular-nums">
+                        {{ $currency }} {{ number_format($inst->amount + ($inst->late_fee ?? 0), 2) }}
+                    </p>
+                    <p class="text-[8px] text-orange-500/80 font-bold mt-0.5 uppercase tracking-tighter">
+                        Mora + Cuota Total
+                    </p>
+                @elseif($inst->requested_type === 'interest' || (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->interest_payments_count > 0)
                     <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
                         {{ $currency }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
                     </p>

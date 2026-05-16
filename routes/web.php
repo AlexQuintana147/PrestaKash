@@ -94,6 +94,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/prestamos/{loan}/counter-offer', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'counterOffer'])->name('loans.counter-offer');
     Route::post('/prestamos/{loan}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approve'])->name('loans.approve');
     Route::post('/prestamos/{loan}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'reject'])->name('loans.reject');
+    Route::post('/prestamos/{loan}/toggle-default', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'toggleDefault'])->name('loans.toggle-default');
 
     // Gestión de pagos
     Route::get('/pagos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsIndex'])->name('installments.index');

@@ -309,13 +309,27 @@ class LoanController extends Controller
             return back()->withErrors(['error' => 'Debes completar los pagos anteriores en orden.']);
         }
 
+        // 3. Si el préstamo está en mora, solo permitir pagos de mora
+        $requestedType = $request->requested_type ?? 'full';
+        if ($installment->loan->in_default && !in_array($requestedType, ['mora_interest', 'mora_full'])) {
+            return back()->withErrors(['error' => 'Tu préstamo está en mora. Debes pagar la mora pendiente antes de realizar otros pagos.']);
+        }
+
+        // 4. Si es pago mora_full, validar que no haya deudas anteriores
+        if ($requestedType === 'mora_full') {
+            $overdueCount = $installment->loan->overdue_installments->count();
+            if ($overdueCount > 1) {
+                return back()->withErrors(['error' => 'La opción "Mora + cuota total" solo está disponible si no tienes deudas anteriores pendientes.']);
+            }
+        }
+
         $request->validate([
             'payment_voucher' => 'required|image|max:5120',
             'payment_method' => 'required|in:transfer,cash',
             'bank_name' => 'required_if:payment_method,transfer|nullable|string|max:255',
             'bank_name_custom' => 'required_if:bank_name,Otros|nullable|string|max:255',
             'operation_number' => 'required_if:payment_method,transfer|nullable|alpha_num|max:25',
-            'requested_type' => 'nullable|in:full,interest',
+            'requested_type' => 'nullable|in:full,interest,mora_interest,mora_full',
         ]);
 
         $path = $imageService->storeAsWebp($request->file('payment_voucher'), 'vouchers/' . Auth::id(), 1200);

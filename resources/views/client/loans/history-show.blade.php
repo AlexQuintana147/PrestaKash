@@ -12,6 +12,15 @@
     $firstPayable = $hasAnyProcessing ? null : $loan->installments->whereIn('status', ['pending', 'rejected'])->sortBy('installment_number')->first();
     $firstNonApproved = $loan->installments->where('status', '!=', 'approved')->sortBy('installment_number')->first();
     $progress = $total_i > 0 ? round(($paid_i / $total_i) * 100) : 0;
+
+    $isInDefault = $loan->in_default;
+    $overdueInstallments = $loan->overdue_installments;
+    $accumulatedDebt = $loan->accumulated_overdue_debt;
+    $nextInst = $loan->next_installment;
+    $totalLateFees = $overdueInstallments->sum('late_fee');
+    $hasPreviousDebts = $overdueInstallments->count() > 1;
+    $moraPlusInterest = $totalLateFees + ($nextInst ? $nextInst->interest : 0);
+    $moraPlusFull = $totalLateFees + ($nextInst ? $nextInst->amount : 0);
 @endphp
 
 <div class="min-h-screen px-4 md:px-8 py-6 max-w-2xl mx-auto">
@@ -52,13 +61,66 @@
 
     <!-- Resumen financiero -->
     @php
-        $overdueInstallments = $loan->overdue_installments;
-        $accumulatedDebt = $loan->accumulated_overdue_debt;
-        $nextInst = $loan->next_installment;
         $totalToPayNow = $accumulatedDebt + ($nextInst ? $nextInst->amount : 0);
     @endphp
 
-    @if($accumulatedDebt > 0)
+    @if($isInDefault && $overdueInstallments->count() > 0)
+        <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Estado de Mora</h3>
+                    <p class="text-[11px] text-red-500/80 leading-relaxed mb-4">
+                        Tienes mora pendiente. Debes regularizar tu situación antes de realizar otros pagos.
+                    </p>
+
+                    <div class="space-y-2 mb-6">
+                        <div class="flex justify-between text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Cuotas vencidas ({{ $overdueInstallments->count() }})</span>
+                            <span class="font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($overdueInstallments->sum('amount'), 2) }}</span>
+                        </div>
+                        <div class="flex justify-between text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Mora acumulada</span>
+                            <span class="font-black text-orange-500">+ {{ $cur }} {{ number_format($totalLateFees, 2) }}</span>
+                        </div>
+                        @if($nextInst)
+                        <div class="flex justify-between text-[10px]">
+                            <span class="text-gray-500 uppercase font-bold tracking-widest">Interés de cuota actual</span>
+                            <span class="font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($nextInst->interest, 2) }}</span>
+                        </div>
+                        @endif
+                    </div>
+
+                    @if($firstPayable && in_array($firstPayable->status, ['pending', 'rejected']))
+                        <button type="button"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($moraPlusInterest, 2) }}', {{ $totalLateFees }}, {{ $nextInst ? $nextInst->interest : 0 }}, 'mora_interest')"
+                            class="w-full py-3 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-red-500/20 mb-3">
+                            Pagar mora acumulada + interés — {{ $cur }} {{ number_format($moraPlusInterest, 2) }}
+                        </button>
+
+                        @if(!$hasPreviousDebts)
+                        <button type="button"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($moraPlusFull, 2) }}', {{ $totalLateFees }}, {{ $nextInst ? $nextInst->interest : 0 }}, 'mora_full')"
+                            class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-orange-500/20 mb-3">
+                            Pagar mora + cuota total — {{ $cur }} {{ number_format($moraPlusFull, 2) }}
+                        </button>
+                        @endif
+                    @endif
+
+                    <div class="bg-white/50 dark:bg-black/20 rounded-xl p-4">
+                        <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">¿Qué significa?</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                            Al estar en mora, primero debes pagar la mora acumulada. "Mora + interés" cubre la mora y el interés de tu cuota actual. "Mora + cuota total" cubre la mora y la cuota completa (solo disponible si no tienes deudas anteriores).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @elseif($accumulatedDebt > 0)
         <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-6">
             <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
@@ -71,7 +133,7 @@
                     <p class="text-[11px] text-red-500/80 leading-relaxed mb-4">
                         Tienes cuotas vencidas. Para regularizar tu situación, debes pagar las cuotas atrasadas más la mora generada y, si lo deseas, la cuota actual.
                     </p>
-                    
+
                     <div class="space-y-2 mb-6">
                         <div class="flex justify-between text-[10px]">
                             <span class="text-gray-500 uppercase font-bold tracking-widest">Cuotas vencidas ({{ $overdueInstallments->count() }})</span>
@@ -253,18 +315,22 @@
                         @endif
                     </div>
 
-                    @if($canPay)
+                    @if($canPay && !$isInDefault)
                         @php
                             $isNextWithOverdue = $inst->id === ($nextInst ? $nextInst->id : null) && $overdueInstallments->count() > 0;
                             $payAmount = $isNextWithOverdue ? $inst->accumulated_debt['base'] : $inst->amount;
                             $payMora = $isNextWithOverdue ? $inst->accumulated_debt['mora'] : $inst->late_fee;
-                            $payInterest = $isNextWithOverdue ? $inst->accumulated_debt['mora'] + $inst->interest : $inst->interest; // For now, if overdue, interest only might be complex, but let's pass it.
+                            $payInterest = $isNextWithOverdue ? $inst->accumulated_debt['mora'] + $inst->interest : $inst->interest;
                         @endphp
                         <button type="button"
                             onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }}, {{ $inst->interest }})"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-px hover:opacity-60 transition-opacity">
                             Pagar
                         </button>
+                    @elseif($canPay && $isInDefault)
+                        <span class="text-[8px] font-black uppercase tracking-widest text-red-400">
+                            Bloqueado
+                        </span>
                     @elseif($inst->payment_voucher && $inst->status !== 'pending')
                         <a href="{{ Storage::url($inst->payment_voucher) }}" target="_blank"
                             class="text-gray-300 dark:text-gray-700 hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
@@ -498,21 +564,30 @@ function changePage(delta) {
 
 let _currentInstData = null;
 
-function openUploadModal(instId, amount, lateFee = 0, interest = 0) {
+function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType = null) {
     const baseAmount = parseFloat(amount.replace(/[^0-9.-]+/g,""));
     _currentInstData = {
         id: instId,
         fullAmount: baseAmount + lateFee,
         interestAmount: interest + lateFee,
         amountStr: amount,
-        lateFee: lateFee
+        lateFee: lateFee,
+        paymentType: paymentType
     };
 
-    updateModalAmount('full');
+    const isMoraPayment = paymentType === 'mora_interest' || paymentType === 'mora_full';
+
+    if (isMoraPayment) {
+        updateModalAmount(paymentType === 'mora_full' ? 'full' : 'interest');
+    } else {
+        updateModalAmount('full');
+    }
 
     const interestOption = document.getElementById('interest-only-option');
     if (interestOption) {
-        if (interest <= 0 && lateFee <= 0) {
+        if (isMoraPayment) {
+            interestOption.classList.add('hidden');
+        } else if (interest <= 0 && lateFee <= 0) {
             interestOption.classList.add('hidden');
         } else {
             interestOption.classList.remove('hidden');
@@ -530,6 +605,7 @@ function updateModalAmount(type) {
     const amountEl = document.getElementById('modal_amount_text');
     const warningEl = document.getElementById('interest-only-warning');
     const isInterest = type === 'interest';
+    const isMoraPayment = _currentInstData.paymentType === 'mora_interest' || _currentInstData.paymentType === 'mora_full';
 
     const amountToDisplay = isInterest ? _currentInstData.interestAmount : _currentInstData.fullAmount;
     
@@ -539,8 +615,22 @@ function updateModalAmount(type) {
         amountEl.innerHTML += `<br><span class="text-[10px] text-orange-500 uppercase font-bold">Incluye ${_currentInstData.lateFee.toFixed(2)} de mora</span>`;
     }
 
+    if (isMoraPayment) {
+        const moraLabel = _currentInstData.paymentType === 'mora_full' ? 'MORA + CUOTA TOTAL' : 'MORA + INTERÉS';
+        amountEl.innerHTML += `<br><span class="text-[10px] text-red-500 uppercase font-bold">${moraLabel}</span>`;
+    }
+
+    const requestedTypeInput = document.querySelector('input[name="requested_type"]');
+    if (requestedTypeInput) {
+        if (isMoraPayment) {
+            requestedTypeInput.value = _currentInstData.paymentType;
+        } else {
+            requestedTypeInput.value = isInterest ? 'interest' : 'full';
+        }
+    }
+
     if (warningEl) {
-        if (isInterest) {
+        if (isInterest && !isMoraPayment) {
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');

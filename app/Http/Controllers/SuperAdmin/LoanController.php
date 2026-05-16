@@ -293,6 +293,13 @@ class LoanController extends Controller
         return back()->with('success', 'Préstamo rechazado.');
     }
 
+    public function toggleDefault(Loan $loan)
+    {
+        $loan->update(['in_default' => !$loan->in_default]);
+        $status = $loan->in_default ? 'activado' : 'desactivado';
+        return back()->with('success', "Estado de mora {$status} para el préstamo #{$loan->id}.");
+    }
+
     public function installmentsIndex(Request $request)
     {
         $filter = $request->get('filter', 'all');
@@ -475,12 +482,26 @@ class LoanController extends Controller
         ]);
 
         $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
+        $loan = $installment->loan;
         $isInterestOnly = $installment->requested_type === 'interest';
-        $amount = $isInterestOnly
-            ? $installment->interest + ($installment->late_fee ?? 0)
-            : $installment->amount + ($installment->late_fee ?? 0);
+        $isMoraInterest = $installment->requested_type === 'mora_interest';
+        $isMoraFull = $installment->requested_type === 'mora_full';
 
-        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly) {
+        if ($isMoraInterest) {
+            $overdueInstallments = $loan->overdue_installments;
+            $totalLateFees = $overdueInstallments->sum('late_fee');
+            $amount = $totalLateFees + $installment->interest;
+        } elseif ($isMoraFull) {
+            $overdueInstallments = $loan->overdue_installments;
+            $totalLateFees = $overdueInstallments->sum('late_fee');
+            $amount = $totalLateFees + $installment->amount;
+        } elseif ($isInterestOnly) {
+            $amount = $installment->interest + ($installment->late_fee ?? 0);
+        } else {
+            $amount = $installment->amount + ($installment->late_fee ?? 0);
+        }
+
+        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull) {
             $loan = $installment->loan;
 
             if ($isInterestOnly) {
@@ -582,6 +603,74 @@ class LoanController extends Controller
                     'interest_payments_count' => $installment->interest_payments_count + 1,
                 ]);
 
+            } elseif ($isMoraInterest) {
+                $overdueInsts = $loan->overdue_installments;
+                $totalLateFees = $overdueInsts->sum('late_fee');
+
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+
+                $interestPayment = \App\Models\InterestPayment::create([
+                    'loan_installment_id' => $installment->id,
+                    'payment_voucher'     => $installment->payment_voucher,
+                    'payment_method'      => $installment->payment_method,
+                    'bank_name'           => $installment->bank_name,
+                    'operation_number'    => $installment->operation_number,
+                    'amount'              => $installment->interest,
+                    'late_fee'            => $totalLateFees,
+                    'paid_at'             => now(),
+                ]);
+
+                $installment->update([
+                    'status' => 'pending',
+                    'payment_voucher' => null,
+                    'payment_method' => null,
+                    'bank_name' => null,
+                    'operation_number' => null,
+                    'requested_type' => 'full',
+                    'paid_at' => null,
+                    'interest_payments_count' => $installment->interest_payments_count + 1,
+                ]);
+
+                $loan->update(['in_default' => false]);
+
+            } elseif ($isMoraFull) {
+                $overdueInsts = $loan->overdue_installments;
+                $totalLateFees = $overdueInsts->sum('late_fee');
+
+                $installment->update([
+                    'status' => 'approved',
+                    'paid_at' => now()
+                ]);
+
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por MORA + CUOTA COMPLETA #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+
+                $loan->update(['in_default' => false]);
+
+                $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
+                if ($remaining === 0) {
+                    $loan->update(['status' => 'paid']);
+                }
+
             } else {
                 $installment->update([
                     'status' => 'approved',
@@ -609,7 +698,16 @@ class LoanController extends Controller
             }
         });
 
-        return back()->with('success', $isInterestOnly ? 'Pago de interés aprobado y fechas postergadas.' : 'Pago aprobado e ingreso registrado correctamente.');
+        $successMsg = 'Pago aprobado e ingreso registrado correctamente.';
+        if ($isMoraInterest) {
+            $successMsg = 'Pago de mora + interés aprobado. Estado de mora desactivado.';
+        } elseif ($isMoraFull) {
+            $successMsg = 'Pago de mora + cuota completa aprobado. Estado de mora desactivado.';
+        } elseif ($isInterestOnly) {
+            $successMsg = 'Pago de interés aprobado y fechas postergadas.';
+        }
+
+        return back()->with('success', $successMsg);
     }
 
     public function rejectInstallment(Request $request, \App\Models\LoanInstallment $installment)
