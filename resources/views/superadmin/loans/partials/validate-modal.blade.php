@@ -232,8 +232,9 @@
 
     function closeVoucherLightbox() {
         document.getElementById('voucherLightbox').classList.add('hidden');
-        // Solo mantener overflow:hidden si venía del modal de validación
-        if (!_voucherFromModal) {
+        const cleanupOpen = document.getElementById('voucherCleanupModal') && !document.getElementById('voucherCleanupModal').classList.contains('hidden');
+        const validateOpen = !document.getElementById('validateModal').classList.contains('hidden');
+        if (!_voucherFromModal && !cleanupOpen && !validateOpen) {
             document.body.style.overflow = '';
         }
     }
