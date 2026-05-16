@@ -108,8 +108,7 @@
                 <div id="interest_voucher_notice"
                     class="hidden mt-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
                     <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
-                        El comprobante de este pago <span class="font-black text-gray-700 dark:text-gray-300">no se guardará</span>
-                        para ahorrar espacio y será <span class="font-black text-gray-700 dark:text-gray-300">eliminado al aprobar</span>.
+                        El comprobante quedará archivado en el historial de pagos de interés de esta cuota (uno por cada pago de solo interés).
                     </p>
                 </div>
 

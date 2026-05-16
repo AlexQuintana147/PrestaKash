@@ -79,8 +79,8 @@
             </span>
         @endif
 
-        @if(!(isset($inst->is_interest_payment) && $inst->is_interest_payment))
-            <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->payment_voucher ?? '') }}')"
+        @if($inst->can_view_payment_voucher)
+            <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->display_voucher_path) }}')"
                 class="text-gray-900 dark:text-white hover:opacity-60 transition-opacity" title="Ver comprobante">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

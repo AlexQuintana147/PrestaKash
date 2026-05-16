@@ -39,6 +39,28 @@ class LoanInstallment extends Model
         return $this->hasMany(\App\Models\InterestPayment::class, 'loan_installment_id')->orderBy('paid_at', 'asc');
     }
 
+    public function getDisplayVoucherPathAttribute(): ?string
+    {
+        if (! empty($this->is_interest_payment) && ! empty($this->interest_payment)) {
+            return $this->interest_payment->payment_voucher;
+        }
+
+        return $this->payment_voucher;
+    }
+
+    public function getCanViewPaymentVoucherAttribute(): bool
+    {
+        if (! $this->display_voucher_path) {
+            return false;
+        }
+
+        if (! empty($this->is_interest_payment) && $this->interest_payment) {
+            return true;
+        }
+
+        return $this->status === 'approved';
+    }
+
     public function getLateFeeAttribute()
     {
         $loan = $this->loan;
