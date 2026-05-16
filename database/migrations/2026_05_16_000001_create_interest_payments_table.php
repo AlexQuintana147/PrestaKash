@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('interest_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('loan_installment_id')->constrained()->onDelete('cascade');
-            $table->string('payment_voucher');
+            $table->string('payment_voucher')->nullable();
             $table->string('payment_method');
             $table->string('bank_name')->nullable();
             $table->string('operation_number')->nullable();

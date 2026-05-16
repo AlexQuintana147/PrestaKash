@@ -111,11 +111,40 @@
                 @csrf
                 <input type="hidden" name="from_date" id="vc_form_from">
                 <input type="hidden" name="to_date" id="vc_form_to">
-                <button type="submit" id="vc_confirm_btn" disabled
+                <button type="button" id="vc_confirm_btn" disabled onclick="openVcConfirmModal()"
                     class="text-[9px] font-black uppercase tracking-widest text-red-500 dark:text-red-400 border-b border-red-400 dark:border-red-500/60 pb-px hover:opacity-60 transition-opacity disabled:opacity-25 disabled:cursor-not-allowed disabled:border-gray-300 dark:disabled:border-gray-700 disabled:text-gray-400 dark:disabled:text-gray-600">
                     Confirmar limpieza
                 </button>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmación limpieza -->
+<div id="vcConfirmModal"
+    class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[130] flex items-center justify-center p-4"
+    onclick="if(event.target===this) closeVcConfirmModal()">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-2xl border border-gray-100 dark:border-gray-800 shadow-2xl p-6"
+        onclick="event.stopPropagation()">
+        <div class="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <p class="text-[8px] font-black uppercase tracking-widest text-red-500 dark:text-red-400 mb-1">Acción irreversible</p>
+        <h4 class="text-base font-black text-gray-900 dark:text-white tracking-tight mb-3">¿Eliminar comprobantes?</h4>
+        <p id="vc_confirm_message" class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-2"></p>
+        <p class="text-[10px] text-gray-400 dark:text-gray-500 mb-6">Los registros de cobro se mantienen; solo se borran las imágenes del servidor.</p>
+        <div class="flex items-center justify-between">
+            <button type="button" onclick="closeVcConfirmModal()"
+                class="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                Cancelar
+            </button>
+            <button type="button" onclick="submitVcCleanup()"
+                class="text-[9px] font-black uppercase tracking-widest text-red-500 dark:text-red-400 border-b border-red-400 dark:border-red-500/60 pb-px hover:opacity-60 transition-opacity">
+                Sí, eliminar
+            </button>
         </div>
     </div>
 </div>
@@ -166,6 +195,7 @@
     }
 
     function closeVoucherCleanupModal() {
+        closeVcConfirmModal();
         document.getElementById('voucherCleanupModal').classList.add('hidden');
         document.body.style.overflow = '';
     }
@@ -266,22 +296,36 @@
         return d.innerHTML;
     }
 
-    document.getElementById('vc_cleanup_form').addEventListener('submit', function (e) {
+    function openVcConfirmModal() {
         if (!_vcPreviewReady) {
-            e.preventDefault();
             alert('Calcula primero el espacio a liberar.');
             return;
         }
         const count = document.getElementById('vc_count_label').textContent;
         const size = document.getElementById('vc_size_label').textContent;
         const range = document.getElementById('vc_range_label').textContent;
-        if (!confirm(`¿Eliminar ${count} (${size}) del rango ${range}? Esta acción no se puede deshacer.`)) {
-            e.preventDefault();
-        }
-    });
+        document.getElementById('vc_confirm_message').innerHTML =
+            `Se eliminarán <span class="font-black text-gray-900 dark:text-white">${escapeHtml(count)}</span> ` +
+            `(<span class="font-black text-green-600 dark:text-green-400">${escapeHtml(size)}</span>) ` +
+            `del rango <span class="font-black text-gray-900 dark:text-white">${escapeHtml(range)}</span>.`;
+        document.getElementById('vcConfirmModal').classList.remove('hidden');
+    }
+
+    function closeVcConfirmModal() {
+        document.getElementById('vcConfirmModal').classList.add('hidden');
+    }
+
+    function submitVcCleanup() {
+        document.getElementById('vc_cleanup_form').submit();
+    }
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !document.getElementById('voucherCleanupModal').classList.contains('hidden')) {
+        if (e.key !== 'Escape') return;
+        if (!document.getElementById('vcConfirmModal').classList.contains('hidden')) {
+            closeVcConfirmModal();
+            return;
+        }
+        if (!document.getElementById('voucherCleanupModal').classList.contains('hidden')) {
             closeVoucherCleanupModal();
         }
     });

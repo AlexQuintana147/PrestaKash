@@ -294,6 +294,22 @@
 </div>
 
 <!-- Modal Pago -->
+<style>
+    #uploadModal select {
+        color-scheme: light;
+    }
+    .dark #uploadModal select {
+        color-scheme: dark;
+    }
+    #uploadModal select option {
+        background-color: #ffffff;
+        color: #111827;
+    }
+    .dark #uploadModal select option {
+        background-color: #030712;
+        color: #f3f4f6;
+    }
+</style>
 <div id="uploadModal"
     class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
     onclick="if(event.target===this) closeUploadModal()">
@@ -368,21 +384,21 @@
 
             <!-- Transfer Details -->
             <div id="transfer-details" class="space-y-4">
-                <div class="group">
+                <div class="group relative">
                     <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Banco emisor</label>
-                    <select name="bank_name" id="modal_bank_name" 
+                    <select name="bank_name" id="modal_bank_name"
                             onchange="toggleCustomBank(this.value)"
-                            class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer">
-                        <option value="" disabled selected>Elegir banco</option>
-                        <option value="BCP">BCP</option>
-                        <option value="Interbank">Interbank</option>
-                        <option value="BBVA">BBVA</option>
-                        <option value="Scotiabank">Scotiabank</option>
-                        <option value="Banco de la Nación">Banco de la Nación</option>
-                        <option value="Yape">Yape</option>
-                        <option value="Plin">Plin</option>
-                        <option value="Otros">Otros</option>
+                            class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 pr-6 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all appearance-none cursor-pointer relative z-10">
+                        <option value="" disabled selected class="bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-500">Elegir banco</option>
+                        @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'Banco de la Nación', 'Yape', 'Plin', 'Otros'] as $bank)
+                            <option value="{{ $bank }}" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">{{ $bank }}</option>
+                        @endforeach
                     </select>
+                    <div class="absolute right-0 bottom-2 pointer-events-none text-gray-400 dark:text-gray-500 z-0">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
                 </div>
                 <div id="modal_bank_custom_container" class="group hidden">
                     <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Nombre del banco</label>
