@@ -335,79 +335,113 @@
 
     <!-- Modal Aceptar Contra-oferta -->
     <div id="acceptCounterModal"
-        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-2 sm:p-4">
         <div
-            class="bg-white dark:bg-gray-950 w-full max-w-lg rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-8">
+            class="bg-white dark:bg-gray-950 w-full max-w-sm sm:max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-4 sm:p-8 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar">
 
-            <!-- Close -->
             <button onclick="closeAcceptCounterModal()"
-                class="absolute top-5 right-5 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="absolute top-3 right-3 sm:top-5 sm:right-5 p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
             <div id="counterOfferListView">
-                <div class="text-center mb-8">
-                    <svg class="w-12 h-12 text-purple-600 mx-auto mb-4" fill="none" stroke="currentColor"
+                <div class="text-center mb-4 sm:mb-8">
+                    <svg class="w-8 h-8 sm:w-12 sm:h-12 text-purple-600 mx-auto mb-2 sm:mb-4" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Contra-ofertas Recibidas</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Selecciona una solicitud para ver los cambios.
+                    <h3 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white">Contra-ofertas Recibidas</h3>
+                    <p class="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">Selecciona una solicitud para ver los cambios.
                     </p>
                 </div>
-                <div id="counterOfferListItems" class="space-y-3 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
-                    <!-- JS dynamic list -->
+                <div id="counterOfferListItems" class="space-y-2 sm:space-y-3 max-h-[35vh] sm:max-h-[40vh] overflow-y-auto custom-scrollbar pr-1 sm:pr-2">
                 </div>
             </div>
 
             <div id="counterOfferDetailView" class="hidden">
                 <button onclick="showCounterOffersList(lastLoansData)"
-                    class="mb-6 flex items-center gap-1.5 text-xs text-purple-600 font-bold uppercase tracking-widest hover:opacity-70 transition-opacity">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="mb-3 sm:mb-6 flex items-center gap-1.5 text-[10px] sm:text-xs text-purple-600 font-bold uppercase tracking-widest hover:opacity-70 transition-opacity">
+                    <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                     Volver a la lista
                 </button>
 
-                <div class="text-center mb-8">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Comparación de Términos</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Revisa los cambios realizados por el
-                        administrador.
-                    </p>
+                <div class="text-center mb-4 sm:mb-8">
+                    <h3 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white">Comparación de Términos</h3>
+                    <p class="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">Revisa los cambios realizados por el administrador.</p>
                 </div>
 
-                <div class="space-y-4 mb-8">
-                    <div class="grid grid-cols-3 gap-4 py-2 border-b border-gray-50 dark:border-gray-900">
-                        <span class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Concepto</span>
-                        <span
-                            class="text-[10px] text-gray-400 uppercase font-black tracking-widest text-center">Antes</span>
-                        <span
-                            class="text-[10px] text-purple-600 uppercase font-black tracking-widest text-center">Ahora</span>
+                <div class="space-y-2 sm:space-y-4 mb-4 sm:mb-8">
+                    <div class="grid grid-cols-3 gap-1 sm:gap-4 py-1.5 sm:py-2 border-b border-gray-50 dark:border-gray-900">
+                        <span class="text-[8px] sm:text-[10px] text-gray-400 uppercase font-black tracking-widest">Concepto</span>
+                        <span class="text-[8px] sm:text-[10px] text-gray-400 uppercase font-black tracking-widest text-center">Antes</span>
+                        <span class="text-[8px] sm:text-[10px] text-purple-600 uppercase font-black tracking-widest text-center">Ahora</span>
                     </div>
-                    <div id="comparisonRows" class="space-y-4">
-                        <!-- JS dynamic rows -->
+                    <div id="comparisonRows" class="space-y-2 sm:space-y-4">
                     </div>
                 </div>
 
-                <div class="flex justify-center gap-12">
+                <div id="scheduleSection" class="hidden mb-4 sm:mb-8">
+                    <button type="button" onclick="openScheduleModal()" class="w-full flex items-center justify-between p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-purple-200 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100 dark:hover:bg-purple-950/30 transition-all group">
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            <span class="text-[8px] sm:text-[10px] font-black text-purple-600 uppercase tracking-[0.1em] sm:tracking-[0.2em]">Ver Cronograma</span>
+                        </div>
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+
+                <div class="flex justify-center gap-8 sm:gap-12">
                     <form id="rejectCounterForm" method="POST">
                         @csrf
                         <button type="submit"
-                            class="text-xs font-black uppercase tracking-widest text-gray-400 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-1 transition-all">
+                            class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-gray-400 hover:text-red-500 border-b-2 border-transparent hover:border-red-500 pb-0.5 sm:pb-1 transition-all">
                             Rechazar
                         </button>
                     </form>
                     <form id="acceptCounterForm" method="POST">
                         @csrf
                         <button type="submit"
-                            class="text-xs font-black uppercase tracking-widest text-purple-600 hover:text-purple-400 border-b-2 border-purple-600 hover:border-purple-400 pb-1 transition-all">
+                            class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-purple-600 hover:text-purple-400 border-b-2 border-purple-600 hover:border-purple-400 pb-0.5 sm:pb-1 transition-all">
                             Aceptar Propuesta
                         </button>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scheduleModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4">
+        <div class="bg-white dark:bg-gray-950 rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-100 dark:border-gray-900">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <h3 class="text-[10px] sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Cronograma de Pagos</h3>
+                </div>
+                <button type="button" onclick="closeScheduleModal()" class="p-1 sm:p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto schedule-scrollbar px-2 sm:px-6 py-3 sm:py-4">
+                <table class="w-full text-[8px] sm:text-[10px] text-left">
+                    <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-600 sticky top-0">
+                        <tr>
+                            <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">N°</th>
+                            <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Capital</th>
+                            <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Interés</th>
+                            <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Cuota</th>
+                            <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
+                    </tbody>
+                    <tfoot id="scheduleFoot" class="bg-gray-50 dark:bg-gray-900 font-black text-gray-900 dark:text-white sticky bottom-0">
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
@@ -427,14 +461,14 @@
             loans.forEach(loan => {
                 const symbol = loan.currency === 'USD' ? '$' : 'S/';
                 const item = document.createElement('div');
-                item.className = 'group p-4 rounded-2xl border border-gray-100 dark:border-gray-900 hover:border-purple-500/50 cursor-pointer transition-all flex items-center justify-between';
+                item.className = 'group p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-900 hover:border-purple-500/50 cursor-pointer transition-all flex items-center justify-between';
                 item.onclick = () => openCounterOfferDetail(loan);
                 item.innerHTML = `
                             <div>
-                                <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mb-1">Solicitud #${loan.id}</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">${symbol} ${parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase font-black tracking-widest mb-0.5 sm:mb-1">Solicitud #${loan.id}</p>
+                                <p class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">${symbol} ${parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                             </div>
-                            <svg class="w-5 h-5 text-gray-300 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-300 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         `;
                 listItems.appendChild(item);
             });
@@ -498,17 +532,137 @@
             fields.forEach(f => {
                 const isChanged = f.old !== f.new;
                 const row = document.createElement('div');
-                row.className = 'grid grid-cols-3 gap-4 items-center';
+                row.className = 'grid grid-cols-3 gap-1 sm:gap-4 items-center';
                 row.innerHTML = `
-                            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-tight">${f.label}</span>
-                            <span class="text-xs text-gray-400 text-center tabular-nums line-through">${f.old}</span>
-                            <span class="text-xs font-black text-center tabular-nums ${isChanged ? 'text-purple-600 animate-pulse' : 'text-gray-900 dark:text-white'}">${f.new}</span>
+                            <span class="text-[8px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-tight">${f.label}</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 text-center tabular-nums line-through">${f.old}</span>
+                            <span class="text-[10px] sm:text-xs font-black text-center tabular-nums ${isChanged ? 'text-purple-600 animate-pulse' : 'text-gray-900 dark:text-white'}">${f.new}</span>
                         `;
                 rowsContainer.appendChild(row);
             });
 
             document.getElementById('acceptCounterForm').action = `/panel/prestamos/${loan.id}/aceptar-contraoferta`;
             document.getElementById('rejectCounterForm').action = `/panel/prestamos/${loan.id}/rechazar-contraoferta`;
+
+            renderSchedule(loan);
+        }
+
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.remove('hidden');
+        }
+
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('hidden');
+        }
+
+        document.getElementById('scheduleModal').addEventListener('click', e => {
+            if (e.target === document.getElementById('scheduleModal')) closeScheduleModal();
+        });
+
+        function renderSchedule(loan) {
+            const section = document.getElementById('scheduleSection');
+            const body = document.getElementById('scheduleBody');
+            const foot = document.getElementById('scheduleFoot');
+            const symbol = loan.currency === 'USD' ? '$' : 'S/';
+            const amount = parseFloat(loan.amount) || 0;
+            const rate = (parseFloat(loan.interest_rate) || 0) / 100;
+            const type = loan.type || 'cuotas';
+            const system = loan.amortization_system || 'frances';
+            const months = parseInt(loan.months) || 3;
+            const freq = loan.payment_frequency || 'mensual';
+
+            body.innerHTML = '';
+            foot.innerHTML = '';
+            section.classList.remove('hidden');
+
+            if (type === 'unico') {
+                const interest = amount * rate;
+                const total = amount + interest;
+                body.innerHTML = `
+                    <tr class="border-b border-gray-50 dark:border-gray-900">
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center font-bold">1</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${amount.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${interest.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums font-black">${symbol}${total.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums font-black">0.00</td>
+                    </tr>
+                `;
+                foot.innerHTML = `
+                    <tr>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center">TOTAL</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${amount.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${interest.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${total.toFixed(2)}</td>
+                        <td></td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let n, periodicRate;
+            if (system === 'frances') {
+                const ipm = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
+                n = months * ipm;
+                periodicRate = rate / ipm;
+            } else {
+                n = months;
+                periodicRate = rate;
+            }
+
+            let schedule = [];
+            let totalInterest = 0;
+            let totalPrincipal = 0;
+            let periodicPayment = 0;
+
+            if (system === 'frances') {
+                if (amount > 0 && rate > 0) {
+                    periodicPayment = (amount * periodicRate) / (1 - Math.pow(1 + periodicRate, -n));
+                } else {
+                    periodicPayment = amount / n;
+                }
+                let balance = amount;
+                for (let i = 1; i <= n; i++) {
+                    const interest = balance * periodicRate;
+                    const principal = periodicPayment - interest;
+                    balance -= principal;
+                    totalInterest += interest;
+                    totalPrincipal += principal;
+                    schedule.push({ n: i, principal, interest, payment: periodicPayment, balance: Math.max(0, balance) });
+                }
+            } else {
+                const interestPmt = amount * periodicRate;
+                let balance = amount;
+                for (let i = 1; i <= n; i++) {
+                    const principal = (i === n) ? amount : 0;
+                    const payment = (i === n) ? amount + interestPmt : interestPmt;
+                    balance -= principal;
+                    totalInterest += interestPmt;
+                    totalPrincipal += principal;
+                    schedule.push({ n: i, principal, interest: interestPmt, payment, balance: Math.max(0, balance) });
+                }
+            }
+
+            schedule.forEach(row => {
+                body.innerHTML += `
+                    <tr class="border-b border-gray-50 dark:border-gray-900">
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center font-bold">${row.n}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${row.principal.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${row.interest.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums font-black">${symbol}${row.payment.toFixed(2)}</td>
+                        <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${row.balance.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            foot.innerHTML = `
+                <tr>
+                    <td class="px-2 sm:px-4 py-2 sm:py-3 text-center">TOTAL</td>
+                    <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${totalPrincipal.toFixed(2)}</td>
+                    <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${totalInterest.toFixed(2)}</td>
+                    <td class="px-2 sm:px-4 py-2 sm:py-3 text-center tabular-nums">${symbol}${(totalPrincipal + totalInterest).toFixed(2)}</td>
+                    <td></td>
+                </tr>
+            `;
         }
 
         function closeAcceptCounterModal() {
@@ -538,6 +692,36 @@
 
         .dark .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #1f2937;
+        }
+
+        .schedule-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .schedule-scrollbar::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+
+        .schedule-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        .schedule-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        .dark .schedule-scrollbar::-webkit-scrollbar-track {
+            background: #111827;
+        }
+
+        .dark .schedule-scrollbar::-webkit-scrollbar-thumb {
+            background: #374151;
+        }
+
+        .dark .schedule-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
         }
     </style>
 @endsection
