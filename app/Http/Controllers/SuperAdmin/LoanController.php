@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class LoanController extends Controller
 {
@@ -341,8 +342,38 @@ class LoanController extends Controller
         }
 
         $installments = $query->orderBy('due_date', 'asc')
-            ->paginate(10)
-            ->withQueryString();
+            ->get();
+
+        // Expand installments with interest payments into separate rows
+        $expandedInstallments = collect();
+        foreach ($installments as $inst) {
+            if ($inst->interest_payments_count > 0) {
+                // Create separate rows for each interest payment
+                for ($i = 1; $i <= $inst->interest_payments_count; $i++) {
+                    $virtualInst = clone $inst;
+                    $virtualInst->is_interest_payment = true;
+                    $virtualInst->interest_payment_number = $i;
+                    $virtualInst->total_interest_payments = $inst->interest_payments_count;
+                    $expandedInstallments->push($virtualInst);
+                }
+            } else {
+                $inst->is_interest_payment = false;
+                $expandedInstallments->push($inst);
+            }
+        }
+
+        // Paginate the expanded collection
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $sliced = $expandedInstallments->slice(($page - 1) * $perPage, $perPage);
+        $installments = new LengthAwarePaginator(
+            $sliced,
+            $expandedInstallments->count(),
+            $perPage,
+            $page,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+        $installments->withQueryString();
 
         return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes'));
     }
