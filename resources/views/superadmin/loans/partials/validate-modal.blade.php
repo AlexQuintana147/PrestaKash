@@ -104,6 +104,15 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="interest_voucher_notice"
+                    class="hidden mt-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                        El comprobante de este pago <span class="font-black text-gray-700 dark:text-gray-300">no se guardará</span>
+                        para ahorrar espacio y será <span class="font-black text-gray-700 dark:text-gray-300">eliminado al aprobar</span>.
+                    </p>
+                </div>
+
             </div>
 
             <div class="mt-auto space-y-4">
@@ -150,95 +159,6 @@
                     </button>
                 </form>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Confirmación Pago de Solo Interés -->
-<div id="interestConfirmModal"
-    class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-2xl p-8 shadow-2xl relative animate-in fade-in zoom-in duration-200">
-        <button onclick="closeInterestConfirmModal()"
-            class="absolute top-5 right-5 text-gray-300 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-        </button>
-
-        <!-- Header amber -->
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-[8px] font-black uppercase tracking-widest text-amber-500 mb-0.5">Solo Interés</p>
-                <h3 class="text-base font-black text-gray-900 dark:text-white tracking-tight">Validar Pago de Interés</h3>
-            </div>
-        </div>
-
-        <!-- Detalles del pago -->
-        <div class="p-3 bg-gray-50 dark:bg-gray-900 rounded-xl space-y-1.5 border border-gray-100 dark:border-gray-800 mb-4">
-            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1.5">Detalles</p>
-            <div class="flex justify-between text-[10px]">
-                <span class="text-gray-500 uppercase font-bold tracking-widest">Cliente</span>
-                <span id="ic_user" class="font-black text-gray-900 dark:text-white"></span>
-            </div>
-            <div class="flex justify-between text-[10px]">
-                <span class="text-gray-500 uppercase font-bold tracking-widest">Cuota</span>
-                <span id="ic_number" class="font-black text-gray-900 dark:text-white"></span>
-            </div>
-            <div class="flex justify-between text-[10px]">
-                <span class="text-gray-500 uppercase font-bold tracking-widest">Monto interés</span>
-                <span id="ic_amount" class="font-black text-amber-500"></span>
-            </div>
-            <div class="flex justify-between text-[10px]">
-                <span class="text-gray-500 uppercase font-bold tracking-widest">Tipo</span>
-                <span class="font-black text-amber-500 uppercase">Solo Interés</span>
-            </div>
-        </div>
-
-        <!-- Comprobante -->
-        <div class="mb-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-            <div class="flex items-center justify-between px-3 pt-3 pb-2">
-                <p class="text-[8px] font-black uppercase tracking-widest text-gray-400">Comprobante</p>
-                <button type="button" onclick="openVoucherLightbox(document.getElementById('ic_voucher_img').src)"
-                    class="text-[8px] font-black uppercase tracking-widest text-amber-500 hover:opacity-60 transition-opacity">
-                    Ver completo
-                </button>
-            </div>
-            <div class="flex items-center justify-center cursor-zoom-in group relative px-3 pb-3" style="min-height:120px;"
-                onclick="openVoucherLightbox(document.getElementById('ic_voucher_img').src)">
-                <img id="ic_voucher_img" src="" alt="Comprobante"
-                    class="max-w-full max-h-32 object-contain rounded-lg group-hover:opacity-80 transition-opacity">
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    <svg class="w-5 h-5 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- Aviso -->
-        <div class="p-3 bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-100 dark:border-amber-500/20 mb-6">
-            <p class="text-[10px] text-amber-700 dark:text-amber-400 font-medium leading-relaxed">
-                El comprobante de este pago <span class="font-black">no se guardará</span> para ahorrar espacio en el servidor y será <span class="font-black">eliminado al aprobar</span>.
-            </p>
-        </div>
-
-        <!-- Acciones -->
-        <div class="flex gap-3">
-            <button type="button" onclick="closeInterestConfirmModal()"
-                class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
-                Cancelar
-            </button>
-            <button type="button" onclick="confirmInterestValidation()"
-                class="flex-1 py-3 rounded-xl bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20">
-                Continuar
-            </button>
         </div>
     </div>
 </div>

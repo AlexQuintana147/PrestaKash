@@ -296,10 +296,6 @@
         }
 
         function openValidateModal(data) {
-            _proceedOpenValidateModal(data);
-        }
-
-        function _proceedOpenValidateModal(data) {
             window.currentValidateData = data;
             document.getElementById('modal_voucher_img').src = data.voucher;
             document.getElementById('modal_voucher_link').href = data.voucher;
@@ -315,11 +311,13 @@
             document.getElementById('v_method').textContent = methodLabel;
             
             const typeLabel = data.requested_type === 'interest' ? 'Solo Interés (Postergación)' : 'Cuota Completa';
-            document.getElementById('v_type').textContent = typeLabel;
-            if (data.requested_type === 'interest') {
-                document.getElementById('v_type').classList.replace('text-purple-600', 'text-amber-500');
-            } else {
-                document.getElementById('v_type').classList.replace('text-amber-500', 'text-purple-600');
+            const vType = document.getElementById('v_type');
+            vType.textContent = typeLabel;
+            vType.className = 'font-black text-purple-600 dark:text-purple-400 uppercase';
+
+            const interestNotice = document.getElementById('interest_voucher_notice');
+            if (interestNotice) {
+                interestNotice.classList.toggle('hidden', data.requested_type !== 'interest');
             }
 
             const transferFields = document.getElementById('v_transfer_fields');
