@@ -457,16 +457,25 @@
 
             const dateFmt = (d) => (d && d !== '—') ? new Date(d + 'T00:00:00').toLocaleDateString('es-PE') : '—';
 
+            const currencyLabel = (c) => c === 'USD' ? 'Dólares' : 'Soles';
+
             const fields = [
                 { label: 'Tipo', old: original.type ? (original.type === 'cuotas' ? 'Cuotas' : 'Único') : '—', new: (loan.type === 'cuotas' ? 'Cuotas' : 'Único') },
-                { label: 'Monto', old: original.amount ? symbol + ' ' + fmt(original.amount) : '—', new: symbol + ' ' + fmt(loan.amount) },
+            ];
+
+            if (original.currency && original.currency !== loan.currency) {
+                fields.push({ label: 'Moneda', old: currencyLabel(original.currency), new: currencyLabel(loan.currency) });
+            }
+
+            fields.push(
+                { label: 'Monto', old: original.amount ? (original.currency === 'USD' ? '$' : 'S/') + ' ' + fmt(original.amount) : '—', new: symbol + ' ' + fmt(loan.amount) },
                 { label: 'Tasa %', old: original.interest_rate ? parseFloat(original.interest_rate).toFixed(2) + '%' : '—', new: parseFloat(loan.interest_rate).toFixed(2) + '%' },
                 {
                     label: 'Plazo',
                     old: original.type === 'cuotas' ? (original.months + ' meses') : (original.payment_days ? (original.payment_days + ' días') : '—'),
                     new: loan.type === 'cuotas' ? (loan.months + ' meses') : (loan.payment_days + ' días')
                 }
-            ];
+            );
 
             if (loan.type === 'cuotas' || (original.type === 'cuotas')) {
                 fields.push({
@@ -479,7 +488,7 @@
             fields.push(
                 {
                     label: 'Cuota',
-                    old: original.monthly_payment ? symbol + ' ' + fmt(original.monthly_payment) : '—',
+                    old: original.monthly_payment ? (original.currency === 'USD' ? '$' : 'S/') + ' ' + fmt(original.monthly_payment) : '—',
                     new: symbol + ' ' + fmt(loan.monthly_payment)
                 },
                 { label: 'Desembolso', old: dateFmt(original.disbursement_date), new: dateFmt(loan.disbursement_date) }
