@@ -238,7 +238,7 @@
                             } }}
                         </span>
                         @if($inst->interest_payments_count > 0)
-                            <span class="block text-[7px] font-bold mt-0.5 text-amber-500">
+                            <span class="block text-[7px] font-bold mt-0.5 text-purple-500">
                                 {{ $inst->interest_payments_count }}x Interés pagado
                             </span>
                         @endif
