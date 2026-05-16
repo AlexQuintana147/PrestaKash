@@ -701,6 +701,46 @@
     </div>
 
     <!-- Modal Detalle de Préstamo -->
+    <div id="deleteMovementModal"
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-sm animate-in fade-in zoom-in duration-500">
+            <div class="px-10 py-12">
+                <div class="flex items-center justify-between mb-12">
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Deshacer Movimiento</h3>
+                    <button onclick="closeDeleteMovementModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-8">
+                    <p id="deleteMovementDesc" class="text-sm font-bold text-gray-900 dark:text-white mb-2"></p>
+                    <p id="deleteMovementAmount" class="text-2xl font-black tabular-nums mb-4"></p>
+                    <p class="text-[10px] font-black text-red-500 uppercase tracking-[0.3em] leading-relaxed">
+                        Esta acción revertirá el saldo de la caja y no se puede deshacer.
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button type="button" onclick="closeDeleteMovementModal()"
+                        class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                        Cerrar
+                    </button>
+                    <form id="deleteMovementForm" method="POST" class="inline">
+                        @csrf @method('DELETE')
+                        <button type="submit"
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400 pb-1 hover:opacity-60 transition-opacity">
+                            Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle de Préstamo -->
     <div id="loanDetailModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500">
@@ -986,11 +1026,15 @@
 
                 const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
                 const tagBorderClass = m.tag ? '' : (isLoanRelated ? '' : 'border-transparent');
+                const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
+                const clickAction = isLoanRelated
+                    ? `onclick="window.location.href='${redirectUrl}'"`
+                    : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toFixed(2)}', '${m.type}')"` : '');
 
                 const html = `
-                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5')} ${tagBorderClass}" 
+                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}" 
                                                  style="animation-delay: ${i * 0.05}s; ${tagBorderColor}"
-                                                 ${isLoanRelated ? `onclick="window.location.href='${redirectUrl}'"` : ''}>
+                                                 ${clickAction}>
                                                     <div class="flex items-center gap-4 md:gap-8">
                                                         <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
                                                             <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
@@ -1424,6 +1468,22 @@
             document.body.style.overflow = '';
         }
 
+        function openDeleteMovementModal(movementId, description, amount, type) {
+            document.getElementById('deleteMovementDesc').textContent = description;
+            const amountEl = document.getElementById('deleteMovementAmount');
+            const isIncome = type === 'income';
+            amountEl.textContent = (isIncome ? '+' : '-') + ' ' + amount;
+            amountEl.className = `text-2xl font-black tabular-nums mb-4 ${isIncome ? 'text-green-500' : 'text-red-500'}`;
+            document.getElementById('deleteMovementForm').action = `{{ route('superadmin.cashboxes.delete-movement', ['movement' => '__ID__']) }}`.replace('__ID__', movementId);
+            document.getElementById('deleteMovementModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteMovementModal() {
+            document.getElementById('deleteMovementModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
         function openHistoryModal() {
             const activeCard = document.querySelector('.cashbox-card.active');
             if (!activeCard) return;
@@ -1507,11 +1567,15 @@
 
                         const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
                         const tagBorderClass = m.tag ? '' : (isLoanRelated ? '' : 'border-transparent');
+                        const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
+                        const clickAction = isLoanRelated
+                            ? `onclick="window.location.href='${redirectUrl}'"`
+                            : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toFixed(2)}', '${m.type}')"` : '');
 
                         const html = `
-                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5')} ${tagBorderClass}" 
+                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}" 
                                              style="${tagBorderColor}"
-                                             ${isLoanRelated ? `onclick="window.location.href='${redirectUrl}'"` : ''}>
+                                             ${clickAction}>
                                             <div class="flex items-center gap-4 md:gap-8">
                                                 <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
                                                     <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>

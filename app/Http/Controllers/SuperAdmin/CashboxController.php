@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cashbox;
+use App\Models\CashboxMovement;
 use App\Models\CashboxTag;
 use Illuminate\Http\Request;
 
@@ -163,5 +164,45 @@ class CashboxController extends Controller
         });
 
         return back()->with('success', "Desplazamiento de {$from->currency} {$amount} realizado correctamente.");
+    }
+
+    public function deleteMovement(CashboxMovement $movement)
+    {
+        if (!in_array($movement->reference_type, ['manual', 'transfer'])) {
+            return back()->withErrors(['error' => 'Solo se pueden eliminar movimientos manuales o de desplazamiento.']);
+        }
+
+        \DB::transaction(function () use ($movement) {
+            $cashbox = $movement->cashbox;
+
+            if ($movement->type === 'income') {
+                $cashbox->decrement('balance', $movement->amount);
+            } else {
+                $cashbox->increment('balance', $movement->amount);
+            }
+
+            if ($movement->reference_type === 'transfer') {
+                $paired = CashboxMovement::where('reference_type', 'transfer')
+                    ->where('reference_id', $movement->cashbox_id)
+                    ->where('id', '!=', $movement->id)
+                    ->whereDate('date', $movement->date->toDateString())
+                    ->where('amount', $movement->amount)
+                    ->first();
+
+                if ($paired) {
+                    $pairedCashbox = $paired->cashbox;
+                    if ($paired->type === 'income') {
+                        $pairedCashbox->decrement('balance', $paired->amount);
+                    } else {
+                        $pairedCashbox->increment('balance', $paired->amount);
+                    }
+                    $paired->delete();
+                }
+            }
+
+            $movement->delete();
+        });
+
+        return back()->with('success', 'Movimiento eliminado correctamente.');
     }
 }

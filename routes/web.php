@@ -115,6 +115,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::delete('/cajas/{cashbox}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'destroy'])->name('cashboxes.destroy');
     Route::post('/cajas/{cashbox}/movimiento', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'addMovement'])->name('cashboxes.movement');
     Route::post('/cajas/desplazar', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'transfer'])->name('cashboxes.transfer');
+    Route::delete('/cajas/movimiento/{movement}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'deleteMovement'])->name('cashboxes.delete-movement');
     Route::resource('cajas-etiquetas', \App\Http\Controllers\SuperAdmin\CashboxTagController::class)->names('cashbox-tags')->except(['index', 'create', 'show', 'edit']);
 
     // Configuración
