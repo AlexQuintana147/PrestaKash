@@ -728,56 +728,55 @@
         }
     </style>
 <!-- Modal Contra-Oferta -->
-<div id="counterOfferModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
-        <!-- Close -->
-        <button onclick="closeCounterOfferModal()" class="absolute top-5 right-5 md:top-8 md:right-8 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+<div id="counterOfferModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <button onclick="closeCounterOfferModal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 md:top-8 md:right-8 p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
         <form id="counterOfferForm" method="POST" class="flex flex-col min-h-0 overflow-hidden">
             @csrf
-            <div class="p-4 md:p-8 flex flex-col min-h-0 overflow-hidden">
-                <div class="mb-6 pr-10 md:pr-12 flex flex-col md:flex-row items-start md:items-center md:justify-between gap-6">
-                    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 w-full md:w-auto">
+            <div class="p-3 sm:p-4 md:p-8 flex flex-col min-h-0 overflow-hidden">
+                <div class="mb-4 sm:mb-6 pr-8 sm:pr-10 md:pr-12 flex flex-col md:flex-row items-start md:items-center md:justify-between gap-3 sm:gap-6">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3 sm:gap-4 md:gap-8 w-full md:w-auto">
                         <div>
-                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
-                            <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
+                            <h3 class="text-base sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Contra-oferta</h3>
+                            <p class="text-[8px] sm:text-[10px] text-gray-500 mt-0.5 sm:mt-1 uppercase tracking-widest font-medium leading-relaxed">Ajuste de términos financieros</p>
                         </div>
                         <!-- Fecha Desembolso (Desktop) -->
                         <div class="hidden md:block w-40 space-y-1">
-                            <label class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
+                            <label class="text-[8px] sm:text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
                             <div class="relative" onclick="this.querySelector('input').showPicker()">
                                 <input type="date" name="disbursement_date_desktop" id="modal_disbursement_date_desktop"
                                        min="{{ date('Y-m-d') }}"
                                        onchange="document.getElementById('modal_disbursement_date').value = this.value"
-                                       class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1 pr-8 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
+                                       class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1 pr-8 text-xs sm:text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
                                        style="color-scheme: dark;">
                                 <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="modal_display_amount" class="font-black text-left md:text-right space-y-0.5 text-xs md:text-base w-full md:w-auto"></div>
+                    <div id="modal_display_amount" class="font-black text-left md:text-right space-y-0.5 text-[10px] sm:text-xs md:text-base w-full md:w-auto"></div>
                 </div>
 
-                <div id="modalInputsGrid" class="grid grid-cols-2 md:grid-cols-6 gap-4 md:gap-6 mb-6">
+                <div id="modalInputsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 md:gap-6 mb-3 sm:mb-4 md:mb-6">
                     <!-- Tipo -->
-                    <div class="space-y-2 col-span-2 md:col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tipo</label>
+                    <div class="space-y-1 sm:space-y-2 col-span-2 sm:col-span-1 md:col-span-1">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tipo</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="type" value="cuotas" class="hidden peer" onchange="toggleModalTypeFields(); calculatePreview()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     CUOTAS
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="type" value="unico" class="hidden peer" onchange="toggleModalTypeFields(); calculatePreview()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     ÚNICO
                                 </div>
                             </label>
@@ -785,18 +784,18 @@
                     </div>
 
                     <!-- Moneda -->
-                    <div class="space-y-2 col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Moneda</label>
+                    <div class="space-y-1 sm:space-y-2 col-span-1">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Moneda</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="currency" value="PEN" class="hidden peer" onchange="onCounterCurrencyChange()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     SOLES
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="currency" value="USD" class="hidden peer" onchange="onCounterCurrencyChange()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     DÓLARES
                                 </div>
                             </label>
@@ -804,26 +803,26 @@
                     </div>
 
                     <!-- Monto -->
-                    <div class="space-y-2 col-span-1 md:col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
+                    <div class="space-y-1 sm:space-y-2 col-span-1 md:col-span-1">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
                             <input type="text" name="amount" id="modal_amount"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-6 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
-                            <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold"></span>
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-1.5 sm:py-2 pr-6 text-base sm:text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
+                            <span id="modal_currency_symbol" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs sm:text-base"></span>
                         </div>
                     </div>
 
                     <!-- Fecha Desembolso (Mobile) -->
-                    <div class="md:hidden space-y-2 col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
+                    <div class="md:hidden space-y-1 sm:space-y-2 col-span-1">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
                         <div class="relative" onclick="this.querySelector('input').showPicker()">
                             <input type="date" name="disbursement_date" id="modal_disbursement_date"
                                    min="{{ date('Y-m-d') }}"
                                    onchange="document.getElementById('modal_disbursement_date_desktop').value = this.value"
-                                   class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
+                                   class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1.5 sm:py-2 pr-10 text-base sm:text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
                                    style="color-scheme: dark;">
                             <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                             </div>
@@ -831,31 +830,31 @@
                     </div>
 
                     <!-- Meses -->
-                    <div id="modalMonthsWrapper" class="space-y-2 col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Plazo (M)</label>
+                    <div id="modalMonthsWrapper" class="space-y-1 sm:space-y-2 col-span-1">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Plazo (M)</label>
                         <div class="relative">
                             <input type="number" name="months" id="modal_months" min="2" max="24" step="1"
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
                                    oninput="if(this.value > 24) this.value = 24; calculatePreview();"
                                    onblur="if(this.value && this.value < 2) this.value = 2; calculatePreview();"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-10 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
-                            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">M</span>
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-1.5 sm:py-2 pr-10 text-base sm:text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+                            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs sm:text-base">M</span>
                         </div>
                     </div>
 
                     <!-- Pago Único Días -->
-                    <div id="modalDaysWrapper" class="space-y-2 col-span-1 hidden">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Días</label>
+                    <div id="modalDaysWrapper" class="space-y-1 sm:space-y-2 col-span-1 hidden">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Días</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="payment_days" value="15" class="hidden peer" onchange="calculatePreview()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     15 D
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="payment_days" value="30" class="hidden peer" onchange="calculatePreview()">
-                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     30 D
                                 </div>
                             </label>
@@ -863,8 +862,8 @@
                     </div>
 
                     <!-- Tasa -->
-                    <div class="space-y-2 col-span-1">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tasa (%)</label>
+                    <div class="space-y-1 sm:space-y-2 col-span-1">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tasa (%)</label>
                         <div class="relative">
                             <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100"
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
@@ -885,26 +884,26 @@
                                                 this.setSelectionRange(start, start);
                                             }
                                             calculatePreview();"
-                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-2 pr-4 text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
-                            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
+                                   class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-1.5 sm:py-2 pr-4 text-base sm:text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
+                            <span class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs sm:text-base">%</span>
                         </div>
                     </div>
 
                     <!-- Sistema y Frecuencia (Agrupados para escritorio) -->
-                    <div class="col-span-2 md:col-span-1 space-y-4">
+                    <div class="col-span-2 sm:col-span-1 md:col-span-1 space-y-3 sm:space-y-4">
                         <!-- Sistema -->
-                        <div id="modalSystemWrapper" class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
+                        <div id="modalSystemWrapper" class="space-y-1 sm:space-y-2">
+                            <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
                             <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                                 <label class="flex-1 cursor-pointer group">
                                     <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                    <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                         FRANCÉS
                                     </div>
                                 </label>
                                 <label class="flex-1 cursor-pointer group">
                                     <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                    <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                         AMERICANO
                                     </div>
                                 </label>
@@ -912,13 +911,13 @@
                         </div>
 
                         <!-- Frecuencia -->
-                        <div id="modalFrequencyWrapper" class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
-                            <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
+                        <div id="modalFrequencyWrapper" class="space-y-1 sm:space-y-2">
+                            <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
+                            <div class="flex gap-1 sm:gap-2 border-b border-gray-100 dark:border-gray-900">
                                 @foreach(['diario' => 'DÍA', 'semanal' => 'SEM', 'quincenal' => 'QUIN', 'mensual' => 'MES'] as $val => $label)
                                     <label class="flex-1 cursor-pointer group">
                                         <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer" onchange="calculatePreview()">
-                                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                        <div class="py-1.5 sm:py-2 text-center text-[7px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                             {{ $label }}
                                         </div>
                                     </label>
@@ -929,26 +928,26 @@
                 </div>
 
                 <!-- Previews -->
-                <div class="flex-1 min-h-0 flex flex-col space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between px-1 flex-shrink-0 gap-3">
-                        <h4 class="text-[9px] md:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
-                        <div class="grid grid-cols-2 md:flex gap-x-4 gap-y-2">
-                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Total: <span id="previewTotal" class="text-gray-900 dark:text-white tabular-nums"></span></p>
-                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Cuota: <span id="previewMonthly" class="text-gray-900 dark:text-white tabular-nums"></span></p>
-                            <p class="text-[9px] md:text-[10px] text-green-600 font-black uppercase col-span-2">Ganancia: <span id="previewGain" class="tabular-nums"></span></p>
+                <div class="flex-1 min-h-0 flex flex-col space-y-3 sm:space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between px-1 flex-shrink-0 gap-2 sm:gap-3">
+                        <h4 class="text-[8px] sm:text-[9px] md:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
+                        <div class="grid grid-cols-2 sm:flex gap-x-3 sm:gap-x-4 gap-y-1 sm:gap-y-2">
+                            <p class="text-[8px] sm:text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Total: <span id="previewTotal" class="text-gray-900 dark:text-white tabular-nums"></span></p>
+                            <p class="text-[8px] sm:text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Cuota: <span id="previewMonthly" class="text-gray-900 dark:text-white tabular-nums"></span></p>
+                            <p class="text-[8px] sm:text-[9px] md:text-[10px] text-green-600 font-black uppercase col-span-2 sm:col-span-1">Ganancia: <span id="previewGain" class="tabular-nums"></span></p>
                         </div>
                     </div>
 
                     <!-- Cuotas Preview -->
                     <div id="previewCuotasContainer" class="flex-1 min-h-0 flex flex-col">
                         <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar">
-                            <table class="w-full text-[10px] text-left min-w-[320px] md:min-w-0">
+                            <table class="w-full text-[8px] sm:text-[10px] text-left min-w-[280px] sm:min-w-[320px] md:min-w-0">
                                 <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600 shadow-sm">
                                     <tr>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">N°</th>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Capital</th>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Interés</th>
-                                        <th class="px-4 py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">N°</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Capital</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Interés</th>
+                                        <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
                                     </tr>
                                 </thead>
                                 <tbody id="previewScheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
@@ -959,38 +958,38 @@
                     </div>
 
                     <!-- Único Preview -->
-                    <div id="previewUnicoContainer" class="hidden space-y-4 py-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 rounded-2xl border border-gray-100 dark:border-gray-900 relative">
-                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Original (<span id="unicoClientRate"></span>%)</p>
-                                <p id="unicoClientTotal" class="text-xl font-bold text-gray-400 line-through tabular-nums text-center"></p>
+                    <div id="previewUnicoContainer" class="hidden space-y-3 sm:space-y-4 py-3 sm:py-4">
+                        <div class="grid grid-cols-2 gap-2 sm:gap-4">
+                            <div class="p-2 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-900 relative">
+                                <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Original (<span id="unicoClientRate"></span>%)</p>
+                                <p id="unicoClientTotal" class="text-base sm:text-xl font-bold text-gray-400 line-through tabular-nums text-center"></p>
                             </div>
-                            <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/40 relative">
-                                <p class="text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Nueva Oferta (<span id="unicoAdminRate"></span>%)</p>
-                                <p id="unicoAdminTotal" class="text-xl font-black text-purple-600 tabular-nums text-center"></p>
+                            <div class="p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/40 relative">
+                                <p class="text-[8px] sm:text-[10px] text-purple-600 uppercase font-black tracking-widest mb-1">Nueva Oferta (<span id="unicoAdminRate"></span>%)</p>
+                                <p id="unicoAdminTotal" class="text-base sm:text-xl font-black text-purple-600 tabular-nums text-center"></p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-6 flex flex-col md:flex-row items-end justify-between gap-6 flex-shrink-0">
-                    <div class="w-full md:w-64 text-left space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                <div class="mt-3 sm:mt-4 md:mt-6 flex flex-col md:flex-row items-end justify-between gap-3 sm:gap-4 md:gap-6 flex-shrink-0">
+                    <div class="w-full md:w-64 text-left space-y-1 sm:space-y-2">
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
                         <div id="counter_cashbox_container">
                             <select name="cashbox_id" id="counter_cashbox_id" required
-                                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors appearance-none cursor-pointer">
+                                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-1.5 sm:py-2 px-2 sm:px-3 text-xs sm:text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors appearance-none cursor-pointer">
                                 <!-- JS populated -->
                             </select>
                         </div>
                         <a href="{{ route('superadmin.cashboxes.index') }}" id="counter_create_cashbox_btn" 
-                           class="hidden w-full block text-center py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
+                           class="hidden w-full block text-center py-1.5 sm:py-2 text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
                             Crear caja de <span class="currency-label"></span>
                         </a>
-                        <p id="counter_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">
+                        <p id="counter_cashbox_error" class="hidden text-[8px] sm:text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">
                             Saldo insuficiente en caja
                         </p>
                     </div>
-                    <button type="button" onclick="openCounterOfferConfirmModal()" class="w-full md:w-auto text-sm font-bold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 pb-1 hover:opacity-70 transition-all uppercase tracking-widest bg-transparent">
+                    <button type="button" onclick="openCounterOfferConfirmModal()" class="w-full md:w-auto text-xs sm:text-sm font-bold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 pb-1 hover:opacity-70 transition-all uppercase tracking-widest bg-transparent">
                         Confirmar y Enviar Contra-oferta
                     </button>
                 </div>
