@@ -407,12 +407,15 @@ class LoanController extends Controller
             $loan = $installment->loan;
 
             if ($isInterestOnly) {
+                $currentNumber = $installment->installment_number;
+                $freq = $loan->payment_frequency;
+
                 // Register movement
                 $cashbox->movements()->create([
                     'user_id' => auth()->id(),
                     'type' => 'income',
                     'amount' => $amount,
-                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo #{$loan->id} de {$loan->user->name}",
                     'reference_type' => 'loan_installment',
                     'reference_id' => $installment->id,
                     'date' => now(),
@@ -421,13 +424,12 @@ class LoanController extends Controller
                 $cashbox->increment('balance', $amount);
 
                 // Shift dates for all PENDING or REJECTED installments of this loan
-                $freq = $loan->payment_frequency;
                 $installmentsToShift = $loan->installments()
                     ->whereIn('status', ['pending', 'rejected', 'processing'])
                     ->get();
 
                 foreach ($installmentsToShift as $inst) {
-                    $date = $inst->due_date;
+                    $date = $inst->due_date->copy();
                     if ($freq === 'diario')
                         $date->addDay();
                     elseif ($freq === 'semanal')
@@ -440,7 +442,36 @@ class LoanController extends Controller
                     $inst->update(['due_date' => $date]);
                 }
 
-                // Reset current installment to pending since only interest was paid
+                // Renumber current and subsequent installments (+1)
+                $loan->installments()
+                    ->where('installment_number', '>=', $currentNumber)
+                    ->increment('installment_number');
+
+                // Create new installment at the end
+                $lastInst = $loan->installments()->orderBy('installment_number', 'desc')->first();
+                $newDate = $lastInst->due_date->copy();
+                if ($freq === 'diario')
+                    $newDate->addDay();
+                elseif ($freq === 'semanal')
+                    $newDate->addWeek();
+                elseif ($freq === 'quincenal')
+                    $newDate->addDays(15);
+                else
+                    $newDate->addMonth();
+
+                $loan->installments()->create([
+                    'installment_number' => $lastInst->installment_number + 1,
+                    'amount' => $lastInst->amount,
+                    'capital' => $lastInst->capital,
+                    'interest' => $lastInst->interest,
+                    'due_date' => $newDate,
+                    'status' => 'pending',
+                ]);
+
+                // Refresh to get the incremented installment_number
+                $installment->refresh();
+
+                // Reset current installment and mark interest payment
                 $installment->update([
                     'status' => 'pending',
                     'payment_voucher' => null,
@@ -448,7 +479,8 @@ class LoanController extends Controller
                     'bank_name' => null,
                     'operation_number' => null,
                     'requested_type' => 'full',
-                    'paid_at' => null
+                    'paid_at' => null,
+                    'interest_payments_count' => $installment->interest_payments_count + 1,
                 ]);
 
             } else {

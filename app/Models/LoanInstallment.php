@@ -21,6 +21,7 @@ class LoanInstallment extends Model
         'requested_type',
         'paid_at',
         'admin_notes',
+        'interest_payments_count',
     ];
 
     protected $casts = [

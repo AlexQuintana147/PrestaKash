@@ -237,6 +237,11 @@
                                 default      => $inst->status
                             } }}
                         </span>
+                        @if($inst->interest_payments_count > 0)
+                            <span class="block text-[7px] font-bold mt-0.5 text-amber-500">
+                                {{ $inst->interest_payments_count }}x Interés pagado
+                            </span>
+                        @endif
                         @if($inst->status === 'approved' && $inst->payment_status_detail)
                             @php $detail = $inst->payment_status_detail; @endphp
                             <span class="block text-[7px] font-bold mt-0.5
