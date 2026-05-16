@@ -190,7 +190,7 @@
                                     <span id="monthsDisplay"
                                         class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">12 meses</span>
                                 </div>
-                                <input type="range" name="months" id="months" min="3" max="24"
+                                <input type="range" name="months" id="months" min="2" max="24"
                                     value="{{ old('months', 12) }}"
                                     class="w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer">
                                 <div class="relative h-4 text-[10px] text-gray-300 dark:text-gray-700 mt-1.5">

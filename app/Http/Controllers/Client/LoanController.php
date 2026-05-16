@@ -49,7 +49,7 @@ class LoanController extends Controller
         ];
 
         if ($request->type === 'cuotas') {
-            $rules['months'] = 'required|integer|min:3|max:24';
+            $rules['months'] = 'required|integer|min:2|max:24';
             $rules['payment_frequency'] = 'required_if:amortization_system,frances|in:diario,semanal,quincenal,mensual';
         } else {
             $rules['payment_days'] = 'required|in:15,30';

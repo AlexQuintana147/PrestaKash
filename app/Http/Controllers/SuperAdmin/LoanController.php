@@ -75,7 +75,7 @@ class LoanController extends Controller
             'type' => 'required|in:cuotas,unico',
             'amortization_system' => 'required_if:type,cuotas|in:frances,americano',
             'interest_rate' => 'required|numeric|min:0|max:100',
-            'months' => 'nullable|integer|min:3|max:24',
+            'months' => 'nullable|integer|min:2|max:24',
             'payment_days' => 'nullable|in:15,30',
             'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
             'disbursement_date' => 'required|date|after_or_equal:today',
