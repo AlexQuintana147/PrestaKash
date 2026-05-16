@@ -301,15 +301,24 @@
         </button>
 
         <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Confirmar pago</p>
-        <p class="text-lg font-black text-gray-900 dark:text-white mb-6">
+        <p class="text-lg font-black text-gray-900 dark:text-white mb-1">
             Monto: <span id="modal_amount_text" class="text-gray-900 dark:text-white"></span>
+        </p>
+        <p class="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-6">
+            Sistema: 
+            @if($loan->type === 'unico')
+                <span class="text-blue-500">Único pago</span>
+            @elseif($loan->amortization_system === 'americano')
+                <span class="text-amber-500">Americano</span>
+            @else
+                <span class="text-purple-500">Francés</span>
+            @endif
         </p>
 
         <form id="uploadForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
-            <!-- Payment Type (Only for French system) -->
-            @if($loan->amortization_system === 'frances')
+            <!-- Payment Type -->
             <div class="space-y-3">
                 <p class="text-[8px] font-black uppercase tracking-widest text-gray-400">Tipo de pago</p>
                 <div class="flex gap-2">
@@ -319,18 +328,19 @@
                             CUOTA COMPLETA
                         </div>
                     </label>
-                    <label class="flex-1 cursor-pointer group">
+                    @if($loan->type === 'cuotas' && $loan->amortization_system === 'frances')
+                    <label id="interest-only-option" class="flex-1 cursor-pointer group">
                         <input type="radio" name="requested_type" value="interest" class="hidden peer" onchange="updateModalAmount('interest')">
                         <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-amber-600 transition-all border-b-2 border-transparent peer-checked:border-amber-600 hover:text-gray-600 dark:hover:text-gray-400">
                             SOLO INTERÉS
                         </div>
                     </label>
+                    @endif
                 </div>
                 <p id="interest-only-warning" class="hidden text-[8px] text-amber-500 font-bold uppercase leading-tight italic">
                     * Esta opción es exclusiva si no puedes pagar la cuota pactada. Se cobrará solo el interés y todas las cuotas se postergarán un periodo.
                 </p>
             </div>
-            @endif
             
             <!-- Payment Method -->
             <div class="space-y-3">
@@ -478,6 +488,15 @@ function openUploadModal(instId, amount, lateFee = 0, interest = 0) {
     };
 
     updateModalAmount('full');
+
+    const interestOption = document.getElementById('interest-only-option');
+    if (interestOption) {
+        if (interest <= 0 && lateFee <= 0) {
+            interestOption.classList.add('hidden');
+        } else {
+            interestOption.classList.remove('hidden');
+        }
+    }
 
     document.getElementById('uploadForm').action = `/panel/historial-crediticio/pagar/${instId}`;
     document.getElementById('uploadModal').classList.remove('hidden');
