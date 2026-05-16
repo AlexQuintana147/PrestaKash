@@ -295,35 +295,7 @@
             });
         }
 
-        let _pendingInterestData = null;
-
-        function openInterestConfirmModal(data) {
-            _pendingInterestData = data;
-            document.getElementById('ic_user').textContent   = data.user;
-            document.getElementById('ic_number').textContent = '#' + data.number;
-            document.getElementById('ic_amount').textContent = data.amount;
-            document.getElementById('ic_voucher_img').src = data.voucher || '';
-            document.getElementById('interestConfirmModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeInterestConfirmModal() {
-            document.getElementById('interestConfirmModal').classList.add('hidden');
-            document.body.style.overflow = '';
-            _pendingInterestData = null;
-        }
-
-        function confirmInterestValidation() {
-            document.getElementById('interestConfirmModal').classList.add('hidden');
-            if (_pendingInterestData) _proceedOpenValidateModal(_pendingInterestData);
-            _pendingInterestData = null;
-        }
-
         function openValidateModal(data) {
-            if (data.requested_type === 'interest') {
-                openInterestConfirmModal(data);
-                return;
-            }
             _proceedOpenValidateModal(data);
         }
 
