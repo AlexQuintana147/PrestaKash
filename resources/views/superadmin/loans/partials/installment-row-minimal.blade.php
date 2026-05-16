@@ -23,7 +23,7 @@
                     {{ number_format($inst->amount + $lateFee, 2) }}</span>
             @endif
         </p>
-        @if(in_array($inst->status, ['approved', 'processing']) && $inst->payment_method === 'transfer')
+        @if(in_array($inst->status, ['approved', 'processing']) && $inst->payment_method !== 'cash')
             <p class="text-[8px] text-purple-500 font-black uppercase tracking-widest mt-1 flex items-center gap-1">
                 @if($inst->operation_number)
                     OP: {{ $inst->operation_number }}

@@ -67,7 +67,7 @@
                     <span
                         class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $inst->bank_name ?? $loan->bank_name }}</span>
                     
-                    @if(in_array($inst->status, ['approved', 'processing']) && $inst->payment_method === 'transfer')
+                    @if(in_array($inst->status, ['approved', 'processing']) && $inst->payment_method !== 'cash')
                         <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
                         @if($inst->operation_number)
                             <span class="text-[9px] text-purple-500 font-black uppercase tracking-widest">OP: {{ $inst->operation_number }}</span>
