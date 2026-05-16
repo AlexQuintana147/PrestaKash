@@ -7,7 +7,9 @@
     $cur = $loan->currency === 'USD' ? '$' : 'S/';
     $total_i = $loan->installments->count();
     $paid_i  = $loan->installments->where('status', 'approved')->count();
+    // Una cuota es pagable si es la primera que no está aprobada ni en revisión
     $hasAnyProcessing = $loan->installments->where('status', 'processing')->count() > 0;
+    $firstPayable = $hasAnyProcessing ? null : $loan->installments->whereIn('status', ['pending', 'rejected'])->sortBy('installment_number')->first();
     $firstNonApproved = $loan->installments->where('status', '!=', 'approved')->sortBy('installment_number')->first();
     $progress = $total_i > 0 ? round(($paid_i / $total_i) * 100) : 0;
 @endphp
@@ -91,11 +93,11 @@
                         </div>
                     </div>
 
-                    @if($firstNonApproved && in_array($firstNonApproved->status, ['pending', 'rejected']) && !$hasAnyProcessing)
+                    @if($firstPayable && in_array($firstPayable->status, ['pending', 'rejected']))
                     <button type="button"
-                        onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstNonApproved->id }}, '{{ $cur }}{{ number_format($firstNonApproved->amount, 2) }}', {{ $firstNonApproved->late_fee }})"
+                        onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($firstPayable->amount, 2) }}', {{ $firstPayable->late_fee }})"
                         class="w-full py-3 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-red-500/20 mb-6">
-                        Pagar cuota atrasada
+                        Pagar cuota pendiente
                     </button>
                     @endif
 
@@ -176,8 +178,7 @@
             @foreach($loan->installments->sortBy('installment_number') as $inst)
             @php
                 $isOverdue = $inst->due_date->isPast() && $inst->status !== 'approved';
-                $canPay = !$hasAnyProcessing && ($firstNonApproved && $firstNonApproved->id === $inst->id)
-                          && in_array($inst->status, ['pending', 'rejected']);
+                $canPay = $firstPayable && $firstPayable->id === $inst->id;
                 $statusKey = $inst->status === 'approved' ? 'paid' : 'pending';
             @endphp
             <div class="inst-row py-4 flex items-center gap-4" data-status="{{ $statusKey }}">
