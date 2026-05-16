@@ -29,7 +29,10 @@
         'reason' => $loan->reason,
     ];
 @endphp
-<div id="installment-{{ $inst->id }}" class="py-6 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20">
+<div id="installment-{{ $inst->id }}" 
+     data-installment-id="{{ $inst->id }}"
+     data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
+     class="py-6 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20">
     <div class="flex flex-col md:flex-row md:items-center gap-6">
 
         <!-- Usuario & Préstamo -->

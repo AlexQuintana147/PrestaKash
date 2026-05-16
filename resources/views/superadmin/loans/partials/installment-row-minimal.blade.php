@@ -3,7 +3,9 @@
     $isOverdue = $inst->due_date->isPast() && $inst->status !== 'approved';
     $lateFee = $inst->late_fee;
 @endphp
-<div class="py-3 flex items-center justify-between gap-4">
+<div data-installment-id="{{ $inst->id }}"
+     data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
+     class="py-3 flex items-center justify-between gap-4">
     <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
             <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-tight">
