@@ -396,22 +396,18 @@
             const urlParams = new URLSearchParams(window.location.search);
             const instId = urlParams.get('installment_id');
             const highlightInterest = urlParams.get('highlight_interest');
-            
+            const movementDate = urlParams.get('movement_date');
+
             if (instId && highlightInterest === 'true') {
-                // Highlight all virtual interest payment rows for this installment
+                // Highlight only the first virtual interest payment row for this installment
                 const virtualRows = document.querySelectorAll('[data-installment-id="' + instId + '"][data-is-interest-payment="true"]');
                 if (virtualRows.length > 0) {
-                    virtualRows.forEach((row, index) => {
-                        setTimeout(() => {
-                            row.classList.add('bg-amber-50', 'dark:bg-amber-900/10', 'ring-2', 'ring-amber-400', 'rounded-2xl');
-                            if (index === 0) {
-                                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                            setTimeout(() => {
-                                row.classList.remove('bg-amber-50', 'dark:bg-amber-900/10', 'ring-2', 'ring-amber-400');
-                            }, 4000);
-                        }, index * 100);
-                    });
+                    const row = virtualRows[0];
+                    row.classList.add('bg-amber-50', 'dark:bg-amber-900/10', 'ring-2', 'ring-amber-400', 'rounded-2xl');
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        row.classList.remove('bg-amber-50', 'dark:bg-amber-900/10', 'ring-2', 'ring-amber-400');
+                    }, 4000);
                 }
             } else if (instId) {
                 const el = document.getElementById('installment-' + instId);

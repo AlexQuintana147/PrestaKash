@@ -296,6 +296,7 @@ class LoanController extends Controller
         $filter = $request->get('filter', 'all');
         $instId = $request->get('installment_id');
         $highlightInterest = $request->get('highlight_interest', false);
+        $movementDate = $request->get('movement_date');
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
         $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents', 'interestPayments'])
@@ -346,7 +347,7 @@ class LoanController extends Controller
             }
             $installments = collect($latestPerUserLoan)->values();
             // Skip the expansion logic and pagination for pending_validation
-            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest'));
+            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
         } elseif ($filter === 'paid') {
             $query->where(function ($q) {
                 $q->where('status', 'approved')
@@ -403,7 +404,7 @@ class LoanController extends Controller
         );
         $installments->withQueryString();
 
-        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest'));
+        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
     }
 
     public function installmentsGroup(Request $request, \App\Models\Loan $loan)
