@@ -193,6 +193,12 @@
                     </div>
                 @endforelse
             </div>
+
+            @if(isset($loansPaginator) && $loansPaginator->hasPages())
+                <div class="mt-12 flex justify-center">
+                    {{ $loansPaginator->links() }}
+                </div>
+            @endif
         @else
             <!-- Vista Lista Simple -->
             <div class="divide-y divide-gray-100 dark:divide-gray-900">

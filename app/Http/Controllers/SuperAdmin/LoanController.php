@@ -308,13 +308,14 @@ class LoanController extends Controller
             $query->where('id', $instId);
             $filter = 'all';
         } elseif ($filter === 'grouped') {
-            $loans = \App\Models\Loan::with(['user', 'user.documents'])
+            $loansPaginator = \App\Models\Loan::with(['user', 'user.documents'])
                 ->whereIn('status', ['approved', 'paid'])
                 ->latest()
-                ->get();
+                ->paginate(10)
+                ->withQueryString();
 
             $groupedInstallments = [];
-            foreach ($loans as $loan) {
+            foreach ($loansPaginator as $loan) {
                 $pageName = 'p_' . $loan->id;
                 $installments = $loan->installments()
                     ->orderBy('due_date', 'asc')
@@ -331,22 +332,33 @@ class LoanController extends Controller
 
             return view('superadmin.loans.installments', [
                 'groupedInstallments' => $groupedInstallments,
+                'loansPaginator' => $loansPaginator,
                 'filter' => $filter,
                 'cashboxes' => $cashboxes
             ]);
         } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
             // For each user/loan combination, only show the most recent installment
-            $installments = $query->orderBy('updated_at', 'desc')->get();
+            $allProcessing = $query->orderBy('updated_at', 'desc')->get();
             $latestPerUserLoan = [];
-            foreach ($installments as $inst) {
+            foreach ($allProcessing as $inst) {
                 $key = $inst->loan->user_id . '-' . $inst->loan_id;
                 if (!isset($latestPerUserLoan[$key])) {
                     $latestPerUserLoan[$key] = $inst;
                 }
             }
-            $installments = collect($latestPerUserLoan)->values();
-            // Skip the expansion logic and pagination for pending_validation
+            $deduped = collect($latestPerUserLoan)->values();
+            $page = LengthAwarePaginator::resolveCurrentPage();
+            $perPage = 10;
+            $sliced = $deduped->slice(($page - 1) * $perPage, $perPage);
+            $installments = new LengthAwarePaginator(
+                $sliced,
+                $deduped->count(),
+                $perPage,
+                $page,
+                ['path' => LengthAwarePaginator::resolveCurrentPath()]
+            );
+            $installments->withQueryString();
             return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
         } elseif ($filter === 'paid') {
             $query->where(function ($q) {
@@ -473,6 +485,14 @@ class LoanController extends Controller
                 $currentNumber = $installment->installment_number;
                 $freq = $loan->payment_frequency;
 
+                // Capture payment fields before clearing
+                $savedVoucher = $installment->payment_voucher;
+                $savedMethod  = $installment->payment_method;
+                $savedBank    = $installment->bank_name;
+                $savedOp      = $installment->operation_number;
+                $savedLateFee = $installment->late_fee;
+                $savedInterest = $installment->interest;
+
                 // Register movement
                 $cashbox->movements()->create([
                     'user_id' => auth()->id(),
@@ -533,6 +553,18 @@ class LoanController extends Controller
 
                 // Refresh to get the incremented installment_number
                 $installment->refresh();
+
+                // Persist voucher & payment details in interest_payments table
+                \App\Models\InterestPayment::create([
+                    'loan_installment_id' => $installment->id,
+                    'payment_voucher'     => $savedVoucher,
+                    'payment_method'      => $savedMethod,
+                    'bank_name'           => $savedBank,
+                    'operation_number'    => $savedOp,
+                    'amount'              => $savedInterest,
+                    'late_fee'            => $savedLateFee,
+                    'paid_at'             => now(),
+                ]);
 
                 // Reset current installment and mark interest payment
                 $installment->update([

@@ -79,7 +79,7 @@
             </span>
         @endif
 
-        @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && ($inst->payment_voucher || (isset($inst->interest_payment) && $inst->interest_payment && $inst->interest_payment->payment_voucher)))
+        @if(isset($inst->is_interest_payment) && $inst->is_interest_payment)
             @if(isset($inst->interest_payment) && $inst->interest_payment && $inst->interest_payment->payment_voucher)
                 <button type="button" onclick="openVoucherLightbox('{{ Storage::url($inst->interest_payment->payment_voucher) }}')"
                     class="text-amber-600 dark:text-amber-400 hover:opacity-60 transition-opacity" title="Ver comprobante de interés">
