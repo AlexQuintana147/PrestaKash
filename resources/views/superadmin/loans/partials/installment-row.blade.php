@@ -152,16 +152,23 @@
             @endif
             <div>
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Monto</p>
-                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">
-                    {{ $currency }} {{ number_format($inst->amount, 2) }}
-                </p>
-                <p class="text-[8px] text-gray-400 font-bold mt-0.5">
-                    C: {{ $currency }}{{ number_format($inst->capital, 2) }} • I: {{ $currency }}{{ number_format($inst->interest, 2) }}
-                </p>
+                @if($inst->requested_type === 'interest')
+                    <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
+                        {{ $currency }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
+                    </p>
+                    <p class="text-[8px] text-amber-500/80 font-bold mt-0.5 uppercase tracking-tighter">
+                        Solo Interés (Postergado)
+                    </p>
+                @else
+                    <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">
+                        {{ $currency }} {{ number_format($inst->amount + ($inst->late_fee ?? 0), 2) }}
+                    </p>
+                    <p class="text-[8px] text-gray-400 font-bold mt-0.5">
+                        C: {{ $currency }}{{ number_format($inst->capital, 2) }} • I: {{ $currency }}{{ number_format($inst->interest, 2) }}
+                    </p>
+                @endif
                 @if($lateFee > 0)
                     <p class="text-[8px] font-bold text-orange-500 mt-0.5">+ {{ number_format($lateFee, 2) }} mora</p>
-                    <p class="text-[9px] font-black text-gray-900 dark:text-white mt-0.5">Total: {{ $currency }}
-                        {{ number_format($inst->amount + $lateFee, 2) }}</p>
                 @endif
             </div>
         </div>
