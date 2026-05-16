@@ -984,9 +984,12 @@
                     }
                 }
 
+                const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
+                const tagBorderClass = m.tag ? '' : (isLoanRelated ? '' : 'border-transparent');
+
                 const html = `
-                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : 'hover:bg-gray-50 dark:hover:bg-white/5 border-transparent'}" 
-                                                 style="animation-delay: ${i * 0.05}s"
+                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5')} ${tagBorderClass}" 
+                                                 style="animation-delay: ${i * 0.05}s; ${tagBorderColor}"
                                                  ${isLoanRelated ? `onclick="window.location.href='${redirectUrl}'"` : ''}>
                                                     <div class="flex items-center gap-4 md:gap-8">
                                                         <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
@@ -1005,7 +1008,7 @@
                                                                 ` : ''}
                                                             </div>
                                                             <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
-                                                                ${displayType}${m.cashbox_tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.cashbox_tag.color}"></span><span style="color:${m.cashbox_tag.color}">${m.cashbox_tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -1502,8 +1505,12 @@
                             }
                         }
 
+                        const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
+                        const tagBorderClass = m.tag ? '' : (isLoanRelated ? '' : 'border-transparent');
+
                         const html = `
-                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : 'hover:bg-gray-50 dark:hover:bg-white/5 border-transparent'}" 
+                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5')} ${tagBorderClass}" 
+                                             style="${tagBorderColor}"
                                              ${isLoanRelated ? `onclick="window.location.href='${redirectUrl}'"` : ''}>
                                             <div class="flex items-center gap-4 md:gap-8">
                                                 <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
@@ -1522,7 +1529,7 @@
                                                         ` : ''}
                                                     </div>
                                                     <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
-                                                        ${displayType}${m.cashbox_tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.cashbox_tag.color}"></span><span style="color:${m.cashbox_tag.color}">${m.cashbox_tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                        ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
                                                     </p>
                                                 </div>
                                             </div>
