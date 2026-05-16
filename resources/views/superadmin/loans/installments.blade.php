@@ -417,13 +417,18 @@
             const urlParams = new URLSearchParams(window.location.search);
             const instId = urlParams.get('installment_id');
             const highlightInterest = urlParams.get('highlight_interest');
-            const movementDate = urlParams.get('movement_date');
 
             if (instId && highlightInterest === 'true') {
-                // Highlight only the first virtual interest payment row for this installment
                 const virtualRows = document.querySelectorAll('[data-installment-id="' + instId + '"][data-is-interest-payment="true"]');
-                if (virtualRows.length > 0) {
-                    const row = virtualRows[0];
+                let row = null;
+                const ipId = urlParams.get('interest_payment_id');
+                if (ipId) {
+                    row = document.querySelector('[data-interest-payment-id="' + ipId + '"]');
+                }
+                if (!row && virtualRows.length > 0) {
+                    row = virtualRows[0];
+                }
+                if (row) {
                     row.classList.add('bg-amber-50', 'dark:bg-amber-900/10', 'ring-2', 'ring-amber-400', 'rounded-2xl');
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     setTimeout(() => {

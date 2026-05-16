@@ -5,6 +5,10 @@
 @endphp
 <div data-installment-id="{{ $inst->id }}"
      data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
+     @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
+     data-interest-payment-id="{{ $inst->interest_payment->id }}"
+     data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
+     @endif
      class="py-3 flex items-center justify-between gap-4">
     <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">

@@ -812,8 +812,8 @@
                 } else if (m.reference_type === 'loan_installment') {
                     const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
                     if (isInterestOnly) {
-                        const movementDate = new Date(m.date).getTime();
-                        redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}&highlight_interest=true&movement_date=${movementDate}`;
+                        const ipId = m.interest_payment_id || '';
+                        redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}&highlight_interest=true&interest_payment_id=${ipId}`;
                     } else {
                         redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
                     }
@@ -1214,8 +1214,8 @@
                         } else if (m.reference_type === 'loan_installment') {
                             const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
                             if (isInterestOnly) {
-                                const movementDate = new Date(m.date).getTime();
-                                redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}&highlight_interest=true&movement_date=${movementDate}`;
+                                const ipId = m.interest_payment_id || '';
+                                redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}&highlight_interest=true&interest_payment_id=${ipId}`;
                             } else {
                                 redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
                             }

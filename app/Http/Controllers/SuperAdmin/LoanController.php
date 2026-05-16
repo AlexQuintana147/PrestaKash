@@ -496,7 +496,7 @@ class LoanController extends Controller
                 $savedInterest = $installment->interest;
 
                 // Register movement
-                $cashbox->movements()->create([
+                $movement = $cashbox->movements()->create([
                     'user_id' => auth()->id(),
                     'type' => 'income',
                     'amount' => $amount,
@@ -557,7 +557,7 @@ class LoanController extends Controller
                 $installment->refresh();
 
                 // Persist voucher & payment details in interest_payments table
-                \App\Models\InterestPayment::create([
+                $interestPayment = \App\Models\InterestPayment::create([
                     'loan_installment_id' => $installment->id,
                     'payment_voucher'     => $savedVoucher,
                     'payment_method'      => $savedMethod,
@@ -567,6 +567,8 @@ class LoanController extends Controller
                     'late_fee'            => $savedLateFee,
                     'paid_at'             => now(),
                 ]);
+
+                $movement->update(['interest_payment_id' => $interestPayment->id]);
 
                 // Reset current installment and mark interest payment
                 $installment->update([

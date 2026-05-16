@@ -32,6 +32,10 @@
 <div id="installment-{{ $inst->id }}" 
      data-installment-id="{{ $inst->id }}"
      data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
+     @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
+     data-interest-payment-id="{{ $inst->interest_payment->id }}"
+     data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
+     @endif
      class="py-6 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20">
     <div class="flex flex-col md:flex-row md:items-center gap-6">
 

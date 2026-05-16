@@ -14,6 +14,7 @@ class CashboxMovement extends Model
         'description',
         'reference_type',
         'reference_id',
+        'interest_payment_id',
         'date',
     ];
 
