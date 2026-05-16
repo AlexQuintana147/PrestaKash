@@ -1171,7 +1171,7 @@
         if (months > 24) months = 24;
 
         const amount = parseFloat(document.getElementById('modal_amount').value.replace(/,/g, '')) || 0;
-        const rate = (parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0) / 12; // Tasa mensual
+        const rate = (parseFloat(document.getElementById('modal_interest_rate').value) / 100 || 0);
         const type = document.querySelector('input[name="type"]:checked')?.value || 'cuotas';
         const systemRadio = document.querySelector('input[name="amortization_system"]:checked');
         const system = systemRadio ? systemRadio.value : 'frances';
@@ -1215,10 +1215,17 @@
         }
 
         // Loan with installments
-        const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
+        let n, periodicRate, installmentsPerMonth;
 
-        const n = months * installmentsPerMonth;
-        const periodicRate = rate / installmentsPerMonth;
+        if (system === 'frances') {
+            installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
+            n = months * installmentsPerMonth;
+            periodicRate = rate / installmentsPerMonth;
+        } else {
+            installmentsPerMonth = 1;
+            n = months;
+            periodicRate = rate;
+        }
 
         let schedule = [];
         let totalInterest = 0;
@@ -1226,9 +1233,8 @@
         let pmtText = '';
 
         if (system === 'frances') {
-            // French: Fixed installments
             if (amount > 0 && rate > 0) {
-                periodicPayment = amount * (periodicRate * Math.pow(1 + periodicRate, n)) / (Math.pow(1 + periodicRate, n) - 1);
+                periodicPayment = (amount * periodicRate) / (1 - Math.pow(1 + periodicRate, -n));
             } else {
                 periodicPayment = amount / n;
             }
@@ -1247,7 +1253,6 @@
             }
             pmtText = `${currency}${periodicPayment.toFixed(2)} / ${freq}`;
         } else {
-            // American: Fixed interest payments, principal at the end
             periodicPayment = amount * periodicRate;
             let balance = amount;
             for (let i = 1; i <= n; i++) {
@@ -1627,7 +1632,7 @@
 
         const currency = loan.currency === 'USD' ? '$' : 'S/';
         const amount = parseFloat(loan.amount);
-        const rate = (parseFloat(loan.interest_rate) / 100) / 12; // Tasa mensual (Anual / 12)
+        const rate = (parseFloat(loan.interest_rate) / 100);
         const system = loan.system || 'frances';
         const freq = loan.payment_frequency || 'mensual';
         const months = parseInt(loan.months) || 1;
@@ -1651,13 +1656,19 @@
 
         const fmt = (n) => parseFloat(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-        const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
-        const nTotal = months * installmentsPerMonth;
-        const periodicRate = rate / installmentsPerMonth;
+        let nTotal, periodicRate;
+        if (system === 'frances') {
+            const installmentsPerMonth = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 }[freq] || 1;
+            nTotal = months * installmentsPerMonth;
+            periodicRate = rate / installmentsPerMonth;
+        } else {
+            nTotal = months;
+            periodicRate = rate;
+        }
 
         if (system === 'frances') {
             periodicPayment = (amount > 0 && rate > 0)
-                ? amount * (periodicRate * Math.pow(1 + periodicRate, nTotal)) / (Math.pow(1 + periodicRate, nTotal) - 1)
+                ? (amount * periodicRate) / (1 - Math.pow(1 + periodicRate, -nTotal))
                 : amount / nTotal;
 
             let balance = amount;
@@ -1669,7 +1680,6 @@
                 fullSchedule.push({ n: i, principal, interest, cuota: periodicPayment, balance });
             }
         } else {
-            // Americano: intereses periódicos, capital al final
             periodicPayment = amount * periodicRate;
             let balance = amount;
             for (let i = 1; i <= nTotal; i++) {
