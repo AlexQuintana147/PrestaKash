@@ -1323,9 +1323,49 @@
                 const inst = m.installment;
                 const loan = inst.loan;
                 const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-                title.textContent = 'Detalle de Cobranza';
+                const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
+                
+                title.textContent = isInterestOnly ? 'Detalle de Pago de Interés' : 'Detalle de Cobranza';
 
-                content.innerHTML = `
+                if (isInterestOnly) {
+                    content.innerHTML = `
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tipo de Pago</p>
+                                                    <p class="text-sm font-bold text-amber-600 dark:text-amber-400 uppercase">Solo Interés</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto del Interés</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inst.interest).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Capital de Cuota</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inst.capital).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° de Cuota</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Fecha de Pago</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${new Date(m.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                                                </div>
+                                            </div>
+                                        `;
+                } else {
+                    content.innerHTML = `
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div>
                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
@@ -1353,6 +1393,7 @@
                                                 </div>
                                             </div>
                                         `;
+                }
             } else {
                 return;
             }
@@ -1410,9 +1451,49 @@
                 const inst = movement.installment;
                 const loan = inst.loan;
                 const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-                title.textContent = 'Detalle de Cobranza';
+                const isInterestOnly = movement.description && movement.description.includes('SOLO INTERÉS');
+                
+                title.textContent = isInterestOnly ? 'Detalle de Pago de Interés' : 'Detalle de Cobranza';
 
-                content.innerHTML = `
+                if (isInterestOnly) {
+                    content.innerHTML = `
+                                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.user ? loan.user.name : 'N/A'}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Tipo de Pago</p>
+                                                                                    <p class="text-sm font-bold text-amber-600 dark:text-amber-400 uppercase">Solo Interés</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto del Interés</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inst.interest).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Capital de Cuota</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inst.capital).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">N° de Cuota</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.bank_name}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Fecha de Pago</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${new Date(movement.date).toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        `;
+                } else {
+                    content.innerHTML = `
                                                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                                                 <div>
                                                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Cliente</p>
@@ -1440,6 +1521,7 @@
                                                                                 </div>
                                                                             </div>
                                                                         `;
+                }
             } else {
                 return;
             }
