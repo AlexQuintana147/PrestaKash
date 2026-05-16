@@ -784,6 +784,25 @@
                         </div>
                     </div>
 
+                    <!-- Moneda -->
+                    <div class="space-y-2 col-span-1">
+                        <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Moneda</label>
+                        <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="currency" value="PEN" class="hidden peer" onchange="onCounterCurrencyChange()">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    SOLES
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="currency" value="USD" class="hidden peer" onchange="onCounterCurrencyChange()">
+                                <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    DÓLARES
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- Monto -->
                     <div class="space-y-2 col-span-1 md:col-span-1">
                         <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
@@ -999,32 +1018,10 @@
 
             form.action = `/gestion-interna/prestamos/${loan.id}/counter-offer`;
 
-            // Populate cashboxes
-            const cashboxSelect = document.getElementById('counter_cashbox_id');
-            const cashboxContainer = document.getElementById('counter_cashbox_container');
-            const createBtn = document.getElementById('counter_create_cashbox_btn');
-            const errorMsg = document.getElementById('counter_cashbox_error');
-            errorMsg.classList.add('hidden');
-            
-            const filteredCashboxes = allCashboxes.filter(cb => cb.currency === loan.currency);
-            
-            if (filteredCashboxes.length === 0) {
-                cashboxContainer.classList.add('hidden');
-                createBtn.classList.remove('hidden');
-                createBtn.querySelector('.currency-label').textContent = loan.currency;
-                cashboxSelect.innerHTML = '';
-                cashboxSelect.required = false;
-            } else {
-                cashboxContainer.classList.remove('hidden');
-                createBtn.classList.add('hidden');
-                cashboxSelect.required = true;
-                cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
-                    `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
-                ).join('');
-            }
+            const currencyRadio = document.querySelector(`input[name="currency"][value="${loan.currency}"]`);
+            if (currencyRadio) currencyRadio.checked = true;
 
-            cashboxSelect.onchange = () => validateCounterCashbox();
-            validateCounterCashbox();
+            refreshCounterCashboxes();
 
             // Set initial values
             const systemWrapper = document.getElementById('modalSystemWrapper');
@@ -1177,7 +1174,7 @@
         const system = systemRadio ? systemRadio.value : 'frances';
         const freqRadio = document.querySelector('input[name="payment_frequency"]:checked');
         const freq = freqRadio ? freqRadio.value : 'mensual';
-        const currency = currentLoan.currency === 'USD' ? '$' : 'S/';
+        const currency = getCounterCurrency() === 'USD' ? '$' : 'S/';
 
         const body = document.getElementById('previewScheduleBody');
         const totalEl = document.getElementById('previewTotal');
@@ -1371,6 +1368,47 @@
             btn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
             btn.classList.add('bg-green-600', 'hover:bg-green-700');
         }
+    }
+
+    function getCounterCurrency() {
+        const checked = document.querySelector('input[name="currency"]:checked');
+        return checked ? checked.value : (currentLoan ? currentLoan.currency : 'PEN');
+    }
+
+    function refreshCounterCashboxes() {
+        const currency = getCounterCurrency();
+        const cashboxSelect = document.getElementById('counter_cashbox_id');
+        const cashboxContainer = document.getElementById('counter_cashbox_container');
+        const createBtn = document.getElementById('counter_create_cashbox_btn');
+        const errorMsg = document.getElementById('counter_cashbox_error');
+        errorMsg.classList.add('hidden');
+
+        const filteredCashboxes = allCashboxes.filter(cb => cb.currency === currency);
+
+        if (filteredCashboxes.length === 0) {
+            cashboxContainer.classList.add('hidden');
+            createBtn.classList.remove('hidden');
+            createBtn.querySelector('.currency-label').textContent = currency;
+            cashboxSelect.innerHTML = '';
+            cashboxSelect.required = false;
+        } else {
+            cashboxContainer.classList.remove('hidden');
+            createBtn.classList.add('hidden');
+            cashboxSelect.required = true;
+            cashboxSelect.innerHTML = filteredCashboxes.map(cb =>
+                `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
+            ).join('');
+        }
+
+        cashboxSelect.onchange = () => validateCounterCashbox();
+        validateCounterCashbox();
+    }
+
+    function onCounterCurrencyChange() {
+        const currency = getCounterCurrency();
+        document.getElementById('modal_currency_symbol').textContent = currency === 'USD' ? '$' : 'S/';
+        refreshCounterCashboxes();
+        calculatePreview();
     }
 
     function validateCounterCashbox() {

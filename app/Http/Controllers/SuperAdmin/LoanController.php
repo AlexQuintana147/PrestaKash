@@ -80,9 +80,14 @@ class LoanController extends Controller
             'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
             'disbursement_date' => 'required|date|after_or_equal:today',
             'cashbox_id' => 'required|exists:cashboxes,id',
+            'currency' => 'required|in:PEN,USD',
         ]);
 
         $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
+
+        if ($cashbox->currency !== $request->currency) {
+            return back()->withErrors(['cashbox_id' => 'La caja seleccionada no corresponde a la moneda elegida.']);
+        }
         $amount = (float) $request->amount;
 
         if ($cashbox->balance < $amount) {
@@ -108,6 +113,7 @@ class LoanController extends Controller
             'payment_frequency' => $freq,
             'interest_rate' => $request->interest_rate,
             'disbursement_date' => $request->disbursement_date,
+            'currency' => $request->currency,
             'status' => 'counter_offered',
         ];
 
@@ -122,6 +128,7 @@ class LoanController extends Controller
                 'payment_frequency' => $loan->payment_frequency,
                 'amortization_system' => $loan->amortization_system,
                 'disbursement_date' => $loan->disbursement_date,
+                'currency' => $loan->currency,
             ];
         }
 
