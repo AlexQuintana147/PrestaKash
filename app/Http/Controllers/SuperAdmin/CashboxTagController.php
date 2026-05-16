@@ -11,7 +11,7 @@ class CashboxTagController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/',
             'color' => 'required|string|max:7',
         ]);
 
@@ -23,7 +23,7 @@ class CashboxTagController extends Controller
     public function update(Request $request, CashboxTag $cajas_etiqueta)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/',
             'color' => 'required|string|max:7',
         ]);
 

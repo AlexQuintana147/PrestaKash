@@ -573,6 +573,7 @@
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Nombre</label>
                             <input type="text" name="name" id="tag_name" required placeholder="Ej: Operativo, Inversión..."
+                                oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')"
                                 class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-all">
                         </div>
 
