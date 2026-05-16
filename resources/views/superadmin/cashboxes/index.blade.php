@@ -13,10 +13,16 @@
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
                 </h1>
             </div>
-            <button onclick="openCashboxModal()"
-                class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
-                Nueva Caja
-            </button>
+            <div class="flex items-center gap-6">
+                <button onclick="openCashboxModal()"
+                    class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
+                    Nueva Caja
+                </button>
+                <button onclick="openTagsModal()"
+                    class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-1 hover:opacity-60 transition-opacity">
+                    Gestionar Etiquetas
+                </button>
+            </div>
         </div>
 
         @if(session('success'))
@@ -425,6 +431,18 @@
                             </p>
                         </div>
 
+                        <!-- Etiqueta -->
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Etiqueta</label>
+                            <select name="cashbox_tag_id" id="mov_tag" required
+                                class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
+                                <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <!-- Motivo / Descripción -->
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Motivo
@@ -498,6 +516,17 @@
                         </div>
 
                         <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Etiqueta</label>
+                            <select name="cashbox_tag_id" id="transfer_tag" required
+                                class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
+                                <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Descripción</label>
                             <input type="text" name="description" id="transfer_description" required
                                 placeholder="Ej: Traslado de fondos..."
@@ -516,6 +545,61 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gestionar Etiquetas -->
+    <div id="tagsModal"
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 max-h-[90vh] flex flex-col">
+            <div class="px-10 py-12 overflow-y-auto">
+                <div class="flex items-center justify-between mb-16">
+                    <h3 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase">Etiquetas</h3>
+                    <button onclick="closeTagsModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="tagForm" method="POST" class="space-y-12 mb-12">
+                    @csrf
+                    <input type="hidden" name="tag_id" id="tag_id">
+
+                    <div class="space-y-10">
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Nombre</label>
+                            <input type="text" name="name" id="tag_name" required placeholder="Ej: Operativo, Inversión..."
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-all">
+                        </div>
+
+                        <div>
+                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Color</label>
+                            <div class="flex items-center gap-4">
+                                <input type="color" name="color" id="tag_color" value="#6366f1"
+                                    class="w-12 h-12 rounded cursor-pointer border-0 bg-transparent">
+                                <span id="tag_color_hex" class="text-sm font-mono font-bold text-gray-500 dark:text-gray-400">#6366f1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-10 flex items-center justify-between">
+                        <button type="button" onclick="resetTagForm()"
+                            class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                            Limpiar
+                        </button>
+                        <button type="submit"
+                            class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-1 hover:opacity-60 transition-opacity">
+                            Guardar Etiqueta
+                        </button>
+                    </div>
+                </form>
+
+                <div id="tagsList" class="space-y-3">
+                </div>
             </div>
         </div>
     </div>
@@ -920,7 +1004,7 @@
                                                                 ` : ''}
                                                             </div>
                                                             <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
-                                                                ${displayType} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                ${displayType}${m.cashbox_tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.cashbox_tag.color}"></span><span style="color:${m.cashbox_tag.color}">${m.cashbox_tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -1229,6 +1313,79 @@
             document.body.style.overflow = '';
         }
 
+        const allTagsData = @json($tags ?? []);
+
+        function openTagsModal() {
+            const modal = document.getElementById('tagsModal');
+            resetTagForm();
+            renderTagsList();
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTagsModal() {
+            document.getElementById('tagsModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function resetTagForm() {
+            document.getElementById('tag_id').value = '';
+            document.getElementById('tag_name').value = '';
+            document.getElementById('tag_color').value = '#6366f1';
+            document.getElementById('tag_color_hex').textContent = '#6366f1';
+            document.getElementById('tagForm').action = "{{ route('superadmin.cashbox-tags.store') }}";
+            document.getElementById('tagForm').method = 'POST';
+        }
+
+        function editTag(id, name, color) {
+            document.getElementById('tag_id').value = id;
+            document.getElementById('tag_name').value = name;
+            document.getElementById('tag_color').value = color;
+            document.getElementById('tag_color_hex').textContent = color;
+            document.getElementById('tagForm').action = "{{ route('superadmin.cashbox-tags.update', ['cajas_etiqueta' => '__ID__']) }}".replace('__ID__', id);
+            document.getElementById('tagForm').method = 'POST';
+        }
+
+        function deleteTag(id) {
+            if (!confirm('¿Eliminar esta etiqueta?')) return;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ route('superadmin.cashbox-tags.destroy', ['cajas_etiqueta' => '__ID__']) }}".replace('__ID__', id);
+            form.innerHTML = `@csrf <input type="hidden" name="_method" value="DELETE">`;
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function renderTagsList() {
+            const container = document.getElementById('tagsList');
+            if (allTagsData.length === 0) {
+                container.innerHTML = '<p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center py-8">No hay etiquetas creadas</p>';
+                return;
+            }
+            container.innerHTML = allTagsData.map(tag => `
+                <div class="flex items-center justify-between py-3 border-b border-gray-50 dark:border-gray-900">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 rounded-full" style="background-color: ${tag.color}"></div>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">${tag.name}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="editTag(${tag.id}, '${tag.name.replace(/'/g, "\\'")}', '${tag.color}')"
+                            class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            Editar
+                        </button>
+                        <button type="button" onclick="deleteTag(${tag.id})"
+                            class="text-[9px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('tag_color').addEventListener('input', function() {
+            document.getElementById('tag_color_hex').textContent = this.value;
+        });
+
         function confirmDelete(id, movementsCount) {
             if (movementsCount > 0) {
                 const modal = document.getElementById('dangerousDeleteModal');
@@ -1364,7 +1521,7 @@
                                                         ` : ''}
                                                     </div>
                                                     <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
-                                                        ${displayType} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                        ${displayType}${m.cashbox_tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.cashbox_tag.color}"></span><span style="color:${m.cashbox_tag.color}">${m.cashbox_tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
                                                     </p>
                                                 </div>
                                             </div>

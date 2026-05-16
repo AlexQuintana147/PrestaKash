@@ -15,6 +15,7 @@ class CashboxMovement extends Model
         'reference_type',
         'reference_id',
         'interest_payment_id',
+        'cashbox_tag_id',
         'date',
     ];
 
@@ -41,5 +42,10 @@ class CashboxMovement extends Model
     public function installment()
     {
         return $this->belongsTo(LoanInstallment::class, 'reference_id');
+    }
+
+    public function tag()
+    {
+        return $this->belongsTo(CashboxTag::class, 'cashbox_tag_id');
     }
 }

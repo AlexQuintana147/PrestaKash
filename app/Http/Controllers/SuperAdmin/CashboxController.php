@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cashbox;
+use App\Models\CashboxTag;
 use Illuminate\Http\Request;
 
 class CashboxController extends Controller
@@ -12,16 +13,17 @@ class CashboxController extends Controller
     {
         $cashboxes = Cashbox::with([
             'movements' => function ($q) {
-                $q->with(['user', 'loan.user', 'installment.loan.user'])->latest()->limit(10);
+                $q->with(['user', 'loan.user', 'installment.loan.user', 'tag'])->latest()->limit(10);
             }
         ])->orderBy('id', 'desc')->get();
+        $tags = CashboxTag::orderBy('name')->get();
 
-        return view('superadmin.cashboxes.index', compact('cashboxes'));
+        return view('superadmin.cashboxes.index', compact('cashboxes', 'tags'));
     }
 
     public function history(Request $request, Cashbox $cashbox)
     {
-        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user'])->latest();
+        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'tag'])->latest();
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -80,6 +82,7 @@ class CashboxController extends Controller
             'type' => 'required|in:income,expense',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'required|string|max:255',
+            'cashbox_tag_id' => 'required|exists:cashbox_tags,id',
         ]);
 
         $amount = (float) $request->amount;
@@ -95,6 +98,7 @@ class CashboxController extends Controller
                 'amount' => $amount,
                 'description' => $request->description,
                 'reference_type' => 'manual',
+                'cashbox_tag_id' => $request->cashbox_tag_id,
                 'date' => now(),
             ]);
 
@@ -115,6 +119,7 @@ class CashboxController extends Controller
             'to_cashbox_id' => 'required|exists:cashboxes,id|different:from_cashbox_id',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'required|string|max:255',
+            'cashbox_tag_id' => 'required|exists:cashbox_tags,id',
         ]);
 
         $from = Cashbox::findOrFail($request->from_cashbox_id);
@@ -138,6 +143,7 @@ class CashboxController extends Controller
                 'description' => "Desplazamiento a {$to->name}: {$request->description}",
                 'reference_type' => 'transfer',
                 'reference_id' => $to->id,
+                'cashbox_tag_id' => $request->cashbox_tag_id,
                 'date' => now(),
             ]);
 
@@ -148,6 +154,7 @@ class CashboxController extends Controller
                 'description' => "Desplazamiento desde {$from->name}: {$request->description}",
                 'reference_type' => 'transfer',
                 'reference_id' => $from->id,
+                'cashbox_tag_id' => $request->cashbox_tag_id,
                 'date' => now(),
             ]);
 
