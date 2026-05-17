@@ -49,17 +49,36 @@ class InvestmentOpportunityController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'target_amount' => 'required|numeric|min:1',
-            'min_investment' => 'required|numeric|min:1',
-            'currency' => 'required|string|in:PEN,USD',
-            'annual_return_rate' => 'required|numeric|min:0|max:100',
-            'term_months' => 'required|integer|min:1',
-            'risks' => 'nullable|string',
-            'deadline' => 'nullable|date|after:today',
+        $request->merge([
+            'target_amount' => str_replace(',', '', $request->target_amount),
+            'min_investment' => str_replace(',', '', $request->min_investment),
         ]);
+
+        $validated = $request->validate(
+            [
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'target_amount' => 'required|numeric|min:0.01',
+                'min_investment' => 'required|numeric|min:0.01',
+                'currency' => 'required|string|in:PEN,USD',
+                'annual_return_rate' => 'required|numeric|min:0|max:100',
+                'term_months' => 'required|integer|min:1',
+                'risks' => 'nullable|string',
+                'deadline' => 'nullable|date|after:today',
+            ],
+            [],
+            [
+                'title' => 'título',
+                'description' => 'descripción',
+                'target_amount' => 'monto objetivo',
+                'min_investment' => 'inversión mínima',
+                'currency' => 'moneda',
+                'annual_return_rate' => 'tasa de retorno',
+                'term_months' => 'plazo',
+                'risks' => 'riesgos',
+                'deadline' => 'fecha límite',
+            ]
+        );
 
         $validated['created_by'] = auth()->id();
         $validated['status'] = 'open';
@@ -80,17 +99,36 @@ class InvestmentOpportunityController extends Controller
 
     public function update(Request $request, InvestmentOpportunity $investment)
     {
-        $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'target_amount' => 'sometimes|numeric|min:1',
-            'min_investment' => 'sometimes|numeric|min:1',
-            'annual_return_rate' => 'sometimes|numeric|min:0|max:100',
-            'term_months' => 'sometimes|integer|min:1',
-            'risks' => 'nullable|string',
-            'status' => 'sometimes|string|in:open,funded,closed,cancelled',
-            'deadline' => 'nullable|date',
+        $request->merge([
+            'target_amount' => str_replace(',', '', $request->target_amount),
+            'min_investment' => str_replace(',', '', $request->min_investment),
         ]);
+
+        $validated = $request->validate(
+            [
+                'title' => 'sometimes|string|max:255',
+                'description' => 'sometimes|string',
+                'target_amount' => 'sometimes|numeric|min:0.01',
+                'min_investment' => 'sometimes|numeric|min:0.01',
+                'annual_return_rate' => 'sometimes|numeric|min:0|max:100',
+                'term_months' => 'sometimes|integer|min:1',
+                'risks' => 'nullable|string',
+                'status' => 'sometimes|string|in:open,funded,closed,cancelled',
+                'deadline' => 'nullable|date',
+            ],
+            [],
+            [
+                'title' => 'título',
+                'description' => 'descripción',
+                'target_amount' => 'monto objetivo',
+                'min_investment' => 'inversión mínima',
+                'annual_return_rate' => 'tasa de retorno',
+                'term_months' => 'plazo',
+                'risks' => 'riesgos',
+                'status' => 'estado',
+                'deadline' => 'fecha límite',
+            ]
+        );
 
         $investment->update($validated);
 
