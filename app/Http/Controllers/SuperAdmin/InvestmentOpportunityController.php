@@ -200,12 +200,25 @@ class InvestmentOpportunityController extends Controller
 
     public function disapproveInvestor(Request $request, InvestmentOpportunity $investment, $userId)
     {
-        $investment->investors()->updateExistingPivot($userId, [
-            'status' => 'pending',
-            'admin_notes' => null,
-        ]);
+        \DB::transaction(function () use ($investment, $userId) {
+            $movement = \App\Models\CashboxMovement::where('reference_type', 'investment')
+                ->where('reference_id', $investment->id)
+                ->where('investor_user_id', $userId)
+                ->first();
 
-        return back()->with('success', 'Inversor desaprobado. Vuelve a estado pendiente.');
+            if ($movement) {
+                $cashbox = $movement->cashbox;
+                $cashbox->decrement('balance', $movement->amount);
+                $movement->delete();
+            }
+
+            $investment->investors()->updateExistingPivot($userId, [
+                'status' => 'pending',
+                'admin_notes' => null,
+            ]);
+        });
+
+        return back()->with('success', 'Inversor desaprobado y movimiento de caja eliminado.');
     }
 
     public function destroy(InvestmentOpportunity $investment)
