@@ -201,22 +201,22 @@
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
             ¿Confirmas la aprobación de <span id="approve_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="approve_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
-        <div class="mb-6 text-left">
-            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">Caja de Ingreso</label>
-            <div id="approve_inv_cashbox_container">
-                <select name="cashbox_id" id="approve_inv_cashbox_id" required
-                        class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors appearance-none cursor-pointer">
-                </select>
+        <form id="approveInvestorForm" method="POST">
+            @csrf
+            <div class="mb-6 text-left">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">Caja de Ingreso</label>
+                <div id="approve_inv_cashbox_container">
+                    <select name="cashbox_id" id="approve_inv_cashbox_id" required
+                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors appearance-none cursor-pointer">
+                    </select>
+                </div>
+                <p id="approve_inv_cashbox_error" class="text-[10px] text-red-500 mt-1 hidden"></p>
             </div>
-            <p id="approve_inv_cashbox_error" class="text-[10px] text-red-500 mt-1 hidden"></p>
-        </div>
-        <div class="flex justify-center gap-8">
-            <button onclick="closeApproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
-            <form id="approveInvestorForm" method="POST">
-                @csrf
+            <div class="flex justify-center gap-8">
+                <button type="button" onclick="closeApproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="submit" id="approve_inv_submit_btn" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
