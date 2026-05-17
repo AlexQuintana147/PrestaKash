@@ -206,39 +206,77 @@
 <script>
 const $ = id => document.getElementById(id);
 
-function updatePreview() {
-    const title = $('previewTitle');
-    const amount = $('previewAmount');
-    const ret = $('previewReturn');
-    const term = $('previewTerm');
-    const min = $('previewMin');
-    const estimated = $('previewEstimated');
+function parseNum(val) {
+    return parseFloat(val.replace(/,/g, '')) || 0;
+}
 
+function fmtNum(val) {
+    return val.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+function initAmountField(input) {
+    input.addEventListener('input', function () {
+        let oldVal = this.value;
+        let val = oldVal.replace(/\D/g, '');
+
+        if (val.length === 0) {
+            val = '0.00';
+        } else {
+            while (val.length < 3) {
+                val = '0' + val;
+            }
+            let integerPart = val.slice(0, -2);
+            let decimalPart = val.slice(-2);
+            integerPart = parseInt(integerPart, 10).toString();
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            val = integerPart + '.' + decimalPart;
+        }
+
+        if (oldVal !== val) {
+            this.value = val;
+            this.setSelectionRange(val.length, val.length);
+        }
+
+        updatePreview();
+    });
+}
+
+['target_amount', 'min_investment'].forEach(name => {
+    const input = document.querySelector('[name="' + name + '"]');
+    initAmountField(input);
+});
+
+document.querySelector('form').addEventListener('submit', () => {
+    ['target_amount', 'min_investment'].forEach(name => {
+        const input = document.querySelector('[name="' + name + '"]');
+        input.value = input.value.replace(/,/g, '');
+    });
+});
+
+function updatePreview() {
     const titleVal = document.querySelector('[name="title"]').value;
-    const amountVal = parseFloat(document.querySelector('[name="target_amount"]').value) || 0;
+    const amountVal = parseNum(document.querySelector('[name="target_amount"]').value);
     const rateVal = parseFloat(document.querySelector('[name="annual_return_rate"]').value) || 0;
     const monthsVal = parseInt(document.querySelector('[name="term_months"]').value) || 12;
-    const minVal = parseFloat(document.querySelector('[name="min_investment"]').value) || 500;
+    const minVal = parseNum(document.querySelector('[name="min_investment"]').value);
     const currency = document.querySelector('[name="currency"]:checked').value;
     const sym = currency === 'USD' ? '$' : 'S/';
 
-    title.textContent = titleVal || '—';
-    amount.textContent = sym + ' ' + amountVal.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    ret.textContent = rateVal + '% anual';
-    term.textContent = monthsVal + ' meses';
-    min.textContent = sym + ' ' + minVal.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    $('previewTitle').textContent = titleVal || '—';
+    $('previewAmount').textContent = sym + ' ' + fmtNum(amountVal);
+    $('previewReturn').textContent = rateVal + '% anual';
+    $('previewTerm').textContent = monthsVal + ' meses';
+    $('previewMin').textContent = sym + ' ' + fmtNum(minVal);
 
     const est = amountVal * rateVal / 100 * monthsVal / 12;
-    estimated.textContent = sym + ' ' + est.toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    $('previewEstimated').textContent = sym + ' ' + fmtNum(est);
 
     $('currencySymbol').textContent = sym;
     document.querySelector('.min-symbol').textContent = sym;
 }
 
 document.querySelector('[name="title"]').addEventListener('input', updatePreview);
-document.querySelector('[name="target_amount"]').addEventListener('input', updatePreview);
 document.querySelector('[name="annual_return_rate"]').addEventListener('input', updatePreview);
-document.querySelector('[name="min_investment"]').addEventListener('input', updatePreview);
 document.querySelectorAll('[name="currency"]').forEach(r => r.addEventListener('change', updatePreview));
 
 const slider = $('termMonths');
