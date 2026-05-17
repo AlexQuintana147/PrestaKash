@@ -112,21 +112,23 @@ class InvestmentOpportunityController extends Controller
 
     public function update(Request $request, InvestmentOpportunity $investment)
     {
-        $request->merge([
-            'target_amount' => str_replace(',', '', $request->target_amount),
-            'min_investment' => str_replace(',', '', $request->min_investment),
-        ]);
+        if ($request->filled('target_amount')) {
+            $request->merge(['target_amount' => str_replace(',', '', $request->target_amount)]);
+        }
+        if ($request->filled('min_investment')) {
+            $request->merge(['min_investment' => str_replace(',', '', $request->min_investment)]);
+        }
 
         $validated = $request->validate(
             [
-                'title' => 'sometimes|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
-                'description' => 'sometimes|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
-                'target_amount' => 'sometimes|numeric|min:0.01',
-                'min_investment' => 'sometimes|numeric|min:0.01',
-                'annual_return_rate' => 'sometimes|numeric|min:0|max:100',
-                'term_months' => 'sometimes|integer|min:1',
+                'title' => 'nullable|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
+                'description' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
+                'target_amount' => 'nullable|numeric|min:0.01',
+                'min_investment' => 'nullable|numeric|min:0.01',
+                'annual_return_rate' => 'nullable|numeric|min:0|max:100',
+                'term_months' => 'nullable|integer|min:1',
                 'risks' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
-                'status' => 'sometimes|string|in:open,funded,closed,cancelled',
+                'status' => 'nullable|string|in:open,funded,closed,cancelled',
                 'deadline' => 'nullable|date',
             ],
             [],
@@ -143,7 +145,12 @@ class InvestmentOpportunityController extends Controller
             ]
         );
 
-        $investment->update($validated);
+        $investment->update(collect($validated)->filter(fn($v) => $v !== '' && $v !== null)->toArray());
+
+        if (isset($validated['status']) && in_array($validated['status'], ['closed', 'cancelled'])) {
+            $pendingIds = $investment->investors()->wherePivot('status', 'pending')->pluck('users.id');
+            $investment->investors()->detach($pendingIds);
+        }
 
         return back()->with('success', 'Oportunidad actualizada.');
     }
