@@ -247,10 +247,16 @@
                 <div class="flex items-center justify-between mb-12 border-b border-gray-100 dark:border-gray-900 pb-6">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tighter">Actividad
                         Reciente</h2>
-                    <button onclick="openHistoryModal()"
-                        class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        Historial Completo
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <button onclick="openCodesModal()"
+                            class="text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:opacity-60 transition-opacity">
+                            Ver Movimientos
+                        </button>
+                        <button onclick="openHistoryModal()"
+                            class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            Historial Completo
+                        </button>
+                    </div>
                 </div>
 
                 <div id="movementsList" class="space-y-2">
@@ -787,6 +793,29 @@
                         class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                         Cerrar
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Movimientos -->
+    <div id="codesModal"
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-500 rounded-[2rem] overflow-hidden">
+            <div class="px-10 py-12 flex flex-col h-full overflow-hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Códigos de
+                        Movimientos</h3>
+                    <button onclick="closeCodesModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="codesList" class="flex-1 overflow-y-auto space-y-2 pr-2">
                 </div>
             </div>
         </div>
@@ -1502,6 +1531,58 @@
 
         function closeDeleteMovementModal() {
             document.getElementById('deleteMovementModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function openCodesModal() {
+            const codesList = document.getElementById('codesList');
+            codesList.innerHTML = '';
+
+            if (currentMovements.length === 0) {
+                codesList.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center py-16">Sin movimientos</p>';
+                document.getElementById('codesModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
+
+            const typeLabels = {
+                'loan': 'PRÉSTAMO',
+                'loan_installment': 'COBRANZA',
+                'manual': 'MANUAL',
+                'transfer': 'DESPLAZAMIENTO'
+            };
+
+            currentMovements.forEach(m => {
+                const isIncome = m.type === 'income';
+                const dateObj = new Date(m.date);
+                const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
+                const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+                const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
+                const tagHtml = m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : '';
+
+                codesList.insertAdjacentHTML('beforeend', `
+                    <div class="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">${m.description}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 tracking-widest">${m.code || '—'}</span>
+                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-[0.2em]">${displayType}${tagHtml}</span>
+                                <span class="text-[8px] text-gray-400">${date} ${time}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm font-black tabular-nums ml-4 ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                            ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </p>
+                    </div>
+                `);
+            });
+
+            document.getElementById('codesModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCodesModal() {
+            document.getElementById('codesModal').classList.add('hidden');
             document.body.style.overflow = '';
         }
 
