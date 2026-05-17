@@ -15,6 +15,7 @@ class CashboxMovement extends Model
         'description',
         'reference_type',
         'reference_id',
+        'investor_user_id',
         'interest_payment_id',
         'cashbox_tag_id',
         'date',

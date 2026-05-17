@@ -1087,7 +1087,7 @@
                         redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
                     }
                 } else if (m.reference_type === 'investment') {
-                    redirectUrl = `/gestion-interna/inversiones/${m.reference_id}`;
+                    redirectUrl = `/gestion-interna/inversiones/${m.reference_id}?highlight_investor=${m.investor_user_id}`;
                 }
 
                 const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
@@ -1847,7 +1847,7 @@
                                 redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
                             }
                         } else if (m.reference_type === 'investment') {
-                            redirectUrl = `/gestion-interna/inversiones/${m.reference_id}`;
+                            redirectUrl = `/gestion-interna/inversiones/${m.reference_id}?highlight_investor=${m.investor_user_id}`;
                         }
 
                         const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';

@@ -174,6 +174,7 @@ class InvestmentOpportunityController extends Controller
                 'description' => "Ingreso por aprobación de inversión en {$investment->title} de {$investor->name}",
                 'reference_type' => 'investment',
                 'reference_id' => $investment->id,
+                'investor_user_id' => $userId,
                 'date' => now(),
             ]);
 

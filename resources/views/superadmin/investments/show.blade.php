@@ -117,7 +117,7 @@
                         'referred_by' => $investor->referred_by ?? null,
                     ]);
                 @endphp
-                <div class="py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div id="investor-{{ $investor->id }}" class="py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all duration-500 rounded-2xl px-2">
                     <div class="flex items-center gap-4 min-w-0">
                         <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-800">
                             <img src="{{ $photo }}" class="w-full h-full object-cover">
@@ -547,5 +547,20 @@ function closeInvestorModal() {
     document.getElementById('investorModal').classList.add('hidden');
     document.body.style.overflow = '';
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const highlightInvestor = urlParams.get('highlight_investor');
+    if (highlightInvestor) {
+        const el = document.getElementById('investor-' + highlightInvestor);
+        if (el) {
+            el.classList.add('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                el.classList.remove('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
+            }, 3000);
+        }
+    }
+});
 </script>
 @endsection
