@@ -79,7 +79,7 @@
 
                         <div class="flex items-center gap-6 text-right">
                             <div>
-                                <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Anual</p>
+                                <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Mensual</p>
                                 <p class="text-lg font-bold text-green-600 dark:text-green-400">{{ $opp->annual_return_rate }}%</p>
                             </div>
                             <div>

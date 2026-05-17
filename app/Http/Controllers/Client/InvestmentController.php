@@ -22,12 +22,14 @@ class InvestmentController extends Controller
                 $q->whereNull('deadline')->orWhere('deadline', '>=', now());
             })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         $myInvestments = $user->investmentOpportunities()
             ->withPivot(['amount', 'status', 'admin_notes', 'created_at'])
             ->latest('pivot_created_at')
-            ->get();
+            ->paginate(10, ['*'], 'my_page')
+            ->withQueryString();
 
         return view('client.invest.control', compact('opportunities', 'myInvestments'));
     }
