@@ -89,17 +89,44 @@
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     <div>
                         <p class="text-sm font-bold text-red-600 dark:text-red-400">Solicitud Rechazada</p>
-                        <p class="text-xs text-gray-400">Tu solicitud de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} no fue aprobada.</p>
                         @if($existingRequest->pivot->admin_notes)
-                            <div class="mt-2 pt-2 border-t border-red-100 dark:border-red-900/30">
-                                <p class="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-1">Motivo del rechazo</p>
-                                <p class="text-sm text-red-600 dark:text-red-400">{{ $existingRequest->pivot->admin_notes }}</p>
-                            </div>
+                            <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ $existingRequest->pivot->admin_notes }}</p>
                         @endif
                     </div>
                 @endif
             </div>
         </div>
+
+        @if($existingRequest->pivot->status === 'rejected')
+        <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6">
+            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
+
+            @if($errors->any())
+                <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl text-xs text-red-600 dark:text-red-400">
+                    @foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach
+                </div>
+            @endif
+
+            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Monto a Invertir</label>
+                    <div class="relative">
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
+                        <input type="text" name="amount" id="investAmount" required inputmode="decimal"
+                               placeholder="{{ number_format($opportunity->min_investment, 2) }}"
+                               class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                    </div>
+                    <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
+                    <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
+                    <p class="text-[10px] text-gray-400 mt-1">Mínimo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->min_investment, 2) }} · Máximo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->remaining_amount, 2) }}</p>
+                </div>
+                <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">
+                    Enviar Nueva Solicitud
+                </button>
+            </form>
+        </div>
+        @endif
     @else
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6">
             <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>

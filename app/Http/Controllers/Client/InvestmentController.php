@@ -61,8 +61,12 @@ class InvestmentController extends Controller
         }
 
         $existing = $opportunity->investors()->where('user_id', $user->id)->first();
-        if ($existing) {
+        if ($existing && $existing->pivot->status !== 'rejected') {
             return back()->with('error', 'Ya solicitaste participar en esta oportunidad.');
+        }
+
+        if ($existing && $existing->pivot->status === 'rejected') {
+            $opportunity->investors()->detach($user->id);
         }
 
         $validated = $request->validate([
