@@ -1068,11 +1068,13 @@
                 const typeLabels = {
                     'loan': 'PRÉSTAMO',
                     'loan_installment': 'COBRANZA',
+                    'investment': 'INVERSIÓN',
                     'manual': 'MANUAL',
                     'transfer': 'DESPLAZAMIENTO'
                 };
                 const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                 const isLoanRelated = m.reference_type === 'loan' || m.reference_type === 'loan_installment';
+                const isInvestmentRelated = m.reference_type === 'investment';
                 let redirectUrl = '';
                 if (m.reference_type === 'loan') {
                     redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
@@ -1084,17 +1086,19 @@
                     } else {
                         redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
                     }
+                } else if (m.reference_type === 'investment') {
+                    redirectUrl = `/gestion-interna/inversiones/${m.reference_id}`;
                 }
 
                 const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
-                const tagBorderClass = m.tag ? '' : (isLoanRelated ? '' : 'border-transparent');
+                const tagBorderClass = m.tag ? '' : (isLoanRelated || isInvestmentRelated ? '' : 'border-transparent');
                 const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
-                const clickAction = isLoanRelated
+                const clickAction = isLoanRelated || isInvestmentRelated
                     ? `onclick="window.location.href='${redirectUrl}'"`
                     : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                 const html = `
-                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}" 
+                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
                                                  style="animation-delay: ${i * 0.05}s; ${tagBorderColor}"
                                                  ${clickAction}>
                                                     <div class="flex items-center gap-4 md:gap-8">
@@ -1111,7 +1115,13 @@
                                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                         </svg>
                                                                     </button>
-                                                                ` : ''}
+                                                                ` : (m.reference_type === 'investment' && m.investment ? `
+                                                                    <button onclick="event.stopPropagation(); showInvestmentDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                        </svg>
+                                                                    </button>
+                                                                ` : '')}
                                                             </div>
                                                             <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
                                                                 ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
@@ -1558,6 +1568,7 @@
             const typeLabels = {
                 'loan': 'PRÉSTAMO',
                 'loan_installment': 'COBRANZA',
+                'investment': 'INVERSIÓN',
                 'manual': 'MANUAL',
                 'transfer': 'DESPLAZAMIENTO'
             };
@@ -1687,6 +1698,7 @@
                 const typeLabels = {
                     'loan': 'Préstamo',
                     'loan_installment': 'Cobranza',
+                    'investment': 'Inversión',
                     'manual': 'Manual',
                     'transfer': 'Desplazamiento'
                 };
@@ -1813,12 +1825,14 @@
                         const typeLabels = {
                             'loan': 'PRÉSTAMO',
                             'loan_installment': 'COBRANZA',
+                            'investment': 'INVERSIÓN',
                             'manual': 'MANUAL',
                             'transfer': 'DESPLAZAMIENTO'
                         };
                         const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                         const isLoanRelated = m.reference_type === 'loan' || m.reference_type ===
                             'loan_installment';
+                        const isInvestmentRelated = m.reference_type === 'investment';
 
                         let redirectUrl = '';
                         if (m.reference_type === 'loan') {
@@ -1832,17 +1846,19 @@
                             } else {
                                 redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
                             }
+                        } else if (m.reference_type === 'investment') {
+                            redirectUrl = `/gestion-interna/inversiones/${m.reference_id}`;
                         }
 
                         const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
-                        const tagBorderClass = m.tag ? '' : (isLoanRelated ? '' : 'border-transparent');
+                        const tagBorderClass = m.tag ? '' : (isLoanRelated || isInvestmentRelated ? '' : 'border-transparent');
                         const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
-                        const clickAction = isLoanRelated
+                        const clickAction = isLoanRelated || isInvestmentRelated
                             ? `onclick="window.location.href='${redirectUrl}'"`
                             : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                         const html = `
-                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}" 
+                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
                                              style="${tagBorderColor}"
                                              ${clickAction}>
                                             <div class="flex items-center gap-4 md:gap-8">
@@ -1859,7 +1875,13 @@
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                 </svg>
                                                             </button>
-                                                        ` : ''}
+                                                        ` : (m.reference_type === 'investment' && m.investment ? `
+                                                            <button onclick="event.stopPropagation(); showInvestmentDetailFromHistory(${m.id}, ${JSON.stringify(m).replace(/'/g, "&apos;")})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                </svg>
+                                                            </button>
+                                                        ` : '')}
                                                     </div>
                                                     <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
                                                         ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
@@ -2025,6 +2047,88 @@
             document.body.style.overflow = 'hidden';
         }
 
+        function showInvestmentDetailFromHistory(movementId, m) {
+            if (!m || !m.investment) return;
+
+            const modal = document.getElementById('loanDetailModal');
+            const content = document.getElementById('loanDetailContent');
+            const title = document.querySelector('#loanDetailModal h3');
+            const inv = m.investment;
+            const currencySymbol = inv.currency === 'USD' ? '$' : 'S/';
+
+            title.textContent = 'Detalle de Inversión';
+
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Oportunidad</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${inv.title}</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto Objetivo</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inv.target_amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Anual</p>
+                        <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.annual_return_rate}%</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Plazo</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${inv.term_months} meses</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Estado</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${inv.status === 'open' ? 'Abierta' : inv.status === 'funded' ? 'Financiada' : inv.status === 'closed' ? 'Cerrada' : 'Cancelada'}</p>
+                    </div>
+                    ${inv.description ? `<div class="md:col-span-2"><p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Descripción</p><p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${inv.description}"</p></div>` : ''}
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showInvestmentDetail(movementId) {
+            const movement = currentMovements.find(m => m.id === movementId);
+            if (!movement || !movement.investment) return;
+
+            const modal = document.getElementById('loanDetailModal');
+            const content = document.getElementById('loanDetailContent');
+            const title = document.querySelector('#loanDetailModal h3');
+            const inv = movement.investment;
+            const currencySymbol = inv.currency === 'USD' ? '$' : 'S/';
+
+            title.textContent = 'Detalle de Inversión';
+
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Oportunidad</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${inv.title}</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Monto Objetivo</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inv.target_amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Anual</p>
+                        <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.annual_return_rate}%</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Plazo</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">${inv.term_months} meses</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Estado</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${inv.status === 'open' ? 'Abierta' : inv.status === 'funded' ? 'Financiada' : inv.status === 'closed' ? 'Cerrada' : 'Cancelada'}</p>
+                    </div>
+                    ${inv.description ? `<div class="md:col-span-2"><p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Descripción</p><p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${inv.description}"</p></div>` : ''}
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
         function showLoanDetail(movementId) {
             const movement = currentMovements.find(m => m.id === movementId);
             if (!movement) return;

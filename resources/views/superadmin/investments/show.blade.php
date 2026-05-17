@@ -205,14 +205,23 @@
 <div id="approveInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aprobar Inversor</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
             ¿Confirmas la aprobación de <span id="approve_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="approve_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
+        <div class="mb-6 text-left">
+            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">Caja de Ingreso</label>
+            <div id="approve_inv_cashbox_container">
+                <select name="cashbox_id" id="approve_inv_cashbox_id" required
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors appearance-none cursor-pointer">
+                </select>
+            </div>
+            <p id="approve_inv_cashbox_error" class="text-[10px] text-red-500 mt-1 hidden"></p>
+        </div>
         <div class="flex justify-center gap-8">
             <button onclick="closeApproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form id="approveInvestorForm" method="POST">
                 @csrf
-                <button type="submit" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
+                <button type="submit" id="approve_inv_submit_btn" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
             </form>
         </div>
     </div>
@@ -334,12 +343,54 @@
 </div>
 
 <script>
+const allCashboxes = @json($cashboxes);
+const investmentCurrency = '{{ $investment->currency }}';
+
 function openApproveInvestorModal(investmentId, userId, name, amount) {
     document.getElementById('approve_inv_name').textContent = name;
     document.getElementById('approve_inv_amount').textContent = amount;
     document.getElementById('approveInvestorForm').action = `/gestion-interna/inversiones/${investmentId}/inversor/${userId}/aprobar`;
+
+    const cashboxSelect = document.getElementById('approve_inv_cashbox_id');
+    const cashboxContainer = document.getElementById('approve_inv_cashbox_container');
+    const errorMsg = document.getElementById('approve_inv_cashbox_error');
+    errorMsg.classList.add('hidden');
+
+    const filtered = allCashboxes.filter(cb => cb.currency === investmentCurrency);
+
+    if (filtered.length === 0) {
+        cashboxContainer.classList.add('hidden');
+        cashboxSelect.innerHTML = '';
+        cashboxSelect.required = false;
+    } else {
+        cashboxContainer.classList.remove('hidden');
+        cashboxSelect.required = true;
+        cashboxSelect.innerHTML = filtered.map(cb =>
+            `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
+        ).join('');
+    }
+
+    cashboxSelect.onchange = () => validateApproveInvCashbox();
+    validateApproveInvCashbox();
+
     document.getElementById('approveInvestorModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+}
+
+function validateApproveInvCashbox() {
+    const select = document.getElementById('approve_inv_cashbox_id');
+    const btn = document.getElementById('approve_inv_submit_btn');
+    const errorMsg = document.getElementById('approve_inv_cashbox_error');
+
+    if (!select.value) {
+        btn.style.opacity = '0.3';
+        btn.style.pointerEvents = 'none';
+        return;
+    }
+
+    errorMsg.classList.add('hidden');
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
 }
 
 function closeApproveInvestorModal() {

@@ -105,7 +105,9 @@ class InvestmentOpportunityController extends Controller
 
         $investment->setRelation('investors', $investors);
 
-        return view('superadmin.investments.show', compact('investment', 'investors'));
+        $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
+
+        return view('superadmin.investments.show', compact('investment', 'investors', 'cashboxes'));
     }
 
     public function update(Request $request, InvestmentOpportunity $investment)
@@ -148,11 +150,37 @@ class InvestmentOpportunityController extends Controller
 
     public function approveInvestor(Request $request, InvestmentOpportunity $investment, $userId)
     {
-        $investment->investors()->updateExistingPivot($userId, [
-            'status' => 'approved',
+        $request->validate([
+            'cashbox_id' => 'required|exists:cashboxes,id',
         ]);
 
-        return back()->with('success', 'Inversor aprobado.');
+        $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
+        $investor = $investment->investors()->where('user_id', $userId)->firstOrFail();
+        $amount = (float) $investor->pivot->amount;
+
+        if ($cashbox->currency !== $investment->currency) {
+            return back()->withErrors(['cashbox_id' => 'La caja seleccionada no corresponde a la moneda de la oportunidad.']);
+        }
+
+        \DB::transaction(function () use ($investment, $userId, $cashbox, $amount, $investor) {
+            $investment->investors()->updateExistingPivot($userId, [
+                'status' => 'approved',
+            ]);
+
+            $cashbox->movements()->create([
+                'user_id' => auth()->id(),
+                'type' => 'income',
+                'amount' => $amount,
+                'description' => "Ingreso por aprobación de inversión en {$investment->title} de {$investor->name}",
+                'reference_type' => 'investment',
+                'reference_id' => $investment->id,
+                'date' => now(),
+            ]);
+
+            $cashbox->increment('balance', $amount);
+        });
+
+        return back()->with('success', 'Inversor aprobado y movimiento de caja registrado.');
     }
 
     public function rejectInvestor(Request $request, InvestmentOpportunity $investment, $userId)

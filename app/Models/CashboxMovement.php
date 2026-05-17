@@ -56,6 +56,11 @@ class CashboxMovement extends Model
         return $this->belongsTo(LoanInstallment::class, 'reference_id');
     }
 
+    public function investment()
+    {
+        return $this->belongsTo(InvestmentOpportunity::class, 'reference_id');
+    }
+
     public function tag()
     {
         return $this->belongsTo(CashboxTag::class, 'cashbox_tag_id');

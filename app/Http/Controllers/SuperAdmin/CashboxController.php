@@ -14,7 +14,7 @@ class CashboxController extends Controller
     {
         $cashboxes = Cashbox::with([
             'movements' => function ($q) {
-                $q->with(['user', 'loan.user', 'installment.loan.user', 'tag'])->latest()->limit(10);
+                $q->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])->latest()->limit(10);
             }
         ])->orderBy('id', 'desc')->get();
         $tags = CashboxTag::orderBy('name')->get();
@@ -24,7 +24,7 @@ class CashboxController extends Controller
 
     public function history(Request $request, Cashbox $cashbox)
     {
-        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'tag'])->latest();
+        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])->latest();
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -41,7 +41,7 @@ class CashboxController extends Controller
 
     public function allMovements(Request $request, Cashbox $cashbox)
     {
-        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'tag'])->latest();
+        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])->latest();
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
