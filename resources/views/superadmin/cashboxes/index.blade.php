@@ -980,8 +980,8 @@
         }
     </style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
 
     <script>
         const carousel = document.getElementById('cashboxCarousel');
@@ -1613,62 +1613,141 @@
             document.body.style.overflow = '';
         }
 
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
+        async function exportPDF() {
             const activeCard = document.querySelector('.cashbox-card.active');
             if (!activeCard) return;
 
-            const cashboxName = activeCard.querySelector('.cashbox-name')?.textContent?.trim() || 'Caja';
-            const cashboxBalance = activeCard.querySelector('.cashbox-balance')?.textContent?.trim() || '';
+            const cashboxId = activeCard.dataset.id;
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Generando...';
+            btn.disabled = true;
 
-            doc.setFontSize(18);
-            doc.text('PrestaKash - Reporte de Movimientos', 14, 22);
+            try {
+                const res = await fetch(`/gestion-interna/cajas/${cashboxId}/all-movements`);
+                const data = await res.json();
+                const jsPDF = window.jspdf?.jsPDF || window.jsPDF;
+                const doc = new jsPDF();
 
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.text(`Caja: ${cashboxName}`, 14, 32);
-            doc.text(`Saldo actual: ${cashboxBalance}`, 14, 38);
-            doc.text(`Generado: ${new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`, 14, 44);
+                const cb = data.cashbox;
+                const symbol = cb.currency === 'USD' ? '$' : 'S/';
+                const movements = data.movements;
 
-            const typeLabels = {
-                'loan': 'Préstamo',
-                'loan_installment': 'Cobranza',
-                'manual': 'Manual',
-                'transfer': 'Desplazamiento'
-            };
+                doc.setFillColor(79, 70, 229);
+                doc.rect(0, 0, 210, 45, 'F');
 
-            const rows = currentMovements.map(m => {
-                const dateObj = new Date(m.date);
-                const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
-                const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
-                const type = m.type === 'income' ? 'Ingreso' : 'Egreso';
-                const displayType = typeLabels[m.reference_type] || 'Operación';
-                const amount = `${m.type === 'income' ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(22);
+                doc.setFont('helvetica', 'bold');
+                doc.text('PrestaKash', 14, 18);
 
-                return [m.code || '—', date + ' ' + time, m.description, displayType, type, amount];
-            });
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Reporte de Movimientos', 14, 27);
 
-            doc.autoTable({
-                startY: 50,
-                head: [['Código', 'Fecha', 'Descripción', 'Tipo', 'Clase', 'Monto']],
-                body: rows,
-                styles: { fontSize: 8, cellPadding: 3 },
-                headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
-                alternateRowStyles: { fillColor: [245, 245, 255] },
-                columnStyles: {
-                    0: { cellWidth: 30 },
-                    1: { cellWidth: 35 },
-                    2: { cellWidth: 'auto' },
-                    3: { cellWidth: 25 },
-                    4: { cellWidth: 18 },
-                    5: { cellWidth: 28, halign: 'right' }
-                }
-            });
+                doc.setFontSize(8);
+                doc.text(`Generado: ${new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`, 14, 36);
 
-            const fileName = `movimientos_${cashboxName.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.pdf`;
-            doc.save(fileName);
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${cb.name}`, 140, 18);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`${cb.bank_name}`, 140, 24);
+                doc.text(`Cta: ${cb.account_number || '—'}`, 140, 30);
+                doc.text(`Saldo: ${symbol} ${parseFloat(cb.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 140, 36);
+
+                let totalIncome = 0;
+                let totalExpense = 0;
+                movements.forEach(m => {
+                    if (m.type === 'income') totalIncome += parseFloat(m.amount);
+                    else totalExpense += parseFloat(m.amount);
+                });
+
+                const summaryY = 52;
+                doc.setFillColor(245, 245, 255);
+                doc.roundedRect(14, summaryY, 55, 22, 3, 3, 'F');
+                doc.roundedRect(77, summaryY, 55, 22, 3, 3, 'F');
+                doc.roundedRect(140, summaryY, 55, 22, 3, 3, 'F');
+
+                doc.setTextColor(100, 100, 100);
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.text('TOTAL INGRESOS', 41.5, summaryY + 7, { align: 'center' });
+                doc.text('TOTAL EGRESOS', 104.5, summaryY + 7, { align: 'center' });
+                doc.text('BALANCE NETO', 167.5, summaryY + 7, { align: 'center' });
+
+                doc.setTextColor(34, 197, 94);
+                doc.setFontSize(11);
+                doc.text(`+ ${symbol} ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 41.5, summaryY + 16, { align: 'center' });
+
+                doc.setTextColor(239, 68, 68);
+                doc.text(`- ${symbol} ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 104.5, summaryY + 16, { align: 'center' });
+
+                const net = totalIncome - totalExpense;
+                doc.setTextColor(net >= 0 ? 34 : 239, net >= 0 ? 197 : 68, net >= 0 ? 94 : 68);
+                doc.text(`${net >= 0 ? '+' : '-'} ${symbol} ${Math.abs(net).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 167.5, summaryY + 16, { align: 'center' });
+
+                const typeLabels = {
+                    'loan': 'Préstamo',
+                    'loan_installment': 'Cobranza',
+                    'manual': 'Manual',
+                    'transfer': 'Desplazamiento'
+                };
+
+                const rows = movements.map(m => {
+                    const dateObj = new Date(m.date);
+                    const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+                    const type = m.type === 'income' ? 'Ingreso' : 'Egreso';
+                    const displayType = typeLabels[m.reference_type] || 'Operación';
+                    const amount = `${m.type === 'income' ? '+' : '-'} ${symbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+                    const userName = m.user ? m.user.name : 'Sistema';
+
+                    return [m.code || '—', date + ' ' + time, m.description, displayType, type, userName, amount];
+                });
+
+                doc.autoTable({
+                    startY: summaryY + 28,
+                    head: [['Código', 'Fecha', 'Descripción', 'Tipo', 'Clase', 'Registrado por', 'Monto']],
+                    body: rows,
+                    styles: { fontSize: 7.5, cellPadding: 3, font: 'helvetica', lineColor: [230, 230, 250], lineWidth: 0.1 },
+                    headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+                    alternateRowStyles: { fillColor: [250, 250, 255] },
+                    columnStyles: {
+                        0: { cellWidth: 26, fontStyle: 'bold' },
+                        1: { cellWidth: 30 },
+                        2: { cellWidth: 'auto' },
+                        3: { cellWidth: 22 },
+                        4: { cellWidth: 16 },
+                        5: { cellWidth: 28 },
+                        6: { cellWidth: 28, halign: 'right', fontStyle: 'bold' }
+                    },
+                    didParseCell: function(data) {
+                        if (data.column.index === 6 && data.section === 'body') {
+                            const val = data.cell.raw || '';
+                            if (val.startsWith('+')) data.cell.styles.textColor = [34, 197, 94];
+                            else if (val.startsWith('-')) data.cell.styles.textColor = [239, 68, 68];
+                        }
+                    },
+                    didDrawPage: function(data) {
+                        doc.setFillColor(79, 70, 229);
+                        doc.rect(0, 287, 210, 10, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(7);
+                        doc.text('PrestaKash — Reporte confidencial', 14, 293);
+                        doc.text(`Página ${data.pageNumber}`, 196, 293, { align: 'right' });
+                    }
+                });
+
+                const fileName = `movimientos_${cb.name.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.pdf`;
+                doc.save(fileName);
+            } catch (e) {
+                console.error('Error generando PDF:', e);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         }
 
         function openHistoryModal() {

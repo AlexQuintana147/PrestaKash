@@ -39,6 +39,36 @@ class CashboxController extends Controller
         return response()->json($movements);
     }
 
+    public function allMovements(Request $request, Cashbox $cashbox)
+    {
+        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'tag'])->latest();
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('date', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('date', '<=', $request->to_date);
+        }
+
+        $movements = $query->get();
+
+        return response()->json([
+            'cashbox' => [
+                'name' => $cashbox->name,
+                'bank_name' => $cashbox->bank_name,
+                'currency' => $cashbox->currency,
+                'balance' => $cashbox->balance,
+                'account_number' => $cashbox->account_number,
+            ],
+            'movements' => $movements,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

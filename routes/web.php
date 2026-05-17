@@ -110,6 +110,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     // Gestión de cajas
     Route::get('/cajas', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'index'])->name('cashboxes.index');
     Route::get('/cajas/{cashbox}/historial', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'history'])->name('cashboxes.history');
+    Route::get('/cajas/{cashbox}/all-movements', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'allMovements'])->name('cashboxes.all-movements');
     Route::post('/cajas', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'store'])->name('cashboxes.store');
     Route::put('/cajas/{cashbox}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'update'])->name('cashboxes.update');
     Route::delete('/cajas/{cashbox}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'destroy'])->name('cashboxes.destroy');
