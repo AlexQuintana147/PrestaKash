@@ -13,7 +13,11 @@ class InvestmentOpportunityController extends Controller
         $filter = $request->get('filter', 'open');
         $search = $request->get('search');
 
-        $query = InvestmentOpportunity::with(['creator', 'approvedInvestors'])->latest();
+        $query = InvestmentOpportunity::with(['creator', 'approvedInvestors'])
+            ->withCount(['investors as pending_investors_count' => function ($q) {
+                $q->where('investor_opportunity.status', 'pending');
+            }])
+            ->latest();
 
         if ($filter !== 'all') {
             $query->where('status', $filter);
