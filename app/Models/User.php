@@ -74,6 +74,23 @@ class User extends Authenticatable
         return $this->hasMany(BankAccount::class);
     }
 
+    public function investorApplication()
+    {
+        return $this->hasOne(InvestorApplication::class);
+    }
+
+    public function investmentOpportunities()
+    {
+        return $this->belongsToMany(InvestmentOpportunity::class, 'investor_opportunity')
+            ->withPivot(['amount', 'status', 'admin_notes'])
+            ->withTimestamps();
+    }
+
+    public function createdOpportunities()
+    {
+        return $this->hasMany(InvestmentOpportunity::class, 'created_by');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role?->name === 'admin';
@@ -87,6 +104,11 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->role?->name === 'superadmin';
+    }
+
+    public function getIsInvestorAttribute(): bool
+    {
+        return $this->investorApplication && $this->investorApplication->status === 'approved';
     }
 
     public function referrer()

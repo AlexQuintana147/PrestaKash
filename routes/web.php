@@ -89,6 +89,16 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/inversores/{application}/desaprobar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'unapprove'])->name('investors.unapprove');
     Route::post('/inversores/{application}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'reject'])->name('investors.reject');
 
+    // Control de Inversiones
+    Route::get('/inversiones', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'index'])->name('investments.index');
+    Route::get('/inversiones/crear', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'create'])->name('investments.create');
+    Route::post('/inversiones', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'store'])->name('investments.store');
+    Route::get('/inversiones/{investment}', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'show'])->name('investments.show');
+    Route::put('/inversiones/{investment}', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'update'])->name('investments.update');
+    Route::delete('/inversiones/{investment}', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'destroy'])->name('investments.destroy');
+    Route::post('/inversiones/{investment}/inversor/{userId}/aprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'approveInvestor'])->name('investments.approve-investor');
+    Route::post('/inversiones/{investment}/inversor/{userId}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'rejectInvestor'])->name('investments.reject-investor');
+
     // Control de préstamos
     Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');
     Route::post('/prestamos/{loan}/counter-offer', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'counterOffer'])->name('loans.counter-offer');
@@ -141,6 +151,9 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/invertir', [\App\Http\Controllers\Client\DashboardController::class, 'invest'])->name('invertir');
     Route::get('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'create'])->name('invest.apply');
     Route::post('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'store'])->name('invest.store');
+    Route::get('/invertir/control', [\App\Http\Controllers\Client\InvestmentController::class, 'index'])->name('investments.index');
+    Route::get('/invertir/control/{opportunity}', [\App\Http\Controllers\Client\InvestmentController::class, 'show'])->name('investments.show');
+    Route::post('/invertir/control/{opportunity}/aplicar', [\App\Http\Controllers\Client\InvestmentController::class, 'apply'])->name('investments.apply');
 
     // Historial crediticio
     Route::get('/historial-crediticio', [\App\Http\Controllers\Client\LoanController::class, 'history'])->name('loans.history');

@@ -186,9 +186,9 @@
                     Ver Referidos
                 </a>
 
-                <a href="{{ route('client.invertir') }}" onclick="closeSidebar()"
+                <a href="{{ auth()->user() && auth()->user()->is_investor ? route('client.investments.index') : route('client.invertir') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('client.invertir*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                      {{ request()->routeIs('client.invertir*') || request()->routeIs('client.investments.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
