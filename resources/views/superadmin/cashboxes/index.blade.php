@@ -1633,7 +1633,7 @@
                 const symbol = cb.currency === 'USD' ? '$' : 'S/';
                 const movements = data.movements;
 
-                doc.setFillColor(79, 70, 229);
+                doc.setFillColor(30, 30, 30);
                 doc.rect(0, 0, 210, 45, 'F');
 
                 doc.setTextColor(255, 255, 255);
@@ -1665,10 +1665,6 @@
                 });
 
                 const summaryY = 52;
-                doc.setFillColor(245, 245, 255);
-                doc.roundedRect(14, summaryY, 55, 22, 3, 3, 'F');
-                doc.roundedRect(77, summaryY, 55, 22, 3, 3, 'F');
-                doc.roundedRect(140, summaryY, 55, 22, 3, 3, 'F');
 
                 doc.setTextColor(100, 100, 100);
                 doc.setFontSize(7);
@@ -1677,15 +1673,15 @@
                 doc.text('TOTAL EGRESOS', 104.5, summaryY + 7, { align: 'center' });
                 doc.text('BALANCE NETO', 167.5, summaryY + 7, { align: 'center' });
 
-                doc.setTextColor(34, 197, 94);
+                doc.setTextColor(22, 163, 74);
                 doc.setFontSize(11);
                 doc.text(`+ ${symbol} ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 41.5, summaryY + 16, { align: 'center' });
 
-                doc.setTextColor(239, 68, 68);
+                doc.setTextColor(220, 38, 38);
                 doc.text(`- ${symbol} ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 104.5, summaryY + 16, { align: 'center' });
 
                 const net = totalIncome - totalExpense;
-                doc.setTextColor(net >= 0 ? 34 : 239, net >= 0 ? 197 : 68, net >= 0 ? 94 : 68);
+                doc.setTextColor(net >= 0 ? 22 : 220, net >= 0 ? 163 : 38, net >= 0 ? 74 : 38);
                 doc.text(`${net >= 0 ? '+' : '-'} ${symbol} ${Math.abs(net).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 167.5, summaryY + 16, { align: 'center' });
 
                 const typeLabels = {
@@ -1711,9 +1707,9 @@
                     startY: summaryY + 28,
                     head: [['Código', 'Fecha', 'Descripción', 'Tipo', 'Clase', 'Registrado por', 'Monto']],
                     body: rows,
-                    styles: { fontSize: 7.5, cellPadding: 3, font: 'helvetica', lineColor: [230, 230, 250], lineWidth: 0.1 },
-                    headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold', fontSize: 8 },
-                    alternateRowStyles: { fillColor: [250, 250, 255] },
+                    styles: { fontSize: 7.5, cellPadding: 3, font: 'helvetica', lineColor: [200, 200, 200], lineWidth: 0.1 },
+                    headStyles: { fillColor: [30, 30, 30], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+                    alternateRowStyles: { fillColor: [245, 245, 245] },
                     columnStyles: {
                         0: { cellWidth: 26, fontStyle: 'bold' },
                         1: { cellWidth: 30 },
@@ -1726,12 +1722,19 @@
                     didParseCell: function(data) {
                         if (data.column.index === 6 && data.section === 'body') {
                             const val = data.cell.raw || '';
-                            if (val.startsWith('+')) data.cell.styles.textColor = [34, 197, 94];
-                            else if (val.startsWith('-')) data.cell.styles.textColor = [239, 68, 68];
+                            const row = data.row.raw || [];
+                            const refType = row[3] || '';
+                            if (refType === 'Desplazamiento') {
+                                data.cell.styles.textColor = [37, 99, 235];
+                            } else if (val.startsWith('+')) {
+                                data.cell.styles.textColor = [22, 163, 74];
+                            } else if (val.startsWith('-')) {
+                                data.cell.styles.textColor = [220, 38, 38];
+                            }
                         }
                     },
                     didDrawPage: function(data) {
-                        doc.setFillColor(79, 70, 229);
+                        doc.setFillColor(30, 30, 30);
                         doc.rect(0, 287, 210, 10, 'F');
                         doc.setTextColor(255, 255, 255);
                         doc.setFontSize(7);
