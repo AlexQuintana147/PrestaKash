@@ -37,8 +37,8 @@
         <div class="space-y-12">
 
             <!-- Carousel Section -->
-            <div class="relative group/carousel">
-                <!-- Navigation: Floating Glassmorphism -->
+            <div class="relative @if($cashboxes->count() > 0) group/carousel @endif">
+                @if($cashboxes->count() > 0)
                 <div
                     class="absolute inset-y-0 left-0 right-0 pointer-events-none z-20 hidden md:flex justify-between items-center px-4 md:px-10">
                     <button id="prevBtn" onclick="scrollCarousel(-1)"
@@ -55,13 +55,13 @@
                     </button>
                 </div>
 
-                <!-- Edge Blurs -->
                 <div
                     class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px] hidden md:block">
                 </div>
                 <div
                     class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent z-10 pointer-events-none backdrop-blur-[2px] hidden md:block">
                 </div>
+                @endif
 
                 <!-- Carousel Track -->
                 <div class="text-center mb-2 md:block hidden">
@@ -231,7 +231,7 @@
                     @endforelse
                 </div>
 
-                <!-- Pagination Dots -->
+                @if($cashboxes->count() > 0)
                 <div class="flex justify-center gap-3 mt-10">
                     @foreach($cashboxes as $index => $cb)
                         <button onclick="scrollToIndex({{ $index }})"
@@ -239,6 +239,7 @@
                             data-index="{{ $index }}"></button>
                     @endforeach
                 </div>
+                @endif
             </div>
 
             <!-- Movements Section: Editorial List -->
