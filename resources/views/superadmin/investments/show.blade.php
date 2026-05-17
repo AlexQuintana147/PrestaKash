@@ -81,13 +81,9 @@
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">Inversores ({{ $investors->total() }})</h2>
         @if($investment->status === 'open')
-            <form action="{{ route('superadmin.investments.update', $investment) }}" method="POST">
-                @csrf @method('PUT')
-                <input type="hidden" name="status" value="{{ $investment->isFunded() ? 'funded' : 'closed' }}">
-                <button type="submit" class="text-xs font-bold border-b-2 pb-0.5 hover:opacity-70 transition-opacity {{ $investment->isFunded() ? 'text-blue-600 border-blue-600' : 'text-yellow-600 border-yellow-600' }}">
-                    {{ $investment->isFunded() ? 'Marcar como Financiada' : 'Cerrar Oportunidad' }}
-                </button>
-            </form>
+            <button type="button" onclick="openCloseOpportunityModal()" class="text-xs font-bold border-b-2 pb-0.5 hover:opacity-70 transition-opacity {{ $investment->isFunded() ? 'text-blue-600 border-blue-600' : 'text-yellow-600 border-yellow-600' }}">
+                {{ $investment->isFunded() ? 'Marcar como Financiada' : 'Cerrar Oportunidad' }}
+            </button>
         @endif
     </div>
 
@@ -194,10 +190,7 @@
 
     <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
         @if($investment->status !== 'cancelled' && $investment->approvedInvestors()->count() === 0)
-            <form action="{{ route('superadmin.investments.destroy', $investment) }}" method="POST" onsubmit="return confirm('¿Eliminar esta oportunidad?')">
-                @csrf @method('DELETE')
-                <button type="submit" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Eliminar Oportunidad</button>
-            </form>
+            <button type="button" onclick="openDeleteOpportunityModal()" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Eliminar Oportunidad</button>
         @endif
     </div>
 </div>
@@ -342,6 +335,50 @@
     </div>
 </div>
 
+<div id="closeOpportunityModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $investment->isFunded() ? 'Marcar como Financiada' : 'Cerrar Oportunidad' }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
+            ¿Confirmas que deseas {{ $investment->isFunded() ? 'marcar como financiada' : 'cerrar' }} la oportunidad <span class="font-bold text-gray-900 dark:text-white">{{ $investment->title }}</span>? {{ $investment->isFunded() ? 'Ya no se aceptarán más inversores.' : 'Las solicitudes pendientes serán rechazadas automáticamente.' }}
+        </p>
+        <div class="flex justify-center gap-8">
+            <button onclick="closeCloseOpportunityModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <form action="{{ route('superadmin.investments.update', $investment) }}" method="POST">
+                @csrf @method('PUT')
+                <input type="hidden" name="status" value="{{ $investment->isFunded() ? 'funded' : 'closed' }}">
+                <button type="submit" class="text-xs font-bold {{ $investment->isFunded() ? 'text-blue-600 border-b-2 border-blue-600' : 'text-yellow-600 border-b-2 border-yellow-600' }} pb-0.5 hover:opacity-70 transition-opacity">Confirmar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="deleteOpportunityModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
+        <div class="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Eliminar Oportunidad</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            ¿Estás seguro de eliminar <span class="font-bold text-gray-900 dark:text-white">{{ $investment->title }}</span>?
+        </p>
+        <div class="bg-red-50 dark:bg-red-500/10 rounded-xl p-3 mb-6 text-left">
+            <p class="text-xs font-bold text-red-600 dark:text-red-400">⚠ Esta acción es irreversible y eliminará:</p>
+            <ul class="text-xs text-red-500 dark:text-red-400 mt-1 space-y-0.5">
+                <li>• La oportunidad de inversión</li>
+                <li>• Todas las solicitudes de inversores (pendientes y rechazadas)</li>
+                <li>• El historial de participaciones</li>
+            </ul>
+        </div>
+        <div class="flex justify-center gap-8">
+            <button onclick="closeDeleteOpportunityModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <form action="{{ route('superadmin.investments.destroy', $investment) }}" method="POST">
+                @csrf @method('DELETE')
+                <button type="submit" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Eliminar Definitivamente</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 const allCashboxes = @json($cashboxes);
 const investmentCurrency = '{{ $investment->currency }}';
@@ -424,6 +461,26 @@ function closeDisapproveInvestorModal() {
     document.body.style.overflow = '';
 }
 
+function openCloseOpportunityModal() {
+    document.getElementById('closeOpportunityModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCloseOpportunityModal() {
+    document.getElementById('closeOpportunityModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function openDeleteOpportunityModal() {
+    document.getElementById('deleteOpportunityModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteOpportunityModal() {
+    document.getElementById('deleteOpportunityModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
 document.getElementById('rejectInvestorForm').addEventListener('submit', function() {
     document.getElementById('reject_inv_reason_input').value = document.getElementById('reject_inv_reason').value;
 });
@@ -434,6 +491,8 @@ document.addEventListener('keydown', function(e) {
         closeRejectInvestorModal();
         closeDisapproveInvestorModal();
         closeInvestorModal();
+        closeCloseOpportunityModal();
+        closeDeleteOpportunityModal();
     }
 });
 
