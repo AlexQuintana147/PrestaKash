@@ -131,10 +131,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const investAmount = document.getElementById('investAmount');
     if (!investAmount) return;
 
-    investAmount.addEventListener('input', function () {
-        let start = this.selectionStart;
-        let oldVal = this.value;
+    const minVal = parseFloat(document.getElementById('minInvestment').value);
+    const maxVal = parseFloat(document.getElementById('maxInvestment').value);
 
+    function formatAmount(num) {
+        let integerPart = Math.floor(num).toString();
+        let decimalPart = Math.round((num - Math.floor(num)) * 100).toString().padStart(2, '0');
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return integerPart + '.' + decimalPart;
+    }
+
+    investAmount.addEventListener('input', function () {
+        let oldVal = this.value;
         let val = oldVal.replace(/\D/g, '');
 
         if (val.length === 0) {
@@ -150,9 +158,25 @@ document.addEventListener('DOMContentLoaded', function () {
             val = integerPart + '.' + decimalPart;
         }
 
+        let rawNum = parseFloat(val.replace(/,/g, ''));
+        if (rawNum > maxVal) {
+            val = formatAmount(maxVal);
+        } else if (rawNum < minVal && val.length > 0 && rawNum > 0) {
+            val = formatAmount(minVal);
+        }
+
         if (oldVal !== val) {
             this.value = val;
             this.setSelectionRange(val.length, val.length);
+        }
+    });
+
+    investAmount.addEventListener('blur', function () {
+        let rawNum = parseFloat(this.value.replace(/,/g, ''));
+        if (isNaN(rawNum) || rawNum < minVal) {
+            this.value = formatAmount(minVal);
+        } else if (rawNum > maxVal) {
+            this.value = formatAmount(maxVal);
         }
     });
 
