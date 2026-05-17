@@ -74,7 +74,7 @@ class InvestmentOpportunity extends Model
 
     public function getEstimatedReturnAttribute()
     {
-        return round($this->annual_return_rate * $this->term_months / 12, 2);
+        return round($this->annual_return_rate * $this->term_months, 2);
     }
 
     public function isOpen(): bool

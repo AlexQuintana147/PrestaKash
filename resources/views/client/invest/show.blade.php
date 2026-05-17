@@ -29,7 +29,7 @@
             <p class="text-lg font-bold text-gray-900 dark:text-white mt-1">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->target_amount, 2) }}</p>
         </div>
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4">
-            <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Anual</p>
+            <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Mensual</p>
             <p class="text-lg font-bold text-green-600 dark:text-green-400 mt-1">{{ $opportunity->annual_return_rate }}%</p>
         </div>
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4">

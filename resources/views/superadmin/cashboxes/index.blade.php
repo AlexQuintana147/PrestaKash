@@ -2069,7 +2069,7 @@
                         <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inv.target_amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Anual</p>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Mensual</p>
                         <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.annual_return_rate}%</p>
                     </div>
                     <div>
@@ -2111,7 +2111,7 @@
                         <p class="text-sm font-bold text-gray-900 dark:text-white">${currencySymbol} ${parseFloat(inv.target_amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Anual</p>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Mensual</p>
                         <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.annual_return_rate}%</p>
                     </div>
                     <div>
