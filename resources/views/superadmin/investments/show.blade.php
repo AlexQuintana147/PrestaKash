@@ -97,14 +97,40 @@
                 @php
                     $selfie = $investor->documents?->selfie;
                     $photo = $selfie ? Storage::url($selfie) : ($investor->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($investor->name) . '&background=e5e7eb&color=6b7280');
+                    $investorData = json_encode([
+                        'id' => $investor->id,
+                        'name' => $investor->name,
+                        'email' => $investor->email,
+                        'phone' => $investor->phone ?? '—',
+                        'dni' => $investor->dni ?? '—',
+                        'ruc' => $investor->ruc ?? '—',
+                        'person_type' => $investor->person_type ?? '—',
+                        'business_name' => $investor->business_name ?? '—',
+                        'department' => $investor->department ? \App\Models\UbigeoDepartment::where('id', str_pad($investor->department, 2, '0', STR_PAD_LEFT))->value('name') ?? '—' : '—',
+                        'province' => $investor->province ? \App\Models\UbigeoProvince::where('id', str_pad($investor->province, 4, '0', STR_PAD_LEFT))->value('name') ?? '—' : '—',
+                        'district' => $investor->district ? \App\Models\UbigeoDistrict::where('id', str_pad($investor->district, 6, '0', STR_PAD_LEFT))->value('name') ?? '—' : '—',
+                        'address' => $investor->address ?? '—',
+                        'occupation' => $investor->occupation ?? '—',
+                        'selfie' => $selfie ? Storage::url($selfie) : null,
+                        'avatar' => $investor->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($investor->name),
+                        'status' => $investor->pivot->status,
+                        'amount' => $investment->currency === 'USD' ? '$' : 'S/' . ' ' . number_format($investor->pivot->amount, 2),
+                        'currency' => $investment->currency,
+                        'date' => $investor->pivot->created_at->format('d/m/Y'),
+                        'referral_code' => $investor->referral_code ?? '—',
+                        'referred_by' => $investor->referred_by ?? null,
+                    ]);
                 @endphp
                 <div class="py-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <img src="{{ $photo }}" class="w-8 h-8 rounded-full object-cover border border-gray-100 dark:border-gray-800">
-                        <div>
+                        <div class="flex items-center gap-2">
                             <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $investor->name }}</p>
-                            <p class="text-xs text-gray-400">{{ $investor->email }}</p>
+                            <button onclick='openInvestorModal({{ $investorData }})' class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
                         </div>
+                        <p class="text-xs text-gray-400">{{ $investor->email }}</p>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right">
@@ -153,12 +179,142 @@
     </div>
 </div>
 
+<div id="investorModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden relative my-auto">
+        <button onclick="closeInvestorModal()" class="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="flex flex-col md:flex-row">
+            <div class="w-full md:w-2/5 bg-gray-50 dark:bg-gray-900 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
+                <img id="modalSelfie" src="" class="w-40 h-40 rounded-[2rem] object-cover shadow-xl border-4 border-white dark:border-gray-800 mb-6">
+                <h3 id="modalName" class="text-xl font-bold text-gray-900 dark:text-white text-center leading-tight"></h3>
+                <div class="flex flex-wrap gap-1.5 mt-3 justify-center">
+                    <a id="modalEmailBtn" href="" class="flex items-center gap-1 bg-blue-500 hover:bg-blue-600 transition-colors px-2 py-1 text-white font-bold text-[9px]">
+                        <span id="modalEmailText"></span>
+                        <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><rect x="7.904" y="119.947" style="fill:#5EBAE7;" width="496.195" height="272.109"/><polygon style="fill:#36A9E1;" points="256,280.01 23.91,127.951 7.904,135.954 256,312.022 352.037,223.987 "/><path style="fill:#1D1D1B;" d="M0,112.043v287.913h512V112.043H0z M477.266,127.851L256,270.603L34.733,127.851H477.266z M15.807,384.149V134.452L256,289.414l240.193-154.962v249.696H15.807V384.149z"/></svg>
+                    </a>
+                    <a id="modalWhatsappBtn" href="" target="_blank" class="flex items-center gap-1 bg-green-500 hover:bg-green-600 transition-colors px-2 py-1 text-white font-bold text-[9px]">
+                        <span id="modalPhoneText"></span>
+                        <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 32 32" fill="none"><path d="M28 16C28 22.6274 22.6274 28 16 28C13.4722 28 11.1269 27.2184 9.19266 25.8837L5.09091 26.9091L6.16576 22.8784C4.80092 20.9307 4 18.5589 4 16C4 9.37258 9.37258 4 16 4C22.6274 4 28 9.37258 28 16Z" fill="url(#wssp_inv)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16 30C23.732 30 30 23.732 30 16C30 8.26801 23.732 2 16 2C8.26801 2 2 8.26801 2 16C2 18.5109 2.661 20.8674 3.81847 22.905L2 30L9.31486 28.3038C11.1894 29.3854 13.5789 30 16 30ZM16 27.8462C22.5425 27.8462 27.8462 22.5425 27.8462 16C27.8462 9.45755 22.5425 4.15385 16 4.15385C9.45755 4.15385 4.15385 9.45755 4.15385 16C4.15385 18.5261 4.9445 20.8675 6.29184 22.7902L5.23077 26.7692L9.27993 25.7569C11.1894 27.0746 13.5046 27.8462 16 27.8462Z" fill="white"/><path d="M12.5 9.49989C12.1672 8.83131 11.6565 8.8905 11.1407 8.8905C10.2188 8.8905 8.78125 9.99478 8.78125 12.05C8.78125 13.7343 9.52345 15.578 12.0244 18.3361C14.438 20.9979 17.6094 22.3748 20.2422 22.3279C22.875 22.2811 23.4167 20.0154 23.4167 19.2503C23.4167 18.9112 23.2062 18.742 23.0613 18.696C22.1641 18.2654 20.5093 17.4631 20.1328 17.3124C19.7563 17.1617 19.5597 17.3656 19.4375 17.4765C19.0961 17.8018 18.4193 18.7608 18.1875 18.9765C17.9558 19.1922 17.6103 19.083 17.4665 19.0015C16.9374 18.7892 15.5029 18.1511 14.3595 17.0426C12.9453 15.6718 12.8623 15.2001 12.5959 14.7803C12.3828 14.4444 12.5392 14.2384 12.6172 14.1483C12.9219 13.7968 13.3426 13.254 13.5313 12.9843C13.7199 12.7145 13.5702 12.305 13.4803 12.05C13.0938 10.953 12.7663 10.0347 12.5 9.49989Z" fill="white"/><defs><linearGradient id="wssp_inv" x1="26.5" y1="7" x2="4" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#5BD066"/><stop offset="1" stop-color="#27B43E"/></linearGradient></defs></svg>
+                    </a>
+                </div>
+                <div id="modalBadge" class="mt-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em]"></div>
+                <p id="modalDate" class="text-[10px] text-gray-400 mt-3"></p>
+            </div>
+            <div class="w-full md:w-3/5 p-8 md:p-10 space-y-6 max-h-[70vh] overflow-y-auto">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Información Personal</p>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">DNI / Documento</p>
+                            <p id="modalDni" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">RUC</p>
+                            <p id="modalRuc" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Tipo de Persona</p>
+                            <p id="modalPersonType" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Razón Social</p>
+                            <p id="modalBusinessName" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Dirección</p>
+                            <p id="modalAddress" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Detalles de Inversión</p>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Ocupación</p>
+                            <p id="modalOccupation" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Moneda</p>
+                            <p id="modalCurrency" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Monto Invertido</p>
+                            <p id="modalAmount" class="text-sm font-bold text-green-600 dark:text-green-400 mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Fecha Solicitud</p>
+                            <p id="modalTerm" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Referido</p>
+                    <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function confirmReject(form) {
     const reason = prompt('Motivo del rechazo (opcional):');
     if (reason === null) return false;
     form.querySelector('[name="reason"]').value = reason;
     return true;
+}
+
+function openInvestorModal(data) {
+    const modal = document.getElementById('investorModal');
+
+    document.getElementById('modalSelfie').src = data.selfie || data.avatar;
+    document.getElementById('modalName').textContent = data.name;
+
+    const emailBtn = document.getElementById('modalEmailBtn');
+    const emailText = document.getElementById('modalEmailText');
+    emailText.textContent = data.email;
+    emailBtn.href = `mailto:${data.email}`;
+
+    const phoneText = document.getElementById('modalPhoneText');
+    phoneText.textContent = data.phone;
+    const whatsappBtn = document.getElementById('modalWhatsappBtn');
+    const cleanPhone = data.phone.replace(/\D/g, '');
+    whatsappBtn.href = `https://wa.me/51${cleanPhone}`;
+
+    document.getElementById('modalDni').textContent = data.dni;
+    document.getElementById('modalRuc').textContent = data.ruc;
+    document.getElementById('modalPersonType').textContent = data.person_type === 'natural' ? 'Persona Natural' : (data.person_type === 'juridica' ? 'Persona Jurídica' : data.person_type);
+    document.getElementById('modalBusinessName').textContent = data.business_name;
+    document.getElementById('modalAddress').textContent = [data.department, data.province, data.district].filter(v => v && v !== '—').join(', ') + (data.address && data.address !== '—' ? ' — ' + data.address : '');
+    document.getElementById('modalOccupation').textContent = data.occupation;
+    document.getElementById('modalCurrency').textContent = data.currency === 'USD' ? 'Dólares (USD)' : 'Soles (PEN)';
+    document.getElementById('modalAmount').textContent = data.amount;
+    document.getElementById('modalTerm').textContent = data.date;
+
+    const referralEl = document.getElementById('modalReferral');
+    if (data.referred_by) {
+        referralEl.textContent = 'Código de referido: ' + data.referred_by;
+    } else if (data.referral_code && data.referral_code !== '—') {
+        referralEl.textContent = 'Su código: ' + data.referral_code + ' (sin referidor)';
+    } else {
+        referralEl.textContent = 'Sin referidor';
+    }
+
+    const badge = document.getElementById('modalBadge');
+    badge.textContent = data.status === 'approved' ? 'Aprobado' : (data.status === 'pending' ? 'Pendiente' : 'Rechazado');
+    badge.className = 'mt-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ' +
+        (data.status === 'approved' ? 'bg-green-100 text-green-700' : (data.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'));
+
+    document.getElementById('modalDate').textContent = 'Solicitado: ' + data.date;
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeInvestorModal() {
+    document.getElementById('investorModal').classList.add('hidden');
+    document.body.style.overflow = '';
 }
 </script>
 @endsection
