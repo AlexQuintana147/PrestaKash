@@ -98,6 +98,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::delete('/inversiones/{investment}', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'destroy'])->name('investments.destroy');
     Route::post('/inversiones/{investment}/inversor/{userId}/aprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'approveInvestor'])->name('investments.approve-investor');
     Route::post('/inversiones/{investment}/inversor/{userId}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'rejectInvestor'])->name('investments.reject-investor');
+    Route::post('/inversiones/{investment}/inversor/{userId}/desaprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'disapproveInvestor'])->name('investments.disapprove-investor');
 
     // Control de préstamos
     Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');

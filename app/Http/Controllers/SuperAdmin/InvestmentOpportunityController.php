@@ -169,6 +169,16 @@ class InvestmentOpportunityController extends Controller
         return back()->with('success', 'Inversor rechazado.');
     }
 
+    public function disapproveInvestor(Request $request, InvestmentOpportunity $investment, $userId)
+    {
+        $investment->investors()->updateExistingPivot($userId, [
+            'status' => 'pending',
+            'admin_notes' => null,
+        ]);
+
+        return back()->with('success', 'Inversor desaprobado. Vuelve a estado pendiente.');
+    }
+
     public function destroy(InvestmentOpportunity $investment)
     {
         if ($investment->approvedInvestors()->count() > 0) {
