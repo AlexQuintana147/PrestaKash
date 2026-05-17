@@ -282,16 +282,15 @@
 <!-- Modal Acción Genérico -->
 <div id="actionModal" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-[2rem] p-8 shadow-2xl relative">
-        <div id="actionIcon" class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6"></div>
         <h2 id="actionTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-2"></h2>
         <p id="actionDescription" class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-8"></p>
         
         <form id="actionForm" method="POST" class="space-y-4">
             @csrf
             <div id="actionExtraFields"></div>
-            <div class="flex gap-3">
-                <button type="button" onclick="closeActionModal()" class="flex-1 px-4 py-3 rounded-2xl text-xs font-bold text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all">Cancelar</button>
-                <button type="submit" id="actionConfirmBtn" class="flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white transition-all shadow-lg"></button>
+            <div class="flex gap-6 pt-2">
+                <button type="button" onclick="closeActionModal()" class="text-sm font-bold text-gray-400 border-b-2 border-gray-300 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                <button type="submit" id="actionConfirmBtn" class="text-sm font-bold pb-0.5 border-b-2 transition-opacity hover:opacity-70"></button>
             </div>
         </form>
     </div>
@@ -457,7 +456,6 @@ function openConfirmModal(type, appId) {
     const form = document.getElementById('actionForm');
     const title = document.getElementById('actionTitle');
     const desc = document.getElementById('actionDescription');
-    const icon = document.getElementById('actionIcon');
     const btn = document.getElementById('actionConfirmBtn');
     const extra = document.getElementById('actionExtraFields');
 
@@ -467,31 +465,25 @@ function openConfirmModal(type, appId) {
         form.action = `/gestion-interna/inversores/${appId}/aprobar`;
         title.textContent = '¿Aprobar Interesado?';
         desc.textContent = 'El usuario será notificado y podrá comenzar a operar como inversor en la plataforma.';
-        icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-green-50 dark:bg-green-500/10 text-green-600';
-        icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
         btn.textContent = 'Confirmar Aprobación';
-        btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-green-600 hover:bg-green-500 shadow-green-500/20 transition-all';
+        btn.className = 'text-sm font-bold pb-0.5 border-b-2 border-green-600 text-green-600 transition-opacity hover:opacity-70';
     } else if (type === 'unapprove') {
         form.action = `/gestion-interna/inversores/${appId}/desaprobar`;
         title.textContent = '¿Desaprobar Interesado?';
         desc.textContent = 'La solicitud volverá al estado de solicitud y el usuario perderá sus privilegios de inversor.';
-        icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600';
-        icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
         btn.textContent = 'Confirmar Reversión';
-        btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-yellow-600 hover:bg-yellow-500 shadow-yellow-500/20 transition-all';
+        btn.className = 'text-sm font-bold pb-0.5 border-b-2 border-yellow-600 text-yellow-600 transition-opacity hover:opacity-70';
     } else if (type === 'reject') {
         form.action = `/gestion-interna/inversores/${appId}/rechazar`;
         title.textContent = 'Rechazar Solicitud';
         desc.textContent = 'Por favor, indica el motivo del rechazo para informar al postulante.';
-        icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-red-50 dark:bg-red-500/10 text-red-600';
-        icon.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
         extra.innerHTML = `
             <div class="mb-4">
                 <textarea name="reason" rows="3" required placeholder="Escribe el motivo..." class="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-500/20 dark:text-white transition-all resize-none"></textarea>
             </div>
         `;
         btn.textContent = 'Confirmar Rechazo';
-        btn.className = 'flex-1 px-4 py-3 rounded-2xl text-[10px] sm:text-xs font-bold text-white bg-red-600 hover:bg-red-500 shadow-red-500/20 transition-all';
+        btn.className = 'text-sm font-bold pb-0.5 border-b-2 border-red-600 text-red-600 transition-opacity hover:opacity-70';
     }
 
     modal.classList.remove('hidden');
