@@ -109,11 +109,13 @@
                 <div class="mb-4">
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Monto a Invertir</label>
                     <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
-                        <input type="number" name="amount" required min="{{ $opportunity->min_investment }}" max="{{ $opportunity->remaining_amount }}" step="0.01"
+                        <span class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
+                        <input type="text" name="amount" id="investAmount" required inputmode="decimal"
                                placeholder="{{ number_format($opportunity->min_investment, 2) }}"
-                               class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                               class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
                     </div>
+                    <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
+                    <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
                     <p class="text-[10px] text-gray-400 mt-1">Mínimo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->min_investment, 2) }} · Máximo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->remaining_amount, 2) }}</p>
                 </div>
                 <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">
@@ -123,4 +125,40 @@
         </div>
     @endif
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const investAmount = document.getElementById('investAmount');
+    if (!investAmount) return;
+
+    investAmount.addEventListener('input', function () {
+        let start = this.selectionStart;
+        let oldVal = this.value;
+
+        let val = oldVal.replace(/\D/g, '');
+
+        if (val.length === 0) {
+            val = '0.00';
+        } else {
+            while (val.length < 3) {
+                val = '0' + val;
+            }
+            let integerPart = val.slice(0, -2);
+            let decimalPart = val.slice(-2);
+            integerPart = parseInt(integerPart, 10).toString();
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            val = integerPart + '.' + decimalPart;
+        }
+
+        if (oldVal !== val) {
+            this.value = val;
+            this.setSelectionRange(val.length, val.length);
+        }
+    });
+
+    investAmount.closest('form').addEventListener('submit', function () {
+        investAmount.value = investAmount.value.replace(/,/g, '');
+    });
+});
+</script>
 @endsection
