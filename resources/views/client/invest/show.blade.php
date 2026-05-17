@@ -158,13 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
             val = integerPart + '.' + decimalPart;
         }
 
-        let rawNum = parseFloat(val.replace(/,/g, ''));
-        if (rawNum > maxVal) {
-            val = formatAmount(maxVal);
-        } else if (rawNum < minVal && val.length > 0 && rawNum > 0) {
-            val = formatAmount(minVal);
-        }
-
         if (oldVal !== val) {
             this.value = val;
             this.setSelectionRange(val.length, val.length);
