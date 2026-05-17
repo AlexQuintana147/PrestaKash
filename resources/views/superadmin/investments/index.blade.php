@@ -58,14 +58,14 @@
     </div>
 
     @if($opportunities->count())
-        <div class="space-y-3">
+        <div class="divide-y divide-gray-100 dark:divide-gray-900">
             @foreach($opportunities as $opp)
-                <a href="{{ route('superadmin.investments.show', $opp) }}" class="block bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-5 hover:border-gray-300 dark:hover:border-gray-700 transition-all group">
+                <a href="{{ route('superadmin.investments.show', $opp) }}" class="block py-6 hover:opacity-80 transition-opacity group">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-3 mb-2">
+                            <div class="flex items-center gap-3 mb-1">
                                 <span class="text-[9px] font-mono text-gray-400">{{ $opp->code }}</span>
-                                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest
+                                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest
                                     {{ $opp->status === 'open' ? 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' : '' }}
                                     {{ $opp->status === 'funded' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : '' }}
                                     {{ $opp->status === 'closed' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' : '' }}
@@ -74,7 +74,7 @@
                                 </span>
                             </div>
                             <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">{{ $opp->description }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
                         </div>
 
                         <div class="flex items-center gap-6 text-right">
@@ -103,9 +103,11 @@
             @endforeach
         </div>
 
-        <div class="mt-8">
-            {{ $opportunities->withQueryString()->links() }}
-        </div>
+        @if($opportunities->hasPages())
+            <div class="mt-12 flex justify-center">
+                {{ $opportunities->withQueryString()->links() }}
+            </div>
+        @endif
     @else
         <div class="text-center py-20">
             <svg class="w-16 h-16 mx-auto text-gray-200 dark:text-gray-800 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
