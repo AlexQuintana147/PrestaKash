@@ -227,12 +227,19 @@
                                 </div>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                     @foreach(['diario' => 'Diario', 'semanal' => 'Semanal', 'quincenal' => 'Quincenal', 'mensual' => 'Mensual'] as $val => $label)
-                                        <label class="cursor-pointer">
+                                        <label class="cursor-pointer relative group/freq">
                                             <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer"
                                                 {{ old('payment_frequency', 'mensual') === $val ? 'checked' : '' }}>
                                             <div
                                                 class="text-center py-2 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                                 {{ $label }}
+                                            </div>
+                                            <div data-freq-tooltip="{{ $val }}"
+                                                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/freq:flex flex-col items-center z-[100] pointer-events-none">
+                                                <div class="px-3 py-1.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[9px] font-bold rounded-lg shadow-2xl whitespace-nowrap">
+                                                    Cuota: <span class="text-green-400 dark:text-green-600 tabular-nums freq-cuota-value"></span>
+                                                </div>
+                                                <div class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
                                             </div>
                                         </label>
                                     @endforeach
@@ -735,6 +742,12 @@
         .dark input[type="date"] {
             color-scheme: dark;
         }
+
+        @media (max-width: 768px) {
+            [data-freq-tooltip] {
+                display: none !important;
+            }
+        }
     </style>
 
     <script>
@@ -932,6 +945,28 @@
                 } else {
                     document.getElementById('scheduleSection').classList.add('hidden');
                 }
+
+                updateFreqTooltips();
+            }
+
+            function updateFreqTooltips() {
+                const a = parseFloat(amount.value.replace(/,/g, '')) || 0;
+                const m = parseInt(months.value) || 2;
+                const s = sym();
+                const monthlyRate = USER_CUSTOM_RATE / 100;
+                const freqMap = { diario: 30, semanal: 4, quincenal: 2, mensual: 1 };
+                const fmtShort = (n) => parseFloat(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                document.querySelectorAll('[data-freq-tooltip]').forEach(el => {
+                    const freq = el.dataset.freqTooltip;
+                    const valEl = el.querySelector('.freq-cuota-value');
+                    if (a <= 0) { valEl.textContent = '—'; return; }
+                    const ipm = freqMap[freq] || 1;
+                    const pRate = monthlyRate / ipm;
+                    const nTotal = m * ipm;
+                    const cuota = (a * pRate) / (1 - Math.pow(1 + pRate, -nTotal));
+                    valEl.textContent = s + ' ' + fmtShort(cuota);
+                });
             }
 
             function updateSchedule(principal, periodicRate, totalInstallments, symbol, system) {
