@@ -435,6 +435,7 @@
                         <!-- Etiqueta -->
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Etiqueta</label>
+                            @if($tags->count() > 0)
                             <select name="cashbox_tag_id" id="mov_tag" required
                                 class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
                                 <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>
@@ -442,6 +443,15 @@
                                     <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                            @else
+                            <div class="py-4 flex items-center gap-2">
+                                <p class="text-xs text-red-400 font-bold">Crea una etiqueta primero</p>
+                                <button type="button" onclick="closeMovementModal(); openTagsModal();"
+                                    class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity">
+                                    Crear etiqueta
+                                </button>
+                            </div>
+                            @endif
                         </div>
 
                         <!-- Motivo / Descripción -->
@@ -518,6 +528,7 @@
 
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Etiqueta</label>
+                            @if($tags->count() > 0)
                             <select name="cashbox_tag_id" id="transfer_tag" required
                                 class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
                                 <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>
@@ -525,6 +536,15 @@
                                     <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                            @else
+                            <div class="py-4 flex items-center gap-2">
+                                <p class="text-xs text-red-400 font-bold">Crea una etiqueta primero</p>
+                                <button type="button" onclick="closeTransferModal(); openTagsModal();"
+                                    class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity">
+                                    Crear etiqueta
+                                </button>
+                            </div>
+                            @endif
                         </div>
 
                         <div>
