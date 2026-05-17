@@ -35,8 +35,9 @@
                     'rejected' => ['label' => 'Rechazados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                 ] as $key => $cfg)
                     <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
-                       class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
+                       class="flex items-center justify-center gap-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                               {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
+                        @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3 h-3 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif
                         {{ $cfg['label'] }}
                     </a>
                 @endforeach
@@ -53,7 +54,7 @@
                                   {{ $filter === $key
                                       ? 'text-gray-900 dark:text-white'
                                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                            {{ $label }}
+                            @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top inline -mt-0.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif{{ $label }}
                             @if($counts[$key] > 0)
                                 <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
                             @endif
@@ -125,7 +126,15 @@
             'email' => $app->user->email,
             'phone' => $app->phone,
             'dni' => $app->user->dni ?? '—',
+            'ruc' => $app->user->ruc ?? '—',
+            'business_name' => $app->user->business_name ?? '—',
+            'person_type' => $app->user->person_type ?? '—',
+            'department' => $app->user->department ? \App\Models\UbigeoDepartment::where('id', str_pad($app->user->department, 2, '0', STR_PAD_LEFT))->value('name') ?? '—' : '—',
+            'province' => $app->user->province ? \App\Models\UbigeoProvince::where('id', str_pad($app->user->province, 4, '0', STR_PAD_LEFT))->value('name') ?? '—' : '—',
+            'district' => $app->user->district ? \App\Models\UbigeoDistrict::where('id', str_pad($app->user->district, 6, '0', STR_PAD_LEFT))->value('name') ?? '—' : '—',
+            'address' => $app->user->address ?? '—',
             'occupation' => $app->occupation,
+            'currency' => $app->currency,
             'amount' => ($app->currency === 'USD' ? '$ ' : 'S/ ') . number_format($app->intended_amount, 2),
             'term' => $app->preferred_term,
             'source' => $app->source_of_funds,
@@ -133,7 +142,10 @@
             'status' => $app->status,
             'date' => $app->created_at->format('d/m/Y H:i'),
             'avatar' => $app->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($app->user->name),
-            'selfie' => $app->user->documents?->selfie ? Storage::url($app->user->documents->selfie) : null
+            'selfie' => $app->user->documents?->selfie ? Storage::url($app->user->documents->selfie) : null,
+            'referral_code' => $app->user->referral_code ?? '—',
+            'referred_by' => $app->user->referred_by ?? null,
+            'profile_completed' => $app->user->profile_completed ?? false,
         ]) }})"
        class="flex flex-col md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group cursor-pointer"
        style="grid-template-columns: 1fr 150px 130px 120px 100px 80px;">
@@ -260,32 +272,42 @@
 <!-- Modal Inversor Detalles -->
 <div id="investorModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white dark:bg-gray-950 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden relative my-auto">
-        <!-- Close Button -->
         <button onclick="closeInvestorModal()" class="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
         <div class="flex flex-col md:flex-row">
-            <!-- Left: Image -->
             <div class="w-full md:w-2/5 bg-gray-50 dark:bg-gray-900 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
                 <img id="modalSelfie" src="" class="w-40 h-40 rounded-[2rem] object-cover shadow-xl border-4 border-white dark:border-gray-800 mb-6">
                 <h3 id="modalName" class="text-xl font-bold text-gray-900 dark:text-white text-center leading-tight"></h3>
                 <a id="modalEmail" href="" class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center hover:text-blue-500 transition-colors"></a>
                 <div id="modalBadge" class="mt-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em]"></div>
+                <p id="modalDate" class="text-[10px] text-gray-400 mt-3"></p>
             </div>
 
-            <!-- Right: Details -->
-            <div class="w-full md:w-3/5 p-8 md:p-10 space-y-8">
+            <div id="investorDetailsScroll" class="w-full md:w-3/5 p-8 md:p-10 space-y-6 max-h-[70vh] overflow-y-auto modal-scroll">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Información de Perfil</p>
-                    <div class="grid grid-cols-2 gap-6">
+                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Información Personal</p>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">DNI / Documento</p>
-                            <p id="modalDni" class="text-sm font-bold text-gray-900 dark:text-white mt-1"></p>
+                            <p id="modalDni" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
                         </div>
                         <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">RUC</p>
+                            <p id="modalRuc" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Tipo de Persona</p>
+                            <p id="modalPersonType" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Razón Social</p>
+                            <p id="modalBusinessName" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div class="col-span-2">
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Teléfono</p>
-                            <a id="modalWhatsapp" href="" target="_blank" class="flex items-center gap-2 mt-1 hover:opacity-80 transition-opacity w-fit">
+                            <a id="modalWhatsapp" href="" target="_blank" class="flex items-center gap-2 mt-0.5 hover:opacity-80 transition-opacity w-fit">
                                 <p id="modalPhone" class="text-sm font-bold text-gray-900 dark:text-white"></p>
                                 <svg class="w-5 h-5" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M16 31C23.732 31 30 24.732 30 17C30 9.26801 23.732 3 16 3C8.26801 3 2 9.26801 2 17C2 19.5109 2.661 21.8674 3.81847 23.905L2 31L9.31486 29.3038C11.3014 30.3854 13.5789 31 16 31ZM16 28.8462C22.5425 28.8462 27.8462 23.5425 27.8462 17C27.8462 10.4576 22.5425 5.15385 16 5.15385C9.45755 5.15385 4.15385 10.4576 4.15385 17C4.15385 19.5261 4.9445 21.8675 6.29184 23.7902L5.23077 27.7692L9.27993 26.7569C11.1894 28.0746 13.5046 28.8462 16 28.8462Z" fill="#BFC8D0"/>
@@ -301,27 +323,35 @@
                                 </svg>
                             </a>
                         </div>
+                        <div class="col-span-2">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Dirección</p>
+                            <p id="modalAddress" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
                     </div>
                 </div>
 
                 <div>
                     <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Detalles de Postulación</p>
-                    <div class="space-y-4">
-                        <div class="flex justify-between border-b border-gray-50 dark:border-gray-900 pb-2">
-                            <span class="text-xs text-gray-500">Ocupación</span>
-                            <span id="modalOccupation" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Ocupación</p>
+                            <p id="modalOccupation" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
                         </div>
-                        <div class="flex justify-between border-b border-gray-50 dark:border-gray-900 pb-2">
-                            <span class="text-xs text-gray-500">Monto Estimado</span>
-                            <span id="modalAmount" class="text-xs font-bold text-green-600 dark:text-green-400"></span>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Moneda</p>
+                            <p id="modalCurrency" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
                         </div>
-                        <div class="flex justify-between border-b border-gray-50 dark:border-gray-900 pb-2">
-                            <span class="text-xs text-gray-500">Plazo Preferido</span>
-                            <span id="modalTerm" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Monto Estimado</p>
+                            <p id="modalAmount" class="text-sm font-bold text-green-600 dark:text-green-400 mt-0.5"></p>
                         </div>
-                        <div class="flex justify-between border-b border-gray-50 dark:border-gray-900 pb-2">
-                            <span class="text-xs text-gray-500">Origen de Fondos</span>
-                            <span id="modalSource" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Plazo Preferido</p>
+                            <p id="modalTerm" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Origen de Fondos</p>
+                            <p id="modalSource" class="text-sm font-bold text-gray-900 dark:text-white mt-0.5"></p>
                         </div>
                     </div>
                 </div>
@@ -331,8 +361,12 @@
                     <p id="modalExperience" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed italic"></p>
                 </div>
 
-                <div id="modalActions" class="pt-4 flex gap-3">
-                    <!-- Dinámico -->
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Referido</p>
+                    <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"></p>
+                </div>
+
+                <div id="modalActions" class="pt-4 flex gap-6">
                 </div>
             </div>
         </div>
@@ -406,7 +440,11 @@ function openInvestorModal(data) {
     emailEl.textContent = data.email;
     emailEl.href = `mailto:${data.email}`;
     document.getElementById('modalDni').textContent = data.dni;
+    document.getElementById('modalRuc').textContent = data.ruc;
+    document.getElementById('modalPersonType').textContent = data.person_type === 'natural' ? 'Persona Natural' : (data.person_type === 'juridica' ? 'Persona Jurídica' : data.person_type);
+    document.getElementById('modalBusinessName').textContent = data.business_name;
     document.getElementById('modalPhone').textContent = data.phone;
+    document.getElementById('modalAddress').textContent = [data.department, data.province, data.district].filter(v => v && v !== '—').join(', ') + (data.address && data.address !== '—' ? ' — ' + data.address : '');
 
     const whatsappBtn = document.getElementById('modalWhatsapp');
     if (whatsappBtn) {
@@ -415,10 +453,21 @@ function openInvestorModal(data) {
     }
 
     document.getElementById('modalOccupation').textContent = data.occupation;
+    document.getElementById('modalCurrency').textContent = data.currency === 'USD' ? 'Dólares (USD)' : 'Soles (PEN)';
     document.getElementById('modalAmount').textContent = data.amount;
     document.getElementById('modalTerm').textContent = data.term;
     document.getElementById('modalSource').textContent = data.source;
     document.getElementById('modalExperience').textContent = data.experience;
+    document.getElementById('modalDate').textContent = 'Solicitado: ' + data.date;
+
+    const referralEl = document.getElementById('modalReferral');
+    if (data.referred_by) {
+        referralEl.textContent = 'Código de referido: ' + data.referred_by;
+    } else if (data.referral_code && data.referral_code !== '—') {
+        referralEl.textContent = 'Su código: ' + data.referral_code + ' (sin referidor)';
+    } else {
+        referralEl.textContent = 'Sin referidor';
+    }
 
     const badge = document.getElementById('modalBadge');
     badge.textContent = data.status === 'pending' ? 'Solicitud' : (data.status === 'approved' ? 'Interesado' : 'Rechazado');
@@ -429,22 +478,39 @@ function openInvestorModal(data) {
     actions.innerHTML = '';
     if (data.status === 'pending') {
         actions.innerHTML = `
-            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar Interesado</button>
-            <button onclick="closeInvestorModal(); openConfirmModal('reject', ${data.id})" class="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-all">Rechazar</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('reject', ${data.id})" class="text-sm font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar</button>
         `;
     } else if (data.status === 'approved') {
         actions.innerHTML = `
-            <button onclick="closeInvestorModal(); openConfirmModal('unapprove', ${data.id})" class="w-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold py-3 rounded-2xl text-xs hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:text-yellow-600 transition-all border border-transparent hover:border-yellow-200 dark:hover:border-yellow-900/50">Desaprobar Interesado</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('unapprove', ${data.id})" class="text-sm font-bold text-yellow-600 border-b-2 border-yellow-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
         `;
     } else if (data.status === 'rejected') {
         actions.innerHTML = `
-            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg shadow-green-500/20">Aprobar (Revertir Rechazo)</button>
+            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
         `;
     }
 
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    updateScrollbarTheme();
 }
+
+function updateScrollbarTheme() {
+    const el = document.getElementById('investorDetailsScroll');
+    if (!el) return;
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+        el.style.setProperty('scrollbar-color', '#374151 transparent');
+    } else {
+        el.style.setProperty('scrollbar-color', '#d1d5db transparent');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new MutationObserver(() => updateScrollbarTheme());
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+});
 
 function closeInvestorModal() {
     document.getElementById('investorModal').classList.add('hidden');
