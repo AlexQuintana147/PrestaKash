@@ -176,7 +176,7 @@ class LoanController extends Controller
                 'user_id' => auth()->id(),
                 'type' => 'expense',
                 'amount' => $amount,
-                'description' => "Egreso por contra-oferta de préstamo #{$loan->id} a {$loan->user->name}",
+                'description' => "Egreso por contra-oferta de préstamo {$loan->code} a {$loan->user->name}",
                 'reference_type' => 'loan',
                 'reference_id' => $loan->id,
                 'date' => now(),
@@ -209,7 +209,7 @@ class LoanController extends Controller
                 'user_id' => auth()->id(),
                 'type' => 'expense',
                 'amount' => $amount,
-                'description' => "Egreso por aprobación de préstamo #{$loan->id} a {$loan->user->name}",
+                'description' => "Egreso por aprobación de préstamo {$loan->code} a {$loan->user->name}",
                 'reference_type' => 'loan',
                 'reference_id' => $loan->id,
                 'date' => now(),
@@ -304,7 +304,7 @@ class LoanController extends Controller
     {
         $loan->update(['in_default' => !$loan->in_default]);
         $status = $loan->in_default ? 'activado' : 'desactivado';
-        return back()->with('success', "Estado de mora {$status} para el préstamo #{$loan->id}.");
+        return back()->with('success', "Estado de mora {$status} para el préstamo {$loan->code}.");
     }
 
     public function installmentsIndex(Request $request)
@@ -528,7 +528,7 @@ class LoanController extends Controller
                     'user_id' => auth()->id(),
                     'type' => 'income',
                     'amount' => $amount,
-                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo {$loan->code} de {$loan->user->name}",
                     'reference_type' => 'loan_installment',
                     'reference_id' => $installment->id,
                     'date' => now(),
@@ -618,7 +618,7 @@ class LoanController extends Controller
                     'user_id' => auth()->id(),
                     'type' => 'income',
                     'amount' => $amount,
-                    'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
                     'reference_type' => 'loan_installment',
                     'reference_id' => $installment->id,
                     'date' => now(),
@@ -663,7 +663,7 @@ class LoanController extends Controller
                     'user_id' => auth()->id(),
                     'type' => 'income',
                     'amount' => $amount,
-                    'description' => "Ingreso por MORA + CUOTA COMPLETA #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'description' => "Ingreso por MORA + CUOTA COMPLETA #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
                     'reference_type' => 'loan_installment',
                     'reference_id' => $installment->id,
                     'date' => now(),
@@ -689,7 +689,7 @@ class LoanController extends Controller
                     'user_id' => auth()->id(),
                     'type' => 'income',
                     'amount' => $amount,
-                    'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo #{$loan->id} de {$loan->user->name}",
+                    'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
                     'reference_type' => 'loan_installment',
                     'reference_id' => $installment->id,
                     'date' => now(),

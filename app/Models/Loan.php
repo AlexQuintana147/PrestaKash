@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Loan extends Model
 {
     protected $fillable = [
+        'code',
         'user_id',
         'amount',
         'currency',
@@ -40,6 +41,17 @@ class Loan extends Model
         'original_data' => 'array',
         'in_default' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->code)) {
+                $model->code = 'PRE-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+            }
+        });
+    }
 
     public function user()
     {

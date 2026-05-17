@@ -9,7 +9,7 @@
     $detailData = [
         'photo' => $photo,
         'name' => $user->name,
-        'loanId' => str_pad($loan->id, 4, '0', STR_PAD_LEFT),
+        'loanId' => $loan->code,
         'status' => match ($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', default => $loan->status},
         'profileUrl' => route('superadmin.users.show', $user),
         'dni' => $user->dni,
@@ -66,7 +66,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                     <span
-                        class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">L-{{ str_pad($loan->id, 4, '0', STR_PAD_LEFT) }}</span>
+                        class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $loan->code }}</span>
                     <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
                     <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">
                         @if(isset($inst->is_interest_payment) && $inst->is_interest_payment)

@@ -1705,8 +1705,8 @@
                                                     <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
                                                 </div>
                                                 <div>
-                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
-                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Código Préstamo</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.code}</p>
                                                 </div>
                                                 <div>
                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
@@ -1734,8 +1734,8 @@
                                                     <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
                                                 </div>
                                                 <div>
-                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
-                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Código Préstamo</p>
+                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.code}</p>
                                                 </div>
                                                 <div>
                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
@@ -1833,8 +1833,8 @@
                                                                                     <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
                                                                                 </div>
                                                                                 <div>
-                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
-                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Código Préstamo</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.code}</p>
                                                                                 </div>
                                                                                 <div>
                                                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>
@@ -1862,8 +1862,8 @@
                                                                                     <p class="text-sm font-bold text-gray-900 dark:text-white">Cuota #${inst.installment_number}</p>
                                                                                 </div>
                                                                                 <div>
-                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">ID Préstamo</p>
-                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">#${loan.id}</p>
+                                                                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Código Préstamo</p>
+                                                                                    <p class="text-sm font-bold text-gray-900 dark:text-white">${loan.code}</p>
                                                                                 </div>
                                                                                 <div>
                                                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Receptor</p>

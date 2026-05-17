@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CashboxMovement extends Model
 {
     protected $fillable = [
+        'code',
         'cashbox_id',
         'user_id',
         'type',
@@ -18,6 +19,17 @@ class CashboxMovement extends Model
         'cashbox_tag_id',
         'date',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->code)) {
+                $model->code = 'MOV-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+            }
+        });
+    }
 
     protected $casts = [
         'date' => 'datetime',

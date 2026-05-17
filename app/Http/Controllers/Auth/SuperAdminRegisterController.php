@@ -74,7 +74,7 @@ class SuperAdminRegisterController extends Controller
 
         try {
             $googleUser = \Laravel\Socialite\Facades\Socialite::driver('google')
-                ->redirectUrl(route('superadmin.register.google.callback'))
+                ->redirectUrl(env('GOOGLE_REDIRECT_URI_SUPERADMIN'))
                 ->user();
         } catch (\Exception $e) {
             return redirect()->route('superadmin.register.show', $token)

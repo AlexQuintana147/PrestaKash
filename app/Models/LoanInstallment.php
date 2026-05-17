@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class LoanInstallment extends Model
 {
     protected $fillable = [
+        'code',
         'loan_id',
         'installment_number',
         'amount',
@@ -28,6 +29,17 @@ class LoanInstallment extends Model
         'due_date' => 'date',
         'paid_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->code)) {
+                $model->code = 'CUO-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+            }
+        });
+    }
 
     public function loan()
     {

@@ -65,7 +65,7 @@ const _wsspSvg = `<svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 32 32" fill="n
 function openLoanDetailModal(data) {
     document.getElementById('ldm_photo').src = data.photo;
     document.getElementById('ldm_name').textContent = data.name;
-    document.getElementById('ldm_meta').textContent = 'Préstamo #' + data.loanId + ' · ' + data.status;
+    document.getElementById('ldm_meta').textContent = 'Préstamo ' + data.loanId + ' · ' + data.status;
     document.getElementById('ldm_profile_link').href = data.profileUrl;
 
     // Badges email + wssp

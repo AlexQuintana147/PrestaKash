@@ -181,7 +181,7 @@
         return numericValue;
     }
 
-    function openLateFeeModal(loanId, loanLabel, currency, installmentAmount, currentEnabled, currentGrace, currentRate, currentDaily) {
+    function openLateFeeModal(loanId, loanCode, loanLabel, currency, installmentAmount, currentEnabled, currentGrace, currentRate, currentDaily) {
         const titleEl = document.getElementById('lfm_title');
         const subtitleEl = document.getElementById('lfm_subtitle');
         const formEl = document.getElementById('lateFeeForm');
@@ -192,7 +192,7 @@
         const curEl = document.getElementById('lfm_daily_cur');
         const modalEl = document.getElementById('lateFeeModal');
 
-        if (titleEl) titleEl.textContent = 'Mora — Préstamo #' + loanId;
+        if (titleEl) titleEl.textContent = 'Mora — Préstamo ' + loanCode;
         if (subtitleEl) subtitleEl.textContent = loanLabel;
         if (formEl) formEl.action = '/gestion-interna/pagos/mora/' + loanId;
 

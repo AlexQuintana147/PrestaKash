@@ -29,6 +29,10 @@ class GoogleController extends Controller
 
     public function callback()
     {
+        if (session('superadmin_register_token')) {
+            return app(\App\Http\Controllers\Auth\SuperAdminRegisterController::class)->googleCallback();
+        }
+
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
