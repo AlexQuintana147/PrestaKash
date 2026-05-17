@@ -96,6 +96,7 @@
             </div>
 
         @if($existingRequest->pivot->status === 'rejected')
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
             <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
 
             @if($errors->any())
@@ -122,6 +123,7 @@
                     Enviar Nueva Solicitud
                 </button>
             </form>
+            </div>
         @endif
     @else
             <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>
