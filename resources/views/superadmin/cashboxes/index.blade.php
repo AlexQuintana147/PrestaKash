@@ -1050,7 +1050,7 @@
                 const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
                 const clickAction = isLoanRelated
                     ? `onclick="window.location.href='${redirectUrl}'"`
-                    : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toFixed(2)}', '${m.type}')"` : '');
+                    : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                 const html = `
                                             <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}" 
@@ -1079,7 +1079,7 @@
                                                     </div>
                                                     <div class="text-right ml-2">
                                                         <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
-                                                            ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
+                                                            ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1591,7 +1591,7 @@
                         const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
                         const clickAction = isLoanRelated
                             ? `onclick="window.location.href='${redirectUrl}'"`
-                            : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toFixed(2)}', '${m.type}')"` : '');
+                            : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                         const html = `
                                         <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}" 
@@ -1620,7 +1620,7 @@
                                             </div>
                                             <div class="text-right ml-2">
                                                 <p class="text-sm md:text-base font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
-                                                    ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toFixed(2)}
+                                                    ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                 </p>
                                             </div>
                                         </div>
