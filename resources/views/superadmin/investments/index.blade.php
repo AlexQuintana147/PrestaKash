@@ -10,12 +10,9 @@
             <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Finanzas</p>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Control de Inversiones</h1>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('superadmin.investments.create') }}" class="flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Nueva Oportunidad
-            </a>
-        </div>
+        <a href="{{ route('superadmin.investments.create') }}" class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
+            Nueva Oportunidad
+        </a>
     </div>
 
     @if(session('success'))
