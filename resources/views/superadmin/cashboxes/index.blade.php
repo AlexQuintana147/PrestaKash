@@ -103,7 +103,7 @@
                                                 <div class="w-full h-px bg-yellow-700"></div>
                                             </div>
                                             <h3
-                                                class="text-base md:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
+                                                class="cashbox-name text-base md:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none">
                                                 {{ $cb->name }}
                                             </h3>
                                         </div>
@@ -186,7 +186,7 @@
                                             <span
                                                 class="text-lg md:text-2xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
                                             <span
-                                                class="text-3xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
+                                                class="cashbox-balance text-3xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
                                                 {{ number_format($cb->balance, 2) }}
                                             </span>
                                         </div>
@@ -251,6 +251,10 @@
                         <button onclick="openCodesModal()"
                             class="text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:opacity-60 transition-opacity">
                             Ver Movimientos
+                        </button>
+                        <button onclick="exportPDF()"
+                            class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            Exportar PDF
                         </button>
                         <button onclick="openHistoryModal()"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -815,6 +819,11 @@
                         </svg>
                     </button>
                 </div>
+                <div class="mb-6">
+                    <input type="text" id="codeSearchInput" placeholder="Buscar por código o descripción..."
+                        oninput="filterCodes()"
+                        class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700">
+                </div>
                 <div id="codesList" class="flex-1 overflow-y-auto space-y-2 pr-2">
                 </div>
             </div>
@@ -970,6 +979,9 @@
             color-scheme: dark;
         }
     </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
 
     <script>
         const carousel = document.getElementById('cashboxCarousel');
@@ -1534,14 +1546,12 @@
             document.body.style.overflow = '';
         }
 
-        function openCodesModal() {
+        function renderCodesList(movements) {
             const codesList = document.getElementById('codesList');
             codesList.innerHTML = '';
 
-            if (currentMovements.length === 0) {
-                codesList.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center py-16">Sin movimientos</p>';
-                document.getElementById('codesModal').classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
+            if (movements.length === 0) {
+                codesList.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center py-16">Sin resultados</p>';
                 return;
             }
 
@@ -1552,7 +1562,7 @@
                 'transfer': 'DESPLAZAMIENTO'
             };
 
-            currentMovements.forEach(m => {
+            movements.forEach(m => {
                 const isIncome = m.type === 'income';
                 const dateObj = new Date(m.date);
                 const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
@@ -1576,14 +1586,89 @@
                     </div>
                 `);
             });
+        }
 
+        function openCodesModal() {
+            document.getElementById('codeSearchInput').value = '';
+            renderCodesList(currentMovements);
             document.getElementById('codesModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+        }
+
+        function filterCodes() {
+            const query = document.getElementById('codeSearchInput').value.toLowerCase().trim();
+            if (!query) {
+                renderCodesList(currentMovements);
+                return;
+            }
+            const filtered = currentMovements.filter(m =>
+                (m.code && m.code.toLowerCase().includes(query)) ||
+                (m.description && m.description.toLowerCase().includes(query))
+            );
+            renderCodesList(filtered);
         }
 
         function closeCodesModal() {
             document.getElementById('codesModal').classList.add('hidden');
             document.body.style.overflow = '';
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const activeCard = document.querySelector('.cashbox-card.active');
+            if (!activeCard) return;
+
+            const cashboxName = activeCard.querySelector('.cashbox-name')?.textContent?.trim() || 'Caja';
+            const cashboxBalance = activeCard.querySelector('.cashbox-balance')?.textContent?.trim() || '';
+
+            doc.setFontSize(18);
+            doc.text('PrestaKash - Reporte de Movimientos', 14, 22);
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Caja: ${cashboxName}`, 14, 32);
+            doc.text(`Saldo actual: ${cashboxBalance}`, 14, 38);
+            doc.text(`Generado: ${new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`, 14, 44);
+
+            const typeLabels = {
+                'loan': 'Préstamo',
+                'loan_installment': 'Cobranza',
+                'manual': 'Manual',
+                'transfer': 'Desplazamiento'
+            };
+
+            const rows = currentMovements.map(m => {
+                const dateObj = new Date(m.date);
+                const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+                const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+                const type = m.type === 'income' ? 'Ingreso' : 'Egreso';
+                const displayType = typeLabels[m.reference_type] || 'Operación';
+                const amount = `${m.type === 'income' ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+                return [m.code || '—', date + ' ' + time, m.description, displayType, type, amount];
+            });
+
+            doc.autoTable({
+                startY: 50,
+                head: [['Código', 'Fecha', 'Descripción', 'Tipo', 'Clase', 'Monto']],
+                body: rows,
+                styles: { fontSize: 8, cellPadding: 3 },
+                headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [245, 245, 255] },
+                columnStyles: {
+                    0: { cellWidth: 30 },
+                    1: { cellWidth: 35 },
+                    2: { cellWidth: 'auto' },
+                    3: { cellWidth: 25 },
+                    4: { cellWidth: 18 },
+                    5: { cellWidth: 28, halign: 'right' }
+                }
+            });
+
+            const fileName = `movimientos_${cashboxName.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.pdf`;
+            doc.save(fileName);
         }
 
         function openHistoryModal() {
