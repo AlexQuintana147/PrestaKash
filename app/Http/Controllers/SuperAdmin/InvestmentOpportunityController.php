@@ -92,13 +92,20 @@ class InvestmentOpportunityController extends Controller
         return redirect()->route('superadmin.investments.index')->with('success', 'Oportunidad de inversión creada con éxito.');
     }
 
-    public function show(InvestmentOpportunity $investment)
+    public function show(Request $request, InvestmentOpportunity $investment)
     {
-        $investment->load(['creator', 'investors' => function ($q) {
-            $q->withPivot(['amount', 'status', 'admin_notes', 'created_at']);
-        }]);
+        $investment->load(['creator']);
 
-        return view('superadmin.investments.show', compact('investment'));
+        $investors = $investment->investors()
+            ->with(['documents'])
+            ->withPivot(['amount', 'status', 'admin_notes', 'created_at'])
+            ->orderByPivot('amount', 'desc')
+            ->paginate(5, ['*'], 'investors_page')
+            ->withQueryString();
+
+        $investment->setRelation('investors', $investors);
+
+        return view('superadmin.investments.show', compact('investment', 'investors'));
     }
 
     public function update(Request $request, InvestmentOpportunity $investment)

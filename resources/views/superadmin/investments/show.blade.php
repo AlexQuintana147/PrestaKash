@@ -79,7 +79,7 @@
     </div>
 
     <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">Inversores ({{ $investment->investors->count() }})</h2>
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">Inversores ({{ $investors->total() }})</h2>
         @if($investment->status === 'open')
             <form action="{{ route('superadmin.investments.update', $investment) }}" method="POST">
                 @csrf @method('PUT')
@@ -91,14 +91,16 @@
         @endif
     </div>
 
-    @if($investment->investors->count())
-        <div class="space-y-2">
-            @foreach($investment->investors as $investor)
-                <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-xl p-4 flex items-center justify-between">
+    @if($investors->count())
+        <div class="divide-y divide-gray-100 dark:divide-gray-900">
+            @foreach($investors as $investor)
+                @php
+                    $selfie = $investor->documents?->selfie;
+                    $photo = $selfie ? Storage::url($selfie) : ($investor->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($investor->name) . '&background=e5e7eb&color=6b7280');
+                @endphp
+                <div class="py-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                            <span class="text-xs font-bold text-gray-500">{{ strtoupper(substr($investor->name, 0, 1)) }}</span>
-                        </div>
+                        <img src="{{ $photo }}" class="w-8 h-8 rounded-full object-cover border border-gray-100 dark:border-gray-800">
                         <div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $investor->name }}</p>
                             <p class="text-xs text-gray-400">{{ $investor->email }}</p>
@@ -131,6 +133,12 @@
                 </div>
             @endforeach
         </div>
+
+        @if($investors->hasPages())
+            <div class="mt-8 flex justify-center">
+                {{ $investors->withQueryString()->links() }}
+            </div>
+        @endif
     @else
         <p class="text-sm text-gray-400 dark:text-gray-600 text-center py-8">Aún no hay inversores participando</p>
     @endif
