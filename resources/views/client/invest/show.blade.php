@@ -71,7 +71,6 @@
     </div>
 
     @if($existingRequest)
-        <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6">
             <div class="flex items-center gap-3">
                 @if($existingRequest->pivot->status === 'pending')
                     <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -95,10 +94,8 @@
                     </div>
                 @endif
             </div>
-        </div>
 
         @if($existingRequest->pivot->status === 'rejected')
-        <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6">
             <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
 
             @if($errors->any())
@@ -125,10 +122,8 @@
                     Enviar Nueva Solicitud
                 </button>
             </form>
-        </div>
         @endif
     @else
-        <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6">
             <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>
 
             @if($errors->any())
@@ -155,7 +150,6 @@
                     Enviar Solicitud
                 </button>
             </form>
-        </div>
     @endif
 </div>
 
