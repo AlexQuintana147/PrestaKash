@@ -95,10 +95,29 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Tasa de retorno anual</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Tasa de retorno mensual</label>
                             <div class="relative">
-                                <input type="text" name="annual_return_rate" value="{{ old('annual_return_rate') }}" required placeholder="0.00" inputmode="decimal"
-                                       class="w-full pl-0 pr-8 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                                <input type="number" name="annual_return_rate" id="returnRateInput" step="0.01" min="0" max="100"
+                                       value="{{ old('annual_return_rate', '2.00') }}"
+                                       onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
+                                       oninput="let start = this.selectionStart;
+                                                let oldVal = this.value;
+                                                let val = oldVal.replace(/[^0-9.]/g, '');
+                                                let parts = val.split('.');
+                                                if(parts[0].length > 2) {
+                                                    val = parts[0].slice(0, 2) + '.' + parts[0].slice(2) + (parts[1] || '');
+                                                }
+                                                parts = val.split('.');
+                                                if(parts[1] && parts[1].length > 2) {
+                                                    val = parts[0] + '.' + parts[1].slice(0, 2);
+                                                }
+                                                if(val.length > 1 && val.startsWith('0') && val[1] !== '.') val = val.replace(/^0+/, '');
+                                                if (oldVal !== val) {
+                                                    this.value = val;
+                                                    this.setSelectionRange(start, start);
+                                                }
+                                                updatePreview();"
+                                       class="w-full pl-0 pr-8 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors text-right">
                                 <span class="absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400 dark:text-gray-500 pointer-events-none">%</span>
                             </div>
                         </div>
@@ -186,7 +205,7 @@
                             <div class="pt-4 border-t border-gray-100 dark:border-gray-800">
                                 <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno estimado total</p>
                                 <p id="previewEstimated" class="text-lg font-bold text-green-600 dark:text-green-400 mt-0.5">S/ 0.00</p>
-                                <p class="text-[9px] text-gray-400 mt-1">Basado en el monto objetivo × tasa × plazo</p>
+                                <p class="text-[9px] text-gray-400 mt-1">Monto objetivo × tasa mensual × plazo en meses</p>
                             </div>
                         </div>
                     </div>
@@ -194,7 +213,7 @@
                     <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-5">
                         <div class="flex items-start gap-3">
                             <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <p class="text-[11px] text-gray-400 dark:text-gray-500 leading-relaxed">La tasa de retorno es anual y fija. El retorno estimado se calcula sobre el monto objetivo completo durante el plazo definido.</p>
+                            <p class="text-[11px] text-gray-400 dark:text-gray-500 leading-relaxed">La tasa de retorno es mensual y fija. El retorno estimado se calcula sobre el monto objetivo completo durante el plazo definido.</p>
                         </div>
                     </div>
                 </div>
@@ -264,11 +283,11 @@ function updatePreview() {
 
     $('previewTitle').textContent = titleVal || '—';
     $('previewAmount').textContent = sym + ' ' + fmtNum(amountVal);
-    $('previewReturn').textContent = rateVal + '% anual';
+    $('previewReturn').textContent = rateVal + '% mensual';
     $('previewTerm').textContent = monthsVal + ' meses';
     $('previewMin').textContent = sym + ' ' + fmtNum(minVal);
 
-    const est = amountVal * rateVal / 100 * monthsVal / 12;
+    const est = amountVal * rateVal / 100 * monthsVal;
     $('previewEstimated').textContent = sym + ' ' + fmtNum(est);
 
     $('currencySymbol').textContent = sym;
@@ -276,7 +295,6 @@ function updatePreview() {
 }
 
 document.querySelector('[name="title"]').addEventListener('input', updatePreview);
-document.querySelector('[name="annual_return_rate"]').addEventListener('input', updatePreview);
 document.querySelectorAll('[name="currency"]').forEach(r => r.addEventListener('change', updatePreview));
 
 const slider = $('termMonths');
