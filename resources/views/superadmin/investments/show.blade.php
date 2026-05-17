@@ -204,18 +204,15 @@
 
 <div id="approveInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
-        <div class="w-16 h-16 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-        </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aprobar Inversor</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
             ¿Confirmas la aprobación de <span id="approve_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="approve_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
-        <div class="flex gap-3">
-            <button onclick="closeApproveInvestorModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
-            <form id="approveInvestorForm" method="POST" class="flex-1">
+        <div class="flex justify-center gap-8">
+            <button onclick="closeApproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <form id="approveInvestorForm" method="POST">
                 @csrf
-                <button type="submit" class="w-full py-3 rounded-xl bg-green-600 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20">Aprobar</button>
+                <button type="submit" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
             </form>
         </div>
     </div>
@@ -223,23 +220,20 @@
 
 <div id="rejectInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
-        <div class="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-        </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Rechazar Inversor</h3>
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
             ¿Estás seguro de rechazar la solicitud de <span id="reject_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="reject_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
-        <div class="mb-6 text-left">
+        <div class="mb-8 text-left">
             <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">Motivo del rechazo (opcional)</label>
             <textarea id="reject_inv_reason" rows="2" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors resize-none"></textarea>
         </div>
-        <div class="flex gap-3">
-            <button onclick="closeRejectInvestorModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
-            <form id="rejectInvestorForm" method="POST" class="flex-1">
+        <div class="flex justify-center gap-8">
+            <button onclick="closeRejectInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <form id="rejectInvestorForm" method="POST">
                 @csrf
                 <input type="hidden" name="reason" id="reject_inv_reason_input" value="">
-                <button type="submit" class="w-full py-3 rounded-xl bg-red-600 text-white text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20">Rechazar</button>
+                <button type="submit" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar</button>
             </form>
         </div>
     </div>
@@ -247,18 +241,15 @@
 
 <div id="disapproveInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
-        <div class="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" opacity="0.3"/><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-        </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Desaprobar Inversor</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
             ¿Desaprobar a <span id="disapprove_inv_name" class="font-bold text-gray-900 dark:text-white"></span>? Volverá a estado pendiente.
         </p>
-        <div class="flex gap-3">
-            <button onclick="closeDisapproveInvestorModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
-            <form id="disapproveInvestorForm" method="POST" class="flex-1">
+        <div class="flex justify-center gap-8">
+            <button onclick="closeDisapproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <form id="disapproveInvestorForm" method="POST">
                 @csrf
-                <button type="submit" class="w-full py-3 rounded-xl bg-amber-600 text-white text-xs font-black uppercase tracking-widest hover:bg-amber-700 transition-colors shadow-lg shadow-amber-500/20">Desaprobar</button>
+                <button type="submit" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
             </form>
         </div>
     </div>
@@ -346,7 +337,7 @@
 function openApproveInvestorModal(investmentId, userId, name, amount) {
     document.getElementById('approve_inv_name').textContent = name;
     document.getElementById('approve_inv_amount').textContent = amount;
-    document.getElementById('approveInvestorForm').action = `/superadmin/inversiones/${investmentId}/inversor/${userId}/aprobar`;
+    document.getElementById('approveInvestorForm').action = `/gestion-interna/inversiones/${investmentId}/inversor/${userId}/aprobar`;
     document.getElementById('approveInvestorModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
@@ -359,7 +350,7 @@ function closeApproveInvestorModal() {
 function openRejectInvestorModal(investmentId, userId, name, amount) {
     document.getElementById('reject_inv_name').textContent = name;
     document.getElementById('reject_inv_amount').textContent = amount;
-    document.getElementById('rejectInvestorForm').action = `/superadmin/inversiones/${investmentId}/inversor/${userId}/rechazar`;
+    document.getElementById('rejectInvestorForm').action = `/gestion-interna/inversiones/${investmentId}/inversor/${userId}/rechazar`;
     document.getElementById('reject_inv_reason').value = '';
     document.getElementById('rejectInvestorModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -372,7 +363,7 @@ function closeRejectInvestorModal() {
 
 function openDisapproveInvestorModal(investmentId, userId, name, amount) {
     document.getElementById('disapprove_inv_name').textContent = name;
-    document.getElementById('disapproveInvestorForm').action = `/superadmin/inversiones/${investmentId}/inversor/${userId}/desaprobar`;
+    document.getElementById('disapproveInvestorForm').action = `/gestion-interna/inversiones/${investmentId}/inversor/${userId}/desaprobar`;
     document.getElementById('disapproveInvestorModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
