@@ -34,7 +34,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto mb-8">Aún no tienes préstamos registrados en
                     tu historial. Solicita uno para comenzar.</p>
                 <a href="{{ route('client.loans.create') }}"
-                    class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-green-500/20">
+                    class="text-sm font-bold text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-0.5 hover:opacity-60 transition-opacity">
                     Solicitar préstamo
                 </a>
             </div>
