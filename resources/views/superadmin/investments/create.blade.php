@@ -35,12 +35,15 @@
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Título</label>
                             <input type="text" name="title" value="{{ old('title') }}" required placeholder="Ej: Cartera de préstamos Q2 2026"
+                                   pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+"
+                                   oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]/g,'')"
                                    class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
                         </div>
 
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Descripción</label>
                             <textarea name="description" rows="3" required placeholder="Describe el proyecto de inversión..."
+                                      oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]/g,'')"
                                       class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('description') }}</textarea>
                         </div>
                     </div>
@@ -147,6 +150,7 @@
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Riesgos asociados</label>
                             <textarea name="risks" rows="3" placeholder="Describe los riesgos potenciales..."
+                                      oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]/g,'')"
                                       class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('risks') }}</textarea>
                         </div>
 

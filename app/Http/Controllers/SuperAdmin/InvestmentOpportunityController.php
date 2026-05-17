@@ -56,14 +56,14 @@ class InvestmentOpportunityController extends Controller
 
         $validated = $request->validate(
             [
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
+                'title' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
+                'description' => 'required|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
                 'target_amount' => 'required|numeric|min:0.01',
                 'min_investment' => 'required|numeric|min:0.01',
                 'currency' => 'required|string|in:PEN,USD',
                 'annual_return_rate' => 'required|numeric|min:0|max:100',
                 'term_months' => 'required|integer|min:1',
-                'risks' => 'nullable|string',
+                'risks' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
                 'deadline' => 'nullable|date|after:today',
             ],
             [],
@@ -106,13 +106,13 @@ class InvestmentOpportunityController extends Controller
 
         $validated = $request->validate(
             [
-                'title' => 'sometimes|string|max:255',
-                'description' => 'sometimes|string',
+                'title' => 'sometimes|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
+                'description' => 'sometimes|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
                 'target_amount' => 'sometimes|numeric|min:0.01',
                 'min_investment' => 'sometimes|numeric|min:0.01',
                 'annual_return_rate' => 'sometimes|numeric|min:0|max:100',
                 'term_months' => 'sometimes|integer|min:1',
-                'risks' => 'nullable|string',
+                'risks' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
                 'status' => 'sometimes|string|in:open,funded,closed,cancelled',
                 'deadline' => 'nullable|date',
             ],
