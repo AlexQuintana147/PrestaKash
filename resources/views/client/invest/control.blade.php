@@ -121,9 +121,10 @@
                                 </div>
                             </div>
                         </div>
-                        @if($inv->pivot->status === 'rejected' && $inv->pivot->admin_notes)
-                            <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-                                <p class="text-xs text-red-500">Motivo: {{ $inv->pivot->admin_notes }}</p>
+                        @if($inv->pivot->status === 'rejected')
+                            <div class="mt-3 pt-3 border-t border-red-100 dark:border-red-900/30">
+                                <p class="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-1">Motivo del rechazo</p>
+                                <p class="text-sm text-red-600 dark:text-red-400">{{ $inv->pivot->admin_notes ?: 'No se especificó motivo.' }}</p>
                             </div>
                         @endif
                     </div>

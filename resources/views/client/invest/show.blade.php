@@ -89,7 +89,13 @@
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     <div>
                         <p class="text-sm font-bold text-red-600 dark:text-red-400">Solicitud Rechazada</p>
-                        <p class="text-xs text-gray-400">{{ $existingRequest->pivot->admin_notes ?: 'Tu solicitud no fue aprobada.' }}</p>
+                        <p class="text-xs text-gray-400">Tu solicitud de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} no fue aprobada.</p>
+                        @if($existingRequest->pivot->admin_notes)
+                            <div class="mt-2 pt-2 border-t border-red-100 dark:border-red-900/30">
+                                <p class="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-1">Motivo del rechazo</p>
+                                <p class="text-sm text-red-600 dark:text-red-400">{{ $existingRequest->pivot->admin_notes }}</p>
+                            </div>
+                        @endif
                     </div>
                 @endif
             </div>
