@@ -6,10 +6,10 @@
     <div class="min-h-screen px-5 md:px-10 py-8">
 
         <!-- Header -->
-        <div class="flex items-center justify-between mb-12">
-            <div>
+        <div class="flex items-center justify-between mb-12 gap-4 flex-nowrap">
+            <div class="min-w-0 flex-1">
                 <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Panel</p>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestionar Préstamos
+                <h1 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-tight truncate">Gestionar Préstamos
                 </h1>
             </div>
 
@@ -19,15 +19,13 @@
 
             @if($counterOfferLoans->isNotEmpty())
                 <button type="button" onclick="showCounterOffersList({{ json_encode($counterOfferLoans->values()) }})"
-                    class="flex items-center gap-3 bg-white dark:bg-gray-950 border border-purple-200 dark:border-purple-800 hover:bg-gray-50 dark:hover:bg-gray-900 text-gray-900 dark:text-white px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-purple-500/10 dark:shadow-purple-500/20">
-                    <div>
-                        <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                    </div>
-                    <span class="text-xs font-bold uppercase tracking-widest">Nuevas Contra-ofertas</span>
+                    class="flex items-center gap-2 bg-white dark:bg-gray-950 border border-purple-200 dark:border-purple-800 hover:bg-gray-50 dark:hover:bg-gray-900 text-gray-900 dark:text-white px-3 py-2 rounded-xl transition-all shadow-lg shadow-purple-500/10 dark:shadow-purple-500/20 flex-shrink-0 ml-2">
+                    <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">Nuevas Contra-ofertas</span>
                 </button>
             @endif
         </div>
