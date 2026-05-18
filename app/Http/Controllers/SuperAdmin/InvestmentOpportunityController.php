@@ -17,6 +17,10 @@ class InvestmentOpportunityController extends Controller
             ->withCount(['investors as pending_investors_count' => function ($q) {
                 $q->where('investor_opportunity.status', 'pending');
             }])
+            ->withCount(['investors as pending_vouchers_count' => function ($q) {
+                $q->where('investor_opportunity.payment_status', 'pending')
+                  ->whereNotNull('investor_opportunity.voucher_path');
+            }])
             ->latest();
 
         if ($filter !== 'all') {
