@@ -238,20 +238,13 @@
 
 <style>
 select option {
-    background-color: white;
-    color: #111827;
+    background-color: white !important;
+    color: #111827 !important;
 }
 
-.dark select option {
-    background-color: #111827;
-    color: #f9fafb;
-}
-
-@media (prefers-color-scheme: dark) {
-    select option {
-        background-color: #111827;
-        color: #f9fafb;
-    }
+html.dark select option {
+    background-color: #1f2937 !important;
+    color: #f9fafb !important;
 }
 </style>
 
