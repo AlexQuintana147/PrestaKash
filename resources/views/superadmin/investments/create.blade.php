@@ -243,6 +243,48 @@ html.dark select option {
     background-color: #1f2937 !important;
     color: #f9fafb !important;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0) brightness(0);
+    cursor: pointer;
+    opacity: 1;
+}
+
+html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(2);
+    cursor: pointer;
+    opacity: 1;
+}
+
+html.dark input[type="date"] {
+    color-scheme: dark;
+}
+
+input[type="date"] {
+    color-scheme: light;
+}
+
+input[type="date"]::-webkit-datetime-edit {
+    padding: 0;
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+}
+
+html.dark input[type="date"]::-webkit-datetime-edit-text,
+html.dark input[type="date"]::-webkit-datetime-edit-month-field,
+html.dark input[type="date"]::-webkit-datetime-edit-day-field,
+html.dark input[type="date"]::-webkit-datetime-edit-year-field {
+    color: #f9fafb;
+}
+
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+    color: #111827;
+}
 </style>
 
 <script>
