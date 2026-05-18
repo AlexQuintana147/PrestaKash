@@ -546,12 +546,49 @@
                                 <div class="grid grid-cols-4 gap-6 py-4 border-y border-gray-100 dark:border-gray-800">
                                     <div>
                                         <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Educación</p>
-                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">{{ $profile->academic_status }}</p>
-                                        @if($profile->institution)
-                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->institution }}</p>
-                                        @endif
-                                        @if($profile->career)
-                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->career }}</p>
+                                        @php
+                                            $eduLabels = [
+                                                'primaria' => ['label' => 'Primaria', 'color' => 'gray'],
+                                                'secundaria' => ['label' => 'Secundaria', 'color' => 'blue'],
+                                                'tecnico' => ['label' => 'Técnico', 'color' => 'amber'],
+                                                'universitario' => ['label' => 'Universitario', 'color' => 'purple'],
+                                                'postgrado' => ['label' => 'Postgrado', 'color' => 'emerald'],
+                                            ];
+                                            $eduCfg = $eduLabels[$profile->academic_status ?? ''] ?? ['label' => $profile->academic_status, 'color' => 'gray'];
+                                            $eduColors = [
+                                                'gray' => ['bg' => 'bg-gray-50 dark:bg-gray-500/10', 'border' => 'border-gray-200 dark:border-gray-500/20', 'text' => 'text-gray-700 dark:text-gray-300', 'badge' => 'text-gray-600 dark:text-gray-400'],
+                                                'blue' => ['bg' => 'bg-blue-50 dark:bg-blue-500/10', 'border' => 'border-blue-200 dark:border-blue-500/20', 'text' => 'text-blue-700 dark:text-blue-300', 'badge' => 'text-blue-600 dark:text-blue-400'],
+                                                'amber' => ['bg' => 'bg-amber-50 dark:bg-amber-500/10', 'border' => 'border-amber-200 dark:border-amber-500/20', 'text' => 'text-amber-700 dark:text-amber-300', 'badge' => 'text-amber-600 dark:text-amber-400'],
+                                                'purple' => ['bg' => 'bg-purple-50 dark:bg-purple-500/10', 'border' => 'border-purple-200 dark:border-purple-500/20', 'text' => 'text-purple-700 dark:text-purple-300', 'badge' => 'text-purple-600 dark:text-purple-400'],
+                                                'emerald' => ['bg' => 'bg-emerald-50 dark:bg-emerald-500/10', 'border' => 'border-emerald-200 dark:border-emerald-500/20', 'text' => 'text-emerald-700 dark:text-emerald-300', 'badge' => 'text-emerald-600 dark:text-emerald-400'],
+                                            ];
+                                            $c = $eduColors[$eduCfg['color']] ?? $eduColors['gray'];
+                                        @endphp
+                                        <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg {{ $c['bg'] }} border {{ $c['border'] }} mb-2">
+                                            <svg class="w-3 h-3 {{ $c['badge'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                                            <span class="text-[10px] font-bold {{ $c['text'] }}">{{ $eduCfg['label'] }}</span>
+                                        </div>
+                                        @if($profile->institution || $profile->career)
+                                            <div class="space-y-1.5 mt-2 pl-2 border-l-2 {{ str_replace('border-', 'border-l-', $c['border']) }}">
+                                                @if($profile->institution)
+                                                    <div class="flex items-start gap-1.5">
+                                                        <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                        <div>
+                                                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">Institución</p>
+                                                            <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->institution }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                @if($profile->career)
+                                                    <div class="flex items-start gap-1.5">
+                                                        <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                                        <div>
+                                                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">Carrera / Estudio</p>
+                                                            <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->career }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         @endif
                                     </div>
                                     <div>
@@ -639,35 +676,66 @@
                                     </div>
                                     <div>
                                         <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Estado Civil</p>
-                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">
-                                            {{ match($profile->marital_status) {
-                                                'soltero' => 'Soltero/a',
-                                                'casado_separado' => 'Casado (B.S)',
-                                                'casado_compartido' => 'Casado (B.C)',
-                                                default => $profile->marital_status
-                                            } }}
-                                        </p>
-                                        @if($profile->marital_status === 'casado_compartido' && ($profile->spouse_first_name || $profile->spouse_last_name))
-                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->spouse_first_name }} {{ $profile->spouse_last_name }}</p>
-                                            @if($profile->spouse_dni)
-                                                <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">DNI: {{ $profile->spouse_dni }}</p>
+                                        @php
+                                            $maritalLabels = [
+                                                'soltero' => ['label' => 'Soltero/a', 'color' => 'slate', 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
+                                                'casado_separado' => ['label' => 'Casado (B.S)', 'color' => 'rose', 'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
+                                                'casado_compartido' => ['label' => 'Casado (B.C)', 'color' => 'pink', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
+                                                'divorciado' => ['label' => 'Divorciado/a', 'color' => 'orange', 'icon' => 'M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25'],
+                                                'viudo' => ['label' => 'Viudo/a', 'color' => 'stone', 'icon' => 'M9 9l10.5-3m0 0l-10.5 3m10.5-3v6m0-6H9'],
+                                            ];
+                                            $maritalCfg = $maritalLabels[$profile->marital_status ?? ''] ?? ['label' => ucfirst($profile->marital_status), 'color' => 'gray', 'icon' => ''];
+                                            $mc = match($maritalCfg['color']) {
+                                                'slate' => ['bg' => 'bg-slate-50 dark:bg-slate-500/10', 'border' => 'border-slate-200 dark:border-slate-500/20', 'text' => 'text-slate-700 dark:text-slate-300', 'badge' => 'text-slate-600 dark:text-slate-400'],
+                                                'rose' => ['bg' => 'bg-rose-50 dark:bg-rose-500/10', 'border' => 'border-rose-200 dark:border-rose-500/20', 'text' => 'text-rose-700 dark:text-rose-300', 'badge' => 'text-rose-600 dark:text-rose-400'],
+                                                'pink' => ['bg' => 'bg-pink-50 dark:bg-pink-500/10', 'border' => 'border-pink-200 dark:border-pink-500/20', 'text' => 'text-pink-700 dark:text-pink-300', 'badge' => 'text-pink-600 dark:text-pink-400'],
+                                                'orange' => ['bg' => 'bg-orange-50 dark:bg-orange-500/10', 'border' => 'border-orange-200 dark:border-orange-500/20', 'text' => 'text-orange-700 dark:text-orange-300', 'badge' => 'text-orange-600 dark:text-orange-400'],
+                                                'stone' => ['bg' => 'bg-stone-50 dark:bg-stone-500/10', 'border' => 'border-stone-200 dark:border-stone-500/20', 'text' => 'text-stone-700 dark:text-stone-300', 'badge' => 'text-stone-600 dark:text-stone-400'],
+                                                default => ['bg' => 'bg-gray-50 dark:bg-gray-500/10', 'border' => 'border-gray-200 dark:border-gray-500/20', 'text' => 'text-gray-700 dark:text-gray-300', 'badge' => 'text-gray-600 dark:text-gray-400'],
+                                            };
+                                        @endphp
+                                        <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg {{ $mc['bg'] }} border {{ $mc['border'] }} mb-2">
+                                            @if($maritalCfg['icon'])
+                                                <svg class="w-3 h-3 {{ $mc['badge'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $maritalCfg['icon'] }}"/></svg>
                                             @endif
+                                            <span class="text-[10px] font-bold {{ $mc['text'] }}">{{ $maritalCfg['label'] }}</span>
+                                        </div>
+                                        @if($profile->marital_status === 'casado_compartido' && ($profile->spouse_first_name || $profile->spouse_last_name))
+                                            <div class="space-y-1.5 mt-2 pl-2 border-l-2 border-pink-200 dark:border-pink-500/30">
+                                                <div class="flex items-start gap-1.5">
+                                                    <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                    <div>
+                                                        <p class="text-[8px] text-gray-400 uppercase tracking-wider">Cónyuge</p>
+                                                        <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->spouse_first_name }} {{ $profile->spouse_last_name }}</p>
+                                                        @if($profile->spouse_dni)
+                                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5"><span class="font-mono">DNI: {{ $profile->spouse_dni }}</span></p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Hijos</p>
-                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                            @if($profile->has_children)
-                                                {{ $profile->children_count }} {{ $profile->children_count == 1 ? 'hijo' : 'hijos' }}
-                                            @else
-                                                Sin hijos
-                                            @endif
-                                        </p>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Familia</p>
+                                        @if($profile->has_children)
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 mb-2">
+                                                <svg class="w-3 h-3 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                <span class="text-[10px] font-bold text-cyan-700 dark:text-cyan-300">{{ $profile->children_count }} {{ $profile->children_count == 1 ? 'hijo' : 'hijos' }}</span>
+                                            </div>
+                                        @else
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50 dark:bg-slate-500/10 border border-slate-200 dark:border-slate-500/20 mb-2">
+                                                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Sin hijos</span>
+                                            </div>
+                                        @endif
                                         @if($profile->instagram)
-                                            <a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" class="text-[9px] text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors leading-tight flex items-center gap-1 mt-1">
-                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                                                {{ $profile->instagram }}
-                                            </a>
+                                            <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                                                <a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-500/10 dark:to-pink-500/10 border border-purple-200 dark:border-purple-500/20 hover:border-purple-400 transition-colors group">
+                                                    <svg class="w-3.5 h-3.5 text-purple-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                                    <span class="text-[10px] font-bold text-purple-600 dark:text-purple-400 group-hover:text-purple-500 transition-colors">@{{ ltrim($profile->instagram, '@') }}</span>
+                                                    <svg class="w-2.5 h-2.5 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                                </a>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
@@ -675,18 +743,55 @@
                                 <!-- Fila 3: Detalles del Préstamo -->
                                 <div class="grid grid-cols-4 gap-6">
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Destino</p>
-                                        <p class="text-[10px] font-bold text-gray-900 dark:text-white uppercase leading-tight mb-0.5">{{ $loan->bank_name }}</p>
-                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ ucfirst($loan->account_type) }} • {{ $loan->account_number }}</p>
-                                        @if($loan->cci)
-                                            <p class="text-[8px] font-mono text-gray-400 dark:text-gray-600 leading-tight mt-0.5">{{ $loan->cci }}</p>
-                                        @endif
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Destino de Fondos</p>
+                                        <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-2">
+                                            <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                            <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">{{ $loan->bank_name }}</span>
+                                        </div>
+                                        <div class="space-y-1.5 mt-2 pl-2 border-l-2 border-emerald-200 dark:border-emerald-500/30">
+                                            <div class="flex items-start gap-1.5">
+                                                <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                                <div>
+                                                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Tipo de Cuenta</p>
+                                                    <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ ucfirst($loan->account_type) }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-1.5">
+                                                <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                                                <div>
+                                                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">N° Cuenta</p>
+                                                    <p class="text-[10px] font-mono font-bold text-gray-900 dark:text-white">{{ $loan->account_number }}</p>
+                                                </div>
+                                            </div>
+                                            @if($loan->cci)
+                                                <div class="flex items-start gap-1.5">
+                                                    <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                                    <div>
+                                                        <p class="text-[8px] text-gray-400 uppercase tracking-wider">CCI Interbancario</p>
+                                                        <p class="text-[9px] font-mono text-gray-600 dark:text-gray-400">{{ $loan->cci }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div>
                                         <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Desembolso</p>
-                                        <p class="text-[10px] font-bold text-gray-900 dark:text-white tabular-nums leading-tight">
-                                            {{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '—' }}
-                                        </p>
+                                        @if($loan->disbursement_date)
+                                            @php
+                                                $disbDate = \Carbon\Carbon::parse($loan->disbursement_date);
+                                                $isDisbursed = $disbDate->isPast();
+                                            @endphp
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg {{ $isDisbursed ? 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20' : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20' }} border mb-2">
+                                                <svg class="w-3 h-3 {{ $isDisbursed ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                <span class="text-[10px] font-bold {{ $isDisbursed ? 'text-green-700 dark:text-green-300' : 'text-amber-700 dark:text-amber-300' }}">{{ $disbDate->format('d/m/Y') }}</span>
+                                                <span class="text-[8px] font-normal {{ $isDisbursed ? 'text-green-500' : 'text-amber-500' }}">{{ $isDisbursed ? 'desembolsado' : 'pendiente' }}</span>
+                                            </div>
+                                        @else
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 dark:bg-gray-500/10 border border-gray-200 dark:border-gray-500/20">
+                                                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span class="text-[10px] font-bold text-gray-500">Sin fecha</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-1.5 mb-1.5">
@@ -706,25 +811,15 @@
                                                         'payment_frequency' => $loan->payment_frequency ?? 'mensual',
                                                         'user_name' => $loan->user->name,
                                                     ]) }})"
-                                                    class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                                                    class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                                                     title="Ver cronograma">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                                 </button>
                                             @endif
                                         </div>
-                                        <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">
-                                            @if($loan->type === 'cuotas')
-                                                {{ $loan->months }} meses
-                                                @if($loan->amortization_system === 'frances')
-                                                    <span class="text-[9px] text-gray-500 font-normal">({{ $loan->payment_frequency }})</span>
-                                                @else
-                                                    <span class="text-[9px] text-gray-500 font-normal">(americano)</span>
-                                                @endif
-                                            @else
-                                                {{ $loan->payment_days }} días
-                                            @endif
-                                        </p>
                                         @php
+                                            $termBadgeColor = $loan->type === 'unico' ? 'bg-violet-50 dark:bg-violet-500/10 border-violet-200 dark:border-violet-500/20 text-violet-700 dark:text-violet-300' : 'bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-300';
+                                            $termIcon = $loan->type === 'unico' ? 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' : 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10';
                                             $freqLabelDesktop = match($loan->payment_frequency ?? 'mensual') {
                                                 'diario' => 'día',
                                                 'semanal' => 'semana',
@@ -732,18 +827,48 @@
                                                 default => 'mes'
                                             };
                                         @endphp
-                                        <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight">
-                                            Cuota/{{ $loan->type === 'cuotas' ? $freqLabelDesktop : 'pago' }}: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
-                                        </p>
-                                        <p class="text-[9px] text-green-600 dark:text-green-500 font-bold leading-tight mt-0.5">
-                                            Ganancia: {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}
-                                        </p>
+                                        <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg {{ $termBadgeColor }} border mb-2">
+                                            <svg class="w-3 h-3 {{ str_replace(['bg-', 'dark:', '/'], '', explode(' ', $termBadgeColor)[0]) === 'violet' ? 'text-violet-600 dark:text-violet-400' : 'text-blue-600 dark:text-blue-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $termIcon }}"/></svg>
+                                            <span class="text-[10px] font-bold {{ $termBadgeColor }}">
+                                                @if($loan->type === 'cuotas')
+                                                    {{ $loan->months }} meses ({{ $loan->amortization_system === 'frances' ? ucfirst($loan->payment_frequency) : 'Americano' }})
+                                                @else
+                                                    Pago único • {{ $loan->payment_days }} días
+                                                @endif
+                                            </span>
+                                        </div>
+                                        <div class="space-y-1.5 mt-2 pl-2 border-l-2 border-blue-200 dark:border-blue-500/30">
+                                            <div class="flex items-start gap-1.5">
+                                                <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <div>
+                                                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Cuota / {{ $loan->type === 'cuotas' ? $freqLabelDesktop : 'pago' }}</p>
+                                                    <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-1.5">
+                                                <svg class="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                                <div>
+                                                    <p class="text-[8px] text-green-500 uppercase tracking-wider font-bold">Ganancia Total</p>
+                                                    <p class="text-[10px] font-black text-green-600 dark:text-green-400">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-1.5">
+                                                <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                                <div>
+                                                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Tasa de Interés</p>
+                                                    <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $loan->interest_rate }}%</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Motivo</p>
-                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 italic leading-relaxed">
-                                            "{{ $loan->reason }}"
-                                        </p>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Motivo del Préstamo</p>
+                                        <div class="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-500/5 border border-orange-100 dark:border-orange-500/10">
+                                            <div class="flex items-start gap-2">
+                                                <svg class="w-3.5 h-3.5 text-orange-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                                <p class="text-[10px] text-gray-700 dark:text-gray-300 italic leading-relaxed">"{{ $loan->reason }}"</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             @else
