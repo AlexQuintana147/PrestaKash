@@ -168,13 +168,30 @@
                 </section>
 
                 <section>
-                    <div class="flex items-center justify-between mb-4">
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">Cuentas Bancarias</p>
-                        <button type="button" onclick="addBankAccount()" class="text-xs font-bold text-green-600 border-b border-green-600 pb-0.5 hover:opacity-70 transition-opacity">+ Agregar cuenta</button>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Cuenta Bancaria para Depósitos</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Nombre del Banco *</label>
+                            <input type="text" name="bank_name" value="{{ old('bank_name') }}" required placeholder="BCP, Interbank, BBVA..."
+                                   class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Número de Cuenta *</label>
+                                <input type="text" name="account_number" value="{{ old('account_number') }}" required placeholder="000-000000-0" maxlength="30"
+                                       oninput="this.value=this.value.replace(/\D/g,'')"
+                                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">CCI *</label>
+                                <input type="text" name="cci" value="{{ old('cci') }}" required placeholder="000-000-000000-00" maxlength="30"
+                                       oninput="this.value=this.value.replace(/\D/g,'')"
+                                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                            </div>
+                        </div>
                     </div>
-                    <div id="bankAccountsContainer" class="space-y-4">
-                    </div>
-                    <input type="hidden" name="bank_accounts" id="bankAccountsInput">
                 </section>
 
                 <div class="flex gap-6 pt-6">
@@ -279,12 +296,7 @@ function initAmountField(input) {
     initAmountField(input);
 });
 
-document.querySelector('form').addEventListener('submit', () => {
-    ['target_amount', 'min_investment'].forEach(name => {
-        const input = document.querySelector('[name="' + name + '"]');
-        input.value = input.value.replace(/,/g, '');
-    });
-});
+
 
 function updatePreview() {
     const titleVal = document.querySelector('[name="title"]').value;
@@ -320,63 +332,12 @@ slider.addEventListener('input', () => {
 
 updatePreview();
 
-let bankAccountIndex = 0;
-
-function addBankAccount(data = {}) {
-    const idx = bankAccountIndex++;
-    const container = $('bankAccountsContainer');
-    const div = document.createElement('div');
-    div.id = 'bankAccount-' + idx;
-    div.className = 'bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 space-y-3 relative';
-    div.innerHTML = `
-        <button type="button" onclick="removeBankAccount(${idx})" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-        <div>
-            <label class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Banco</label>
-            <input type="text" data-ba="bank" value="${data.bank || ''}" placeholder="BCP, Interbank, BBVA..."
-                   class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">N° Cuenta</label>
-                <input type="text" data-ba="account_number" value="${data.account_number || ''}" placeholder="000-000000-0"
-                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
-            </div>
-            <div>
-                <label class="block text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">CCI</label>
-                <input type="text" data-ba="cci" value="${data.cci || ''}" placeholder="000-000-000000-00"
-                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
-            </div>
-        </div>
-    `;
-    container.appendChild(div);
-}
-
-function removeBankAccount(idx) {
-    const el = $('bankAccount-' + idx);
-    if (el) el.remove();
-}
-
-const origSubmit = document.querySelector('form').onsubmit;
-document.querySelector('form').addEventListener('submit', (e) => {
-    const accounts = [];
-    $('bankAccountsContainer').querySelectorAll('[id^="bankAccount-"]').forEach(div => {
-        const bank = div.querySelector('[data-ba="bank"]')?.value?.trim() || '';
-        const account_number = div.querySelector('[data-ba="account_number"]')?.value?.trim() || '';
-        const cci = div.querySelector('[data-ba="cci"]')?.value?.trim() || '';
-        if (bank || account_number || cci) {
-            accounts.push({ bank, account_number, cci });
-        }
+document.querySelector('form').addEventListener('submit', function() {
+    ['target_amount', 'min_investment'].forEach(function(name) {
+        const input = document.querySelector('[name="' + name + '"]');
+        input.value = input.value.replace(/,/g, '');
     });
-    if (accounts.length === 0) {
-        e.preventDefault();
-        alert('Debes agregar al menos una cuenta bancaria.');
-        return;
-    }
-    $('bankAccountsInput').value = JSON.stringify(accounts);
 });
 
-addBankAccount();
 </script>
 @endsection

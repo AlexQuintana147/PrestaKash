@@ -68,11 +68,19 @@ class InvestmentOpportunityController extends Controller
                 'annual_return_rate' => 'required|numeric|min:0|max:100',
                 'term_months' => 'required|integer|min:1',
                 'risks' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
-                'bank_accounts' => 'required|json',
+                'bank_name' => 'required|string|max:255',
+                'account_number' => 'required|string|max:30|regex:/^\d+$/',
+                'cci' => 'required|string|max:30|regex:/^\d+$/',
                 'deadline' => 'nullable|date|after:today',
             ],
             [
-                'bank_accounts.required' => 'Debes agregar al menos una cuenta bancaria.',
+                'bank_name.required' => 'El nombre del banco es obligatorio.',
+                'account_number.required' => 'El número de cuenta es obligatorio.',
+                'account_number.regex' => 'El número de cuenta solo debe contener números.',
+                'account_number.max' => 'El número de cuenta no puede exceder 30 dígitos.',
+                'cci.required' => 'El CCI es obligatorio.',
+                'cci.regex' => 'El CCI solo debe contener números.',
+                'cci.max' => 'El CCI no puede exceder 30 dígitos.',
             ],
             [
                 'title' => 'título',
@@ -83,21 +91,22 @@ class InvestmentOpportunityController extends Controller
                 'annual_return_rate' => 'tasa de retorno',
                 'term_months' => 'plazo',
                 'risks' => 'riesgos',
-                'bank_accounts' => 'cuentas bancarias',
+                'bank_name' => 'nombre del banco',
+                'account_number' => 'número de cuenta',
+                'cci' => 'CCI',
                 'deadline' => 'fecha límite',
             ]
         );
 
-        $bankAccounts = json_decode($validated['bank_accounts'], true);
-        if (empty($bankAccounts)) {
-            return back()->withErrors(['bank_accounts' => 'Debes agregar al menos una cuenta bancaria.'])->withInput();
-        }
-        foreach ($bankAccounts as $acc) {
-            if (empty($acc['bank']) || empty($acc['account_number']) || empty($acc['cci'])) {
-                return back()->withErrors(['bank_accounts' => 'Cada cuenta debe tener banco, número de cuenta y CCI.'])->withInput();
-            }
-        }
-        $validated['bank_accounts'] = $bankAccounts;
+        $validated['bank_accounts'] = [
+            [
+                'bank' => $validated['bank_name'],
+                'account_number' => $validated['account_number'],
+                'cci' => $validated['cci'],
+            ]
+        ];
+
+        unset($validated['bank_name'], $validated['account_number'], $validated['cci']);
 
         $validated['created_by'] = auth()->id();
         $validated['status'] = 'open';
