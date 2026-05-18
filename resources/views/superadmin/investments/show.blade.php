@@ -203,7 +203,13 @@
                                     <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
                                 @endif
                                 @if($investor->pivot->voucher_path && $investor->pivot->payment_status !== 'rejected')
-                                    <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
+                                    @if($investor->pivot->payment_status === 'confirmed')
+                                        <button type="button" onclick="openVoucherViewModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}')" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Ver Comprobante">
+                                            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        </button>
+                                    @else
+                                        <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
+                                    @endif
                                 @endif
                             </div>
                         @endif
@@ -455,6 +461,32 @@
     </div>
 </div>
 
+<div id="voucherViewModal" class="hidden fixed inset-0 bg-black/70 z-[120] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden relative my-auto">
+        <button onclick="closeVoucherViewModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20 bg-white/80 dark:bg-gray-900/80">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="p-8">
+            <div class="flex items-center gap-2 mb-1">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Comprobante de Pago</h3>
+                <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">Aprobado</span>
+            </div>
+            <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_view_investor_name" class="font-bold text-gray-700 dark:text-gray-300"></span></p>
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 flex items-center justify-center mb-6 min-h-[300px] border border-gray-200 dark:border-gray-800 cursor-zoom-in group relative" onclick="openVoucherLightboxView()" style="min-height: 300px;">
+                <img id="voucher_view_image" src="" class="max-w-full max-h-[400px] rounded-xl object-contain shadow-sm group-hover:opacity-80 transition-opacity" draggable="false">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <svg class="w-8 h-8 text-gray-500 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                </div>
+                <p class="absolute bottom-2 text-[9px] text-gray-400 font-medium">Click para ampliar</p>
+            </div>
+            <div class="mb-4">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1.5">Número de Operación</label>
+                <div class="w-full px-4 py-2.5 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-mono font-bold text-gray-700 dark:text-gray-300">{{ $investor->pivot->operation_number ?? '—' }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="voucherLightbox" onclick="closeVoucherLightbox(event)"
      class="hidden fixed inset-0 z-[130] bg-black/95 flex flex-col items-center justify-center p-4">
     <div class="flex items-center justify-between w-full max-w-5xl mb-3 flex-shrink-0">
@@ -603,6 +635,28 @@ function openVoucherModal(voucherUrl, investmentId, userId, investorName) {
 
 function closeVoucherModal() {
     document.getElementById('voucherModal').classList.add('hidden');
+}
+
+function openVoucherViewModal(voucherUrl, investorName, operationNumber) {
+    document.getElementById('voucher_view_image').src = voucherUrl;
+    document.getElementById('voucher_view_investor_name').textContent = investorName;
+    document.getElementById('voucherViewModal').classList.remove('hidden');
+}
+
+function closeVoucherViewModal() {
+    document.getElementById('voucherViewModal').classList.add('hidden');
+}
+
+function openVoucherLightboxView() {
+    const src = document.getElementById('voucher_view_image').src;
+    const name = document.getElementById('voucher_view_investor_name').textContent;
+
+    document.getElementById('voucher_lightbox_name').textContent = name;
+    document.getElementById('voucherLightboxImg').src = src;
+    document.getElementById('voucherLightboxImg').style.transform = 'scale(1)';
+    voucherScale = 1;
+    document.getElementById('voucherZoomLevel').textContent = '100%';
+    document.getElementById('voucherLightbox').classList.remove('hidden');
 }
 
 function openVoucherConfirm(action) {
