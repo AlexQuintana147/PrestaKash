@@ -254,6 +254,9 @@ class InvestmentOpportunityController extends Controller
     {
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
+            'operation_number' => 'nullable|string|max:50|regex:/^[A-Za-z0-9]+$/',
+        ], [
+            'operation_number.regex' => 'El número de operación solo puede contener letras y números.',
         ]);
 
         $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
@@ -266,10 +269,27 @@ class InvestmentOpportunityController extends Controller
 
         $investment->investors()->updateExistingPivot($userId, [
             'payment_status' => $status,
+            'operation_number' => $validated['operation_number'] ?? null,
         ]);
 
         $actionText = $status === 'confirmed' ? 'aprobado' : 'rechazado';
         return back()->with("success", "Comprobante {$actionText} correctamente.");
+    }
+
+    public function disapprovePayment(InvestmentOpportunity $investment, $userId)
+    {
+        $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
+
+        if (!$pivot || $pivot->payment_status !== 'confirmed') {
+            return back()->with('error', 'No se encontró un pago aprobado para desaprobar.');
+        }
+
+        $investment->investors()->updateExistingPivot($userId, [
+            'payment_status' => 'pending',
+            'operation_number' => null,
+        ]);
+
+        return back()->with('success', 'Pago desaprobado. El inversor puede subir un nuevo comprobante.');
     }
 
     public function destroy(InvestmentOpportunity $investment)

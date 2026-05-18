@@ -197,9 +197,13 @@
                             </div>
                         @elseif($investor->pivot->status === 'approved')
                             <div class="flex gap-3">
-                                <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
-                                @if($investor->pivot->payment_status === 'pending' && $investor->pivot->voucher_path)
-                                    <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
+                                @if($investor->pivot->payment_status === 'confirmed')
+                                    <button type="button" onclick="openDisapprovePaymentModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-orange-600 border-b-2 border-orange-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar Pago</button>
+                                @else
+                                    <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
+                                @endif
+                                @if($investor->pivot->voucher_path && $investor->pivot->payment_status !== 'confirmed')
+                                    <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
                                 @endif
                             </div>
                         @endif
@@ -273,6 +277,26 @@
             <form id="disapproveInvestorForm" method="POST">
                 @csrf
                 <button type="submit" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="disapprovePaymentModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[115] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
+        <div class="mx-auto w-14 h-14 rounded-full bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center mb-4">
+            <svg class="w-7 h-7 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400 mb-2">Desaprobar Pago</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            ¿Desaprobar el pago de <span id="disapprove_pay_name" class="font-bold text-gray-900 dark:text-white"></span>?
+        </p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mb-6">El pago volverá a estado pendiente y el inversor podrá subir un nuevo comprobante.</p>
+        <div class="flex justify-center gap-6">
+            <button onclick="closeDisapprovePaymentModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <form id="disapprovePaymentForm" method="POST">
+                @csrf
+                <button type="submit" class="text-xs font-bold text-orange-600 border-b-2 border-orange-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar Pago</button>
             </form>
         </div>
     </div>
@@ -417,16 +441,10 @@
             </div>
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-1.5">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Número de Operación</label>
+                    <label for="voucher_operation_number" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Número de Operación</label>
+                    <span class="text-[8px] text-gray-400 italic">Corregir si es necesario</span>
                 </div>
-                @if($investor->pivot->operation_number)
-                    <div class="flex items-center gap-2 px-4 py-2.5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-xl">
-                        <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                        <span class="text-xs font-mono font-bold text-indigo-700 dark:text-indigo-300">{{ $investor->pivot->operation_number }}</span>
-                    </div>
-                @else
-                    <p class="text-xs text-gray-400 italic px-4 py-2">No registrado</p>
-                @endif
+                <input type="text" name="operation_number" id="voucher_operation_number" placeholder="Ej: 001234567890" value="{{ $investor->pivot->operation_number ?? '' }}" pattern="[A-Za-z0-9]+" title="Solo letras y números, sin caracteres especiales" class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 font-mono" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'')">
             </div>
             <div class="flex justify-end gap-4">
                 <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
@@ -476,6 +494,7 @@
         <form id="reviewVoucherForm" method="POST" action="">
             @csrf @method('PUT')
             <input type="hidden" name="action" id="confirm_action_input">
+            <input type="hidden" name="operation_number" id="confirm_op_input">
             <div class="flex justify-center gap-6">
                 <button type="button" onclick="closeVoucherConfirm()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="submit" id="voucher_confirm_submit_btn" class="text-xs font-bold border-b-2 pb-0.5 hover:opacity-70 transition-opacity"></button>
@@ -524,6 +543,18 @@ function closeDisapproveInvestorModal() {
     document.body.style.overflow = '';
 }
 
+function openDisapprovePaymentModal(investmentId, userId, name) {
+    document.getElementById('disapprove_pay_name').textContent = name;
+    document.getElementById('disapprovePaymentForm').action = '/gestion-interna/inversiones/' + investmentId + '/inversor/' + userId + '/desaprobar-pago';
+    document.getElementById('disapprovePaymentModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDisapprovePaymentModal() {
+    document.getElementById('disapprovePaymentModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
 function openCloseOpportunityModal() {
     document.getElementById('closeOpportunityModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -553,6 +584,7 @@ document.addEventListener('keydown', function(e) {
         closeApproveInvestorModal();
         closeRejectInvestorModal();
         closeDisapproveInvestorModal();
+        closeDisapprovePaymentModal();
         closeInvestorModal();
         closeCloseOpportunityModal();
         closeDeleteOpportunityModal();
@@ -562,11 +594,10 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-function openVoucherModal(voucherUrl, investmentId, userId, investorName, opNumber) {
+function openVoucherModal(voucherUrl, investmentId, userId, investorName) {
     document.getElementById('voucher_image').src = voucherUrl;
     document.getElementById('voucher_investor_name').textContent = investorName;
     document.getElementById('reviewVoucherForm').action = '/gestion-interna/inversiones/' + investmentId + '/inversor/' + userId + '/revisar-comprobante';
-    window._voucherOpNumber = opNumber || '';
     document.getElementById('voucherModal').classList.remove('hidden');
 }
 
@@ -575,7 +606,7 @@ function closeVoucherModal() {
 }
 
 function openVoucherConfirm(action) {
-    const opValue = (window._voucherOpNumber || '').trim();
+    const opValue = document.getElementById('voucher_operation_number').value.trim();
     const isApprove = action === 'approve';
 
     const iconEl = document.getElementById('voucher_confirm_icon');
@@ -610,6 +641,7 @@ function openVoucherConfirm(action) {
     }
 
     document.getElementById('confirm_action_input').value = action;
+    document.getElementById('confirm_op_input').value = opValue;
     document.getElementById('voucherConfirmModal').classList.remove('hidden');
 }
 
