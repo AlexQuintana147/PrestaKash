@@ -30,8 +30,14 @@
             Oportunidades
         </button>
         <button onclick="switchTab('my-investments')" id="tab-my-investments"
-            class="px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+            class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
             Mis Inversiones
+            @php
+                $notificationCount = $myInvestments->whereIn('pivot.status', ['approved', 'rejected'])->count();
+            @endphp
+            @if($notificationCount > 0)
+                <span class="text-[10px] font-bold text-white bg-purple-600 rounded-full px-1.5 py-0.5">{{ $notificationCount }}</span>
+            @endif
         </button>
     </div>
 
