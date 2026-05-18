@@ -100,8 +100,8 @@
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Tasa de retorno mensual</label>
                             <div class="relative">
-                                <input type="number" name="annual_return_rate" id="returnRateInput" step="0.01" min="0" max="100"
-                                       value="{{ old('annual_return_rate', '2.00') }}"
+                                <input type="number" name="monthly_return_rate" id="returnRateInput" step="0.01" min="0" max="100"
+                                       value="{{ old('monthly_return_rate', '2.00') }}"
                                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
                                        oninput="let start = this.selectionStart;
                                                 let oldVal = this.value;
@@ -198,7 +198,7 @@
                                 </div>
                                 <div>
                                     <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno</p>
-                                    <p id="previewReturn" class="text-sm font-bold text-green-600 dark:text-green-400 mt-0.5">0% anual</p>
+                                    <p id="previewReturn" class="text-sm font-bold text-green-600 dark:text-green-400 mt-0.5">0% mensual</p>
                                 </div>
                             </div>
 
@@ -335,7 +335,7 @@ function initAmountField(input) {
 function updatePreview() {
     const titleVal = document.querySelector('[name="title"]').value;
     const amountVal = parseNum(document.querySelector('[name="target_amount"]').value);
-    const rateVal = parseFloat(document.querySelector('[name="annual_return_rate"]').value) || 0;
+    const rateVal = parseFloat(document.querySelector('[name="monthly_return_rate"]').value) || 0;
     const monthsVal = parseInt(document.querySelector('[name="term_months"]').value) || 12;
     const minVal = parseNum(document.querySelector('[name="min_investment"]').value);
     const currency = document.querySelector('[name="currency"]:checked').value;

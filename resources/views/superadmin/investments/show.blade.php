@@ -41,7 +41,7 @@
         </div>
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4">
             <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Mensual</p>
-            <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1">{{ $investment->annual_return_rate }}%</p>
+            <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1">{{ $investment->monthly_return_rate }}%</p>
         </div>
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4">
             <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Plazo</p>

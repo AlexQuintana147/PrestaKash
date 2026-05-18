@@ -37,7 +37,7 @@
 
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-3 sm:p-4 shadow-sm">
             <span class="text-[9px] sm:text-[10px] text-gray-400 uppercase font-bold tracking-tight">Retorno</span>
-            <p class="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 mt-2">{{ $opportunity->annual_return_rate }}%/mes</p>
+            <p class="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 mt-2">{{ $opportunity->monthly_return_rate }}%/mes</p>
         </div>
 
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-3 sm:p-4 shadow-sm">

@@ -63,7 +63,7 @@
                             <div class="flex items-center gap-6 text-right">
                                 <div>
                                     <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Mensual</p>
-                                    <p class="text-lg font-bold text-green-600 dark:text-green-400">{{ $opp->annual_return_rate }}%</p>
+                                    <p class="text-lg font-bold text-green-600 dark:text-green-400">{{ $opp->monthly_return_rate }}%</p>
                                 </div>
                                 <div>
                                     <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Plazo</p>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div>
                                     <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Retorno Mensual</p>
-                                    <p class="text-sm font-bold text-green-600 dark:text-green-400">{{ number_format($inv->pivot->amount * $inv->annual_return_rate / 100, 2) }} {{ $inv->currency }}</p>
+                                    <p class="text-sm font-bold text-green-600 dark:text-green-400">{{ number_format($inv->pivot->amount * $inv->monthly_return_rate / 100, 2) }} {{ $inv->currency }}</p>
                                 </div>
                                 <div>
                                     <p class="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Fecha Solicitud</p>

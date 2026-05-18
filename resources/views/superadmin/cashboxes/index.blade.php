@@ -2070,7 +2070,7 @@
                     </div>
                     <div>
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Mensual</p>
-                        <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.annual_return_rate}%</p>
+                        <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.monthly_return_rate}%</p>
                     </div>
                     <div>
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Plazo</p>
@@ -2112,7 +2112,7 @@
                     </div>
                     <div>
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Retorno Mensual</p>
-                        <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.annual_return_rate}%</p>
+                        <p class="text-sm font-bold text-green-600 dark:text-green-400">${inv.monthly_return_rate}%</p>
                     </div>
                     <div>
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Plazo</p>

@@ -59,7 +59,7 @@
                         <div class="flex items-center gap-4 mt-3 text-[11px] text-gray-500 dark:text-gray-400">
                             <span>Plazo: {{ $opp->term_months }} meses</span>
                             <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                            <span>Tasa: {{ $opp->annual_return_rate }}% anual</span>
+                            <span>Tasa: {{ $opp->monthly_return_rate }}% mensual</span>
                             @if($inv->pivot->approved_at)
                                 <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                                 <span>Desde: {{ \Carbon\Carbon::parse($inv->pivot->approved_at)->format('d/m/Y') }}</span>

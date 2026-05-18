@@ -13,7 +13,7 @@ class InvestmentOpportunity extends Model
         'target_amount',
         'min_investment',
         'currency',
-        'annual_return_rate',
+        'monthly_return_rate',
         'term_months',
         'risks',
         'bank_accounts',
@@ -76,7 +76,7 @@ class InvestmentOpportunity extends Model
 
     public function getEstimatedReturnAttribute()
     {
-        return round($this->annual_return_rate * $this->term_months, 2);
+        return round($this->monthly_return_rate * $this->term_months, 2);
     }
 
     public function isOpen(): bool
