@@ -209,12 +209,13 @@
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
-                                                <label class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
-                                                    <div class="flex flex-col items-center justify-center py-4">
+                                                <label for="voucherTransfer" id="labelTransfer" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
+                                                    <div id="placeholderTransfer" class="flex flex-col items-center justify-center py-4">
                                                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Arrastra y suelta aquí</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
-                                                    <input type="file" name="voucher" accept="image/*" required class="hidden">
+                                                    <img id="previewTransfer" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
+                                                    <input type="file" name="voucher" id="voucherTransfer" accept="image/*" required class="hidden">
                                                 </label>
                                             </div>
                                         </div>
@@ -225,12 +226,13 @@
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante de Efectivo (imagen)</label>
-                                                <label class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
-                                                    <div class="flex flex-col items-center justify-center py-4">
+                                                <label for="voucherCash" id="labelCash" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
+                                                    <div id="placeholderCash" class="flex flex-col items-center justify-center py-4">
                                                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
-                                                    <input type="file" name="voucher" accept="image/*" required class="hidden">
+                                                    <img id="previewCash" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
+                                                    <input type="file" name="voucher" id="voucherCash" accept="image/*" required class="hidden">
                                                 </label>
                                             </div>
                                         </div>
@@ -243,10 +245,18 @@
                             </div>
 
                         @else
-                            <div class="border-l-4 border-yellow-500 pl-4 py-2">
+                            <div class="border-l-4 border-yellow-500 pl-4 py-2 mb-4">
                                 <p class="text-sm font-bold text-yellow-600 dark:text-yellow-400">Comprobante Enviado</p>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Esperando verificación del administrador.</p>
                             </div>
+                            @if($existingRequest->pivot->voucher_path)
+                                <div class="mt-4">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tu Comprobante</p>
+                                    <div class="inline-block rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm max-w-xs">
+                                        <img src="{{ asset('storage/' . $existingRequest->pivot->voucher_path) }}" alt="Comprobante de pago" class="w-full h-auto object-cover">
+                                    </div>
+                                </div>
+                            @endif
                         @endif
                     @endif
                 @endif
@@ -411,9 +421,36 @@ document.addEventListener('DOMContentLoaded', function () {
             if (this.files.length > 0) {
                 label.classList.add('border-green-500');
                 label.classList.remove('border-gray-200', 'border-dashed');
+
+                const file = this.files[0];
+                const reader = new FileReader();
+                const inputId = this.id;
+                const prefix = inputId.replace('voucher', '');
+                const preview = document.getElementById('preview' + prefix);
+                const placeholder = document.getElementById('placeholder' + prefix);
+
+                reader.onload = function(e) {
+                    if (preview && placeholder) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                        placeholder.classList.add('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
             } else {
                 label.classList.remove('border-green-500');
                 label.classList.add('border-gray-200', 'border-dashed');
+
+                const inputId = this.id;
+                const prefix = inputId.replace('voucher', '');
+                const preview = document.getElementById('preview' + prefix);
+                const placeholder = document.getElementById('placeholder' + prefix);
+
+                if (preview && placeholder) {
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                }
             }
         });
     });

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\InvestmentOpportunity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\GdDriver;
 
 class InvestmentController extends Controller
 {
@@ -114,7 +116,17 @@ class InvestmentController extends Controller
 
         $voucherPath = null;
         if ($request->hasFile('voucher') && $request->file('voucher')->isValid()) {
-            $voucherPath = $request->file('voucher')->store('vouchers', 'public');
+            $file = $request->file('voucher');
+            $manager = new ImageManager(new GdDriver());
+            $image = $manager->read($file);
+
+            if ($image->width() > 1200) {
+                $image->scaleDown(width: 1200);
+            }
+
+            $fileName = 'voucher_' . uniqid() . '_' . time() . '.webp';
+            $image->toWebp(80)->save(storage_path('app/public/vouchers/' . $fileName));
+            $voucherPath = 'vouchers/' . $fileName;
         }
 
         $opportunity->investors()->updateExistingPivot($user->id, [
