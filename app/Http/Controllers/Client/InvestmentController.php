@@ -99,7 +99,7 @@ class InvestmentController extends Controller
             return back()->with('error', 'No tienes una solicitud aprobada para esta oportunidad.');
         }
 
-        if ($existing->pivot->payment_submitted_at) {
+        if ($existing->pivot->payment_submitted_at && $existing->pivot->payment_status !== 'rejected') {
             return back()->with('error', 'Ya enviaste tu comprobante de pago.');
         }
 

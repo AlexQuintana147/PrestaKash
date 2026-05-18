@@ -115,9 +115,108 @@
                     </div>
 
                 @elseif($existingRequest->pivot->payment_status === 'rejected')
-                    <div class="border-l-4 border-red-500 pl-4 py-2">
+                    <div class="border-l-4 border-red-500 pl-4 py-2 mb-6">
                         <p class="text-sm font-bold text-red-600 dark:text-red-400">Pago Rechazado</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Verifica los datos del comprobante y vuelve a intentar.</p>
+                    </div>
+
+                    @if($opportunity->bank_accounts)
+                    <div class="mb-6">
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Datos para Depósito</p>
+                        <div class="grid gap-3">
+                            @foreach($opportunity->bank_accounts as $account)
+                                <div class="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">{{ $account['bank'] }}</span>
+                                        <span class="text-[9px] px-1.5 py-0.5 bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded">Banco</span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="space-y-1">
+                                            <span class="text-gray-400">N° Cuenta</span>
+                                            <p class="font-mono font-semibold text-gray-900 dark:text-white">{{ $account['account_number'] }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <span class="text-gray-400">CCI</span>
+                                            <p class="font-mono font-semibold text-gray-900 dark:text-white">{{ $account['cci'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Subir Nuevo Comprobante de Pago</p>
+
+                        @if($errors->any())
+                            <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
+                                @foreach($errors->all() as $error)
+                                    <p class="text-xs text-red-600 dark:text-red-400">{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <form action="{{ route('client.investments.upload-voucher', [$opportunity, auth()->id()]) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="space-y-4">
+                                <div class="flex gap-2 border-b border-gray-200 dark:border-gray-800">
+                                    <button type="button" onclick="selectPaymentMethod('transfer')" id="btn-transfer"
+                                        class="px-4 py-2 text-sm font-bold text-gray-900 dark:text-white border-b-2 border-green-500">
+                                        Transferencia / Depósito
+                                    </button>
+                                    <button type="button" onclick="selectPaymentMethod('cash')" id="btn-cash"
+                                        class="px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300">
+                                        Efectivo
+                                    </button>
+                                    <input type="hidden" name="payment_method" id="payment_method" value="transfer">
+                                </div>
+
+                                <div id="transferFields" class="space-y-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">N° de Operación</label>
+                                        <input type="text" name="operation_number" id="operation_number" required
+                                               maxlength="30" pattern="\d*" inputmode="numeric"
+                                               placeholder="Ej: 123456789"
+                                               oninput="this.value=this.value.replace(/\D/g,'').slice(0,30)"
+                                               class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
+                                        <div onclick="document.getElementById('voucherInput').click()" id="dropzoneTransfer" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
+                                            <div id="placeholderTransfer" class="flex flex-col items-center justify-center py-4">
+                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Arrastra y suelta aquí</p>
+                                                <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
+                                            </div>
+                                            <img id="previewImg" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="cashFields" class="hidden space-y-4">
+                                    <div class="p-4 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-100 dark:border-amber-500/20">
+                                        <p class="text-xs sm:text-sm text-amber-700 dark:text-amber-400">Sube una foto del dinero depositado como comprobante de tu pago en efectivo.</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante de Efectivo (imagen)</label>
+                                        <div onclick="document.getElementById('voucherInput').click()" id="dropzoneCash" class="hidden flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
+                                            <div id="placeholderCash" class="flex flex-col items-center justify-center py-4">
+                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
+                                                <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="file" name="voucher" id="voucherInput" accept="image/*" required class="hidden">
+
+                                <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70">
+                                    Enviar Comprobante
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                 @else
