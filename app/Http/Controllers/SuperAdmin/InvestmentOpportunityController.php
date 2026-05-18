@@ -68,19 +68,28 @@ class InvestmentOpportunityController extends Controller
                 'annual_return_rate' => 'required|numeric|min:0|max:100',
                 'term_months' => 'required|integer|min:1',
                 'risks' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
-                'bank_name' => 'required|string|max:255',
-                'account_number' => 'required|string|max:30|regex:/^\d+$/',
-                'cci' => 'required|string|max:30|regex:/^\d+$/',
+                'bank_name' => 'required|array|min:1',
+                'bank_name.*' => 'required|string|max:255',
+                'account_number' => 'required|array|min:1',
+                'account_number.*' => 'required|string|max:30|regex:/^\d+$/',
+                'cci' => 'required|array|min:1',
+                'cci.*' => 'required|string|max:30|regex:/^\d+$/',
                 'deadline' => 'nullable|date|after:today',
             ],
             [
-                'bank_name.required' => 'El nombre del banco es obligatorio.',
-                'account_number.required' => 'El número de cuenta es obligatorio.',
-                'account_number.regex' => 'El número de cuenta solo debe contener números.',
-                'account_number.max' => 'El número de cuenta no puede exceder 30 dígitos.',
-                'cci.required' => 'El CCI es obligatorio.',
-                'cci.regex' => 'El CCI solo debe contener números.',
-                'cci.max' => 'El CCI no puede exceder 30 dígitos.',
+                'bank_name.required' => 'Debes agregar al menos una cuenta bancaria.',
+                'bank_name.min' => 'Debes agregar al menos una cuenta bancaria.',
+                'bank_name.*.required' => 'El nombre del banco es obligatorio.',
+                'account_number.required' => 'Debes agregar al menos un número de cuenta.',
+                'account_number.min' => 'Debes agregar al menos un número de cuenta.',
+                'account_number.*.required' => 'El número de cuenta es obligatorio.',
+                'account_number.*.regex' => 'El número de cuenta solo debe contener números.',
+                'account_number.*.max' => 'El número de cuenta no puede exceder 30 dígitos.',
+                'cci.required' => 'Debes agregar al menos un CCI.',
+                'cci.min' => 'Debes agregar al menos un CCI.',
+                'cci.*.required' => 'El CCI es obligatorio.',
+                'cci.*.regex' => 'El CCI solo debe contener números.',
+                'cci.*.max' => 'El CCI no puede exceder 30 dígitos.',
             ],
             [
                 'title' => 'título',
@@ -91,21 +100,20 @@ class InvestmentOpportunityController extends Controller
                 'annual_return_rate' => 'tasa de retorno',
                 'term_months' => 'plazo',
                 'risks' => 'riesgos',
-                'bank_name' => 'nombre del banco',
-                'account_number' => 'número de cuenta',
-                'cci' => 'CCI',
                 'deadline' => 'fecha límite',
             ]
         );
 
-        $validated['bank_accounts'] = [
-            [
-                'bank' => $validated['bank_name'],
-                'account_number' => $validated['account_number'],
-                'cci' => $validated['cci'],
-            ]
-        ];
+        $bankAccounts = [];
+        foreach ($validated['bank_name'] as $idx => $bankName) {
+            $bankAccounts[] = [
+                'bank' => $bankName,
+                'account_number' => $validated['account_number'][$idx],
+                'cci' => $validated['cci'][$idx],
+            ];
+        }
 
+        $validated['bank_accounts'] = $bankAccounts;
         unset($validated['bank_name'], $validated['account_number'], $validated['cci']);
 
         $validated['created_by'] = auth()->id();
