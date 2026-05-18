@@ -43,7 +43,12 @@ class InvestmentOpportunityController extends Controller
             $q->where('investor_opportunity.status', 'pending');
         })->count();
 
-        return view('superadmin.investments.index', compact('opportunities', 'counts', 'filter', 'pendingRequests'));
+        $pendingVouchers = \DB::table('investor_opportunity')
+            ->where('payment_status', 'pending')
+            ->whereNotNull('voucher_path')
+            ->count();
+
+        return view('superadmin.investments.index', compact('opportunities', 'counts', 'filter', 'pendingRequests', 'pendingVouchers'));
     }
 
     public function create()
