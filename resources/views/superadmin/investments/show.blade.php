@@ -204,7 +204,10 @@
                                 @endif
                                 @if($investor->pivot->voucher_path && $investor->pivot->payment_status !== 'rejected')
                                     @if($investor->pivot->payment_status === 'confirmed')
-                                        <button type="button" onclick="openVoucherViewModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}')" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Ver Comprobante">
+                                        @php
+                                            $movement = $cashboxMovements[$investor->id] ?? null;
+                                        @endphp
+                                        <button type="button" onclick="openVoucherViewModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}', '{{ $movement ? $movement->cashbox->name : '—' }}', '{{ $movement ? $movement->date?->format('d/m/Y H:i') : '—' }}')" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Ver Comprobante">
                                             <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         </button>
                                     @else
@@ -497,6 +500,16 @@
                 <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1.5">Número de Operación</label>
                 <div class="w-full px-4 py-2.5 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-mono font-bold text-gray-700 dark:text-gray-300">{{ $investor->pivot->operation_number ?? '—' }}</div>
             </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="p-3 bg-green-50 dark:bg-green-500/10 rounded-xl border border-green-100 dark:border-green-500/20">
+                    <p class="text-[9px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Fecha de Pago</p>
+                    <p id="voucher_view_payment_date" class="text-xs font-bold text-gray-900 dark:text-white">—</p>
+                </div>
+                <div class="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+                    <p class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1">Caja Destino</p>
+                    <p id="voucher_view_cashbox_name" class="text-xs font-bold text-gray-900 dark:text-white">—</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -651,9 +664,11 @@ function closeVoucherModal() {
     document.getElementById('voucherModal').classList.add('hidden');
 }
 
-function openVoucherViewModal(voucherUrl, investorName, operationNumber) {
+function openVoucherViewModal(voucherUrl, investorName, operationNumber, cashboxName, paymentDate) {
     document.getElementById('voucher_view_image').src = voucherUrl;
     document.getElementById('voucher_view_investor_name').textContent = investorName;
+    document.getElementById('voucher_view_payment_date').textContent = paymentDate || '—';
+    document.getElementById('voucher_view_cashbox_name').textContent = cashboxName || '—';
     document.getElementById('voucherViewModal').classList.remove('hidden');
 }
 

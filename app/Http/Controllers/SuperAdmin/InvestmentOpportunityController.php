@@ -149,7 +149,14 @@ class InvestmentOpportunityController extends Controller
 
         $cashboxes = \App\Models\Cashbox::where('currency', $investment->currency === 'USD' ? 'USD' : 'PEN')->where('is_active', true)->get();
 
-        return view('superadmin.investments.show', compact('investment', 'investors', 'cashboxes'));
+        $cashboxMovements = \App\Models\CashboxMovement::where('reference_type', 'investment')
+            ->where('reference_id', $investment->id)
+            ->whereIn('investor_user_id', $investors->pluck('id'))
+            ->with(['cashbox'])
+            ->get()
+            ->keyBy('investor_user_id');
+
+        return view('superadmin.investments.show', compact('investment', 'investors', 'cashboxes', 'cashboxMovements'));
     }
 
     public function update(Request $request, InvestmentOpportunity $investment)
