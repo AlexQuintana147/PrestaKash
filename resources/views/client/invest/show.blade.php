@@ -209,14 +209,13 @@
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
-                                                <label for="voucherTransfer" id="labelTransfer" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
+                                                <div onclick="document.getElementById('voucherInput').click()" id="dropzoneTransfer" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
                                                     <div id="placeholderTransfer" class="flex flex-col items-center justify-center py-4">
                                                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Arrastra y suelta aquí</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
-                                                    <img id="previewTransfer" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
-                                                    <input type="file" name="voucher" id="voucherTransfer" accept="image/*" required class="hidden">
-                                                </label>
+                                                    <img id="previewImg" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
+                                                </div>
                                             </div>
                                         </div>
 
@@ -226,16 +225,16 @@
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante de Efectivo (imagen)</label>
-                                                <label for="voucherCash" id="labelCash" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
+                                                <div onclick="document.getElementById('voucherInput').click()" id="dropzoneCash" class="hidden flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
                                                     <div id="placeholderCash" class="flex flex-col items-center justify-center py-4">
                                                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
-                                                    <img id="previewCash" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
-                                                    <input type="file" name="voucher" id="voucherCash" accept="image/*" required class="hidden">
-                                                </label>
+                                                </div>
                                             </div>
                                         </div>
+
+                                        <input type="file" name="voucher" id="voucherInput" accept="image/*" required class="hidden">
 
                                         <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70">
                                             Enviar Comprobante
@@ -347,25 +346,63 @@ function selectPaymentMethod(method) {
     const btnTransfer = document.getElementById('btn-transfer');
     const btnCash = document.getElementById('btn-cash');
     const paymentMethodInput = document.getElementById('payment_method');
-    
+    const dropzoneTransfer = document.getElementById('dropzoneTransfer');
+    const dropzoneCash = document.getElementById('dropzoneCash');
+
     if (!transferFields || !cashFields || !btnTransfer || !btnCash) return;
-    
     paymentMethodInput.value = method;
-    
+
     if (method === 'cash') {
         transferFields.classList.add('hidden');
         cashFields.classList.remove('hidden');
         btnTransfer.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
         btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-900 dark:text-white border-b-2 border-green-500';
+        if (dropzoneTransfer) dropzoneTransfer.classList.add('hidden');
+        if (dropzoneCash) dropzoneCash.classList.remove('hidden');
     } else {
         transferFields.classList.remove('hidden');
         cashFields.classList.add('hidden');
         btnTransfer.className = 'px-4 py-2 text-sm font-bold text-gray-900 dark:text-white border-b-2 border-green-500';
         btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
+        if (dropzoneTransfer) dropzoneTransfer.classList.remove('hidden');
+        if (dropzoneCash) dropzoneCash.classList.add('hidden');
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    const voucherInput = document.getElementById('voucherInput');
+    const previewImg = document.getElementById('previewImg');
+    const placeholderTransfer = document.getElementById('placeholderTransfer');
+    const placeholderCash = document.getElementById('placeholderCash');
+    const dropzoneTransfer = document.getElementById('dropzoneTransfer');
+    const dropzoneCash = document.getElementById('dropzoneCash');
+
+    if (!voucherInput) return;
+
+    voucherInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            if (dropzoneTransfer) { dropzoneTransfer.classList.add('border-green-500'); dropzoneTransfer.classList.remove('border-gray-200', 'border-dashed'); }
+            if (dropzoneCash) { dropzoneCash.classList.add('border-green-500'); dropzoneCash.classList.remove('border-gray-200', 'border-dashed'); }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (previewImg && placeholderTransfer && placeholderCash) {
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                    placeholderTransfer.classList.add('hidden');
+                    placeholderCash.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(this.files[0]);
+        } else {
+            if (dropzoneTransfer) { dropzoneTransfer.classList.remove('border-green-500'); dropzoneTransfer.classList.add('border-gray-200', 'border-dashed'); }
+            if (dropzoneCash) { dropzoneCash.classList.remove('border-green-500'); dropzoneCash.classList.add('border-gray-200', 'border-dashed'); }
+            if (previewImg) { previewImg.src = ''; previewImg.classList.add('hidden'); }
+            if (placeholderTransfer) placeholderTransfer.classList.remove('hidden');
+            if (placeholderCash) placeholderCash.classList.remove('hidden');
+        }
+    });
+
     const investAmount = document.getElementById('investAmount');
     if (investAmount) {
         const minVal = parseFloat(document.getElementById('minInvestment').value);
@@ -381,79 +418,28 @@ document.addEventListener('DOMContentLoaded', function () {
         investAmount.addEventListener('input', function () {
             let oldVal = this.value;
             let val = oldVal.replace(/\D/g, '');
-
-            if (val.length === 0) {
-                val = '0.00';
-            } else {
-                while (val.length < 3) {
-                    val = '0' + val;
-                }
+            if (val.length === 0) { val = '0.00'; }
+            else {
+                while (val.length < 3) val = '0' + val;
                 let integerPart = val.slice(0, -2);
                 let decimalPart = val.slice(-2);
                 integerPart = parseInt(integerPart, 10).toString();
                 integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 val = integerPart + '.' + decimalPart;
             }
-
-            if (oldVal !== val) {
-                this.value = val;
-                this.setSelectionRange(val.length, val.length);
-            }
+            if (oldVal !== val) { this.value = val; this.setSelectionRange(val.length, val.length); }
         });
 
         investAmount.addEventListener('blur', function () {
             let rawNum = parseFloat(this.value.replace(/,/g, ''));
-            if (isNaN(rawNum) || rawNum < minVal) {
-                this.value = formatAmount(minVal);
-            } else if (rawNum > maxVal) {
-                this.value = formatAmount(maxVal);
-            }
+            if (isNaN(rawNum) || rawNum < minVal) this.value = formatAmount(minVal);
+            else if (rawNum > maxVal) this.value = formatAmount(maxVal);
         });
 
         investAmount.closest('form')?.addEventListener('submit', function () {
             investAmount.value = investAmount.value.replace(/,/g, '');
         });
     }
-
-    document.querySelectorAll('input[name="voucher"]').forEach(function(fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            const label = this.closest('label');
-            if (this.files.length > 0) {
-                label.classList.add('border-green-500');
-                label.classList.remove('border-gray-200', 'border-dashed');
-
-                const file = this.files[0];
-                const reader = new FileReader();
-                const inputId = this.id;
-                const prefix = inputId.replace('voucher', '');
-                const preview = document.getElementById('preview' + prefix);
-                const placeholder = document.getElementById('placeholder' + prefix);
-
-                reader.onload = function(e) {
-                    if (preview && placeholder) {
-                        preview.src = e.target.result;
-                        preview.classList.remove('hidden');
-                        placeholder.classList.add('hidden');
-                    }
-                };
-                reader.readAsDataURL(file);
-            } else {
-                label.classList.remove('border-green-500');
-                label.classList.add('border-gray-200', 'border-dashed');
-
-                const inputId = this.id;
-                const prefix = inputId.replace('voucher', '');
-                const preview = document.getElementById('preview' + prefix);
-                const placeholder = document.getElementById('placeholder' + prefix);
-
-                if (preview && placeholder) {
-                    preview.src = '';
-                    preview.classList.add('hidden');
-                    placeholder.classList.remove('hidden');
-                }
-            }
-        });
-    });
 });
 </script>
 @endsection

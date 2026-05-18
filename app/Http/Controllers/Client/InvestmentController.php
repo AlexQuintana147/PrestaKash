@@ -7,7 +7,7 @@ use App\Models\InvestmentOpportunity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\GdDriver;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class InvestmentController extends Controller
 {
@@ -111,22 +111,46 @@ class InvestmentController extends Controller
         $validated = $request->validate([
             'payment_method' => 'required|in:transfer,cash',
             'operation_number' => 'required_if:payment_method,transfer|nullable|string|max:50',
-            'voucher' => 'required_if:payment_method,transfer|nullable|image|max:5120',
+            'voucher' => 'required|image|max:5120',
         ]);
 
         $voucherPath = null;
-        if ($request->hasFile('voucher') && $request->file('voucher')->isValid()) {
-            $file = $request->file('voucher');
-            $manager = new ImageManager(new GdDriver());
-            $image = $manager->read($file);
+        try {
+            if ($request->hasFile('voucher') && $request->file('voucher')->isValid()) {
+                $file = $request->file('voucher');
+                \Log::info('[VOUCHER UPLOAD] Archivo recibido', [
+                    'original_name' => $file->getClientOriginalName(),
+                    'mime' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                ]);
 
-            if ($image->width() > 1200) {
-                $image->scaleDown(width: 1200);
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+
+                \Log::info('[VOUCHER UPLOAD] Imagen leida', [
+                    'width' => $image->width(),
+                    'height' => $image->height(),
+                ]);
+
+                if ($image->width() > 1200) {
+                    $image->scaleDown(width: 1200);
+                }
+
+                $fileName = 'voucher_' . uniqid() . '_' . time() . '.webp';
+                $fullPath = storage_path('app/public/vouchers/' . $fileName);
+
+                $encoded = $image->toWebp(80);
+                file_put_contents($fullPath, $encoded);
+                $voucherPath = 'vouchers/' . $fileName;
+
+                \Log::info('[VOUCHER UPLOAD] Guardado OK', ['path' => $voucherPath]);
             }
-
-            $fileName = 'voucher_' . uniqid() . '_' . time() . '.webp';
-            $image->toWebp(80)->save(storage_path('app/public/vouchers/' . $fileName));
-            $voucherPath = 'vouchers/' . $fileName;
+        } catch (\Exception $e) {
+            \Log::error('[VOUCHER UPLOAD] Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return back()->with('error', 'Error al procesar la imagen: ' . $e->getMessage());
         }
 
         $opportunity->investors()->updateExistingPivot($user->id, [
