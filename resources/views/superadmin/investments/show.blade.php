@@ -408,8 +408,12 @@
         <div class="p-8">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Comprobante de Pago</h3>
             <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_investor_name" class="font-bold text-gray-700 dark:text-gray-300"></span></p>
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 flex items-center justify-center mb-6 min-h-[300px] border border-gray-200 dark:border-gray-800">
-                <img id="voucher_image" src="" class="max-w-full max-h-[400px] rounded-xl object-contain shadow-sm">
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 flex items-center justify-center mb-6 min-h-[300px] border border-gray-200 dark:border-gray-800 cursor-zoom-in group relative" onclick="openVoucherLightbox()" style="min-height: 300px;">
+                <img id="voucher_image" src="" class="max-w-full max-h-[400px] rounded-xl object-contain shadow-sm group-hover:opacity-80 transition-opacity" draggable="false">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <svg class="w-8 h-8 text-gray-500 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                </div>
+                <p class="absolute bottom-2 text-[9px] text-gray-400 font-medium">Click para ampliar</p>
             </div>
             <form id="reviewVoucherForm" method="POST" action="">
                 @csrf @method('PUT')
@@ -425,6 +429,33 @@
                 </div>
             </form>
         </div>
+    </div>
+</div>
+
+<div id="voucherLightbox" onclick="closeVoucherLightbox(event)"
+     class="hidden fixed inset-0 z-[130] bg-black/95 flex flex-col items-center justify-center p-4">
+    <div class="flex items-center justify-between w-full max-w-5xl mb-3 flex-shrink-0">
+        <p class="text-sm text-gray-400">Comprobante de Pago — <span id="voucher_lightbox_name" class="font-bold text-gray-300"></span></p>
+        <div class="flex items-center gap-3">
+            <button onclick="voucherZoom(-0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/></svg>
+            </button>
+            <span id="voucherZoomLevel" class="text-xs text-gray-500 w-12 text-center">100%</span>
+            <button onclick="voucherZoom(0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+            </button>
+            <button onclick="voucherResetZoom()" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+            <button onclick="closeVoucherLightbox()" class="p-2 text-gray-400 hover:text-white transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+    <div class="overflow-hidden w-full max-w-5xl flex items-center justify-center" style="max-height: 85vh;">
+        <img id="voucherLightboxImg" src="" alt=""
+             class="transition-transform duration-200 rounded-lg select-none"
+             style="transform-origin: center; max-width: 100%;">
     </div>
 </div>
 
@@ -501,6 +532,7 @@ document.addEventListener('keydown', function(e) {
         closeCloseOpportunityModal();
         closeDeleteOpportunityModal();
         closeVoucherModal();
+        closeVoucherLightbox();
     }
 });
 
@@ -515,11 +547,40 @@ function openVoucherModal(voucherUrl, investmentId, userId, investorName) {
 
 function closeVoucherModal() {
     document.getElementById('voucherModal').classList.add('hidden');
-    document.body.style.overflow = '';
 }
 
 function setVoucherAction(action) {
     document.getElementById('voucher_action_input').value = action;
+}
+
+let voucherScale = 1;
+
+function openVoucherLightbox() {
+    const src = document.getElementById('voucher_image').src;
+    if (!src) return;
+    voucherScale = 1;
+    document.getElementById('voucherLightboxImg').src = src;
+    document.getElementById('voucherLightboxImg').style.transform = 'scale(1)';
+    document.getElementById('voucher_lightbox_name').textContent = document.getElementById('voucher_investor_name').textContent;
+    document.getElementById('voucherZoomLevel').textContent = '100%';
+    document.getElementById('voucherLightbox').classList.remove('hidden');
+}
+
+function closeVoucherLightbox(e) {
+    if (e && e.target !== document.getElementById('voucherLightbox')) return;
+    document.getElementById('voucherLightbox').classList.add('hidden');
+}
+
+function voucherZoom(delta) {
+    voucherScale = Math.min(4, Math.max(0.25, voucherScale + delta));
+    document.getElementById('voucherLightboxImg').style.transform = `scale(${voucherScale})`;
+    document.getElementById('voucherZoomLevel').textContent = Math.round(voucherScale * 100) + '%';
+}
+
+function voucherResetZoom() {
+    voucherScale = 1;
+    document.getElementById('voucherLightboxImg').style.transform = 'scale(1)';
+    document.getElementById('voucherZoomLevel').textContent = '100%';
 }
 
 function openInvestorModal(data) {
@@ -586,6 +647,22 @@ window.addEventListener('DOMContentLoaded', () => {
                 el.classList.remove('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
             }, 3000);
         }
+    }
+});
+
+document.getElementById('voucherLightbox').addEventListener('wheel', function(e) {
+    if (this.classList.contains('hidden')) return;
+    e.preventDefault();
+    voucherZoom(e.deltaY < 0 ? 0.15 : -0.15);
+}, { passive: false });
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('voucherLightbox').classList.contains('hidden')) {
+        closeVoucherLightbox();
+    }
+    if (!document.getElementById('voucherLightbox').classList.contains('hidden')) {
+        if (e.key === '+' || e.key === '=') voucherZoom(0.25);
+        if (e.key === '-') voucherZoom(-0.25);
     }
 });
 </script>
