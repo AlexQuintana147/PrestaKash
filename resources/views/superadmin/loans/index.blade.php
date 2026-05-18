@@ -181,13 +181,34 @@
                                             @endif
                                         </div>
                                         <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Trabajo</p>
+                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Información Laboral</p>
                                             @if($profile->is_employed)
-                                                <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">{{ ucfirst($profile->employment_type) }}</p>
+                                                @php
+                                                    $mobileEmploymentLabels = [
+                                                        'dependiente' => 'Dependente',
+                                                        'independiente' => 'Independiente',
+                                                        'empresario' => 'Empresario',
+                                                        'profesional' => 'Profesional',
+                                                    ];
+                                                    $mobileLabel = $mobileEmploymentLabels[$profile->employment_type] ?? ucfirst($profile->employment_type);
+                                                @endphp
+                                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 mb-1">
+                                                    <span class="text-[9px] font-bold text-indigo-700 dark:text-indigo-300">{{ $mobileLabel }}</span>
+                                                </div>
+                                                @if($profile->employment_type === 'dependiente')
+                                                    @if($profile->workplace)
+                                                        <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight mt-0.5"><span class="text-gray-400">en</span> {{ Str::limit($profile->workplace, 22) }}</p>
+                                                    @endif
+                                                    @if($profile->job_title)
+                                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">como <span class="font-bold text-gray-700 dark:text-gray-300">{{ $profile->job_title }}</span></p>
+                                                    @endif
+                                                @elseif($profile->business_name)
+                                                    <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight mt-0.5"><span class="text-gray-400">Negocio:</span> {{ Str::limit($profile->business_name, 22) }}</p>
+                                                @endif
                                             @else
-                                                <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">No trabaja</p>
+                                                <p class="text-[9px] text-red-500 dark:text-red-400 font-bold leading-tight">Sin empleo</p>
                                             @endif
-                                            <p class="text-[9px] text-green-600 dark:text-green-500 font-bold leading-tight mt-0.5">S/ {{ number_format($profile->monthly_income, 0) }}</p>
+                                            <p class="text-[9px] text-green-600 dark:text-green-500 font-bold leading-tight mt-1">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($profile->monthly_income, 0) }}/mes</p>
                                         </div>
                                     </div>
 
@@ -534,23 +555,87 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Trabajo</p>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Información Laboral</p>
                                         @if($profile->is_employed)
-                                            <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight mb-0.5">{{ ucfirst($profile->employment_type) }}</p>
+                                            @php
+                                                $employmentLabels = [
+                                                    'dependiente' => 'Dependente',
+                                                    'independiente' => 'Independiente',
+                                                    'empresario' => 'Empresario',
+                                                    'profesional' => 'Profesional Independiente',
+                                                ];
+                                                $employmentLabel = $employmentLabels[$profile->employment_type] ?? ucfirst($profile->employment_type);
+                                            @endphp
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 mb-2">
+                                                <svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.9 23.9 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                <span class="text-[10px] font-bold text-indigo-700 dark:text-indigo-300">{{ $employmentLabel }}</span>
+                                            </div>
                                             @if($profile->employment_type === 'dependiente')
-                                                @if($profile->workplace)
-                                                    <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->workplace }}</p>
+                                                @if($profile->workplace || $profile->job_title)
+                                                    <div class="space-y-1.5 mt-2 pl-2 border-l-2 border-indigo-200 dark:border-indigo-500/30">
+                                                        @if($profile->workplace)
+                                                            <div class="flex items-start gap-1.5">
+                                                                <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                                <div>
+                                                                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Empresa</p>
+                                                                    <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->workplace }}</p>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                        @if($profile->job_title)
+                                                            <div class="flex items-start gap-1.5">
+                                                                <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                                <div>
+                                                                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Cargo</p>
+                                                                    <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->job_title }}</p>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 @endif
-                                                @if($profile->job_title)
-                                                    <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ $profile->job_title }}</p>
-                                                @endif
-                                            @elseif($profile->independent_type)
-                                                <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">{{ ucfirst($profile->independent_type) }}</p>
+                                            @elseif($profile->independent_type || $profile->business_name || $profile->business_activity)
+                                                <div class="space-y-1.5 mt-2 pl-2 border-l-2 border-indigo-200 dark:border-indigo-500/30">
+                                                    @if($profile->independent_type)
+                                                        <div class="flex items-start gap-1.5">
+                                                            <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                                            <div>
+                                                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Tipo de Actividad</p>
+                                                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ ucfirst($profile->independent_type) }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                    @if($profile->business_name)
+                                                        <div class="flex items-start gap-1.5">
+                                                            <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                            <div>
+                                                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Negocio</p>
+                                                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->business_name }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                    @if($profile->business_activity)
+                                                        <div class="flex items-start gap-1.5">
+                                                            <svg class="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                                            <div>
+                                                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Actividad</p>
+                                                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $profile->business_activity }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             @endif
                                         @else
-                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">No trabaja</p>
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20">
+                                                <svg class="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                                <span class="text-[10px] font-bold text-red-600 dark:text-red-400">Sin empleo</span>
+                                            </div>
                                         @endif
-                                        <p class="text-[10px] text-green-600 dark:text-green-500 font-bold leading-tight mt-1">S/ {{ number_format($profile->monthly_income, 2) }}</p>
+                                        <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                                            <div class="flex items-center gap-1.5">
+                                                <svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <p class="text-[10px] font-black text-green-600 dark:text-green-400">{{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($profile->monthly_income, 2) }} <span class="font-normal text-gray-400">/mes</span></p>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
                                         <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Estado Civil</p>
