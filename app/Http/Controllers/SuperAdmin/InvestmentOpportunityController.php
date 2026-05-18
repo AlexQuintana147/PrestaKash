@@ -265,14 +265,23 @@ class InvestmentOpportunityController extends Controller
             return back()->with('error', 'No se encontró el comprobante.');
         }
 
-        $status = $validated['action'] === 'approve' ? 'confirmed' : 'rejected';
+        if ($validated['action'] === 'reject') {
+            if ($pivot->voucher_path && \Storage::disk('public')->exists($pivot->voucher_path)) {
+                \Storage::disk('public')->delete($pivot->voucher_path);
+            }
+            $investment->investors()->updateExistingPivot($userId, [
+                'payment_status' => 'rejected',
+                'payment_submitted_at' => null,
+                'voucher_path' => null,
+            ]);
+        } else {
+            $investment->investors()->updateExistingPivot($userId, [
+                'payment_status' => 'confirmed',
+                'operation_number' => $validated['operation_number'] ?? null,
+            ]);
+        }
 
-        $investment->investors()->updateExistingPivot($userId, [
-            'payment_status' => $status,
-            'operation_number' => $validated['operation_number'] ?? null,
-        ]);
-
-        $actionText = $status === 'confirmed' ? 'aprobado' : 'rechazado';
+        $actionText = $validated['action'] === 'approve' ? 'aprobado' : 'rechazado';
         return back()->with("success", "Comprobante {$actionText} correctamente.");
     }
 
