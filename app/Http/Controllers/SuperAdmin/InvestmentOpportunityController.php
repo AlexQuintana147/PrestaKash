@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cashbox;
 use App\Models\InvestmentOpportunity;
 use Illuminate\Http\Request;
 
@@ -146,7 +147,9 @@ class InvestmentOpportunityController extends Controller
 
         $investment->setRelation('investors', $investors);
 
-        return view('superadmin.investments.show', compact('investment', 'investors'));
+        $cashboxes = \App\Models\Cashbox::where('currency', $investment->currency === 'USD' ? 'USD' : 'PEN')->where('is_active', true)->get();
+
+        return view('superadmin.investments.show', compact('investment', 'investors', 'cashboxes'));
     }
 
     public function update(Request $request, InvestmentOpportunity $investment)
@@ -255,8 +258,10 @@ class InvestmentOpportunityController extends Controller
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
             'operation_number' => 'nullable|string|max:50|regex:/^[A-Za-z0-9]+$/',
+            'cashbox_id' => 'required_if:action,approve|nullable|exists:cashboxes,id',
         ], [
             'operation_number.regex' => 'El número de operación solo puede contener letras y números.',
+            'cashbox_id.required_if' => 'Debes seleccionar una caja para aprobar el pago.',
         ]);
 
         $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
@@ -275,13 +280,37 @@ class InvestmentOpportunityController extends Controller
                 'voucher_path' => null,
             ]);
         } else {
-            $investment->investors()->updateExistingPivot($userId, [
-                'payment_status' => 'confirmed',
-                'operation_number' => $validated['operation_number'] ?? null,
-            ]);
+            $cashbox = Cashbox::findOrFail($validated['cashbox_id']);
+
+            if ($cashbox->currency !== ($investment->currency === 'USD' ? 'USD' : 'PEN')) {
+                return back()->with('error', 'La caja seleccionada no corresponde a la moneda de la inversión.');
+            }
+
+            $investor = $investment->investors()->where('users.id', $userId)->first();
+            $amount = (float) $pivot->amount;
+
+            \DB::transaction(function () use ($investment, $userId, $cashbox, $amount, $investor, $validated) {
+                $investment->investors()->updateExistingPivot($userId, [
+                    'payment_status' => 'confirmed',
+                    'operation_number' => $validated['operation_number'] ?? null,
+                ]);
+
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por inversión en {$investment->title} de {$investor->name}",
+                    'reference_type' => 'investment',
+                    'reference_id' => $investment->id,
+                    'investor_user_id' => $userId,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+            });
         }
 
-        $actionText = $validated['action'] === 'approve' ? 'aprobado' : 'rechazado';
+        $actionText = $validated['action'] === 'approve' ? 'aprobado y registrado en caja' : 'rechazado';
         return back()->with("success", "Comprobante {$actionText} correctamente.");
     }
 

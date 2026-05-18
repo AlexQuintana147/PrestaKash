@@ -452,6 +452,20 @@
                 </div>
                 <input type="text" name="operation_number" id="voucher_operation_number" placeholder="Ej: 001234567890" value="{{ $investor->pivot->operation_number ?? '' }}" pattern="[A-Za-z0-9]+" title="Solo letras y números, sin caracteres especiales" class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 font-mono" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'')">
             </div>
+            <div class="mb-6 p-4 bg-green-50 dark:bg-green-500/10 rounded-xl border border-green-100 dark:border-green-500/20">
+                <label for="voucher_cashbox_id" class="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest block mb-2">
+                    <svg class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Registrar Ingreso en Caja
+                </label>
+                <select name="cashbox_id" id="voucher_cashbox_id" required class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-green-200 dark:border-green-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 font-medium text-gray-900 dark:text-white">
+                    <option value="">Seleccionar caja...</option>
+                    @foreach($cashboxes as $cb)
+                        <option value="{{ $cb->id }}" data-currency="{{ $cb->currency }}">
+                            {{ $cb->name }} ({{ $cb->currency === 'USD' ? '$' : 'S/' }}) {{ $cb->bank_name ? '- ' . $cb->bank_name : '' }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="flex justify-end gap-4">
                 <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="button" onclick="openVoucherConfirm('reject')" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar Comprobante</button>
@@ -661,7 +675,13 @@ function openVoucherLightboxView() {
 
 function openVoucherConfirm(action) {
     const opValue = document.getElementById('voucher_operation_number').value.trim();
+    const cashboxId = document.getElementById('voucher_cashbox_id').value;
     const isApprove = action === 'approve';
+
+    if (isApprove && !cashboxId) {
+        alert('Por favor selecciona una caja para registrar el ingreso.');
+        return;
+    }
 
     const iconEl = document.getElementById('voucher_confirm_icon');
     const titleEl = document.getElementById('voucher_confirm_title');
@@ -674,7 +694,7 @@ function openVoucherConfirm(action) {
         iconEl.innerHTML = '<svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
         titleEl.textContent = 'Aprobar Pago';
         titleEl.className = 'text-xl font-bold text-green-600 dark:text-green-400 mb-2';
-        textEl.textContent = '¿Confirmar que el comprobante es válido y aprobar el pago?';
+        textEl.textContent = '¿Confirmar que el comprobante es válido y registrar el ingreso en caja?';
         submitBtn.textContent = 'Aprobar Pago';
         submitBtn.className = 'text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity';
     } else {
@@ -696,6 +716,17 @@ function openVoucherConfirm(action) {
 
     document.getElementById('confirm_action_input').value = action;
     document.getElementById('confirm_op_input').value = opValue;
+
+    let cashboxInput = document.getElementById('confirm_cashbox_input');
+    if (!cashboxInput) {
+        cashboxInput = document.createElement('input');
+        cashboxInput.type = 'hidden';
+        cashboxInput.name = 'cashbox_id';
+        cashboxInput.id = 'confirm_cashbox_input';
+        document.getElementById('reviewVoucherForm').appendChild(cashboxInput);
+    }
+    cashboxInput.value = isApprove ? cashboxId : '';
+
     document.getElementById('voucherConfirmModal').classList.remove('hidden');
 }
 
