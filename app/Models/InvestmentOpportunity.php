@@ -18,12 +18,14 @@ class InvestmentOpportunity extends Model
         'risks',
         'bank_accounts',
         'status',
+        'closed_at',
         'deadline',
         'created_by',
     ];
 
     protected $casts = [
         'deadline' => 'date',
+        'closed_at' => 'datetime',
         'bank_accounts' => 'array',
     ];
 

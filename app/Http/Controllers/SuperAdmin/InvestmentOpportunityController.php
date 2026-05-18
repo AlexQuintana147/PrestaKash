@@ -196,6 +196,19 @@ class InvestmentOpportunityController extends Controller
 
         $investment->update(collect($validated)->filter(fn($v) => $v !== '' && $v !== null)->toArray());
 
+        if (isset($validated['status']) && $validated['status'] === 'closed') {
+            $unconfirmed = $investment->investors()
+                ->wherePivot('status', 'approved')
+                ->wherePivot('payment_status', '!=', 'confirmed')
+                ->count();
+
+            if ($unconfirmed > 0) {
+                return back()->with('error', "No puedes cerrar esta oportunidad. Hay {$unconfirmed} inversor(es) aprobado(s) con pago pendiente de confirmación o rechazo.");
+            }
+
+            $investment->update(['closed_at' => now()]);
+        }
+
         if (isset($validated['status']) && in_array($validated['status'], ['closed', 'cancelled'])) {
             $pendingIds = $investment->investors()->wherePivot('status', 'pending')->pluck('users.id');
             $investment->investors()->detach($pendingIds);

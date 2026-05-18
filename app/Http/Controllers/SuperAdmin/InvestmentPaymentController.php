@@ -28,6 +28,53 @@ class InvestmentPaymentController extends Controller
         return view('superadmin.investments.payments', compact('payments', 'cashboxes'));
     }
 
+    public function payouts()
+    {
+        $closedOpportunities = InvestmentOpportunity::where('status', 'closed')
+            ->whereNotNull('closed_at')
+            ->with(['investors' => function ($q) {
+                $q->wherePivot('status', 'approved')
+                  ->wherePivot('payment_status', 'confirmed')
+                  ->withPivot(['amount', 'payment_status', 'approved_at']);
+            }])
+            ->get()
+            ->filter(fn($op) => $op->investors->count() > 0);
+
+        $payouts = collect();
+        $now = now();
+
+        foreach ($closedOpportunities as $opportunity) {
+            foreach ($opportunity->investors as $investor) {
+                $monthsSinceClose = $opportunity->closed_at->diffInMonths($now);
+                $maxMonths = min($monthsSinceClose, $opportunity->term_months);
+
+                if ($maxMonths <= 0) continue;
+
+                $monthlyAmount = round($investor->pivot->amount * ($opportunity->monthly_return_rate / 100), 2);
+
+                for ($month = 1; $month <= $maxMonths; $month++) {
+                    $dueDate = $opportunity->closed_at->copy()->addMonths($month);
+                    $isOverdue = $dueDate->lt($now);
+
+                    $payouts->push((object)[
+                        'opportunity' => $opportunity,
+                        'investor' => $investor,
+                        'month' => $month,
+                        'total_months' => $opportunity->term_months,
+                        'monthly_amount' => $monthlyAmount,
+                        'due_date' => $dueDate,
+                        'is_overdue' => $isOverdue,
+                        'currency' => $opportunity->currency,
+                    ]);
+                }
+            }
+        }
+
+        $cashboxes = Cashbox::orderBy('name')->get();
+
+        return view('superadmin.investments.payouts', compact('payouts', 'cashboxes'));
+    }
+
     public function confirm(Request $request, InvestmentOpportunity $investment, $userId)
     {
         $request->validate([
