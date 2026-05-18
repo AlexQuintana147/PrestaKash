@@ -70,11 +70,6 @@
                 <div class="py-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-lg bg-indigo-100 dark:bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                                </svg>
-                            </div>
                             <div>
                                 <div class="flex items-center gap-2">
                                     <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ $opportunity->title }}</h3>
@@ -90,7 +85,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="text-[8px] font-black uppercase tracking-wider px-2 py-1 rounded-lg bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200">
+                            <span class="text-[8px] font-black uppercase tracking-wider px-2 py-1 rounded-lg bg-gray-800 text-white dark:bg-white dark:text-gray-900">
                                 {{ $opportunity->currency }}
                             </span>
                             <span class="text-[8px] font-bold px-2 py-1 rounded-lg
@@ -113,9 +108,8 @@
                             $photo = $selfie ? Storage::url($selfie) : ($investor->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($investor->name) . '&background=e5e7eb&color=6b7280');
                         @endphp
 
-                        <div class="ml-4 md:ml-8 mb-4 last:mb-0 bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl overflow-hidden">
-                            <div class="p-4">
-                                <div class="flex items-start gap-3">
+                        <div class="ml-4 md:ml-8 mb-4 last:mb-0">
+                            <div class="flex items-start gap-3">
                                     <img src="{{ $photo }}" alt="{{ $investor->name }}" class="w-10 h-10 rounded-full object-cover border border-gray-100 dark:border-gray-800 flex-shrink-0">
 
                                     <div class="flex-1 min-w-0">
@@ -176,8 +170,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
                 </div>
             @endforeach
         </div>
