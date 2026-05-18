@@ -286,7 +286,6 @@ class InvestmentOpportunityController extends Controller
 
         $investment->investors()->updateExistingPivot($userId, [
             'payment_status' => 'pending',
-            'operation_number' => null,
             'payment_submitted_at' => null,
         ]);
 
