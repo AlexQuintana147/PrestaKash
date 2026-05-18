@@ -171,89 +171,143 @@
                             @if($loan->user->clientProfile)
                                 @php $profile = $loan->user->clientProfile; @endphp
                                 <div class="space-y-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4">
-                                    <!-- Educación y Trabajo -->
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Educación</p>
-                                            <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">{{ Str::limit($profile->academic_status, 25) }}</p>
-                                            @if($profile->institution)
-                                                <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight mt-0.5">{{ Str::limit($profile->institution, 20) }}</p>
-                                            @endif
+                                    <!-- Educación Mobile -->
+                                    <div class="pb-4 border-b border-gray-200 dark:border-gray-800">
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Educación</p>
+                                        @php
+                                            $mEduLabels = ['primaria' => 'Primaria', 'secundaria' => 'Secundaria', 'tecnico' => 'Técnico', 'universitario' => 'Universitario', 'postgrado' => 'Postgrado'];
+                                            $mEduCfg = $mEduLabels[$profile->academic_status ?? ''] ?? $profile->academic_status;
+                                            $mEduColor = match($profile->academic_status ?? '') {
+                                                'primaria' => 'gray', 'secundaria' => 'blue', 'tecnico' => 'amber', 'universitario' => 'purple', 'postgrado' => 'emerald', default => 'gray'
+                                            };
+                                            $mEduC = match($mEduColor) {
+                                                'gray' => 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700',
+                                                'blue' => 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/20',
+                                                'amber' => 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/20',
+                                                'purple' => 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-500/20',
+                                                'emerald' => 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20',
+                                                default => 'bg-gray-100 dark:bg-gray-800'
+                                            };
+                                        @endphp
+                                        <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg {{ $mEduC }} border mb-1.5">
+                                            <span class="text-[9px] font-bold">{{ $mEduCfg }}</span>
                                         </div>
-                                        <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Información Laboral</p>
-                                            @if($profile->is_employed)
-                                                @php
-                                                    $mobileEmploymentLabels = [
-                                                        'dependiente' => 'Dependente',
-                                                        'independiente' => 'Independiente',
-                                                        'empresario' => 'Empresario',
-                                                        'profesional' => 'Profesional',
-                                                    ];
-                                                    $mobileLabel = $mobileEmploymentLabels[$profile->employment_type] ?? ucfirst($profile->employment_type);
-                                                @endphp
-                                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 mb-1">
-                                                    <span class="text-[9px] font-bold text-indigo-700 dark:text-indigo-300">{{ $mobileLabel }}</span>
-                                                </div>
-                                                @if($profile->employment_type === 'dependiente')
-                                                    @if($profile->workplace)
-                                                        <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight mt-0.5"><span class="text-gray-400">en</span> {{ Str::limit($profile->workplace, 22) }}</p>
-                                                    @endif
-                                                    @if($profile->job_title)
-                                                        <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight">como <span class="font-bold text-gray-700 dark:text-gray-300">{{ $profile->job_title }}</span></p>
-                                                    @endif
-                                                @elseif($profile->business_name)
-                                                    <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight mt-0.5"><span class="text-gray-400">Negocio:</span> {{ Str::limit($profile->business_name, 22) }}</p>
+                                        @if($profile->institution)
+                                            <p class="text-[9px] text-gray-600 dark:text-gray-400"><span class="text-gray-400">🏛</span> {{ Str::limit($profile->institution, 28) }}</p>
+                                        @endif
+                                        @if($profile->career)
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5">{{ Str::limit($profile->career, 28) }}</p>
+                                        @endif
+                                    </div>
+
+                                    <!-- Info Laboral Mobile -->
+                                    <div class="pb-4 border-b border-gray-200 dark:border-gray-800">
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Información Laboral</p>
+                                        @if($profile->is_employed)
+                                            @php
+                                                $mobileEmploymentLabels = ['dependiente' => 'Dependente', 'independiente' => 'Independiente', 'empresario' => 'Empresario', 'profesional' => 'Profesional'];
+                                                $mobileLabel = $mobileEmploymentLabels[$profile->employment_type] ?? ucfirst($profile->employment_type);
+                                            @endphp
+                                            <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 mb-1.5">
+                                                <span class="text-[9px] font-bold text-indigo-700 dark:text-indigo-300">{{ $mobileLabel }}</span>
+                                            </div>
+                                            @if($profile->employment_type === 'dependiente')
+                                                @if($profile->workplace)
+                                                    <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight mt-0.5"><span class="text-gray-400 font-medium">Empresa:</span> {{ Str::limit($profile->workplace, 24) }}</p>
                                                 @endif
-                                            @else
-                                                <p class="text-[9px] text-red-500 dark:text-red-400 font-bold leading-tight">Sin empleo</p>
+                                                @if($profile->job_title)
+                                                    <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight"><span class="text-gray-400 font-medium">Cargo:</span> <span class="font-bold text-gray-700 dark:text-gray-300">{{ $profile->job_title }}</span></p>
+                                                @endif
+                                            @elseif($profile->business_name || $profile->independent_type)
+                                                @if($profile->independent_type)
+                                                    <p class="text-[9px] text-gray-600 dark:text-gray-400 leading-tight mt-0.5"><span class="text-gray-400 font-medium">Actividad:</span> {{ ucfirst($profile->independent_type) }}</p>
+                                                @endif
+                                                @if($profile->business_name)
+                                                    <p class="text-[9px] text-gray-500 dark:text-gray-500 leading-tight"><span class="text-gray-400 font-medium">Negocio:</span> {{ Str::limit($profile->business_name, 22) }}</p>
+                                                @endif
                                             @endif
-                                            <p class="text-[9px] text-green-600 dark:text-green-500 font-bold leading-tight mt-1">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($profile->monthly_income, 0) }}/mes</p>
+                                        @else
+                                            <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20">
+                                                <span class="text-[9px] font-bold text-red-600 dark:text-red-400">Sin empleo</span>
+                                            </div>
+                                        @endif
+                                        <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                            <p class="text-[9px] font-bold text-green-600 dark:text-green-500">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($profile->monthly_income, 0) }} <span class="font-normal text-gray-400">/mes</span></p>
                                         </div>
                                     </div>
 
-                                    <!-- Estado Civil e Hijos -->
-                                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                                    <!-- Estado Civil + Familia Mobile -->
+                                    <div class="pb-4 border-b border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-3">
                                         <div>
                                             <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Estado Civil</p>
-                                            <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                                {{ match($profile->marital_status) {
-                                                    'soltero' => 'Soltero/a',
-                                                    'casado_separado' => 'Casado (B.S)',
-                                                    'casado_compartido' => 'Casado (B.C)',
-                                                    default => $profile->marital_status
-                                                } }}
-                                            </p>
+                                            @php
+                                                $mMaritalLabels = ['soltero' => ['l' => 'Soltero/a', 'c' => 'slate'], 'casado_separado' => ['l' => 'Casado (B.S)', 'c' => 'rose'], 'casado_compartido' => ['l' => 'Casado (B.C)', 'c' => 'pink'], 'divorciado' => ['l' => 'Divorciado/a', 'c' => 'orange'], 'viudo' => ['l' => 'Viudo/a', 'c' => 'stone']];
+                                                $mMarital = $mMaritalLabels[$profile->marital_status ?? ''] ?? ['l' => ucfirst($profile->marital_status), 'c' => 'gray'];
+                                                $mMc = match($mMarital['c']) {
+                                                    'slate' => 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200',
+                                                    'rose' => 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-200',
+                                                    'pink' => 'bg-pink-50 dark:bg-pink-500/10 text-pink-700 dark:text-pink-300 border-pink-200',
+                                                    'orange' => 'bg-orange-50 dark:bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-200',
+                                                    default => 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200'
+                                                };
+                                            @endphp
+                                            <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg {{ $mMc }} border">
+                                                <span class="text-[9px] font-bold">{{ $mMarital['l'] }}</span>
+                                            </div>
+                                            @if($profile->marital_status === 'casado_compartido' && ($profile->spouse_first_name || $profile->spouse_last_name))
+                                                <p class="text-[8px] text-gray-500 mt-1">{{ $profile->spouse_first_name }} {{ $profile->spouse_last_name }}</p>
+                                            @endif
                                         </div>
                                         <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Hijos</p>
-                                            <p class="text-[10px] text-gray-900 dark:text-white font-bold leading-tight">
-                                                @if($profile->has_children)
-                                                    {{ $profile->children_count }}
-                                                @else
-                                                    No
-                                                @endif
-                                            </p>
+                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Familia</p>
+                                            @if($profile->has_children)
+                                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20">
+                                                    <span class="text-[9px] font-bold text-cyan-700 dark:text-cyan-300">{{ $profile->children_count }} {{ $profile->children_count == 1 ? 'hijo' : 'hijos' }}</span>
+                                                </div>
+                                            @else
+                                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200">
+                                                    <span class="text-[9px] font-bold text-slate-600 dark:text-slate-400">Sin hijos</span>
+                                                </div>
+                                            @endif
+                                            @if($profile->instagram)
+                                                <a href="https://instagram.com/{{ ltrim($profile->instagram, '@') }}" target="_blank" class="flex items-center gap-1 text-[8px] text-purple-600 dark:text-purple-400 mt-1 hover:underline">@{{ ltrim($profile->instagram, '@') }}</a>
+                                            @endif
                                         </div>
                                     </div>
 
-                                    <!-- Banco y Términos -->
-                                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                                    <!-- Destino + Desembolso Mobile -->
+                                    <div class="pb-4 border-b border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-3">
                                         <div>
                                             <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Destino</p>
-                                            <p class="text-[10px] font-bold text-gray-900 dark:text-white leading-tight">{{ $loan->bank_name }}</p>
-                                            <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5 leading-tight">{{ ucfirst($loan->account_type) }} • {{ Str::limit($loan->account_number, 12) }}</p>
+                                            <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-1">
+                                                <span class="text-[9px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">{{ $loan->bank_name }}</span>
+                                            </div>
+                                            <p class="text-[8px] text-gray-500 dark:text-gray-500 mt-0.5">{{ ucfirst($loan->account_type) }}</p>
+                                            <p class="text-[8px] font-mono text-gray-600 dark:text-gray-400">{{ Str::limit($loan->account_number, 14) }}</p>
+                                            @if($loan->cci)
+                                                <p class="text-[7px] font-mono text-gray-400 dark:text-gray-500 mt-0.5">CCI: {{ Str::limit($loan->cci, 16) }}</p>
+                                            @endif
                                         </div>
                                         <div>
                                             <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Desembolso</p>
-                                            <p class="text-[10px] font-bold text-gray-900 dark:text-white tabular-nums leading-tight">
-                                                {{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '—' }}
-                                            </p>
+                                            @if($loan->disbursement_date)
+                                                @php
+                                                    $mDisbDate = \Carbon\Carbon::parse($loan->disbursement_date);
+                                                    $mIsDisbursed = $mDisbDate->isPast();
+                                                @endphp
+                                                <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg {{ $mIsDisbursed ? 'bg-green-50 dark:bg-green-500/10 border-green-200 text-green-700 dark:text-green-300' : 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 text-amber-700 dark:text-amber-300' }} border">
+                                                    <span class="text-[9px] font-bold">{{ $mDisbDate->format('d/m/Y') }}</span>
+                                                    <span class="text-[7px] font-normal opacity-70">{{ $mIsDisbursed ? 'ok' : 'pend' }}</span>
+                                                </div>
+                                            @else
+                                                <p class="text-[9px] text-gray-400 font-medium">—</p>
+                                            @endif
                                         </div>
                                     </div>
 
-                                    <div class="pt-4 border-t border-gray-200 dark:border-gray-800">
-                                        <div class="flex items-center gap-1.5 mb-1.5">
+                                    <!-- Términos Mobile -->
+                                    <div class="pb-4 border-b border-gray-200 dark:border-gray-800">
+                                        <div class="flex items-center justify-between mb-2">
                                             <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest">Términos</p>
                                             @if($loan->type === 'cuotas')
                                                 <button type="button"
@@ -270,37 +324,43 @@
                                                         'payment_frequency' => $loan->payment_frequency ?? 'mensual',
                                                         'user_name' => $loan->user->name,
                                                     ]) }})"
-                                                    class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                                                    class="text-indigo-500 hover:text-indigo-400 transition-colors"
                                                     title="Ver cronograma">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                                 </button>
                                             @endif
                                         </div>
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <p class="text-[10px] text-gray-900 dark:text-white font-bold">
-                                                    @if($loan->type === 'cuotas')
-                                                        {{ $loan->months }} meses
-                                                        @php
-                                                            $freqLabel = match($loan->payment_frequency ?? 'mensual') {
-                                                                'diario' => 'día',
-                                                                'semanal' => 'sem',
-                                                                'quincenal' => 'quin',
-                                                                default => 'mes'
-                                                            };
-                                                        @endphp
-                                                        <span class="text-[8px] text-gray-400 font-normal">({{ $loan->amortization_system === 'americano' ? 'americano' : $loan->payment_frequency }})</span>
-                                                    @else
-                                                        {{ $loan->payment_days }} días
-                                                    @endif
-                                                </p>
-                                                <p class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5">
-                                                    Cuota/{{ $freqLabel ?? 'pago' }}: <span class="font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 2) }}</span>
-                                                </p>
+                                        @php
+                                            $mFreqLabel = match($loan->payment_frequency ?? 'mensual') { 'diario' => 'día', 'semanal' => 'sem', 'quincenal' => 'quin', default => 'mes' };
+                                            $mTermBadge = $loan->type === 'unico' ? 'bg-violet-100 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300 border-violet-200' : 'bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-200';
+                                        @endphp
+                                        <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg {{ $mTermBadge }} border mb-1.5">
+                                            <span class="text-[9px] font-bold">
+                                                @if($loan->type === 'cuotas')
+                                                    {{ $loan->months }}m ({{ $loan->amortization_system === 'frances' ? ucfirst($loan->payment_frequency) : 'Américano' }})
+                                                @else
+                                                    Único • {{ $loan->payment_days }}d
+                                                @endif
+                                            </span>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2 mt-1">
+                                            <div class="bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-100 dark:border-gray-700">
+                                                <p class="text-[7px] text-gray-400 uppercase">Cuota/{{ $mFreqLabel }}</p>
+                                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->monthly_payment, 0) }}</p>
                                             </div>
-                                            <p class="text-[10px] text-green-600 dark:text-green-500 font-bold">
-                                                +{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 2) }}
-                                            </p>
+                                            <div class="bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-100 dark:border-gray-700">
+                                                <p class="text-[7px] text-green-500 uppercase font-bold">Ganancia</p>
+                                                <p class="text-[10px] font-black text-green-600 dark:text-green-400">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->total_amount - $loan->amount, 0) }}</p>
+                                            </div>
+                                        </div>
+                                        <p class="text-[8px] text-gray-400 mt-1">Tasa: <span class="font-bold text-gray-600 dark:text-gray-300">{{ $loan->interest_rate }}%</span></p>
+                                    </div>
+
+                                    <!-- Motivo Mobile -->
+                                    <div>
+                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Motivo del Préstamo</p>
+                                        <div class="p-2.5 rounded-xl bg-orange-50/50 dark:bg-orange-500/5 border border-orange-100 dark:border-orange-500/10">
+                                            <p class="text-[9px] text-gray-600 dark:text-gray-400 italic leading-relaxed">"{{ Str::limit($loan->reason, 80) }}"</p>
                                         </div>
                                     </div>
                                 </div>
