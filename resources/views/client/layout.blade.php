@@ -190,13 +190,7 @@
                     $hasInvestmentNotification = Auth::user() && Auth::user()->is_investor &&
                         \DB::table('investor_opportunity')
                             ->where('user_id', Auth::id())
-                            ->where(function($q) {
-                                $q->where('status', 'rejected')
-                                  ->orWhere(function($q2) {
-                                      $q2->where('status', 'approved')
-                                          ->where('payment_status', '!=', 'confirmed');
-                                  });
-                            })
+                            ->where('status', 'rejected')
                             ->exists();
                 @endphp
 

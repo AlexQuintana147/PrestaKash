@@ -34,8 +34,7 @@
             Mis Inversiones
             @php
                 $notificationCount = $myInvestments->filter(function($inv) {
-                    return in_array($inv->pivot->status, ['rejected']) ||
-                           ($inv->pivot->status === 'approved' && $inv->pivot->payment_status !== 'confirmed');
+                    return $inv->pivot->status === 'rejected';
                 })->count();
             @endphp
             @if($notificationCount > 0)
