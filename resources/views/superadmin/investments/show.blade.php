@@ -199,7 +199,7 @@
                             <div class="flex gap-3">
                                 <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
                                 @if($investor->pivot->payment_status === 'pending' && $investor->pivot->voucher_path)
-                                    <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
+                                    <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
                                 @endif
                             </div>
                         @endif
@@ -416,8 +416,17 @@
                 <p class="absolute bottom-2 text-[9px] text-gray-400 font-medium">Click para ampliar</p>
             </div>
             <div class="mb-4">
-                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Número de Operación</label>
-                <input type="text" name="operation_number" id="voucher_operation_number" placeholder="Ej: 001234567890" class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 font-mono">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Número de Operación</label>
+                </div>
+                @if($investor->pivot->operation_number)
+                    <div class="flex items-center gap-2 px-4 py-2.5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-xl">
+                        <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                        <span class="text-xs font-mono font-bold text-indigo-700 dark:text-indigo-300">{{ $investor->pivot->operation_number }}</span>
+                    </div>
+                @else
+                    <p class="text-xs text-gray-400 italic px-4 py-2">No registrado</p>
+                @endif
             </div>
             <div class="flex justify-end gap-4">
                 <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
@@ -467,7 +476,6 @@
         <form id="reviewVoucherForm" method="POST" action="">
             @csrf @method('PUT')
             <input type="hidden" name="action" id="confirm_action_input">
-            <input type="hidden" name="operation_number" id="confirm_op_input">
             <div class="flex justify-center gap-6">
                 <button type="button" onclick="closeVoucherConfirm()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="submit" id="voucher_confirm_submit_btn" class="text-xs font-bold border-b-2 pb-0.5 hover:opacity-70 transition-opacity"></button>
@@ -554,11 +562,11 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-function openVoucherModal(voucherUrl, investmentId, userId, investorName) {
+function openVoucherModal(voucherUrl, investmentId, userId, investorName, opNumber) {
     document.getElementById('voucher_image').src = voucherUrl;
     document.getElementById('voucher_investor_name').textContent = investorName;
-    document.getElementById('voucher_operation_number').value = '';
     document.getElementById('reviewVoucherForm').action = '/gestion-interna/inversiones/' + investmentId + '/inversor/' + userId + '/revisar-comprobante';
+    window._voucherOpNumber = opNumber || '';
     document.getElementById('voucherModal').classList.remove('hidden');
 }
 
@@ -567,7 +575,7 @@ function closeVoucherModal() {
 }
 
 function openVoucherConfirm(action) {
-    const opValue = document.getElementById('voucher_operation_number').value.trim();
+    const opValue = (window._voucherOpNumber || '').trim();
     const isApprove = action === 'approve';
 
     const iconEl = document.getElementById('voucher_confirm_icon');
@@ -602,7 +610,6 @@ function openVoucherConfirm(action) {
     }
 
     document.getElementById('confirm_action_input').value = action;
-    document.getElementById('confirm_op_input').value = opValue;
     document.getElementById('voucherConfirmModal').classList.remove('hidden');
 }
 

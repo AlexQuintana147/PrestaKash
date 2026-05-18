@@ -254,7 +254,6 @@ class InvestmentOpportunityController extends Controller
     {
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
-            'operation_number' => 'nullable|string|max:50',
         ]);
 
         $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
@@ -267,7 +266,6 @@ class InvestmentOpportunityController extends Controller
 
         $investment->investors()->updateExistingPivot($userId, [
             'payment_status' => $status,
-            'operation_number' => $validated['operation_number'] ?? null,
         ]);
 
         $actionText = $status === 'confirmed' ? 'aprobado' : 'rechazado';
