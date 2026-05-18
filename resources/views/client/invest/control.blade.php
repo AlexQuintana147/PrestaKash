@@ -100,7 +100,11 @@
         @if($myInvestments->count())
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @foreach($myInvestments as $inv)
-                    <div class="py-6">
+                    @if($inv->pivot->status === 'approved')
+                        <a href="{{ route('client.investments.show', $inv) }}" class="block py-6 hover:opacity-80 transition-opacity cursor-pointer">
+                    @else
+                        <div class="py-6">
+                    @endif
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-1">
@@ -117,13 +121,7 @@
                                         </svg>
                                     @endif
                                 </div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white">
-                                    @if($inv->pivot->status === 'approved')
-                                        <a href="{{ route('client.investments.show', $inv) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{{ $inv->title }}</a>
-                                    @else
-                                        {{ $inv->title }}
-                                    @endif
-                                </h3>
+                                <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ $inv->title }}</h3>
                             </div>
                             <div class="flex items-center gap-6 text-right">
                                 <div>
@@ -146,7 +144,11 @@
                                 <p class="text-sm text-red-600 dark:text-red-400">{{ $inv->pivot->admin_notes ?: 'No se especificó motivo.' }}</p>
                             </div>
                         @endif
-                    </div>
+                    @if($inv->pivot->status === 'approved')
+                        </a>
+                    @else
+                        </div>
+                    @endif
                 @endforeach
             </div>
 
