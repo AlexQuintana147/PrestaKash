@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cashbox;
 use App\Models\InvestmentOpportunity;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class InvestmentPaymentController extends Controller
 {
@@ -80,6 +81,16 @@ class InvestmentPaymentController extends Controller
         }
 
         $cashboxes = Cashbox::orderBy('name')->get();
+
+        $perPage = 5;
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $payouts = new LengthAwarePaginator(
+            $payouts->forPage($page, $perPage)->values(),
+            $payouts->count(),
+            $perPage,
+            $page,
+            ['path' => LengthAwarePaginator::resolveCurrentPath(), 'query' => request()->query()]
+        );
 
         return view('superadmin.investments.payouts', compact('payouts', 'cashboxes'));
     }
