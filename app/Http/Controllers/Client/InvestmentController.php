@@ -36,7 +36,27 @@ class InvestmentController extends Controller
             ->paginate(10, ['*'], 'my_page')
             ->withQueryString();
 
-        return view('client.invest.control', compact('opportunities', 'myInvestments'));
+        $paymentInvestments = $user->investmentOpportunities()
+            ->wherePivot('status', 'approved')
+            ->wherePivot('payment_status', 'confirmed')
+            ->withPivot(['amount', 'status', 'payment_status', 'approved_at'])
+            ->latest('pivot_approved_at')
+            ->get();
+
+        $paymentInvestmentIds = $paymentInvestments->pluck('id')->toArray();
+
+        $payments = collect();
+        if ($paymentInvestmentIds) {
+            $payments = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
+                ->where('reference_type', 'investment')
+                ->whereIn('reference_id', $paymentInvestmentIds)
+                ->with(['cashbox:id,name,currency', 'investment:id,code,title,currency'])
+                ->orderByDesc('date')
+                ->get()
+                ->groupBy('reference_id');
+        }
+
+        return view('client.invest.control', compact('opportunities', 'myInvestments', 'paymentInvestments', 'payments'));
     }
 
     public function show(InvestmentOpportunity $opportunity)
