@@ -415,19 +415,15 @@
                 </div>
                 <p class="absolute bottom-2 text-[9px] text-gray-400 font-medium">Click para ampliar</p>
             </div>
-            <form id="reviewVoucherForm" method="POST" action="">
-                @csrf @method('PUT')
-                <div class="mb-4">
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Notas (opcional)</label>
-                    <textarea name="admin_notes" rows="2" placeholder="Observaciones sobre este comprobante..." class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 resize-none"></textarea>
-                </div>
-                <div class="flex justify-end gap-4">
-                    <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
-                    <input type="hidden" name="action" value="reject" id="voucher_action_input">
-                    <button type="submit" onclick="setVoucherAction('reject')" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar Comprobante</button>
-                    <button type="submit" onclick="setVoucherAction('approve')" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar Pago</button>
-                </div>
-            </form>
+            <div class="mb-4">
+                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Número de Operación</label>
+                <input type="text" name="operation_number" id="voucher_operation_number" placeholder="Ej: 001234567890" class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 font-mono">
+            </div>
+            <div class="flex justify-end gap-4">
+                <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                <button type="button" onclick="openVoucherConfirm('reject')" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar Comprobante</button>
+                <button type="button" onclick="openVoucherConfirm('approve')" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar Pago</button>
+            </div>
         </div>
     </div>
 </div>
@@ -456,6 +452,27 @@
         <img id="voucherLightboxImg" src="" alt=""
              class="transition-transform duration-200 rounded-lg select-none"
              style="transform-origin: center; max-width: 100%;">
+    </div>
+</div>
+
+<div id="voucherConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[140] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
+        <div id="voucher_confirm_icon" class="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4"></div>
+        <h3 id="voucher_confirm_title" class="text-xl font-bold text-gray-900 dark:text-white mb-2"></h3>
+        <p id="voucher_confirm_text" class="text-sm text-gray-500 dark:text-gray-400 mb-2"></p>
+        <div id="voucher_confirm_op_row" class="hidden bg-indigo-50 dark:bg-indigo-500/10 rounded-xl p-3 mb-6">
+            <p class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">Nº de Operación</p>
+            <p id="voucher_confirm_op_value" class="text-xs font-mono font-bold text-gray-900 dark:text-white mt-0.5"></p>
+        </div>
+        <form id="reviewVoucherForm" method="POST" action="">
+            @csrf @method('PUT')
+            <input type="hidden" name="action" id="confirm_action_input">
+            <input type="hidden" name="operation_number" id="confirm_op_input">
+            <div class="flex justify-center gap-6">
+                <button type="button" onclick="closeVoucherConfirm()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                <button type="submit" id="voucher_confirm_submit_btn" class="text-xs font-bold border-b-2 pb-0.5 hover:opacity-70 transition-opacity"></button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -533,24 +550,64 @@ document.addEventListener('keydown', function(e) {
         closeDeleteOpportunityModal();
         closeVoucherModal();
         closeVoucherLightbox();
+        closeVoucherConfirm();
     }
 });
 
 function openVoucherModal(voucherUrl, investmentId, userId, investorName) {
     document.getElementById('voucher_image').src = voucherUrl;
     document.getElementById('voucher_investor_name').textContent = investorName;
+    document.getElementById('voucher_operation_number').value = '';
     document.getElementById('reviewVoucherForm').action = '/gestion-interna/inversiones/' + investmentId + '/inversor/' + userId + '/revisar-comprobante';
-    document.getElementById('voucher_action_input').value = 'reject';
     document.getElementById('voucherModal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
 }
 
 function closeVoucherModal() {
     document.getElementById('voucherModal').classList.add('hidden');
 }
 
-function setVoucherAction(action) {
-    document.getElementById('voucher_action_input').value = action;
+function openVoucherConfirm(action) {
+    const opValue = document.getElementById('voucher_operation_number').value.trim();
+    const isApprove = action === 'approve';
+
+    const iconEl = document.getElementById('voucher_confirm_icon');
+    const titleEl = document.getElementById('voucher_confirm_title');
+    const textEl = document.getElementById('voucher_confirm_text');
+    const opRow = document.getElementById('voucher_confirm_op_row');
+    const submitBtn = document.getElementById('voucher_confirm_submit_btn');
+
+    if (isApprove) {
+        iconEl.className = 'mx-auto w-14 h-14 rounded-full bg-green-100 dark:bg-green-500/10 flex items-center justify-center mb-4';
+        iconEl.innerHTML = '<svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+        titleEl.textContent = 'Aprobar Pago';
+        titleEl.className = 'text-xl font-bold text-green-600 dark:text-green-400 mb-2';
+        textEl.textContent = '¿Confirmar que el comprobante es válido y aprobar el pago?';
+        submitBtn.textContent = 'Aprobar Pago';
+        submitBtn.className = 'text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity';
+    } else {
+        iconEl.className = 'mx-auto w-14 h-14 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-4';
+        iconEl.innerHTML = '<svg class="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+        titleEl.textContent = 'Rechazar Comprobante';
+        titleEl.className = 'text-xl font-bold text-red-600 dark:text-red-400 mb-2';
+        textEl.textContent = '¿Rechazar este comprobante? El inversor podrá subir uno nuevo.';
+        submitBtn.textContent = 'Rechazar Comprobante';
+        submitBtn.className = 'text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity';
+    }
+
+    if (opValue) {
+        opRow.classList.remove('hidden');
+        document.getElementById('voucher_confirm_op_value').textContent = opValue;
+    } else {
+        opRow.classList.add('hidden');
+    }
+
+    document.getElementById('confirm_action_input').value = action;
+    document.getElementById('confirm_op_input').value = opValue;
+    document.getElementById('voucherConfirmModal').classList.remove('hidden');
+}
+
+function closeVoucherConfirm() {
+    document.getElementById('voucherConfirmModal').classList.add('hidden');
 }
 
 let voucherScale = 1;

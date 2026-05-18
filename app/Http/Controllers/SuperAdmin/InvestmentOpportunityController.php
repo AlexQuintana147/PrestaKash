@@ -139,7 +139,7 @@ class InvestmentOpportunityController extends Controller
 
         $investors = $investment->investors()
             ->with(['documents'])
-            ->withPivot(['amount', 'status', 'admin_notes', 'created_at', 'payment_status', 'voucher_path', 'payment_submitted_at'])
+            ->withPivot(['amount', 'status', 'admin_notes', 'created_at', 'payment_status', 'voucher_path', 'payment_submitted_at', 'operation_number'])
             ->orderByPivot('amount', 'desc')
             ->paginate(5, ['*'], 'investors_page')
             ->withQueryString();
@@ -254,7 +254,7 @@ class InvestmentOpportunityController extends Controller
     {
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
-            'admin_notes' => 'nullable|string|max:500',
+            'operation_number' => 'nullable|string|max:50',
         ]);
 
         $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
@@ -267,7 +267,7 @@ class InvestmentOpportunityController extends Controller
 
         $investment->investors()->updateExistingPivot($userId, [
             'payment_status' => $status,
-            'admin_notes' => $validated['admin_notes'] ?? null,
+            'operation_number' => $validated['operation_number'] ?? null,
         ]);
 
         $actionText = $status === 'confirmed' ? 'aprobado' : 'rechazado';
