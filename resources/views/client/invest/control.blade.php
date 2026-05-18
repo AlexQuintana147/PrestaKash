@@ -36,7 +36,9 @@
                 $notificationCount = $myInvestments->whereIn('pivot.status', ['approved', 'rejected'])->count();
             @endphp
             @if($notificationCount > 0)
-                <span class="text-[10px] font-bold text-white bg-purple-600 rounded-full px-1.5 py-0.5">{{ $notificationCount }}</span>
+                <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
             @endif
         </button>
     </div>
@@ -109,8 +111,19 @@
                                         {{ $inv->pivot->status === 'rejected' ? 'bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400' : '' }}">
                                         {{ $inv->pivot->status === 'approved' ? 'Aprobada' : ($inv->pivot->status === 'pending' ? 'Pendiente' : 'Rechazada') }}
                                     </span>
+                                    @if(in_array($inv->pivot->status, ['approved', 'rejected']))
+                                        <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                        </svg>
+                                    @endif
                                 </div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ $inv->title }}</h3>
+                                <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+                                    @if($inv->pivot->status === 'approved')
+                                        <a href="{{ route('client.investments.show', $inv) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{{ $inv->title }}</a>
+                                    @else
+                                        {{ $inv->title }}
+                                    @endif
+                                </h3>
                             </div>
                             <div class="flex items-center gap-6 text-right">
                                 <div>

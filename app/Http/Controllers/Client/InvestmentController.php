@@ -21,6 +21,9 @@ class InvestmentController extends Controller
             ->where(function ($q) {
                 $q->whereNull('deadline')->orWhere('deadline', '>=', now());
             })
+            ->whereDoesntHave('investors', function ($q) use ($user) {
+                $q->where('user_id', $user->id)->where('status', 'approved');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
