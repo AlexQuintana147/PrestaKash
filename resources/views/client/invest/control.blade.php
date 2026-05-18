@@ -295,17 +295,16 @@
 
 <script>
 function switchTab(tab) {
-    const inactiveClass = 'px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors';
-    const activeClass = 'px-4 py-3 text-sm font-medium text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white transition-colors';
-    const activeWithIcon = 'flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white transition-colors';
+    const inactiveClass = 'flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors';
+    const activeClass = 'flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white transition-colors';
 
     document.getElementById('panel-opportunities').classList.toggle('hidden', tab !== 'opportunities');
     document.getElementById('panel-my-investments').classList.toggle('hidden', tab !== 'my-investments');
     document.getElementById('panel-my-payments').classList.toggle('hidden', tab !== 'my-payments');
 
     document.getElementById('tab-opportunities').className = tab === 'opportunities' ? activeClass : inactiveClass;
-    document.getElementById('tab-my-investments').className = tab === 'my-investments' ? activeWithIcon : inactiveClass;
-    document.getElementById('tab-my-payments').className = tab === 'my-payments' ? activeWithIcon : inactiveClass;
+    document.getElementById('tab-my-investments').className = tab === 'my-investments' ? activeClass : inactiveClass;
+    document.getElementById('tab-my-payments').className = tab === 'my-payments' ? activeClass : inactiveClass;
 }
 </script>
 @endsection
