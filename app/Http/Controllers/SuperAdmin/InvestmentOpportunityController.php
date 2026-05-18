@@ -336,6 +336,10 @@ class InvestmentOpportunityController extends Controller
 
     public function disapprovePayment(InvestmentOpportunity $investment, $userId)
     {
+        if ($investment->status === 'closed') {
+            return back()->with('error', 'No se puede desaprobar el pago de una oportunidad cerrada.');
+        }
+
         $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
 
         if (!$pivot || $pivot->payment_status !== 'confirmed') {

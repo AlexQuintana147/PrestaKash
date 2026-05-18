@@ -197,7 +197,7 @@
                             </div>
                         @elseif($investor->pivot->status === 'approved')
                             <div class="flex gap-3">
-                                @if($investor->pivot->payment_status === 'confirmed')
+                                @if($investor->pivot->payment_status === 'confirmed' && $investment->status !== 'closed')
                                     <button type="button" onclick="openDisapprovePaymentModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-orange-600 border-b-2 border-orange-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar Pago</button>
                                 @elseif(!$investor->pivot->payment_status || $investor->pivot->payment_status === 'rejected')
                                     <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
