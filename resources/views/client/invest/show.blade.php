@@ -82,8 +82,124 @@
                     <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     <div>
                         <p class="text-sm font-bold text-green-600 dark:text-green-400">Solicitud Aprobada</p>
-                        <p class="text-xs text-gray-400">Tu inversión de S/ {{ number_format($existingRequest->pivot->amount, 2) }} ha sido aprobada.</p>
+                        <p class="text-xs text-gray-400">Tu inversión de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} ha sido aprobada.</p>
                     </div>
+
+                    @if($existingRequest->pivot->payment_status === 'confirmed')
+                        <div class="mt-4 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <p class="text-xs font-bold text-green-600 dark:text-green-400">Pago confirmado por el administrador</p>
+                        </div>
+                    @elseif($existingRequest->pivot->payment_status === 'expired')
+                        <div class="mt-4 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <p class="text-xs font-bold text-red-600 dark:text-red-400">Tiempo de pago vencido. Contacta al administrador.</p>
+                        </div>
+                    @elseif($existingRequest->pivot->payment_status === 'rejected')
+                        <div class="mt-4 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <p class="text-xs font-bold text-red-600 dark:text-red-400">Pago rechazado. Contacta al administrador.</p>
+                        </div>
+                    @elseif(!$existingRequest->pivot->payment_status || $existingRequest->pivot->payment_status === 'pending')
+                        @php
+                            $approvedAt = $existingRequest->pivot->approved_at ? \Carbon\Carbon::parse($existingRequest->pivot->approved_at) : now();
+                            $deadline = $approvedAt->addDay();
+                            $hoursLeft = max(0, now()->diffInHours($deadline, false));
+                            $isExpired = $hoursLeft <= 0;
+                        @endphp
+
+                        @if($isExpired && !$existingRequest->pivot->payment_submitted_at)
+                            <div class="mt-4 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <p class="text-xs font-bold text-red-600 dark:text-red-400">Tiempo de pago vencido. Contacta al administrador.</p>
+                            </div>
+                        @else
+                            <div class="mt-4 p-4 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-100 dark:border-amber-500/20">
+                                <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">⏰ Tienes {{ $hoursLeft }} hora{{ $hoursLeft !== 1 ? 's' : '' }} para subir tu comprobante de pago</p>
+                                <p class="text-[10px] text-amber-500 dark:text-amber-400/70">Vence: {{ $deadline->format('d/m/Y H:i') }}</p>
+                            </div>
+
+                            @if($opportunity->bank_accounts)
+                                <div class="mt-4 space-y-3">
+                                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Datos para Depósito</p>
+                                    @foreach($opportunity->bank_accounts as $account)
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl space-y-1">
+                                            <p class="text-xs font-bold text-gray-900 dark:text-white">{{ $account['bank'] }}</p>
+                                            <div class="flex justify-between">
+                                                <span class="text-[10px] text-gray-400">Cuenta</span>
+                                                <span class="text-xs font-mono text-gray-900 dark:text-white">{{ $account['account_number'] }}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-[10px] text-gray-400">CCI</span>
+                                                <span class="text-xs font-mono text-gray-900 dark:text-white">{{ $account['cci'] }}</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @if(!$existingRequest->pivot->payment_submitted_at)
+                                <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Subir Comprobante de Pago</p>
+
+                                    @if($errors->any())
+                                        <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl text-xs text-red-600 dark:text-red-400">
+                                            @foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach
+                                        </div>
+                                    @endif
+
+                                    <form action="{{ route('client.investments.upload-voucher', [$opportunity, auth()->id()]) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="flex items-center gap-2 cursor-pointer">
+                                                    <input type="radio" name="payment_method" value="transfer" checked
+                                                           class="w-4 h-4 text-green-600 focus:ring-green-500"
+                                                           onchange="togglePaymentFields()">
+                                                    <span class="text-sm text-gray-900 dark:text-white">Transferencia / Depósito</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 cursor-pointer ml-4">
+                                                    <input type="radio" name="payment_method" value="cash"
+                                                           class="w-4 h-4 text-green-600 focus:ring-green-500"
+                                                           onchange="togglePaymentFields()">
+                                                    <span class="text-sm text-gray-900 dark:text-white">Efectivo</span>
+                                                </label>
+                                            </div>
+
+                                            <div id="transferFields">
+                                                <div class="mb-3">
+                                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">N° de Operación</label>
+                                                    <input type="text" name="operation_number" required
+                                                           placeholder="Ej: 123456789"
+                                                           class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Comprobante (imagen)</label>
+                                                    <input type="file" name="voucher" accept="image/*" required
+                                                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 dark:file:bg-green-500/10 dark:file:text-green-400 transition-colors">
+                                                </div>
+                                            </div>
+
+                                            <div id="cashFields" class="hidden">
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">Confirmas que realizaste el pago en efectivo. El administrador verificará.</p>
+                                            </div>
+
+                                            <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">
+                                                Enviar Comprobante
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @else
+                                <div class="mt-4 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <p class="text-xs font-bold text-yellow-600 dark:text-yellow-400">Comprobante enviado · Esperando verificación del administrador</p>
+                                </div>
+                            @endif
+                        @endif
+                    @endif
                 @else
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     <div>
@@ -156,6 +272,22 @@
 </div>
 
 <script>
+function togglePaymentFields() {
+    const method = document.querySelector('input[name="payment_method"]:checked')?.value;
+    const transferFields = document.getElementById('transferFields');
+    const cashFields = document.getElementById('cashFields');
+    if (!transferFields || !cashFields) return;
+    if (method === 'cash') {
+        transferFields.classList.add('hidden');
+        cashFields.classList.remove('hidden');
+        transferFields.querySelectorAll('input[required]').forEach(i => i.removeAttribute('required'));
+    } else {
+        transferFields.classList.remove('hidden');
+        cashFields.classList.add('hidden');
+        transferFields.querySelectorAll('input[name="operation_number"], input[name="voucher"]').forEach(i => i.setAttribute('required', 'required'));
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const investAmount = document.getElementById('investAmount');
     if (!investAmount) return;

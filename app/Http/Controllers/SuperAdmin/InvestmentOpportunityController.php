@@ -68,9 +68,12 @@ class InvestmentOpportunityController extends Controller
                 'annual_return_rate' => 'required|numeric|min:0|max:100',
                 'term_months' => 'required|integer|min:1',
                 'risks' => 'nullable|string|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+$/',
+                'bank_accounts' => 'required|json',
                 'deadline' => 'nullable|date|after:today',
             ],
-            [],
+            [
+                'bank_accounts.required' => 'Debes agregar al menos una cuenta bancaria.',
+            ],
             [
                 'title' => 'título',
                 'description' => 'descripción',
@@ -80,9 +83,21 @@ class InvestmentOpportunityController extends Controller
                 'annual_return_rate' => 'tasa de retorno',
                 'term_months' => 'plazo',
                 'risks' => 'riesgos',
+                'bank_accounts' => 'cuentas bancarias',
                 'deadline' => 'fecha límite',
             ]
         );
+
+        $bankAccounts = json_decode($validated['bank_accounts'], true);
+        if (empty($bankAccounts)) {
+            return back()->withErrors(['bank_accounts' => 'Debes agregar al menos una cuenta bancaria.'])->withInput();
+        }
+        foreach ($bankAccounts as $acc) {
+            if (empty($acc['bank']) || empty($acc['account_number']) || empty($acc['cci'])) {
+                return back()->withErrors(['bank_accounts' => 'Cada cuenta debe tener banco, número de cuenta y CCI.'])->withInput();
+            }
+        }
+        $validated['bank_accounts'] = $bankAccounts;
 
         $validated['created_by'] = auth()->id();
         $validated['status'] = 'open';
@@ -105,9 +120,7 @@ class InvestmentOpportunityController extends Controller
 
         $investment->setRelation('investors', $investors);
 
-        $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
-
-        return view('superadmin.investments.show', compact('investment', 'investors', 'cashboxes'));
+        return view('superadmin.investments.show', compact('investment', 'investors'));
     }
 
     public function update(Request $request, InvestmentOpportunity $investment)
@@ -157,38 +170,15 @@ class InvestmentOpportunityController extends Controller
 
     public function approveInvestor(Request $request, InvestmentOpportunity $investment, $userId)
     {
-        $request->validate([
-            'cashbox_id' => 'required|exists:cashboxes,id',
+        $investor = $investment->investors()->where('user_id', $userId)->firstOrFail();
+
+        $investment->investors()->updateExistingPivot($userId, [
+            'status' => 'approved',
+            'approved_at' => now(),
+            'payment_status' => 'pending',
         ]);
 
-        $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
-        $investor = $investment->investors()->where('user_id', $userId)->firstOrFail();
-        $amount = (float) $investor->pivot->amount;
-
-        if ($cashbox->currency !== $investment->currency) {
-            return back()->withErrors(['cashbox_id' => 'La caja seleccionada no corresponde a la moneda de la oportunidad.']);
-        }
-
-        \DB::transaction(function () use ($investment, $userId, $cashbox, $amount, $investor) {
-            $investment->investors()->updateExistingPivot($userId, [
-                'status' => 'approved',
-            ]);
-
-            $cashbox->movements()->create([
-                'user_id' => auth()->id(),
-                'type' => 'income',
-                'amount' => $amount,
-                'description' => "Ingreso por aprobación de inversión en {$investment->title} de {$investor->name}",
-                'reference_type' => 'investment',
-                'reference_id' => $investment->id,
-                'investor_user_id' => $userId,
-                'date' => now(),
-            ]);
-
-            $cashbox->increment('balance', $amount);
-        });
-
-        return back()->with('success', 'Inversor aprobado y movimiento de caja registrado.');
+        return back()->with('success', 'Inversor aprobado. El cliente debe subir su comprobante de pago.');
     }
 
     public function rejectInvestor(Request $request, InvestmentOpportunity $investment, $userId)
@@ -222,10 +212,16 @@ class InvestmentOpportunityController extends Controller
             $investment->investors()->updateExistingPivot($userId, [
                 'status' => 'pending',
                 'admin_notes' => null,
+                'approved_at' => null,
+                'payment_method' => null,
+                'voucher_path' => null,
+                'operation_number' => null,
+                'payment_submitted_at' => null,
+                'payment_status' => null,
             ]);
         });
 
-        return back()->with('success', 'Inversor desaprobado y movimiento de caja eliminado.');
+        return back()->with('success', 'Inversor desaprobado.');
     }
 
     public function destroy(InvestmentOpportunity $investment)

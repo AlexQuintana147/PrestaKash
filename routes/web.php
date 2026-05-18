@@ -99,6 +99,9 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/inversiones/{investment}/inversor/{userId}/aprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'approveInvestor'])->name('investments.approve-investor');
     Route::post('/inversiones/{investment}/inversor/{userId}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'rejectInvestor'])->name('investments.reject-investor');
     Route::post('/inversiones/{investment}/inversor/{userId}/desaprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'disapproveInvestor'])->name('investments.disapprove-investor');
+    Route::get('/inversiones/pagos', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'index'])->name('investments.payments');
+    Route::post('/inversiones/{investment}/inversor/{userId}/confirmar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'confirm'])->name('investments.confirm-payment');
+    Route::post('/inversiones/{investment}/inversor/{userId}/rechazar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'reject'])->name('investments.reject-payment');
 
     // Control de préstamos
     Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');
@@ -155,6 +158,7 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/invertir/control', [\App\Http\Controllers\Client\InvestmentController::class, 'index'])->name('investments.index');
     Route::get('/invertir/control/{opportunity}', [\App\Http\Controllers\Client\InvestmentController::class, 'show'])->name('investments.show');
     Route::post('/invertir/control/{opportunity}/aplicar', [\App\Http\Controllers\Client\InvestmentController::class, 'apply'])->name('investments.apply');
+    Route::put('/invertir/control/{opportunity}/voucher/{userId}', [\App\Http\Controllers\Client\InvestmentController::class, 'uploadVoucher'])->name('investments.upload-voucher');
 
     // Historial crediticio
     Route::get('/historial-crediticio', [\App\Http\Controllers\Client\LoanController::class, 'history'])->name('loans.history');

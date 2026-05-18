@@ -16,6 +16,7 @@ class InvestmentOpportunity extends Model
         'annual_return_rate',
         'term_months',
         'risks',
+        'bank_accounts',
         'status',
         'deadline',
         'created_by',
@@ -23,6 +24,7 @@ class InvestmentOpportunity extends Model
 
     protected $casts = [
         'deadline' => 'date',
+        'bank_accounts' => 'array',
     ];
 
     protected static function boot()
@@ -44,7 +46,7 @@ class InvestmentOpportunity extends Model
     public function investors()
     {
         return $this->belongsToMany(User::class, 'investor_opportunity')
-            ->withPivot(['amount', 'status', 'admin_notes'])
+            ->withPivot(['amount', 'status', 'admin_notes', 'payment_method', 'voucher_path', 'operation_number', 'approved_at', 'payment_submitted_at', 'payment_status'])
             ->withTimestamps();
     }
 
@@ -52,7 +54,7 @@ class InvestmentOpportunity extends Model
     {
         return $this->belongsToMany(User::class, 'investor_opportunity')
             ->wherePivot('status', 'approved')
-            ->withPivot(['amount', 'status', 'admin_notes'])
+            ->withPivot(['amount', 'status', 'admin_notes', 'payment_method', 'voucher_path', 'operation_number', 'approved_at', 'payment_submitted_at', 'payment_status'])
             ->withTimestamps();
     }
 
