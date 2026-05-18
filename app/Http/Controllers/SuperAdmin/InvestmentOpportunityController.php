@@ -139,7 +139,7 @@ class InvestmentOpportunityController extends Controller
 
         $investors = $investment->investors()
             ->with(['documents'])
-            ->withPivot(['amount', 'status', 'admin_notes', 'created_at'])
+            ->withPivot(['amount', 'status', 'admin_notes', 'created_at', 'payment_status', 'voucher_path', 'payment_submitted_at'])
             ->orderByPivot('amount', 'desc')
             ->paginate(5, ['*'], 'investors_page')
             ->withQueryString();
@@ -248,6 +248,30 @@ class InvestmentOpportunityController extends Controller
         });
 
         return back()->with('success', 'Inversor desaprobado.');
+    }
+
+    public function reviewVoucher(Request $request, InvestmentOpportunity $investment, $userId)
+    {
+        $validated = $request->validate([
+            'action' => 'required|in:approve,reject',
+            'admin_notes' => 'nullable|string|max:500',
+        ]);
+
+        $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
+
+        if (!$pivot || !$pivot->voucher_path) {
+            return back()->with('error', 'No se encontró el comprobante.');
+        }
+
+        $status = $validated['action'] === 'approve' ? 'confirmed' : 'rejected';
+
+        $investment->investors()->updateExistingPivot($userId, [
+            'payment_status' => $status,
+            'admin_notes' => $validated['admin_notes'] ?? null,
+        ]);
+
+        $actionText = $status === 'confirmed' ? 'aprobado' : 'rechazado';
+        return back()->with("success", "Comprobante {$actionText} correctamente.");
     }
 
     public function destroy(InvestmentOpportunity $investment)

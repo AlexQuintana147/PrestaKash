@@ -99,6 +99,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/inversiones/{investment}/inversor/{userId}/aprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'approveInvestor'])->name('investments.approve-investor');
     Route::post('/inversiones/{investment}/inversor/{userId}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'rejectInvestor'])->name('investments.reject-investor');
     Route::post('/inversiones/{investment}/inversor/{userId}/desaprobar', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'disapproveInvestor'])->name('investments.disapprove-investor');
+    Route::put('/inversiones/{investment}/inversor/{userId}/revisar-comprobante', [\App\Http\Controllers\SuperAdmin\InvestmentOpportunityController::class, 'reviewVoucher'])->name('investments.review-voucher');
     Route::get('/inversiones/pagos', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'index'])->name('investments.payments');
     Route::post('/inversiones/{investment}/inversor/{userId}/confirmar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'confirm'])->name('investments.confirm-payment');
     Route::post('/inversiones/{investment}/inversor/{userId}/rechazar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'reject'])->name('investments.reject-payment');

@@ -301,20 +301,6 @@
                             @endif
                             </div>
                         </a>
-                        <a href="{{ route('superadmin.investments.payments') }}" onclick="closeSidebar()"
-                            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
-                            <div class="flex items-center gap-3">
-                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                </svg>
-                                Pagos de Inversores
-                            </div>
-                            @php $pendingPayments = \DB::table('investor_opportunity')->where('status', 'approved')->where('payment_status', 'pending')->count(); @endphp
-                            @if($pendingPayments > 0)
-                                <span class="text-[10px] font-bold text-white bg-amber-500 rounded-full px-1.5 py-0.5">{{ $pendingPayments }}</span>
-                            @endif
-                        </a>
                         <a href="{{ route('superadmin.installments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.installments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">

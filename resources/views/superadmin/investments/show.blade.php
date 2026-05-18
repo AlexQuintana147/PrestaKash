@@ -196,7 +196,12 @@
                                 <button type="button" onclick="openRejectInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar</button>
                             </div>
                         @elseif($investor->pivot->status === 'approved')
-                            <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
+                            <div class="flex gap-3">
+                                <button type="button" onclick="openDisapproveInvestorModal({{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}', '{{ $investment->currency === 'USD' ? '$' : 'S/' }} {{ number_format($investor->pivot->amount, 2) }}')" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
+                                @if($investor->pivot->payment_status === 'pending' && $investor->pivot->voucher_path)
+                                    <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}')" class="text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
+                                @endif
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -395,6 +400,34 @@
     </div>
 </div>
 
+<div id="voucherModal" class="hidden fixed inset-0 bg-black/70 z-[120] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden relative my-auto">
+        <button onclick="closeVoucherModal()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20 bg-white/80 dark:bg-gray-900/80">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="p-8">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Comprobante de Pago</h3>
+            <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_investor_name" class="font-bold text-gray-700 dark:text-gray-300"></span></p>
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 flex items-center justify-center mb-6 min-h-[300px] border border-gray-200 dark:border-gray-800">
+                <img id="voucher_image" src="" class="max-w-full max-h-[400px] rounded-xl object-contain shadow-sm">
+            </div>
+            <form id="reviewVoucherForm" method="POST" action="">
+                @csrf @method('PUT')
+                <div class="mb-4">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Notas (opcional)</label>
+                    <textarea name="admin_notes" rows="2" placeholder="Observaciones sobre este comprobante..." class="w-full px-4 py-2.5 text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 resize-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                    <input type="hidden" name="action" value="reject" id="voucher_action_input">
+                    <button type="submit" onclick="setVoucherAction('reject')" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar Comprobante</button>
+                    <button type="submit" onclick="setVoucherAction('approve')" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar Pago</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 function openApproveInvestorModal(investmentId, userId, name, amount) {
     document.getElementById('approve_inv_name').textContent = name;
@@ -467,8 +500,27 @@ document.addEventListener('keydown', function(e) {
         closeInvestorModal();
         closeCloseOpportunityModal();
         closeDeleteOpportunityModal();
+        closeVoucherModal();
     }
 });
+
+function openVoucherModal(voucherUrl, investmentId, userId, investorName) {
+    document.getElementById('voucher_image').src = voucherUrl;
+    document.getElementById('voucher_investor_name').textContent = investorName;
+    document.getElementById('reviewVoucherForm').action = '/gestion-interna/inversiones/' + investmentId + '/inversor/' + userId + '/revisar-comprobante';
+    document.getElementById('voucher_action_input').value = 'reject';
+    document.getElementById('voucherModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVoucherModal() {
+    document.getElementById('voucherModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function setVoucherAction(action) {
+    document.getElementById('voucher_action_input').value = action;
+}
 
 function openInvestorModal(data) {
     const modal = document.getElementById('investorModal');
