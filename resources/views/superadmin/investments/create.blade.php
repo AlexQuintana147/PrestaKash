@@ -236,6 +236,25 @@
     </form>
 </div>
 
+<style>
+select option {
+    background-color: white;
+    color: #111827;
+}
+
+.dark select option {
+    background-color: #111827;
+    color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+    select option {
+        background-color: #111827;
+        color: #f9fafb;
+    }
+}
+</style>
+
 <script>
 const $ = id => document.getElementById(id);
 
@@ -330,8 +349,43 @@ function addBankAccount() {
         </button>
         <div>
             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Nombre del Banco *</label>
-            <input type="text" name="bank_name[${idx}]" required placeholder="BCP, Interbank, BBVA..."
-                   class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none focus:border-green-500 transition-colors">
+            <select name="bank_name[${idx}]" required
+                    class="w-full pl-0 pr-0 py-2 bg-white dark:bg-gray-900 border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors cursor-pointer">
+                <option value="">Seleccionar banco...</option>
+                <option value="BCP">Banco de Crédito del Perú (BCP)</option>
+                <option value="Interbank">Interbank</option>
+                <option value="BBVA">BBVA Perú</option>
+                <option value="Scotiabank">Scotiabank Perú</option>
+                <option value="Banco de la Nación">Banco de la Nación</option>
+                <option value="BanBif">BanBif</option>
+                <option value="Banco Falabella">Banco Falabella</option>
+                <option value="Ripley Bank">Ripley Bank</option>
+                <option value="Alfin Banco">Alfin Banco</option>
+                <option value="Banco GNB">Banco GNB</option>
+                <option value="Citibank">Citibank Perú</option>
+                <option value="Banco Pichincha">Banco Pichincha</option>
+                <option value="Banco Santander">Banco Santander</option>
+                <option value="Banco Ripley">Banco Ripley</option>
+                <option value="Caja Arequipa">Caja Arequipa</option>
+                <option value="Caja Cusco">Caja Cusco</option>
+                <option value="Caja Huancayo">Caja Huancayo</option>
+                <option value="Caja Ica">Caja Ica</option>
+                <option value="Caja Piura">Caja Piura</option>
+                <option value="Caja Sullana">Caja Sullana</option>
+                <option value="Caja Tacna">Caja Tacna</option>
+                <option value="Caja Trujillo">Caja Trujillo</option>
+                <option value="CMAC Arequipa">CMAC Arequipa</option>
+                <option value="CMAC Cusco">CMAC Cusco</option>
+                <option value="CMAC Huancayo">CMAC Huancayo</option>
+                <option value="CMAC Ica">CMAC Ica</option>
+                <option value="CMAC Piura">CMAC Piura</option>
+                <option value="CMAC Sullana">CMAC Sullana</option>
+                <option value="CMAC Tacna">CMAC Tacna</option>
+                <option value="CMAC Trujillo">CMAC Trujillo</option>
+                <option value="Financiera Confianza">Financiera Confianza</option>
+                <option value="Financiera Efectiva">Financiera Efectiva</option>
+                <option value="Financiera Qali Qali">Financiera Qali Qali</option>
+            </select>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
