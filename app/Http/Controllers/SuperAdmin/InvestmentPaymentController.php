@@ -44,13 +44,20 @@ class InvestmentPaymentController extends Controller
         $now = now();
 
         foreach ($closedOpportunities as $opportunity) {
+            $totalInvested = 0;
+            foreach ($opportunity->investors as $investor) {
+                $totalInvested += $investor->pivot->amount;
+            }
+
             foreach ($opportunity->investors as $investor) {
                 $monthsSinceClose = $opportunity->closed_at->diffInMonths($now);
-                $maxMonths = min($monthsSinceClose, $opportunity->term_months);
+                $maxMonths = min(max($monthsSinceClose, 1), $opportunity->term_months);
 
                 if ($maxMonths <= 0) continue;
 
                 $monthlyAmount = round($investor->pivot->amount * ($opportunity->monthly_return_rate / 100), 2);
+                $totalReturn = round($monthlyAmount * $opportunity->term_months, 2);
+                $percentageOfTotal = $totalInvested > 0 ? round(($investor->pivot->amount / $totalInvested) * 100, 1) : 0;
 
                 for ($month = 1; $month <= $maxMonths; $month++) {
                     $dueDate = $opportunity->closed_at->copy()->addMonths($month);
@@ -62,6 +69,8 @@ class InvestmentPaymentController extends Controller
                         'month' => $month,
                         'total_months' => $opportunity->term_months,
                         'monthly_amount' => $monthlyAmount,
+                        'total_return' => $totalReturn,
+                        'percentage_of_total' => $percentageOfTotal,
                         'due_date' => $dueDate,
                         'is_overdue' => $isOverdue,
                         'currency' => $opportunity->currency,
