@@ -163,4 +163,32 @@ class InvestmentController extends Controller
 
         return back()->with('success', 'Comprobante enviado. El administrador verificará tu pago.');
     }
+
+    public function payments()
+    {
+        $user = Auth::user();
+
+        if (!$user->is_investor) {
+            return redirect()->route('client.invertir');
+        }
+
+        $investments = $user->investmentOpportunities()
+            ->wherePivot('status', 'approved')
+            ->wherePivot('payment_status', 'confirmed')
+            ->withPivot(['amount', 'status', 'payment_status', 'approved_at'])
+            ->latest('pivot_approved_at')
+            ->get();
+
+        $investmentIds = $investments->pluck('id')->toArray();
+
+        $payments = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
+            ->where('reference_type', 'investment')
+            ->whereIn('reference_id', $investmentIds)
+            ->with(['cashbox:id,name,currency', 'investment:id,code,title,currency'])
+            ->orderByDesc('date')
+            ->get()
+            ->groupBy('reference_id');
+
+        return view('client.invest.payments', compact('investments', 'payments'));
+    }
 }

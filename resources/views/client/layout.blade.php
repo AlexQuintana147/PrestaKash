@@ -187,10 +187,16 @@
                 </a>
 
                 @php
-                    $hasInvestmentNotification = Auth::user() && Auth::user()->is_investor && 
+                    $hasInvestmentNotification = Auth::user() && Auth::user()->is_investor &&
                         \DB::table('investor_opportunity')
                             ->where('user_id', Auth::id())
-                            ->whereIn('status', ['approved', 'rejected'])
+                            ->where(function($q) {
+                                $q->where('status', 'rejected')
+                                  ->orWhere(function($q2) {
+                                      $q2->where('status', 'approved')
+                                          ->where('payment_status', '!=', 'confirmed');
+                                  });
+                            })
                             ->exists();
                 @endphp
 
@@ -214,6 +220,18 @@
                         </div>
                     @endif
                 </a>
+
+                @if(auth()->user() && auth()->user()->is_investor)
+                    <a href="{{ route('client.investments.payments') }}" onclick="closeSidebar()"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('client.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Mis Pagos</span>
+                    </a>
+                @endif
             </nav>
 
             <!-- Theme + User + Logout -->

@@ -33,7 +33,10 @@
             class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
             Mis Inversiones
             @php
-                $notificationCount = $myInvestments->whereIn('pivot.status', ['approved', 'rejected'])->count();
+                $notificationCount = $myInvestments->filter(function($inv) {
+                    return in_array($inv->pivot->status, ['rejected']) ||
+                           ($inv->pivot->status === 'approved' && $inv->pivot->payment_status !== 'confirmed');
+                })->count();
             @endphp
             @if($notificationCount > 0)
                 <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24">

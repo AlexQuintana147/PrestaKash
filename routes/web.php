@@ -161,6 +161,7 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/invertir/control/{opportunity}', [\App\Http\Controllers\Client\InvestmentController::class, 'show'])->name('investments.show');
     Route::post('/invertir/control/{opportunity}/aplicar', [\App\Http\Controllers\Client\InvestmentController::class, 'apply'])->name('investments.apply');
     Route::put('/invertir/control/{opportunity}/voucher/{userId}', [\App\Http\Controllers\Client\InvestmentController::class, 'uploadVoucher'])->name('investments.upload-voucher');
+    Route::get('/invertir/pagos', [\App\Http\Controllers\Client\InvestmentController::class, 'payments'])->name('investments.payments');
 
     // Historial crediticio
     Route::get('/historial-crediticio', [\App\Http\Controllers\Client\LoanController::class, 'history'])->name('loans.history');
