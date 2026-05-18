@@ -156,12 +156,9 @@
 
                         <div>
                             <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Fecha límite <span class="text-gray-300 dark:text-gray-700">(opcional)</span></label>
-                            <div class="relative">
+                            <div class="relative cursor-pointer" onclick="document.querySelector('input[name=\'deadline\']').showPicker()">
                                 <input type="date" name="deadline" value="{{ old('deadline') }}"
-                                       class="w-full pl-0 pr-10 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors cursor-pointer appearance-none">
-                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
+                                       class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors cursor-pointer appearance-none">
                             </div>
                         </div>
                     </div>
