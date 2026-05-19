@@ -253,10 +253,10 @@
                         </div>
                         <p class="text-[10px] text-[#B45309]/70 dark:text-[#FBBF24]/50">Desembolso rápido</p>
                     </div>
-                    <svg class="absolute bottom-0 left-0 right-0 w-full h-10" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <svg id="pkGoldWave" class="absolute bottom-0 left-0 right-0 w-full h-10" viewBox="0 0 100 30" preserveAspectRatio="none">
                         <defs><linearGradient id="goldWave" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#F5A623;stop-opacity:0.25"/><stop offset="100%" style="stop-color:#F5A623;stop-opacity:0"/></linearGradient></defs>
-                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10 L100,30 L0,30Z" fill="url(#goldWave)"/>
-                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                        <path id="pkGoldWaveFill" d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10 L100,30 L0,30Z" fill="url(#goldWave)"/>
+                        <path id="pkGoldWaveLine" d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
                     </svg>
                 </a>
 
@@ -771,5 +771,31 @@
             setTimeout(function () { notice.remove(); }, 200);
         });
     }
+</script>
+<script>
+(function(){
+    var line=document.getElementById('pkGoldWaveLine');
+    var fill=document.getElementById('pkGoldWaveFill');
+    if(!line||!fill)return;
+    var pts=[26,22,24,18,21,12,10];
+    var targets=pts.slice();
+    var speed=0.04;
+    function rand(){return 8+Math.random()*18;}
+    function newTargets(){for(var i=0;i<targets.length;i++)targets[i]=rand();}
+    function tick(){
+        var changed=false;
+        for(var i=0;i<pts.length;i++){
+            var d=targets[i]-pts[i];
+            if(Math.abs(d)>0.3){pts[i]+=d*speed;changed=true;}
+        }
+        if(!changed)newTargets();
+        var p='M0,'+pts[0]+' Q10,'+pts[1]+' 20,'+pts[2]+' T40,'+pts[3]+' T60,'+pts[4]+' T80,'+pts[5]+' T100,'+pts[6];
+        line.setAttribute('d',p);
+        fill.setAttribute('d',p+' L100,30 L0,30Z');
+        requestAnimationFrame(tick);
+    }
+    newTargets();
+    tick();
+})();
 </script>
 @endsection
