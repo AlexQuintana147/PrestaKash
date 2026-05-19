@@ -324,7 +324,7 @@
                                                         'payment_frequency' => $loan->payment_frequency ?? 'mensual',
                                                         'user_name' => $loan->user->name,
                                                     ]) }})"
-                                                    class="px-2 py-1 rounded-md bg-amber-400 text-black text-[8px] font-black uppercase tracking-wider hover:bg-amber-500 transition-colors"
+                                                    class="px-2 py-1 bg-amber-400 text-black text-[8px] font-black uppercase tracking-wider hover:bg-amber-500 transition-colors"
                                                     title="Ver datos">
                                                     Ver datos
                                                 </button>
@@ -871,7 +871,7 @@
                                                         'payment_frequency' => $loan->payment_frequency ?? 'mensual',
                                                         'user_name' => $loan->user->name,
                                                     ]) }})"
-                                                    class="px-2.5 py-1.5 rounded-md bg-amber-400 text-black text-[9px] font-black uppercase tracking-wider hover:bg-amber-500 transition-colors"
+                                                    class="px-2.5 py-1.5 bg-amber-400 text-black text-[9px] font-black uppercase tracking-wider hover:bg-amber-500 transition-colors"
                                                     title="Ver datos">
                                                     Ver datos
                                                 </button>
