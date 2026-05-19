@@ -452,27 +452,50 @@
         .overdue-installment-row::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.02));
+            top: 0;
+            bottom: 0;
+            left: -1.25rem;
+            right: 0;
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.18), rgba(239, 68, 68, 0.06) 40%, transparent);
             pointer-events: none;
             z-index: 0;
         }
 
+        @media (min-width: 768px) {
+            .overdue-installment-row::before {
+                left: -2.5rem;
+                background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.04) 35%, transparent);
+            }
+        }
+
         .dark .overdue-installment-row::before {
-            background: linear-gradient(to right, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.03));
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.22), rgba(239, 68, 68, 0.08) 40%, transparent);
+        }
+
+        @media (min-width: 768px) {
+            .dark .overdue-installment-row::before {
+                background: linear-gradient(to right, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05) 35%, transparent);
+            }
         }
 
         .overdue-installment-row::after {
             content: '';
             position: absolute;
-            left: 0;
+            left: -1.25rem;
             top: 0;
             bottom: 0;
-            width: 4px;
+            width: 3px;
             background: #ef4444;
             border-radius: 0 2px 2px 0;
             pointer-events: none;
             z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .overdue-installment-row::after {
+                left: -2.5rem;
+                width: 4px;
+            }
         }
 
         .overdue-installment-row > * {
