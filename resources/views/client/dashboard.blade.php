@@ -158,6 +158,29 @@
         </div>
     </div>
 
+    {{-- Línea de Crédito --}}
+    <div class="px-4 md:px-8 pb-2">
+        <div class="max-w-4xl mx-auto">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF] to-[#8247f5] p-5 md:p-6">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span class="text-xs font-medium text-white/70 uppercase tracking-wider">Línea de crédito disponible</span>
+                    </div>
+                    <p class="text-3xl md:text-4xl font-bold text-white tracking-tight">S/ 500<span class="text-lg font-medium text-white/60">.00</span></p>
+                    <div class="mt-3 flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-medium text-white/90">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#00D26A]"></span>
+                            Activa
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Bento Grid --}}
     <div class="px-4 md:px-8 pb-4">
         <div class="max-w-4xl mx-auto">
