@@ -670,6 +670,24 @@
     </div>
 </div>
 
+{{-- Delete Confirm Modal --}}
+<div id="deleteConfirmModal" class="pk-modal-overlay" role="dialog" aria-modal="true" style="align-items:center;padding:1rem;">
+    <div onclick="closeDeleteConfirm()" class="absolute inset-0 bg-black/60"></div>
+    <div class="pk-modal-content" style="max-width:360px;">
+        <div class="px-6 pt-8 pb-6 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-[#E94560]/10 dark:bg-[#E94560]/20 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white">Eliminar cuenta</h3>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">¿Estás seguro? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="px-6 pb-6 flex gap-3">
+            <button type="button" onclick="closeDeleteConfirm()" class="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
+            <button type="button" onclick="confirmDelete()" class="flex-1 py-2.5 rounded-xl bg-[#E94560] text-white text-sm font-semibold hover:bg-[#d63d56] transition-colors">Eliminar</button>
+        </div>
+    </div>
+</div>
+
 <script>
     let accounts = [];
 
@@ -777,8 +795,22 @@
         } catch (e) { alert('Error de conexión'); }
     }
 
-    async function deleteAccount(id) {
-        if (!confirm('¿Eliminar esta cuenta?')) return;
+    let pendingDeleteId = null;
+
+    function deleteAccount(id) {
+        pendingDeleteId = id;
+        document.getElementById('deleteConfirmModal').classList.add('active');
+    }
+
+    function closeDeleteConfirm() {
+        document.getElementById('deleteConfirmModal').classList.remove('active');
+        pendingDeleteId = null;
+    }
+
+    async function confirmDelete() {
+        if (!pendingDeleteId) return;
+        const id = pendingDeleteId;
+        closeDeleteConfirm();
         try {
             const response = await fetch('/panel/cuentas-bancarias/' + id, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' } });
             const result = await response.json();
