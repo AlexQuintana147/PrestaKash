@@ -93,7 +93,63 @@
             <!-- Lista de préstamos -->
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($loans as $loan)
-                    <div id="loan-{{ $loan->id }}" class="group py-6 md:py-8 transition-colors">
+                    @php
+                        $selfie = $loan->user->documents?->selfie;
+                        $rowPhoto = $selfie ? Storage::url($selfie) : ($loan->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($loan->user->name));
+                        $rowName = $loan->user->person_type === 'juridica' && $loan->user->business_name ? $loan->user->business_name : $loan->user->name;
+                        $rowStatusColor = match($loan->status) {
+                            'approved' => 'text-green-500',
+                            'counter_offered' => 'text-purple-600',
+                            'rejected' => 'text-red-500',
+                            'paid' => 'text-blue-500',
+                            default => 'text-amber-500'
+                        };
+                        $rowStatusLabel = match($loan->status) {
+                            'approved' => 'Aprobado',
+                            'pending' => 'En revisión',
+                            'counter_offered' => 'Contra-oferta',
+                            'rejected' => 'Rechazado',
+                            'paid' => 'Pagado',
+                            default => $loan->status
+                        };
+                    @endphp
+                    <div id="loan-{{ $loan->id }}" class="group transition-colors">
+                        <div class="flex items-center justify-between gap-3 py-4 md:py-5 cursor-pointer select-none hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors" onclick="toggleLoanRow({{ $loan->id }})">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-800">
+                                    @if($loan->user->is_ghost)
+                                        <svg fill="#9333ea" width="20" height="20" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M511.984-.128c-229.216 0-415.681 199.903-415.681 445.6v546.672c0 13.216 8.16 25.088 20.496 29.84 3.712 1.471 7.632 2.16 11.504 2.16 8.848 0 17.536-3.68 23.712-10.527l120.592-133.12 94.431 130.432a31.918 31.918 0 0 0 25.68 13.215h.224a31.98 31.98 0 0 0 25.664-12.912l94.816-127.344 93.184 127.152a31.993 31.993 0 0 0 25.809 13.088 32.028 32.028 0 0 0 25.808-13.055l95.569-130.288 118 132.624c8.816 9.904 22.944 13.376 35.28 8.624 12.4-4.72 20.624-16.624 20.624-29.905V445.456C927.696 199.776 741.2-.128 511.984-.128zm351.711 908.16l-88.402-99.376c-6.432-7.216-15.808-11.311-25.407-10.687a32.105 32.105 0 0 0-24.32 13.024l-93.12 127.008-93.008-126.912A31.975 31.975 0 0 0 513.758 798h-.127a31.935 31.935 0 0 0-25.664 12.912l-94.689 127.152-92-127.088c-5.664-7.807-14.528-12.655-24.16-13.151-.592-.032-1.151-.065-1.743-.065a31.984 31.984 0 0 0-23.712 10.528l-91.376 100.848v-463.68c0-210.4 157.776-381.601 351.68-381.601 193.937 0 351.713 171.184 351.713 381.6V908.03h.015zM671.997 352.16c-35.28 0-63.84 28.592-63.84 63.808 0 35.248 28.56 63.84 63.84 63.84s63.84-28.592 63.84-63.84c0-35.216-28.56-63.808-63.84-63.808zm-320 0c-35.28 0-63.84 28.592-63.84 63.808 0 35.248 28.576 63.84 63.84 63.84s63.84-28.592 63.84-63.84c0-35.216-28.56-63.808-63.84-63.808z"/></svg>
+                                    @else
+                                        <img src="{{ $rowPhoto }}" class="w-full h-full object-cover">
+                                    @endif
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $rowName }}</p>
+                                        <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest flex-shrink-0 {{ $loan->user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">{{ $loan->user->person_type === 'juridica' ? 'JUR' : 'NAT' }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <p class="text-sm font-black text-gray-900 dark:text-white tracking-tighter">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                                        <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-black uppercase tracking-widest flex-shrink-0">{{ $loan->type === 'cuotas' ? 'Cuotas' : 'Único' }}</span>
+                                        @php $hasProcessing = $loan->installments->where('status', 'processing')->count() > 0; @endphp
+                                        @if($hasProcessing)
+                                            <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}" onclick="event.stopPropagation()" class="px-1.5 py-0.5 text-purple-600 text-[8px] font-black rounded-full bg-purple-50 dark:bg-purple-500/10 flex-shrink-0">PAGO PEND.</a>
+                                        @endif
+                                        @if($loan->in_default)
+                                            <span class="px-1.5 py-0.5 text-[8px] font-black rounded-full bg-red-500/10 text-red-500 flex-shrink-0">EN MORA</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 flex-shrink-0">
+                                <span class="text-xs font-black uppercase tracking-widest {{ $rowStatusColor }}">{{ $rowStatusLabel }}</span>
+                                <p class="hidden md:block text-[10px] text-gray-400 dark:text-gray-600 font-medium">{{ $loan->created_at->format('d/m/Y') }}</p>
+                                <svg id="loan-chevron-{{ $loan->id }}" class="w-4 h-4 text-gray-400 dark:text-gray-600 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                        <div id="loan-details-{{ $loan->id }}" class="loan-details-wrapper">
+                            <div class="loan-details-inner">
+                                <div class="pb-6 md:pb-8">
                         <!-- Layout Mobile: Stack vertical -->
                         <div class="flex flex-col gap-6 lg:hidden">
                             <!-- Usuario e Info Principal -->
@@ -937,6 +993,9 @@
                                 </div>
                             @endif
                         </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @empty
                     <div class="py-16 text-center">
@@ -971,6 +1030,20 @@
 
         input[type="number"] {
             -moz-appearance: textfield;
+        }
+
+        .loan-details-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.35s ease-out;
+        }
+
+        .loan-details-wrapper.expanded {
+            grid-template-rows: 1fr;
+        }
+
+        .loan-details-inner {
+            overflow: hidden;
         }
     </style>
 <!-- Modal Contra-Oferta -->
@@ -2031,16 +2104,28 @@
         if (e.target === document.getElementById('scheduleModal')) closeScheduleModal();
     });
 
-    // Highlight from URL parameter
+    function toggleLoanRow(loanId) {
+        const wrapper = document.getElementById('loan-details-' + loanId);
+        const chevron = document.getElementById('loan-chevron-' + loanId);
+        if (!wrapper || !chevron) return;
+        wrapper.classList.toggle('expanded');
+        chevron.style.transform = wrapper.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const loanId = urlParams.get('loan_id');
         if (loanId) {
             const el = document.getElementById('loan-' + loanId);
             if (el) {
+                const wrapper = document.getElementById('loan-details-' + loanId);
+                const chevron = document.getElementById('loan-chevron-' + loanId);
+                if (wrapper) {
+                    wrapper.classList.add('expanded');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                }
                 el.classList.add('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400', 'rounded-2xl');
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Remove highlight after 3 seconds
                 setTimeout(() => {
                     el.classList.remove('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
                 }, 3000);
