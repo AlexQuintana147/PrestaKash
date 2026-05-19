@@ -121,17 +121,37 @@
             <div>
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest">Tu perfil de préstamos</p>
+                @php
+                    $pendingChange = \App\Models\ProfileChangeRequest::where('user_id', Auth::id())->where('status', 'pending')->first();
+                    $rejectedChange = \App\Models\ProfileChangeRequest::where('user_id', Auth::id())->where('status', 'rejected')->latest()->first();
+                @endphp
+                @if($pendingChange)
+                    <span class="text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed select-none">Editar →</span>
+                @else
                     <a href="{{ route('client.loans.profile.edit') }}"
                         class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         Editar →
                     </a>
+                @endif
                 </div>
 
-                @php $pendingChange = \App\Models\ProfileChangeRequest::where('user_id', Auth::id())->where('status', 'pending')->first(); @endphp
                 @if($pendingChange)
                     <div class="mb-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 flex items-center gap-2">
                         <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <p class="text-xs text-amber-700 dark:text-amber-400">Tienes cambios de perfil pendientes de aprobación (solicitados el {{ $pendingChange->created_at->format('d/m/Y') }}).</p>
+                    </div>
+                @endif
+
+                @if($rejectedChange)
+                    <div class="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 flex items-start gap-2">
+                        <svg class="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div>
+                            <p class="text-xs text-red-700 dark:text-red-400 font-medium">Tu solicitud de cambio fue rechazada.</p>
+                            @if($rejectedChange->rejection_reason)
+                                <p class="text-xs text-red-600 dark:text-red-500 mt-1">Motivo: {{ $rejectedChange->rejection_reason }}</p>
+                            @endif
+                            <p class="text-xs text-red-500 dark:text-red-400 mt-1">Puedes volver a editar tu perfil.</p>
+                        </div>
                     </div>
                 @endif
 

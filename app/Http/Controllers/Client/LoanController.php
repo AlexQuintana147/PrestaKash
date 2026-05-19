@@ -14,6 +14,14 @@ class LoanController extends Controller
 {
     public function editProfile()
     {
+        $pendingChange = ProfileChangeRequest::where('user_id', Auth::id())
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($pendingChange) {
+            return redirect()->route('client.loans')->with('error', 'Ya tienes una solicitud de cambio pendiente. Debes esperar a que sea aprobada o rechazada.');
+        }
+
         $profile = Auth::user()->clientProfile;
         return view('client.loans.profile-form', ['editing' => true, 'profile' => $profile]);
     }
@@ -151,6 +159,14 @@ class LoanController extends Controller
 
     public function updateProfile(Request $request)
     {
+        $existingPending = ProfileChangeRequest::where('user_id', Auth::id())
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($existingPending) {
+            return redirect()->route('client.loans')->with('error', 'Ya tienes una solicitud de cambio pendiente. Debes esperar a que sea aprobada o rechazada.');
+        }
+
         $request->validate([
             'institution' => ['required_unless:academic_status,Ninguno de los anteriores', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],
             'career' => ['required_if:main_academic_status,Educación superior', 'nullable', 'string', 'max:200', 'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]+$/u'],

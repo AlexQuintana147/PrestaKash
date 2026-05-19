@@ -481,8 +481,8 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <button type="submit"
-                    class="text-sm font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400 transition-colors pb-0.5 bg-transparent">
+                <button type="submit" id="profileSubmitBtn"
+                    class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-900 dark:disabled:hover:text-white disabled:hover:border-gray-900 dark:disabled:hover:border-white text-gray-900 dark:text-white border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400">
                     Guardar y continuar →
                 </button>
             </div>
@@ -708,5 +708,56 @@
                 formatCurrency(incomeInput);
             }
         });
+
+        @if(isset($editing))
+        (function () {
+            var trackedFields = [
+                'academic_status', 'institution', 'career',
+                'has_children', 'children_count',
+                'is_employed', 'employment_type', 'workplace', 'job_title',
+                'independent_type', 'monthly_income',
+                'instagram', 'marital_status',
+                'spouse_first_name', 'spouse_last_name', 'spouse_dni'
+            ];
+
+            function getSnapshot() {
+                var data = {};
+                trackedFields.forEach(function (name) {
+                    var el = document.querySelector('[name="' + name + '"]');
+                    if (!el) return;
+                    if (el.type === 'radio') {
+                        var checked = document.querySelector('[name="' + name + '"]:checked');
+                        data[name] = checked ? checked.value : '';
+                    } else if (el.type === 'checkbox') {
+                        data[name] = el.checked ? '1' : '0';
+                    } else {
+                        data[name] = el.value;
+                    }
+                });
+                return JSON.stringify(data);
+            }
+
+            function init() {
+                var btn = document.getElementById('profileSubmitBtn');
+                if (!btn) return;
+                var initial = getSnapshot();
+
+                function check() {
+                    btn.disabled = (getSnapshot() === initial);
+                }
+
+                check();
+
+                document.addEventListener('input', check);
+                document.addEventListener('change', check);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 100); });
+            } else {
+                setTimeout(init, 100);
+            }
+        })();
+        @endif
     </script>
 @endsection
