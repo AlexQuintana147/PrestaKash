@@ -44,6 +44,57 @@
     .pk-status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
     .pk-status-confirmed { background: #00D26A; }
 
+    @keyframes pk-gold-shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes pk-gold-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+    @keyframes pk-gold-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+    }
+    .pk-loan-gold {
+        background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FFFBEB 100%);
+        border: 1.5px solid #F5A623;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .dark .pk-loan-gold {
+        background: linear-gradient(135deg, #1C1607 0%, #2D2209 50%, #1C1607 100%);
+        border-color: #D4910E;
+    }
+    .pk-loan-gold:hover {
+        border-color: #D4910E;
+        box-shadow: 0 0 20px rgba(245, 166, 35, 0.15), 0 0 40px rgba(245, 166, 35, 0.05);
+        transform: translateY(-2px);
+    }
+    .dark .pk-loan-gold:hover {
+        border-color: #F5A623;
+        box-shadow: 0 0 20px rgba(245, 166, 35, 0.1), 0 0 40px rgba(245, 166, 35, 0.03);
+    }
+    .pk-loan-gold::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.15) 50%, transparent 100%);
+        animation: pk-gold-shimmer 4s ease-in-out infinite;
+        pointer-events: none;
+    }
+    .pk-loan-gold-icon {
+        animation: pk-gold-float 3s ease-in-out infinite;
+    }
+    .pk-loan-gold-dot {
+        animation: pk-gold-pulse 2s ease-in-out infinite;
+    }
+
     @media (max-width: 767px) {
         .pk-main-pb { padding-bottom: 0; }
     }
@@ -187,22 +238,27 @@
             <div class="grid grid-cols-2 gap-3">
 
                 {{-- Card 1: Solicitar Préstamo (tall) --}}
-                <a href="{{ $hasProfile ? route('client.loans.create') : route('client.loans.profile.edit') }}" class="pk-card-cta row-span-2 p-4 flex flex-col justify-between min-h-[180px] md:min-h-[220px] relative overflow-hidden">
-                    <div>
+                <a href="{{ $hasProfile ? route('client.loans.create') : route('client.loans.profile.edit') }}" class="pk-loan-gold row-span-2 p-4 flex flex-col justify-between min-h-[180px] md:min-h-[220px] relative">
+                    <div class="relative z-10">
                         <div class="flex items-center gap-2 mb-3">
-                            <svg class="w-5 h-5 text-[#006BFF] dark:text-[#4A90E2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Nuevo</span>
+                            <div class="pk-loan-gold-icon w-8 h-8 rounded-xl bg-gradient-to-br from-[#F5A623] to-[#D4910E] flex items-center justify-center shadow-md shadow-[#F5A623]/20">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <span class="text-xs font-semibold text-[#D4910E] dark:text-[#F5A623] uppercase tracking-wider">Destacado</span>
                         </div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Solicitar<br>Préstamo</p>
+                        <p class="text-base font-bold text-[#92400E] dark:text-[#FBBF24]">Solicitar<br>Préstamo</p>
                     </div>
                     <div class="relative z-10 pb-4">
-                        <p class="text-lg font-bold text-[#006BFF] dark:text-[#4A90E2]">24-48h</p>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Desembolso</p>
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <span class="pk-loan-gold-dot w-1.5 h-1.5 rounded-full bg-[#F5A623]"></span>
+                            <p class="text-lg font-bold text-[#D4910E] dark:text-[#F5A623]">24-48h</p>
+                        </div>
+                        <p class="text-[10px] text-[#B45309]/70 dark:text-[#FBBF24]/50">Desembolso rápido</p>
                     </div>
                     <svg class="absolute bottom-0 left-0 right-0 w-full h-10" viewBox="0 0 100 30" preserveAspectRatio="none">
-                        <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#006BFF;stop-opacity:0.2"/><stop offset="100%" style="stop-color:#006BFF;stop-opacity:0"/></linearGradient></defs>
-                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10 L100,30 L0,30Z" fill="url(#grad1)"/>
-                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#006BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs><linearGradient id="goldWave" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#F5A623;stop-opacity:0.25"/><stop offset="100%" style="stop-color:#F5A623;stop-opacity:0"/></linearGradient></defs>
+                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10 L100,30 L0,30Z" fill="url(#goldWave)"/>
+                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
                     </svg>
                 </a>
 
