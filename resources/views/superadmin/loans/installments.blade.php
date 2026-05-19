@@ -447,4 +447,37 @@
             }
         });
     </script>
+
+    <style>
+        .overdue-installment-row::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.02));
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .dark .overdue-installment-row::before {
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.03));
+        }
+
+        .overdue-installment-row::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #ef4444;
+            border-radius: 0 2px 2px 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .overdue-installment-row > * {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
 @endsection

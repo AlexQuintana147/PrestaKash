@@ -2,6 +2,8 @@
     $loan = $inst->loan;
     $user = $loan->user;
     $isOverdue = $inst->due_date->isPast() && $inst->status !== 'approved';
+    $isDueToday = $inst->due_date->isToday() && $inst->status !== 'approved';
+    $isDueOrOverdue = ($isOverdue || $isDueToday);
     $lateFee = $inst->late_fee;
     $currency = $loan->currency === 'USD' ? '$' : 'S/';
     $selfie = $user->documents?->selfie;
@@ -36,7 +38,7 @@
      data-interest-payment-id="{{ $inst->interest_payment->id }}"
      data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
      @endif
-     class="py-6 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20">
+     class="py-6 transition-colors relative @if($isDueOrOverdue) overdue-installment-row @else hover:bg-gray-50/50 dark:hover:bg-gray-900/20 @endif">
     <div class="flex flex-col md:flex-row md:items-center gap-6">
 
         <!-- Usuario & Préstamo -->

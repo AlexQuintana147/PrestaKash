@@ -1,6 +1,8 @@
 @php
     $loan = $inst->loan;
     $isOverdue = $inst->due_date->isPast() && $inst->status !== 'approved';
+    $isDueToday = $inst->due_date->isToday() && $inst->status !== 'approved';
+    $isDueOrOverdue = ($isOverdue || $isDueToday);
     $lateFee = $inst->late_fee;
 @endphp
 <div data-installment-id="{{ $inst->id }}"
@@ -9,7 +11,7 @@
      data-interest-payment-id="{{ $inst->interest_payment->id }}"
      data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
      @endif
-     class="py-3 flex items-center justify-between gap-4">
+     class="py-3 flex items-center justify-between gap-4 relative @if($isDueOrOverdue) overdue-installment-row @endif">
     <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
             <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-tight">
