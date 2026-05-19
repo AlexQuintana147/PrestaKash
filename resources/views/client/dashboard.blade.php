@@ -95,6 +95,29 @@
         animation: pk-gold-pulse 2s ease-in-out infinite;
     }
 
+    .pk-input {
+        appearance: none;
+        -webkit-appearance: none;
+    }
+    .pk-input:focus {
+        border-color: #006BFF;
+    }
+    .dark .pk-input:focus {
+        border-color: #4A90E2;
+    }
+    .pk-input::placeholder {
+        color: transparent;
+    }
+    .pk-input:focus::placeholder {
+        color: #d1d5db;
+    }
+    .dark .pk-input::placeholder {
+        color: transparent;
+    }
+    .dark .pk-input:focus::placeholder {
+        color: #374151;
+    }
+
     @media (max-width: 767px) {
         .pk-main-pb { padding-bottom: 0; }
     }
@@ -567,34 +590,41 @@
 <div id="bankModal" class="pk-modal-overlay" role="dialog" aria-modal="true">
     <div onclick="closeBankModal()" class="absolute inset-0 bg-black/60"></div>
     <div class="pk-modal-content">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
-            <div>
-                <h3 class="text-base font-bold text-gray-900 dark:text-white">Cuentas Bancarias</h3>
-                <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Donde recibirás tus préstamos</p>
+        <div class="px-6 pt-6 pb-4 flex-shrink-0">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#D4910E]/10 dark:bg-[#F5A623]/10 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-[#D4910E] dark:text-[#F5A623]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-gray-900 dark:text-white">Cuentas Bancarias</h3>
+                        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Donde recibirás tus desembolsos</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeBankModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
             </div>
-            <button type="button" onclick="closeBankModal()" class="p-1 text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
         </div>
-        <div class="flex-1 overflow-y-auto px-5 py-4">
+        <div class="flex-1 overflow-y-auto px-6 pb-4">
             <div id="bankAccountsList" class="space-y-2">
                 <div class="animate-pulse space-y-2">
                     <div class="h-16 bg-gray-50 dark:bg-gray-900 rounded-xl"></div>
                     <div class="h-16 bg-gray-50 dark:bg-gray-900 rounded-xl"></div>
                 </div>
             </div>
-            <div id="bankAccountForm" class="hidden pt-4 mt-4 border-t border-gray-200 dark:border-gray-800">
-                <h4 id="formTitle" class="text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-widest mb-4">Nueva Cuenta</h4>
-                <form id="actualForm" onsubmit="saveBankAccount(event)" class="space-y-3">
+            <div id="bankAccountForm" class="hidden pt-5 mt-5 border-t border-gray-100 dark:border-gray-800/50">
+                <h4 id="formTitle" class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-5">Nueva Cuenta</h4>
+                <form id="actualForm" onsubmit="saveBankAccount(event)" class="space-y-4">
                     <input type="hidden" id="editingId" value="">
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Alias</label>
-                        <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-sm px-4 py-3 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Alias</label>
+                        <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Banco</label>
-                            <select id="f_bank_name" required class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-sm px-4 py-3 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Banco</label>
+                            <select id="f_bank_name" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
                                 <option value="">Seleccionar</option>
                                 @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa'] as $bank)
                                     <option value="{{ $bank }}">{{ $bank }}</option>
@@ -602,37 +632,37 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Tipo</label>
-                            <select id="f_account_type" required class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-sm px-4 py-3 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Tipo</label>
+                            <select id="f_account_type" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
                                 <option value="ahorros">Ahorros</option>
                                 <option value="corriente">Corriente</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Moneda</label>
-                            <select id="f_currency" required class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-sm px-4 py-3 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Moneda</label>
+                            <select id="f_currency" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
                                 <option value="PEN">Soles (S/)</option>
                                 <option value="USD">Dólares ($)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nro. Cuenta</label>
-                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-sm px-4 py-3 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Nro. Cuenta</label>
+                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">CCI</label>
-                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-sm px-4 py-3 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">CCI</label>
+                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
                     </div>
-                    <div class="flex gap-2 pt-2">
-                        <button type="submit" class="flex-1 py-3 rounded-xl bg-[#006BFF] dark:bg-[#4A90E2] text-white text-sm font-semibold hover:bg-[#0052CC] dark:hover:bg-[#3A7BC8] transition-colors">Guardar</button>
-                        <button type="button" onclick="hideForm()" class="px-5 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium hover:border-[#006BFF] dark:hover:border-[#4A90E2] transition-colors">Cancelar</button>
+                    <div class="flex gap-3 pt-3">
+                        <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">Guardar</button>
+                        <button type="button" onclick="hideForm()" class="px-5 py-2.5 rounded-xl text-gray-400 dark:text-gray-500 text-sm font-medium hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
                     </div>
                 </form>
             </div>
         </div>
-        <div id="addBtnContainer" class="px-5 py-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
-            <button type="button" onclick="showForm()" class="w-full py-3 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 text-sm font-medium hover:border-[#006BFF] dark:hover:border-[#4A90E2] hover:text-[#006BFF] dark:hover:text-[#4A90E2] transition-colors flex items-center justify-center gap-2">
+        <div id="addBtnContainer" class="px-6 py-4 border-t border-gray-100 dark:border-gray-800/50 flex-shrink-0">
+            <button type="button" onclick="showForm()" class="w-full py-2.5 rounded-xl text-sm font-medium text-[#006BFF] dark:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors flex items-center justify-center gap-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Agregar cuenta
             </button>
@@ -671,24 +701,23 @@
             const response = await fetch('{{ route("client.bank-accounts.index") }}');
             accounts = await response.json();
             if (accounts.length === 0) {
-                list.innerHTML = '<div class="py-8 text-center"><p class="text-sm text-gray-400 dark:text-gray-500">No tienes cuentas registradas</p></div>';
+                list.innerHTML = '<div class="py-10 text-center"><svg class="w-10 h-10 mx-auto text-gray-200 dark:text-gray-800 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg><p class="text-sm text-gray-300 dark:text-gray-700">Sin cuentas registradas</p></div>';
                 return;
             }
             list.innerHTML = accounts.map(acc => `
-                <div class="group pk-card px-4 py-3 flex items-center justify-between">
-                    <div class="min-w-0">
+                <div class="group flex items-center justify-between py-3 border-b border-gray-50 dark:border-gray-800/50 last:border-0">
+                    <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm font-semibold text-gray-900 dark:text-white">${acc.alias || acc.bank_name}</span>
-                            <span class="text-[10px] font-medium text-[#006BFF] dark:text-[#4A90E2] bg-[#006BFF]/10 dark:bg-[#4A90E2]/20 px-1.5 py-0.5 rounded">${acc.bank_name}</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">${acc.alias || acc.bank_name}</span>
+                            <span class="text-[10px] font-medium text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-800/50 px-1.5 py-0.5 rounded">${acc.bank_name}</span>
                         </div>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 tabular-nums mt-0.5">${acc.account_type} · ${acc.currency}</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 tabular-nums">${acc.account_number}${acc.cci ? ' · CCI: ' + acc.cci : ''}</p>
+                        <p class="text-[11px] text-gray-400 dark:text-gray-600 tabular-nums mt-0.5">${acc.account_type === 'ahorros' ? 'Ahorros' : 'Corriente'} · ${acc.currency === 'PEN' ? 'S/' : '$'} · ${acc.account_number}</p>
                     </div>
-                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2">
-                        <button onclick="editAccount(${acc.id})" class="p-1.5 text-gray-400 dark:text-gray-500 hover:text-[#006BFF] dark:hover:text-[#4A90E2] transition-colors">
+                    <div class="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-3">
+                        <button onclick="editAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                         </button>
-                        <button onclick="deleteAccount(${acc.id})" class="p-1.5 text-gray-400 dark:text-gray-500 hover:text-[#E94560] transition-colors">
+                        <button onclick="deleteAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#E94560] hover:bg-[#E94560]/5 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                     </div>
