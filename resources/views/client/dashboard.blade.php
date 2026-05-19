@@ -713,7 +713,7 @@
                         </div>
                         <p class="text-[11px] text-gray-400 dark:text-gray-600 tabular-nums mt-0.5">${acc.account_type === 'ahorros' ? 'Ahorros' : 'Corriente'} · ${acc.currency === 'PEN' ? 'S/' : '$'} · ${acc.account_number}</p>
                     </div>
-                    <div class="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-3">
+                    <div class="flex gap-0.5 flex-shrink-0 ml-3">
                         <button onclick="editAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                         </button>
