@@ -1079,12 +1079,12 @@
                 if (m.reference_type === 'loan') {
                     redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
                 } else if (m.reference_type === 'loan_installment') {
-                    const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
+                    const isInterestOnly = m.description && (m.description.includes('SOLO INTERÉS') || m.description.includes('MORA + INTERÉS'));
                     if (isInterestOnly) {
                         const ipId = m.interest_payment_id || '';
                         redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}&highlight_interest=true&interest_payment_id=${ipId}`;
                     } else {
-                        redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
+                        redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}`;
                     }
                 } else if (m.reference_type === 'investment') {
                     redirectUrl = `/gestion-interna/inversiones/${m.reference_id}?highlight_investor=${m.investor_user_id}`;
@@ -1839,12 +1839,12 @@
                             redirectUrl =
                                 `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
                         } else if (m.reference_type === 'loan_installment') {
-                            const isInterestOnly = m.description && m.description.includes('SOLO INTERÉS');
+                            const isInterestOnly = m.description && (m.description.includes('SOLO INTERÉS') || m.description.includes('MORA + INTERÉS'));
                             if (isInterestOnly) {
                                 const ipId = m.interest_payment_id || '';
                                 redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}&highlight_interest=true&interest_payment_id=${ipId}`;
                             } else {
-                                redirectUrl = `{{ route('superadmin.installments.index') }}?filter=all&installment_id=${m.reference_id}`;
+                                redirectUrl = `{{ route('superadmin.installments.index') }}?filter=paid&installment_id=${m.reference_id}`;
                             }
                         } else if (m.reference_type === 'investment') {
                             redirectUrl = `/gestion-interna/inversiones/${m.reference_id}?highlight_investor=${m.investor_user_id}`;

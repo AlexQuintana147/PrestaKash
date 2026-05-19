@@ -31,7 +31,7 @@
         'reason' => $loan->reason,
     ];
 @endphp
-<div id="installment-{{ $inst->id }}" 
+<div @if(isset($inst->is_interest_payment) && $inst->is_interest_payment) id="installment-{{ $inst->id }}-interest-{{ $inst->interest_payment_number }}" @else id="installment-{{ $inst->id }}" @endif
      data-installment-id="{{ $inst->id }}"
      data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
      @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
