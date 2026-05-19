@@ -83,7 +83,7 @@
     }
 </style>
 
-<div class="min-h-screen bg-gray-50 dark:bg-gray-950 pk-main-pb">
+<div class="min-h-screen bg-white dark:bg-gray-950 pk-main-pb"> 
 
     @if($rejectedChange)
     <div class="px-4 md:px-8 pt-4" id="rejectedNotice">
@@ -126,31 +126,20 @@
     </div>
     @endif
 
-    {{-- Header --}}
-    <div class="px-4 md:px-8 pt-6 pb-2">
+    {{-- Header + Title --}}
+    <div class="px-4 md:px-8 pt-6 pb-5">
         <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">Panel de<br>Control</h1>
             <div class="flex items-center gap-3">
                 <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-800">
                 <div>
                     <p class="text-xs text-gray-600 dark:text-gray-400">{{ $greeting }}</p>
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $firstName }}</p>
                 </div>
+                <a href="{{ route('client.loans.profile.edit') }}" class="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:border-[#006BFF] dark:hover:border-[#4A90E2] transition-colors" title="Editar perfil">
+                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </a>
             </div>
-            <div class="flex items-center gap-2">
-                <button class="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center relative">
-                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    @if($pendingChange || $rejectedChange || $hasPendingLoans)
-                        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#E94560] border-2 border-white dark:border-gray-950"></span>
-                    @endif
-                </button>
-            </div>
-        </div>
-    </div>
-
-    {{-- Title --}}
-    <div class="px-4 md:px-8 pb-5">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">Panel de<br>Control</h1>
         </div>
     </div>
 
@@ -254,21 +243,6 @@
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Gana comisiones</p>
                     </div>
                 </a>
-
-                {{-- Card 7: Perfil (wide) --}}
-                <a href="{{ route('client.loans.profile.edit') }}" class="pk-card col-span-2 p-4 flex items-center gap-4">
-                    <img src="{{ $profilePhoto }}" alt="" class="w-12 h-12 rounded-xl object-cover">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $firstName }}</p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">{{ $user->dni }} · {{ $user->phone }}</p>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <span class="pk-status-dot pk-status-confirmed"></span>
-                        <span class="text-xs text-[#00A854] dark:text-[#00D26A]">Verificado</span>
-                    </div>
-                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </a>
-
             </div>
         </div>
     </div>
