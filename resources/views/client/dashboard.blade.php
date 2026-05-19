@@ -130,21 +130,31 @@
 
     {{-- Header + Title --}}
     <div class="px-4 md:px-8 pt-6 pb-5">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">Panel de<br>Control</h1>
-            <div class="flex items-center gap-3">
-                <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-800">
-                <div>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">{{ $greeting }}</p>
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $firstName }}</p>
+        <div class="max-w-4xl mx-auto relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF]/5 via-transparent to-[#8247f5]/5 dark:from-[#006BFF]/10 dark:via-transparent dark:to-[#8247f5]/10 p-4 md:p-5">
+            <div class="flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="relative flex-shrink-0">
+                        <div class="w-12 h-12 md:w-14 md:h-14 rounded-full p-[2.5px] bg-gradient-to-br from-[#006BFF] to-[#8247f5]">
+                            <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover border-2 border-white dark:border-gray-950">
+                        </div>
+                        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#00D26A] rounded-full border-2 border-white dark:border-gray-950"></span>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $greeting }}</p>
+                        <p class="text-base md:text-lg font-bold text-gray-900 dark:text-white truncate mt-0.5">{{ $firstName }}</p>
+                    </div>
                 </div>
-                <button type="button" onclick="openProfileModal()" class="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:border-[#006BFF] dark:hover:border-[#4A90E2] transition-colors" title="Ver perfil">
-                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                </button>
-                <a href="{{ route('client.loans.profile.edit') }}" class="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:border-[#006BFF] dark:hover:border-[#4A90E2] transition-colors" title="Editar perfil">
-                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                </a>
+                <div class="flex items-center gap-1">
+                    <button type="button" onclick="openProfileModal()" title="Ver perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/10 dark:hover:bg-[#4A90E2]/10 transition-colors duration-200">
+                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </button>
+                    <a href="{{ route('client.loans.profile.edit') }}" title="Editar perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-[#8247f5] dark:hover:text-[#9B59B6] hover:bg-[#8247f5]/10 dark:hover:bg-[#9B59B6]/10 transition-colors duration-200">
+                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    </a>
+                </div>
             </div>
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#006BFF]/8 to-transparent dark:from-[#006BFF]/5 dark:to-transparent rounded-bl-full pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-[#8247f5]/6 to-transparent dark:from-[#8247f5]/4 dark:to-transparent rounded-tr-full pointer-events-none"></div>
         </div>
     </div>
 
@@ -154,7 +164,7 @@
             <div class="grid grid-cols-2 gap-3">
 
                 {{-- Card 1: Solicitar Préstamo (tall) --}}
-                <a href="{{ $hasProfile ? route('client.loans.create') : route('client.loans.profile.edit') }}" class="pk-card-cta row-span-2 p-4 flex flex-col justify-between min-h-[180px] md:min-h-[220px]">
+                <a href="{{ $hasProfile ? route('client.loans.create') : route('client.loans.profile.edit') }}" class="pk-card-cta row-span-2 p-4 flex flex-col justify-between min-h-[180px] md:min-h-[220px] relative overflow-hidden">
                     <div>
                         <div class="flex items-center gap-2 mb-3">
                             <svg class="w-5 h-5 text-[#006BFF] dark:text-[#4A90E2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -162,15 +172,15 @@
                         </div>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Solicitar<br>Préstamo</p>
                     </div>
-                    <div>
+                    <div class="relative z-10 pb-4">
                         <p class="text-lg font-bold text-[#006BFF] dark:text-[#4A90E2]">24-48h</p>
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Desembolso</p>
-                        <svg class="w-full h-10 mt-2" viewBox="0 0 100 30" preserveAspectRatio="none">
-                            <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#006BFF;stop-opacity:0.2"/><stop offset="100%" style="stop-color:#006BFF;stop-opacity:0"/></linearGradient></defs>
-                            <path d="M0,25 Q10,20 20,22 T40,15 T60,18 T80,8 T100,5 L100,30 L0,30Z" fill="url(#grad1)"/>
-                            <path d="M0,25 Q10,20 20,22 T40,15 T60,18 T80,8 T100,5" fill="none" stroke="#006BFF" stroke-width="1.5"/>
-                        </svg>
                     </div>
+                    <svg class="absolute bottom-0 left-0 right-0 w-full h-10" viewBox="0 0 100 30" preserveAspectRatio="none">
+                        <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#006BFF;stop-opacity:0.2"/><stop offset="100%" style="stop-color:#006BFF;stop-opacity:0"/></linearGradient></defs>
+                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10 L100,30 L0,30Z" fill="url(#grad1)"/>
+                        <path d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#006BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </a>
 
                 {{-- Card 2: Invertir --}}
