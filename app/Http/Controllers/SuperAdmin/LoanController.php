@@ -413,6 +413,14 @@ class LoanController extends Controller
                         $expandedInstallments->push($virtualInst);
                     }
                 }
+
+                // Also push the original installment row (full payment)
+                // Skip pending/rejected in "paid" filter to avoid confusion
+                if ($inst->status === 'approved' || $inst->status === 'processing' || $filter !== 'paid') {
+                    $originalInst = clone $inst;
+                    $originalInst->is_interest_payment = false;
+                    $expandedInstallments->push($originalInst);
+                }
             } else {
                 $inst->is_interest_payment = false;
                 $expandedInstallments->push($inst);
