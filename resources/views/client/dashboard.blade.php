@@ -61,6 +61,8 @@
         .pk-modal-overlay.active { align-items: center; padding: 1rem; }
     }
     .pk-modal-content {
+        position: relative;
+        z-index: 10;
         background: white;
         border: 1px solid #e5e7eb;
         border-radius: 24px 24px 0 0;
@@ -136,6 +138,9 @@
                     <p class="text-xs text-gray-600 dark:text-gray-400">{{ $greeting }}</p>
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $firstName }}</p>
                 </div>
+                <button type="button" onclick="openProfileModal()" class="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:border-[#006BFF] dark:hover:border-[#4A90E2] transition-colors" title="Ver perfil">
+                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </button>
                 <a href="{{ route('client.loans.profile.edit') }}" class="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:border-[#006BFF] dark:hover:border-[#4A90E2] transition-colors" title="Editar perfil">
                     <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                 </a>
@@ -176,7 +181,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $isInvestor ? 'Mis Inversiones' : 'Invertir' }}</p>
-                        <p class="text-lg font-bold text-[#8247f5] dark:text-[#9B59B6] mt-0.5">2%</p>
+                        <p class="text-lg font-bold text-[#8247f5] dark:text-[#9B59B6] mt-0.5">Hasta un 2%</p>
                         <p class="text-[10px] text-gray-400 dark:text-gray-500">mensual</p>
                     </div>
                 </a>
@@ -280,9 +285,200 @@
 
 </div>
 
+{{-- Profile Modal --}}
+<div id="profileModal" class="pk-modal-overlay" role="dialog" aria-modal="true">
+    <div onclick="closeProfileModal()" class="absolute inset-0 bg-black/60"></div>
+    <div class="pk-modal-content">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-800">
+                <div>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : trim(($user->first_name ?? '').' '.($user->last_name ?? '')) }}</h3>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ $user->email }}</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeProfileModal()" class="p-1 text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+            @php
+                $profile = $user->clientProfile;
+            @endphp
+
+            {{-- Datos Personales --}}
+            <div>
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Datos Personales</p>
+                <div class="space-y-2">
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Tipo de persona</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->person_type === 'juridica' ? 'Jurídica' : 'Natural' }}</span>
+                    </div>
+                    @if($user->person_type === 'juridica')
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">RUC</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->ruc ?? '—' }}</span>
+                        </div>
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Razón Social</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->business_name ?? '—' }}</span>
+                        </div>
+                    @else
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Nombre</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->first_name ?? '—' }}</span>
+                        </div>
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Apellido</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->last_name ?? '—' }}</span>
+                        </div>
+                    @endif
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">DNI</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->dni ?? '—' }}</span>
+                    </div>
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Teléfono</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->phone ?? '—' }}</span>
+                    </div>
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Dirección</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white text-right max-w-[60%]">{{ $user->address ?? '—' }}</span>
+                    </div>
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Ubicación</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white text-right max-w-[60%]">{{ trim(collect([$user->district, $user->province, $user->department])->filter()->join(', ')) ?: '—' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            @if($profile)
+            {{-- Información Adicional --}}
+            <div>
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Información Adicional</p>
+                <div class="space-y-2">
+                    @if($profile->institution)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Institución</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->institution }}</span>
+                    </div>
+                    @endif
+                    @if($profile->career)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Carrera</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->career }}</span>
+                    </div>
+                    @endif
+                    @if($profile->academic_status)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Estado académico</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ \App\Models\ProfileChangeRequest::formatValue('academic_status', $profile->academic_status) }}</span>
+                    </div>
+                    @endif
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Estado civil</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->marital_status ? \App\Models\ProfileChangeRequest::formatValue('marital_status', $profile->marital_status) : '—' }}</span>
+                    </div>
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Hijos</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->has_children ? 'Sí (' . ($profile->children_count ?? 0) . ')' : 'No' }}</span>
+                    </div>
+                    @if($profile->instagram)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Instagram</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">@{{ $profile->instagram }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Información Laboral --}}
+            <div>
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Información Laboral</p>
+                <div class="space-y-2">
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Empleado</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->is_employed ? 'Sí' : 'No' }}</span>
+                    </div>
+                    @if($profile->is_employed)
+                        @if($profile->employment_type)
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Tipo de empleo</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ \App\Models\ProfileChangeRequest::formatValue('employment_type', $profile->employment_type) }}</span>
+                        </div>
+                        @endif
+                        @if($profile->workplace)
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Lugar de trabajo</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white text-right max-w-[60%]">{{ $profile->workplace }}</span>
+                        </div>
+                        @endif
+                        @if($profile->job_title)
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Cargo</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->job_title }}</span>
+                        </div>
+                        @endif
+                    @else
+                        @if($profile->independent_type)
+                        <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Tipo independiente</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ \App\Models\ProfileChangeRequest::formatValue('independent_type', $profile->independent_type) }}</span>
+                        </div>
+                        @endif
+                    @endif
+                    @if($profile->monthly_income)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Ingreso mensual</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ \App\Models\ProfileChangeRequest::formatValue('monthly_income', $profile->monthly_income) }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Cónyuge --}}
+            @if($profile->marital_status && in_array($profile->marital_status, ['casado_separado', 'casado_compartido']))
+            <div>
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Cónyuge</p>
+                <div class="space-y-2">
+                    @if($profile->spouse_first_name)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Nombre</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->spouse_first_name }} {{ $profile->spouse_last_name }}</span>
+                    </div>
+                    @endif
+                    @if($profile->spouse_dni)
+                    <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">DNI</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->spouse_dni }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
+            @endif
+
+            {{-- Código de Referido --}}
+            <div>
+                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Referido</p>
+                <div class="pk-card px-4 py-2.5 flex items-center justify-between">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Mi código</span>
+                    <span class="text-sm font-bold text-[#006BFF] dark:text-[#4A90E2]">{{ $user->referral_code ?? '—' }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="px-5 py-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
+            <a href="{{ route('client.loans.profile.edit') }}" class="w-full py-3 rounded-xl bg-[#006BFF] dark:bg-[#4A90E2] text-white text-sm font-semibold hover:bg-[#0052CC] dark:hover:bg-[#3A7BC8] transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                Editar perfil
+            </a>
+        </div>
+    </div>
+</div>
+
 {{-- Bank Modal --}}
 <div id="bankModal" class="pk-modal-overlay" role="dialog" aria-modal="true">
-    <div onclick="closeBankModal()" class="fixed inset-0 bg-black/60"></div>
+    <div onclick="closeBankModal()" class="absolute inset-0 bg-black/60"></div>
     <div class="pk-modal-content">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
             <div>
@@ -359,6 +555,16 @@
 
 <script>
     let accounts = [];
+
+    function openProfileModal() {
+        document.getElementById('profileModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeProfileModal() {
+        document.getElementById('profileModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
 
     function openBankModal() {
         document.getElementById('bankModal').classList.add('active');
