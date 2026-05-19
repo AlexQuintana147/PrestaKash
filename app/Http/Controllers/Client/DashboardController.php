@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Loan;
+use App\Models\ProfileChangeRequest;
 use App\Models\UbigeoDepartment;
 use App\Models\UbigeoDistrict;
 use App\Models\UbigeoProvince;
@@ -12,7 +14,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user()->load('documents');
+        $user = Auth::user()->load('documents', 'clientProfile', 'loans');
 
         $department = $user->department
             ? UbigeoDepartment::where('id', str_pad($user->department, 2, '0', STR_PAD_LEFT))->value('name')
@@ -26,7 +28,22 @@ class DashboardController extends Controller
             ? UbigeoDistrict::where('id', str_pad($user->district, 6, '0', STR_PAD_LEFT))->value('name')
             : null;
 
-        return view('client.dashboard', compact('user', 'department', 'province', 'district'));
+        $activeLoans = $user->loans->whereIn('status', ['approved', 'disbursed', 'active']);
+        $pendingLoans = $user->loans->where('status', 'pending');
+        $totalDebt = $activeLoans->sum('total_amount');
+        $monthlyPayment = $activeLoans->sum('monthly_payment');
+        $hasProfile = $user->clientProfile !== null;
+        $pendingChange = ProfileChangeRequest::where('user_id', $user->id)->where('status', 'pending')->first();
+        $rejectedChange = ProfileChangeRequest::where('user_id', $user->id)->where('status', 'rejected')->first();
+        $isInvestor = $user->is_investor;
+        $hasInvestorApp = $user->investorApplication !== null;
+
+        return view('client.dashboard', compact(
+            'user', 'department', 'province', 'district',
+            'activeLoans', 'pendingLoans', 'totalDebt', 'monthlyPayment',
+            'hasProfile', 'pendingChange', 'rejectedChange',
+            'isInvestor', 'hasInvestorApp'
+        ));
     }
 
     public function invest()
