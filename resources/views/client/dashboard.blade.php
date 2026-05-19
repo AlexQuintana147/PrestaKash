@@ -241,9 +241,7 @@
                 <a href="{{ $hasProfile ? route('client.loans.create') : route('client.loans.profile.edit') }}" class="pk-loan-gold row-span-2 p-4 flex flex-col justify-between min-h-[180px] md:min-h-[220px] relative">
                     <div class="relative z-10">
                         <div class="flex items-center gap-2 mb-3">
-                            <div class="pk-loan-gold-icon w-8 h-8 rounded-xl bg-gradient-to-br from-[#F5A623] to-[#D4910E] flex items-center justify-center shadow-md shadow-[#F5A623]/20">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </div>
+                            <svg class="w-6 h-6 text-[#D4910E] dark:text-[#F5A623]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <span class="text-xs font-semibold text-[#D4910E] dark:text-[#F5A623] uppercase tracking-wider">Destacado</span>
                         </div>
                         <p class="text-base font-bold text-[#92400E] dark:text-[#FBBF24]">Solicitar<br>Préstamo</p>
