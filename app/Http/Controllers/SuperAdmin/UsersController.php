@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlockedUser;
+use App\Models\ProfileChangeRequest;
 use App\Models\User;
 use App\Models\UserDocument;
 use App\Models\UbigeoDepartment;
@@ -72,6 +73,8 @@ class UsersController extends Controller
                     $query->whereHas('documents', fn($q) => $q->where('status', 'approved'));
                 } elseif ($filter === 'rejected') {
                     $query->whereHas('documents', fn($q) => $q->where('status', 'rejected'));
+                } elseif ($filter === 'profile-changes') {
+                    $query->whereHas('profileChangeRequests', fn($q) => $q->where('status', 'pending'));
                 }
             }
 
@@ -85,6 +88,7 @@ class UsersController extends Controller
             'rejected' => UserDocument::where('status', 'rejected')->whereHas('user', fn($q) => $q->where('is_ghost', false))->count(),
             'ghosts' => User::where('is_ghost', true)->count(),
             'blocked' => BlockedUser::count(),
+            'profile-changes' => User::whereHas('profileChangeRequests', fn($q) => $q->where('status', 'pending'))->where('is_ghost', false)->count(),
         ];
 
         return view('superadmin.users.index', compact('users', 'filter', 'counts', 'blockedUsers'));
@@ -353,5 +357,44 @@ class UsersController extends Controller
         $user->save();
 
         return back()->with('success', 'Dato actualizado correctamente.');
+    }
+
+    public function approveProfileChange(ProfileChangeRequest $profileChangeRequest)
+    {
+        if (!$profileChangeRequest->isPending()) {
+            return back()->withErrors(['error' => 'Esta solicitud ya fue procesada.']);
+        }
+
+        $profile = $profileChangeRequest->user->clientProfile;
+
+        if ($profile) {
+            $profile->update($profileChangeRequest->new_data);
+        }
+
+        $profileChangeRequest->update([
+            'status' => 'approved',
+            'reviewed_at' => now(),
+        ]);
+
+        return back()->with('success', 'Cambios de perfil aprobados y aplicados correctamente.');
+    }
+
+    public function rejectProfileChange(Request $request, ProfileChangeRequest $profileChangeRequest)
+    {
+        if (!$profileChangeRequest->isPending()) {
+            return back()->withErrors(['error' => 'Esta solicitud ya fue procesada.']);
+        }
+
+        $request->validate([
+            'rejection_reason' => 'nullable|string|max:255',
+        ]);
+
+        $profileChangeRequest->update([
+            'status' => 'rejected',
+            'rejection_reason' => $request->rejection_reason,
+            'reviewed_at' => now(),
+        ]);
+
+        return back()->with('success', 'Solicitud de cambio rechazada.');
     }
 }

@@ -39,6 +39,7 @@
                         'pending'  => ['label' => 'Pendientes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'approved' => ['label' => 'Aprobados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'rejected' => ['label' => 'Rechazados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                        'profile-changes' => ['label' => 'Cambios', 'active' => 'bg-amber-500 text-white', 'inactive' => 'bg-transparent text-amber-500/50 border-amber-200 dark:border-amber-900/30'],
                         'ghosts'   => ['label' => 'Fantasmas',  'active' => 'bg-purple-600 text-white', 'inactive' => 'bg-transparent text-purple-500/50 border-purple-200 dark:border-purple-900/30'],
                         'blocked'  => ['label' => 'Bloqueados', 'active' => 'bg-red-600 text-white',    'inactive' => 'bg-transparent text-red-500/50 border-red-200 dark:border-red-900/30'],
                     ] as $key => $cfg)
@@ -50,6 +51,9 @@
                                 <svg class="w-3 h-3 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
+                            @endif
+                            @if($key === 'profile-changes' && ($counts['profile-changes'] ?? 0) > 0)
+                                <span class="w-3 h-3 text-[8px] font-bold bg-amber-500 text-white rounded-full flex items-center justify-center flex-shrink-0">{{ $counts['profile-changes'] }}</span>
                             @endif
                         </a>
                     @endforeach
@@ -65,17 +69,20 @@
                             'pending'  => 'Pendientes', 
                             'approved' => 'Aprobados', 
                             'rejected' => 'Rechazados',
+                            'profile-changes' => 'Cambios perfil',
                             'ghosts'   => 'Fantasmas',
                             'blocked'  => 'Bloqueados'
                         ] as $key => $label)
                             @php
                                 $isActive = $filter === $key;
                                 $colorClass = match($key) {
+                                    'profile-changes' => $isActive ? 'text-amber-600' : 'text-gray-600 dark:text-gray-400 hover:text-amber-500',
                                     'ghosts'  => $isActive ? 'text-purple-600' : 'text-gray-600 dark:text-gray-400 hover:text-purple-500',
                                     'blocked' => $isActive ? 'text-red-500'    : 'text-gray-600 dark:text-gray-400 hover:text-red-500',
                                     default   => $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400',
                                 };
                                 $lineClass = match($key) {
+                                    'profile-changes' => 'bg-amber-500',
                                     'ghosts'  => 'bg-purple-600',
                                     'blocked' => 'bg-red-500',
                                     default   => 'bg-gray-900 dark:bg-white',
@@ -237,6 +244,7 @@
             <!-- Lista normal -->
             @forelse($users as $user)
                 @php $status = $user->documents?->status @endphp
+                @php $hasPendingChanges = $user->profileChangeRequests()->where('status', 'pending')->exists() @endphp
                 <div class="flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
                     style="grid-template-columns: {{ $user->is_ghost ? '1fr 100px 110px 120px 130px 120px 100px 24px' : '1fr 100px 100px 110px 110px 80px 100px 90px 90px 24px' }};">
 
@@ -266,6 +274,9 @@
                                 @if($user->is_ghost)
                                     <span
                                         class="px-1.5 py-0.5 rounded text-[10px] bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium">Fantasma</span>
+                                @endif
+                                @if($hasPendingChanges)
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium">✎ Cambio</span>
                                 @endif
                             </div>
                             <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>

@@ -82,6 +82,8 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/usuarios/{user}/desaprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'unapprove'])->name('users.unapprove');
     Route::post('/usuarios/{user}/bloquear', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'block'])->name('users.block');
     Route::patch('/usuarios/{user}/field', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'updateField'])->name('users.update-field');
+    Route::post('/solicitudes-cambio/{profileChangeRequest}/aprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'approveProfileChange'])->name('profile-changes.approve');
+    Route::post('/solicitudes-cambio/{profileChangeRequest}/rechazar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'rejectProfileChange'])->name('profile-changes.reject');
 
     // Gestión de Inversores
     Route::get('/inversores', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'index'])->name('investors.index');

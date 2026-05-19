@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\ClientProfile;
 use App\Models\Loan;
+use App\Models\ProfileChangeRequest;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -180,11 +181,9 @@ class LoanController extends Controller
             'monthly_income.min' => 'El ingreso mensual debe ser al menos S/ 100.00.',
         ]);
 
-        // Convertir formato de moneda (ej: "2,000.00" -> 2000.00)
-        $incomeValue = str_replace(',', '', $request->monthly_income);
-        $incomeValue = floatval($incomeValue);
+        $profile = Auth::user()->clientProfile;
 
-        Auth::user()->clientProfile->update([
+        $newData = [
             'institution' => $request->institution,
             'career' => $request->career,
             'academic_status' => $request->academic_status,
@@ -201,9 +200,31 @@ class LoanController extends Controller
             'spouse_first_name' => $request->marital_status === 'casado_compartido' ? $request->spouse_first_name : null,
             'spouse_last_name' => $request->marital_status === 'casado_compartido' ? $request->spouse_last_name : null,
             'spouse_dni' => $request->marital_status === 'casado_compartido' ? $request->spouse_dni : null,
+        ];
+
+        $oldData = $profile->only(array_keys($newData));
+
+        $changed = collect($newData)->filter(function ($value, $key) use ($oldData) {
+            $old = $oldData[$key] ?? null;
+            return (string) $old !== (string) $value;
+        });
+
+        if ($changed->isEmpty()) {
+            return redirect()->route('client.loans')->with('info', 'No se detectaron cambios en tu perfil.');
+        }
+
+        ProfileChangeRequest::where('user_id', Auth::id())
+            ->where('status', 'pending')
+            ->update(['status' => 'cancelled', 'reviewed_at' => now()]);
+
+        ProfileChangeRequest::create([
+            'user_id' => Auth::id(),
+            'old_data' => $oldData,
+            'new_data' => $newData,
+            'status' => 'pending',
         ]);
 
-        return redirect()->route('client.loans')->with('success', 'Perfil actualizado correctamente.');
+        return redirect()->route('client.loans')->with('success', 'Tus cambios están pendientes de aprobación por el administrador.');
     }
 
     public function storeProfile(Request $request)

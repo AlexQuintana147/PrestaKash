@@ -147,6 +147,16 @@
             </div>
         @endif
 
+        @if(isset($editing))
+            @php $pendingChange = \App\Models\ProfileChangeRequest::where('user_id', Auth::id())->where('status', 'pending')->first(); @endphp
+            @if($pendingChange)
+                <div class="mb-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <p class="text-xs text-amber-700 dark:text-amber-400">Ya tienes cambios pendientes de aprobación (solicitados el {{ $pendingChange->created_at->format('d/m/Y') }}). Los nuevos cambios reemplazarán la solicitud anterior.</p>
+                </div>
+            @endif
+        @endif
+
         <form action="{{ isset($editing) ? route('client.loans.profile.update') : route('client.loans.profile.store') }}"
             method="POST">
             @csrf

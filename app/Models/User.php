@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->hasOne(ClientProfile::class);
     }
 
+    public function profileChangeRequests()
+    {
+        return $this->hasMany(ProfileChangeRequest::class);
+    }
+
     public function loans()
     {
         return $this->hasMany(Loan::class);

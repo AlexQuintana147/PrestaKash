@@ -363,6 +363,128 @@
     </div>
 </div>
 
+@php
+    $profileChangeRequests = $user->profileChangeRequests()->latest()->get();
+    $pendingRequests = $profileChangeRequests->where('status', 'pending');
+@endphp
+
+@if($pendingRequests->count() > 0)
+<div class="mt-6 px-5 md:px-10">
+    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-amber-200 dark:border-amber-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <h3 class="text-sm font-bold text-amber-800 dark:text-amber-300">Solicitudes de cambio de perfil</h3>
+            </div>
+            <span class="text-xs font-semibold bg-amber-500 text-white px-2 py-0.5 rounded-full">{{ $pendingRequests->count() }}</span>
+        </div>
+
+        <div class="px-5 py-3 border-b border-amber-100 dark:border-amber-900/40 bg-amber-100/50 dark:bg-amber-900/10">
+            <div class="flex flex-wrap items-center gap-3 text-xs text-amber-700 dark:text-amber-400">
+                <span class="font-medium">Contacto:</span>
+                <a href="mailto:{{ $user->email }}" class="flex items-center gap-1 hover:underline">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    {{ $user->email }}
+                </a>
+                @if($user->phone)
+                <a href="https://wa.me/51{{ preg_replace('/\D/', '', $user->phone) }}" target="_blank" class="flex items-center gap-1 hover:underline">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.317 0-4.474-.693-6.282-1.882l-.438-.293-2.645.887.887-2.645-.293-.438A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                    {{ $user->phone }}
+                </a>
+                @endif
+            </div>
+        </div>
+
+        @foreach($pendingRequests as $req)
+        <div class="px-5 py-4 {{ !$loop->last ? 'border-b border-amber-100 dark:border-amber-900/40' : '' }}">
+            <p class="text-xs text-amber-600 dark:text-amber-400 mb-3">Solicitado el {{ $req->created_at->format('d/m/Y H:i') }}</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wider">
+                            <th class="text-left py-2 pr-4 font-medium">Campo</th>
+                            <th class="text-left py-2 pr-4 font-medium">Actual</th>
+                            <th class="text-left py-2 font-medium">Nuevo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-amber-100 dark:divide-amber-900/30">
+                        @php
+                            $labels = \App\Models\ProfileChangeRequest::fieldLabels();
+                            $changed = collect($req->new_data)->filter(fn($v, $k) => (string)($req->old_data[$k] ?? '') !== (string)$v);
+                        @endphp
+                        @foreach($changed as $field => $newValue)
+                        <tr>
+                            <td class="py-2 pr-4 text-gray-700 dark:text-gray-300 font-medium text-xs">{{ $labels[$field] ?? $field }}</td>
+                            <td class="py-2 pr-4 text-red-600 dark:text-red-400 text-xs line-through">{{ \App\Models\ProfileChangeRequest::formatValue($field, $req->old_data[$field] ?? null) }}</td>
+                            <td class="py-2 text-green-600 dark:text-green-400 text-xs font-medium">{{ \App\Models\ProfileChangeRequest::formatValue($field, $newValue) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <form action="{{ route('superadmin.profile-changes.approve', $req) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors">
+                        Aprobar cambios
+                    </button>
+                </form>
+                <button type="button" onclick="openRejectChangeModal({{ $req->id }})" class="px-4 py-2 text-xs font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
+                    Rechazar
+                </button>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+@if($profileChangeRequests->where('status', '!=', 'pending')->count() > 0)
+<div class="mt-4 px-5 md:px-10">
+    <details class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl">
+        <summary class="px-5 py-3 cursor-pointer text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+            Historial de solicitudes ({{ $profileChangeRequests->where('status', '!=', 'pending')->count() }})
+        </summary>
+        <div class="px-5 pb-4 space-y-3">
+            @foreach($profileChangeRequests->where('status', '!=', 'pending') as $req)
+            <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-gray-100 dark:border-gray-800' : '' }}">
+                <div class="text-xs text-gray-600 dark:text-gray-400">
+                    {{ $req->created_at->format('d/m/Y H:i') }}
+                    @if($req->status === 'approved')
+                        <span class="text-green-600 font-medium">— Aprobada</span>
+                    @elseif($req->status === 'rejected')
+                        <span class="text-red-500 font-medium">— Rechazada</span>
+                    @else
+                        <span class="text-gray-400 font-medium">— Cancelada</span>
+                    @endif
+                    @if($req->rejection_reason)
+                        <span class="text-gray-400">: {{ $req->rejection_reason }}</span>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </details>
+</div>
+@endif
+
+<div id="rejectChangeModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Rechazar solicitud</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Indica el motivo del rechazo (opcional).</p>
+        <form id="rejectChangeForm" method="POST">
+            @csrf
+            <textarea name="rejection_reason" rows="3" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Motivo del rechazo..."></textarea>
+            <div class="flex gap-3 mt-4">
+                <button type="button" onclick="closeRejectChangeModal()" class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button type="submit" class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">Rechazar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Modal advertencia edición -->
 <div id="editWarningModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center">
@@ -818,6 +940,16 @@ function openDeleteGhostModal() {
 
 function closeDeleteGhostModal() {
     document.getElementById('deleteGhostModal').classList.add('hidden');
+}
+
+function openRejectChangeModal(requestId) {
+    const form = document.getElementById('rejectChangeForm');
+    form.action = `/gestion-interna/solicitudes-cambio/${requestId}/rechazar`;
+    document.getElementById('rejectChangeModal').classList.remove('hidden');
+}
+
+function closeRejectChangeModal() {
+    document.getElementById('rejectChangeModal').classList.add('hidden');
 }
 </script>
 
