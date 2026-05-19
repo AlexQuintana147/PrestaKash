@@ -17,14 +17,14 @@
             <span class="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-tight">
                 @if(isset($inst->is_interest_payment) && $inst->is_interest_payment)
                     Interés pago {{ $inst->interest_payment_number }} de {{ $inst->total_interest_payments }} (Cuota #{{ $inst->installment_number }})
-                @elseif($inst->interest_payments_count > 0)
-                    Interés #{{ $inst->installment_number }}
+                @elseif($inst->interest_payments_count > 0 && $inst->requested_type !== 'interest')
+                    Cuota #{{ $inst->installment_number }}
                 @else
                     Cuota #{{ $inst->installment_number }}
                 @endif
             </span>
-            <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->interest_payments_count > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400' }} font-bold tabular-nums">
-                @if((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->interest_payments_count > 0)
+            <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400' }} font-bold tabular-nums">
+                @if((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
                 @else
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount, 2) }}
@@ -63,11 +63,11 @@
     <div class="flex items-center gap-4">
         <span class="text-[8px] font-black uppercase tracking-widest
             {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
-            {{ $inst->status === 'pending' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) && $inst->interest_payments_count === 0 ? 'text-gray-400' : '' }}
+            {{ $inst->status === 'pending' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) && $inst->requested_type !== 'interest' ? 'text-gray-400' : '' }}
             {{ $inst->status === 'processing' ? 'text-purple-600 animate-pulse' : '' }}
             {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}
-            {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->interest_payments_count > 0)) ? 'text-amber-500' : '' }}">
-            @if($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->interest_payments_count > 0))
+            {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) ? 'text-amber-500' : '' }}">
+            @if($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest'))
                 Interés pagado
             @else
                 {{ match ($inst->status) {
