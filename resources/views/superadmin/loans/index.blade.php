@@ -324,9 +324,9 @@
                                                         'payment_frequency' => $loan->payment_frequency ?? 'mensual',
                                                         'user_name' => $loan->user->name,
                                                     ]) }})"
-                                                    class="text-indigo-500 hover:text-indigo-400 transition-colors"
-                                                    title="Ver cronograma">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                    class="px-2 py-1 rounded-md bg-amber-400 text-black text-[8px] font-black uppercase tracking-wider hover:bg-amber-500 transition-colors"
+                                                    title="Ver datos">
+                                                    Ver datos
                                                 </button>
                                             @endif
                                         </div>
@@ -871,9 +871,9 @@
                                                         'payment_frequency' => $loan->payment_frequency ?? 'mensual',
                                                         'user_name' => $loan->user->name,
                                                     ]) }})"
-                                                    class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                                                    title="Ver cronograma">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                    class="px-2.5 py-1.5 rounded-md bg-amber-400 text-black text-[9px] font-black uppercase tracking-wider hover:bg-amber-500 transition-colors"
+                                                    title="Ver datos">
+                                                    Ver datos
                                                 </button>
                                             @endif
                                         </div>
