@@ -254,9 +254,9 @@
                         <p class="text-[10px] text-[#B45309]/70 dark:text-[#FBBF24]/50">Desembolso rápido</p>
                     </div>
                     <svg id="pkGoldWave" class="absolute bottom-0 left-0 right-0 w-full h-10" viewBox="0 0 100 30" preserveAspectRatio="none">
-                        <defs><linearGradient id="goldWave" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#F5A623;stop-opacity:0.25"/><stop offset="100%" style="stop-color:#F5A623;stop-opacity:0"/></linearGradient></defs>
+                        <defs><linearGradient id="goldWave" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#00A854;stop-opacity:0.25"/><stop offset="100%" style="stop-color:#00A854;stop-opacity:0"/></linearGradient></defs>
                         <path id="pkGoldWaveFill" d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10 L100,30 L0,30Z" fill="url(#goldWave)"/>
-                        <path id="pkGoldWaveLine" d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#F5A623" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                        <path id="pkGoldWaveLine" d="M0,26 Q10,22 20,24 T40,18 T60,21 T80,12 T100,10" fill="none" stroke="#00A854" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
                     </svg>
                 </a>
 
@@ -779,7 +779,7 @@
     if(!line||!fill)return;
     var pts=[26,22,24,18,21,12,10];
     var targets=pts.slice();
-    var speed=0.04;
+    var speed=0.015;
     function rand(){return 8+Math.random()*18;}
     function newTargets(){for(var i=0;i<targets.length;i++)targets[i]=rand();}
     function tick(){
