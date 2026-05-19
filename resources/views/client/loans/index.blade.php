@@ -143,15 +143,18 @@
                 @endif
 
                 @if($rejectedChange)
-                    <div class="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 flex items-start gap-2">
+                    <div id="rejectedNotice" class="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 flex items-start gap-2">
                         <svg class="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <div>
+                        <div class="flex-1">
                             <p class="text-xs text-red-700 dark:text-red-400 font-medium">Tu solicitud de cambio fue rechazada.</p>
                             @if($rejectedChange->rejection_reason)
                                 <p class="text-xs text-red-600 dark:text-red-500 mt-1">Motivo: {{ $rejectedChange->rejection_reason }}</p>
                             @endif
                             <p class="text-xs text-red-500 dark:text-red-400 mt-1">Puedes volver a editar tu perfil.</p>
                         </div>
+                        <button onclick="dismissRejected()" class="text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors flex-shrink-0 mt-0.5" title="Descartar">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
                     </div>
                 @endif
 
@@ -700,6 +703,25 @@
         document.getElementById('acceptCounterModal').addEventListener('click', e => {
             if (e.target === document.getElementById('acceptCounterModal')) closeAcceptCounterModal();
         });
+
+        function dismissRejected() {
+            var notice = document.getElementById('rejectedNotice');
+            if (!notice) return;
+            var token = document.querySelector('input[name="_token"]');
+            fetch('{{ route("client.profile-changes.dismiss") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': token ? token.value : '' },
+                body: JSON.stringify({})
+            }).then(function () {
+                notice.style.transition = 'opacity 0.3s, max-height 0.3s';
+                notice.style.opacity = '0';
+                notice.style.maxHeight = '0';
+                notice.style.padding = '0';
+                notice.style.marginBottom = '0';
+                notice.style.overflow = 'hidden';
+                setTimeout(function () { notice.remove(); }, 300);
+            });
+        }
     </script>
 
     <style>

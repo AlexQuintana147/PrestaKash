@@ -26,6 +26,15 @@ class LoanController extends Controller
         return view('client.loans.profile-form', ['editing' => true, 'profile' => $profile]);
     }
 
+    public function dismissProfileChange()
+    {
+        ProfileChangeRequest::where('user_id', Auth::id())
+            ->where('status', 'rejected')
+            ->update(['status' => 'dismissed']);
+
+        return response()->json(['ok' => true]);
+    }
+
     public function index()
     {
         $user = Auth::user()->load('clientProfile');
