@@ -32,7 +32,6 @@ class WorkerPermission extends Model
             'collections' => 'Cobranzas',
             'investments' => 'Inversiones',
             'cashboxes' => 'Cajas',
-            'settings' => 'Configuración',
         ];
     }
 }
