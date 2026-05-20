@@ -30,24 +30,40 @@ class WorkerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'dni' => 'required|string|max:20|unique:users,dni',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20|unique:users,phone',
-            'password' => 'required|string|min:8|confirmed',
-            'permissions' => 'nullable|array',
-            'permissions.*.section' => 'required|string',
+            'name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\p{L}\s\-\.]+$/u'],
+            'dni' => ['required', 'string', 'regex:/^\d{8}$/', 'unique:users,dni'],
+            'email' => ['required', 'email', 'unique:users,email', 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
+            'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', 'unique:users,phone'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
+                if (empty($value)) {
+                    $fail('Debes asignar al menos un permiso de acceso.');
+                    return;
+                }
+                $hasAnyView = collect($value)->contains(fn($p) => !empty($p['can_view']));
+                if (!$hasAnyView) {
+                    $fail('El trabajador debe tener al menos un permiso de "Ver" activo.');
+                }
+            }],
+            'permissions.*.section' => ['required', 'string', 'in:' . implode(',', array_keys(WorkerPermission::availableSections()))],
             'permissions.*.can_view' => 'boolean',
             'permissions.*.can_create' => 'boolean',
             'permissions.*.can_edit' => 'boolean',
             'permissions.*.can_delete' => 'boolean',
+        ], [
+            'name.regex' => 'El nombre solo puede contener letras, espacios, guiones y puntos.',
+            'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
+            'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
+            'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
+            'password.regex' => 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.',
         ]);
 
         $trabajadorRole = Role::where('name', 'trabajador')->firstOrFail();
 
         $worker = User::create([
             'role_id' => $trabajadorRole->id,
-            'name' => $validated['name'],
+            'name' => trim($validated['name']),
             'dni' => $validated['dni'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
@@ -88,22 +104,38 @@ class WorkerController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'dni' => ['required', 'string', 'max:20', Rule::unique('users', 'dni')->ignore($worker->id)],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($worker->id)],
-            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($worker->id)],
-            'password' => 'nullable|string|min:8|confirmed',
+            'name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\p{L}\s\-\.]+$/u'],
+            'dni' => ['required', 'string', 'regex:/^\d{8}$/', Rule::unique('users', 'dni')->ignore($worker->id)],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($worker->id), 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
+            'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', Rule::unique('users', 'phone')->ignore($worker->id)],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'status' => 'nullable|string|in:active,inactive',
-            'permissions' => 'nullable|array',
-            'permissions.*.section' => 'required|string',
+            'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
+                if (empty($value)) {
+                    $fail('Debes asignar al menos un permiso de acceso.');
+                    return;
+                }
+                $hasAnyView = collect($value)->contains(fn($p) => !empty($p['can_view']));
+                if (!$hasAnyView) {
+                    $fail('El trabajador debe tener al menos un permiso de "Ver" activo.');
+                }
+            }],
+            'permissions.*.section' => ['required', 'string', 'in:' . implode(',', array_keys(WorkerPermission::availableSections()))],
             'permissions.*.can_view' => 'boolean',
             'permissions.*.can_create' => 'boolean',
             'permissions.*.can_edit' => 'boolean',
             'permissions.*.can_delete' => 'boolean',
+        ], [
+            'name.regex' => 'El nombre solo puede contener letras, espacios, guiones y puntos.',
+            'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
+            'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
+            'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
+            'password.regex' => 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.',
         ]);
 
         $worker->update([
-            'name' => $validated['name'],
+            'name' => trim($validated['name']),
             'dni' => $validated['dni'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,

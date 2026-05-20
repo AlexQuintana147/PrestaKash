@@ -32,18 +32,18 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DNI</label>
-                    <input type="text" name="dni" required maxlength="20" value="{{ old('dni') }}"
+                    <input type="text" name="dni" required maxlength="8" value="{{ old('dni') }}"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
-                        placeholder="12345678">
+                        placeholder="8 dígitos numéricos">
                     @error('dni')
                     <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Celular</label>
-                    <input type="text" name="phone" maxlength="20" value="{{ old('phone') }}"
+                    <input type="text" name="phone" maxlength="15" value="{{ old('phone') }}"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
-                        placeholder="+51 999 999 999">
+                        placeholder="+51 912345678">
                     @error('phone')
                     <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p>
                     @enderror
@@ -65,7 +65,7 @@
                     <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Contraseña</label>
                     <input type="password" name="password" required minlength="8"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
-                        placeholder="Mínimo 8 caracteres">
+                        placeholder="Mayúscula, minúscula, número (8+)">
                     @error('password')
                     <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p>
                     @enderror
