@@ -154,6 +154,12 @@
                             'field' => 'loan_interest_rate',
                             'suffix' => '%'
                         ] : null,
+                        'Línea de crédito' => ($status === 'approved' && !$user->is_ghost) ? [
+                            'value' => number_format($user->credit_line ?? 500, 2, '.', ''),
+                            'editable' => true,
+                            'field' => 'credit_line',
+                            'prefix' => 'S/ '
+                        ] : null,
                         'Registro'     => $user->created_at->format('d/m/Y'),
                         'Referido por' => (!$user->is_ghost && $user->referrer) ? [
                             'value' => $user->referrer->first_name . ' ' . $user->referrer->last_name,
@@ -224,7 +230,7 @@
                                 <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs text-gray-900 dark:text-white text-right">
-                                        {{ $value ?? '—' }}{{ is_array($data) && isset($data['suffix']) ? $data['suffix'] : '' }}
+                                        {{ is_array($data) && isset($data['prefix']) ? $data['prefix'] : '' }}{{ $value ?? '—' }}{{ is_array($data) && isset($data['suffix']) ? $data['suffix'] : '' }}
                                     </span>
                                     @if($isEditable)
                                         <button type="button" onclick="openEditFieldModal('{{ $label }}', '{{ $data['field'] }}', '{{ $value }}')"

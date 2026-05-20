@@ -304,7 +304,7 @@ class UsersController extends Controller
     public function updateField(Request $request, User $user)
     {
         $request->validate([
-            'field' => 'required|string|in:first_name,last_name,dni,phone,address,loan_interest_rate',
+            'field' => 'required|string|in:first_name,last_name,dni,phone,address,loan_interest_rate,credit_line',
             'value' => 'required|string|max:255',
         ]);
 
@@ -343,6 +343,11 @@ class UsersController extends Controller
         } elseif ($field === 'loan_interest_rate') {
             if (!is_numeric($value) || $value < 0 || $value > 100) {
                 return back()->withErrors(['value' => 'La tasa debe ser un número entre 0 y 100.']);
+            }
+            $value = number_format((float) $value, 2, '.', '');
+        } elseif ($field === 'credit_line') {
+            if (!is_numeric($value) || $value < 0) {
+                return back()->withErrors(['value' => 'La línea de crédito debe ser un número positivo.']);
             }
             $value = number_format((float) $value, 2, '.', '');
         }

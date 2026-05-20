@@ -33,6 +33,7 @@ class User extends Authenticatable
         'referred_by',
         'referral_code',
         'loan_interest_rate',
+        'credit_line',
         'is_ghost',
     ];
 
@@ -46,6 +47,7 @@ class User extends Authenticatable
             'profile_completed' => 'boolean',
             'step1_completed' => 'boolean',
             'loan_interest_rate' => 'float',
+            'credit_line' => 'decimal:2',
         ];
     }
 
