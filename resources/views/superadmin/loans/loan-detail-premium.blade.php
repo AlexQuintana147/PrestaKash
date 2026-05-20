@@ -13,6 +13,7 @@
     $totalLateFees = $loan->installments()->get()->sum('late_fee');
     $nextDueDate = $loan->installments()->where('status', 'pending')->orderBy('due_date', 'asc')->first()?->due_date;
     $activeLoansCount = $loan->user ? \App\Models\Loan::where('user_id', $loan->user_id)->whereIn('status', ['approved', 'pending'])->count() : 0;
+    $activeLoans = $loan->user ? \App\Models\Loan::where('user_id', $loan->user_id)->whereIn('status', ['approved', 'pending'])->orderBy('created_at', 'desc')->get() : collect([]);
 @endphp
 
 @section('content')
@@ -43,7 +44,7 @@
             <p class="text-lg font-black text-emerald-600 tabular-nums">{{ $cur }}{{ number_format($totalPaid, 2) }}</p>
             <p class="text-[9px] text-emerald-500 mt-0.5">{{ $paidInstallments }}/{{ $totalInstallments }}</p>
         </div>
-        <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
+        <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-950/15 transition-colors" onclick="openLoansModal()">
             <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Pendiente</p>
             <p class="text-lg font-black text-orange-600 tabular-nums">{{ $cur }}{{ number_format($totalPending, 2) }}</p>
             <p class="text-[9px] text-orange-500 mt-0.5">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
@@ -200,4 +201,74 @@
     @endif
 
 </div>
+
+<div id="loans-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeLoansModal()"></div>
+    <div class="absolute inset-4 sm:inset-8 md:inset-12 lg:inset-16 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Préstamos activos de {{ $loan->user->name ?? 'Cliente' }}</h2>
+            <button onclick="closeLoansModal()" class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-5 space-y-2">
+            @forelse($activeLoans as $activeLoan)
+                @php
+                    $aCur = $activeLoan->currency === 'USD' ? '$' : 'S/';
+                    $aPaid = $activeLoan->installments()->where('status', 'approved')->sum('amount');
+                    $aPending = $activeLoan->installments()->where('status', 'pending')->sum('amount');
+                    $aOverdue = $activeLoan->installments()->where('status', 'pending')->where('due_date', '<', now()->startOfDay())->count();
+                    $aTotal = $activeLoan->installments()->get()->sum('late_fee') + $aPending;
+                    $isCurrent = $activeLoan->id === $loan->id;
+                @endphp
+                <a href="{{ route('superadmin.installments.group', $activeLoan) }}?source=modal"
+                   class="flex items-stretch gap-3 p-3 rounded-xl {{ $isCurrent ? 'bg-orange-50 dark:bg-orange-950/15 border border-orange-200 dark:border-orange-900/30' : 'bg-gray-50 dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-800/60' }} transition-colors group">
+                    <div class="w-10 flex items-center justify-center flex-shrink-0 rounded-lg
+                        {{ $isCurrent ? 'bg-orange-500' : ($aOverdue > 0 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700') }}">
+                        <span class="text-[10px] font-black text-white">{{ $activeLoan->code }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0 py-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <p class="text-xs font-bold {{ $isCurrent ? 'text-orange-600' : 'text-gray-900 dark:text-white' }}">{{ $activeLoan->code }}</p>
+                            @if($isCurrent)
+                                <span class="px-1.5 py-0.5 bg-orange-500 text-white text-[7px] font-bold rounded uppercase">Actual</span>
+                            @endif
+                            @if($aOverdue > 0)
+                                <span class="px-1.5 py-0.5 bg-red-500 text-white text-[7px] font-bold rounded uppercase">{{ $aOverdue }} vencida{{ $aOverdue > 1 ? 's' : '' }}</span>
+                            @endif
+                        </div>
+                        <div class="flex items-center gap-3 text-[10px] text-gray-500 dark:text-gray-400">
+                            <span>Monto: <strong class="text-gray-700 dark:text-gray-300 tabular-nums">{{ $aCur }}{{ number_format($activeLoan->amount, 2) }}</strong></span>
+                            <span>Pagado: <strong class="text-emerald-600 tabular-nums">{{ $aCur }}{{ number_format($aPaid, 2) }}</strong></span>
+                            <span>Pendiente: <strong class="{{ $aOverdue > 0 ? 'text-red-600' : 'text-orange-600' }} tabular-nums">{{ $aCur }}{{ number_format($aTotal, 2) }}</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center flex-shrink-0 pr-1">
+                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+            @empty
+                <div class="py-16 text-center">
+                    <svg class="w-10 h-10 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m3 0V9a3 3 0 00-3-3H9a3 3 0 00-3 3v6m0 0h6"/></svg>
+                    <p class="text-sm text-gray-400 font-medium">Sin préstamos activos</p>
+                </div>
+            @endforelse
+        </div>
+        <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0">
+            <p class="text-[10px] text-gray-400 text-center">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function openLoansModal() {
+    document.getElementById('loans-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeLoansModal() {
+    document.getElementById('loans-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+</script>
+
 @endsection
