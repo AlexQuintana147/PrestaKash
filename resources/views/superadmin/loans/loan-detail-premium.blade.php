@@ -203,15 +203,19 @@
 </div>
 
 <div id="loans-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeLoansModal()"></div>
-    <div class="absolute inset-4 sm:inset-8 md:inset-12 lg:inset-16 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden flex flex-col">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
-            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Préstamos activos de {{ $loan->user->name ?? 'Cliente' }}</h2>
-            <button onclick="closeLoansModal()" class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    <div class="absolute inset-0 bg-black/40" onclick="closeLoansModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg sm:w-full bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div>
+                <h2 class="text-sm font-bold text-gray-900 dark:text-white">Préstamos activos</h2>
+                <p class="text-[10px] text-gray-400">{{ $loan->user->name ?? 'Cliente' }}</p>
+            </div>
+            <button onclick="closeLoansModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors -mr-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto p-5 space-y-2">
+
+        <div class="flex-1 overflow-y-auto overscroll-contain divide-y divide-gray-100 dark:divide-gray-800/60">
             @forelse($activeLoans as $activeLoan)
                 @php
                     $aCur = $activeLoan->currency === 'USD' ? '$' : 'S/';
@@ -222,40 +226,45 @@
                     $isCurrent = $activeLoan->id === $loan->id;
                 @endphp
                 <a href="{{ route('superadmin.installments.group', $activeLoan) }}?source=modal"
-                   class="flex items-stretch gap-3 p-3 rounded-xl {{ $isCurrent ? 'bg-orange-50 dark:bg-orange-950/15 border border-orange-200 dark:border-orange-900/30' : 'bg-gray-50 dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-800/60' }} transition-colors group">
-                    <div class="w-10 flex items-center justify-center flex-shrink-0 rounded-lg
+                   class="flex items-center gap-3 px-5 py-3.5 {{ $isCurrent ? 'bg-orange-50/70 dark:bg-orange-950/10' : '' }} hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors active:bg-gray-100 dark:active:bg-gray-800/50 group">
+
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0
                         {{ $isCurrent ? 'bg-orange-500' : ($aOverdue > 0 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700') }}">
-                        <span class="text-[10px] font-black text-white">{{ $activeLoan->code }}</span>
+                        <span class="text-xs font-black text-white tabular-nums">#{{ $activeLoan->installment_number ?? $loop->index + 1 }}</span>
                     </div>
-                    <div class="flex-1 min-w-0 py-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <p class="text-xs font-bold {{ $isCurrent ? 'text-orange-600' : 'text-gray-900 dark:text-white' }}">{{ $activeLoan->code }}</p>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <span class="text-sm font-bold {{ $isCurrent ? 'text-orange-600 dark:text-orange-400' : 'text-gray-900 dark:text-white' }}">{{ $activeLoan->code }}</span>
                             @if($isCurrent)
-                                <span class="px-1.5 py-0.5 bg-orange-500 text-white text-[7px] font-bold rounded uppercase">Actual</span>
+                                <span class="px-1.5 py-px bg-orange-500 text-white text-[8px] font-bold rounded">Actual</span>
                             @endif
                             @if($aOverdue > 0)
-                                <span class="px-1.5 py-0.5 bg-red-500 text-white text-[7px] font-bold rounded uppercase">{{ $aOverdue }} vencida{{ $aOverdue > 1 ? 's' : '' }}</span>
+                                <span class="px-1.5 py-px bg-red-500 text-white text-[8px] font-bold rounded">{{ $aOverdue }}</span>
                             @endif
                         </div>
-                        <div class="flex items-center gap-3 text-[10px] text-gray-500 dark:text-gray-400">
-                            <span>Monto: <strong class="text-gray-700 dark:text-gray-300 tabular-nums">{{ $aCur }}{{ number_format($activeLoan->amount, 2) }}</strong></span>
-                            <span>Pagado: <strong class="text-emerald-600 tabular-nums">{{ $aCur }}{{ number_format($aPaid, 2) }}</strong></span>
-                            <span>Pendiente: <strong class="{{ $aOverdue > 0 ? 'text-red-600' : 'text-orange-600' }} tabular-nums">{{ $aCur }}{{ number_format($aTotal, 2) }}</strong></span>
+                        <div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-400 dark:text-gray-500">
+                            <span>{{ $aCur }}<strong class="text-gray-600 dark:text-gray-300 tabular-nums ml-0.5">{{ number_format($activeLoan->amount, 2) }}</strong></span>
+                            <span>Pagado: <strong class="text-emerald-600 dark:text-emerald-400 tabular-nums">{{ number_format($aPaid, 2) }}</strong></span>
+                            <span>Deuda: <strong class="{{ $aOverdue > 0 ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400' }} tabular-nums">{{ number_format($aTotal, 2) }}</strong></span>
                         </div>
                     </div>
-                    <div class="flex items-center flex-shrink-0 pr-1">
-                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </div>
+
+                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
             @empty
                 <div class="py-16 text-center">
-                    <svg class="w-10 h-10 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m3 0V9a3 3 0 00-3-3H9a3 3 0 00-3 3v6m0 0h6"/></svg>
-                    <p class="text-sm text-gray-400 font-medium">Sin préstamos activos</p>
+                    <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                    </div>
+                    <p class="text-sm font-medium text-gray-400">Sin préstamos</p>
+                    <p class="text-[11px] text-gray-300 mt-0.5">No hay préstamos activos para este cliente</p>
                 </div>
             @endforelse
         </div>
-        <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0">
-            <p class="text-[10px] text-gray-400 text-center">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
+
+        <div class="px-5 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0">
+            <p class="text-[10px] text-gray-400 text-center font-medium">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
         </div>
     </div>
 </div>
