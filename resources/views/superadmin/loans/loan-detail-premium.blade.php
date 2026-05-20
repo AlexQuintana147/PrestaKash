@@ -44,10 +44,16 @@
             <p class="text-lg font-black text-emerald-600 tabular-nums">{{ $cur }}{{ number_format($totalPaid, 2) }}</p>
             <p class="text-[9px] text-emerald-500 mt-0.5">{{ $paidInstallments }}/{{ $totalInstallments }}</p>
         </div>
-        <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-950/15 transition-colors" onclick="openLoansModal()">
-            <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Pendiente</p>
+        <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-950/15 transition-colors group" onclick="openLoansModal()">
+            <div class="flex items-start justify-between mb-1">
+                <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold">Pendiente</p>
+                <svg class="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-400 transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
             <p class="text-lg font-black text-orange-600 tabular-nums">{{ $cur }}{{ number_format($totalPending, 2) }}</p>
-            <p class="text-[9px] text-orange-500 mt-0.5">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+                <p class="text-[9px] text-orange-500">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
+                <span class="px-1.5 py-0.5 bg-orange-100/60 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[7px] font-bold rounded opacity-70 group-hover:opacity-100 transition-opacity">click</span>
+            </div>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
             <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Mora</p>
