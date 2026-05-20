@@ -3,17 +3,16 @@
 @section('title', 'Gestión de Cajas')
 
 @section('content')
-    <div class="px-6 md:px-12 py-10 max-w-[1600px] mx-auto">
+    <div class="px-4 md:px-12 py-6 md:py-10 max-w-[1600px] mx-auto">
 
-        <!-- Header: Refined Typography & Alignment -->
-        <div class="flex items-end justify-between mb-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-3">
             <div>
                 <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] mb-1">Panel
                     Administrativo</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
                 </h1>
             </div>
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4 md:gap-6">
                 <button onclick="openCashboxModal()"
                     class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                     Nueva Caja
@@ -244,10 +243,10 @@
 
             <!-- Movements Section: Editorial List -->
             <div id="movementsSection" class="max-w-4xl mx-auto opacity-0 translate-y-8 transition-all duration-1000">
-                <div class="flex items-center justify-between mb-12 border-b border-gray-100 dark:border-gray-900 pb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tighter">Actividad
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-12 border-b border-gray-100 dark:border-gray-900 pb-4 md:pb-6 gap-3">
+                    <h2 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tighter">Actividad
                         Reciente</h2>
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-3 md:gap-4">
                         <button onclick="openCodesModal()"
                             class="text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:opacity-60 transition-opacity">
                             Ver Movimientos
@@ -287,10 +286,10 @@
     <!-- Modal Caja Minimalista -->
     <div id="cashboxModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-16">
-                    <h3 id="modalTitle" class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 max-h-[90vh] overflow-y-auto">
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-16">
+                    <h3 id="modalTitle" class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">
                         Nueva Caja</h3>
                     <button onclick="closeCashboxModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -301,13 +300,13 @@
                     </button>
                 </div>
 
-                <form id="cashboxForm" method="POST" class="space-y-12">
+                <form id="cashboxForm" method="POST" class="space-y-6 md:space-y-12">
                     @csrf
                     <div id="methodField"></div>
 
-                    <div class="space-y-10">
+                    <div class="space-y-6 md:space-y-10">
                         <!-- Inputs: Underline only, bold text -->
-                        <div class="space-y-8">
+                        <div class="space-y-4 md:space-y-8">
                             <div class="group">
                                 <label
                                     class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-2">Nombre</label>
@@ -349,7 +348,7 @@
                                     class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-xl font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800">
                             </div>
 
-                            <div class="grid grid-cols-2 gap-16">
+                            <div class="grid grid-cols-2 gap-4 md:gap-16">
                                 <div>
                                     <label
                                         class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Moneda</label>
@@ -375,7 +374,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                                 <div>
                                     <label
                                         class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">N°
@@ -393,7 +392,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-10 flex items-center justify-between">
+                    <div class="pt-6 md:pt-10 flex items-center justify-between">
                         <button type="button" onclick="closeCashboxModal()"
                             class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Cerrar
@@ -411,11 +410,11 @@
     <!-- Modal Movimiento Minimalista -->
     <div id="movementModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-950 w-full max-w-md animate-in fade-in zoom-in duration-500">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-16">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-md animate-in fade-in zoom-in duration-500 max-h-[90vh] overflow-y-auto">
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-16">
                     <h3 id="movModalTitle"
-                        class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Movimiento</h3>
+                        class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Movimiento</h3>
                     <button onclick="closeMovementModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -425,20 +424,20 @@
                     </button>
                 </div>
 
-                <form id="movementForm" method="POST" class="space-y-12">
+                <form id="movementForm" method="POST" class="space-y-6 md:space-y-12">
                     @csrf
                     <input type="hidden" name="type" id="mov_type">
 
-                    <div class="space-y-10">
+                    <div class="space-y-6 md:space-y-10">
                         <!-- Monto con Máscara -->
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Monto a
                                 Registrar</label>
                             <div class="relative">
                                 <input type="text" name="amount" id="mov_amount" required placeholder="0.00"
-                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-2xl md:text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                                 <span id="mov_currency_label"
-                                    class="absolute right-0 bottom-4 text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
+                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
                             </div>
                             <p id="mov_error"
                                 class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
@@ -479,7 +478,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-10 flex items-center justify-between">
+                    <div class="pt-6 md:pt-10 flex items-center justify-between">
                         <button type="button" onclick="closeMovementModal()"
                             class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Cancelar
@@ -497,10 +496,10 @@
     <!-- Modal Desplazar entre Cajas -->
     <div id="transferModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-950 w-full max-w-md animate-in fade-in zoom-in duration-500">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-16">
-                    <h3 class="text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tighter uppercase">Desplazar</h3>
+        <div class="bg-white dark:bg-gray-950 w-full max-w-md animate-in fade-in zoom-in duration-500 max-h-[90vh] overflow-y-auto">
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-16">
+                    <h3 class="text-xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tighter uppercase">Desplazar</h3>
                     <button onclick="closeTransferModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -510,11 +509,11 @@
                     </button>
                 </div>
 
-                <form id="transferForm" method="POST" class="space-y-12">
+                <form id="transferForm" method="POST" class="space-y-6 md:space-y-12">
                     @csrf
                     <input type="hidden" name="from_cashbox_id" id="transfer_from_id">
 
-                    <div class="space-y-10">
+                    <div class="space-y-6 md:space-y-10">
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Caja Destino</label>
                             <select name="to_cashbox_id" id="transfer_to_cashbox" required
@@ -530,9 +529,9 @@
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Monto a Desplazar</label>
                             <div class="relative">
                                 <input type="text" name="amount" id="transfer_amount" required placeholder="0.00"
-                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all tabular-nums">
+                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-2xl md:text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all tabular-nums">
                                 <span id="transfer_currency_label"
-                                    class="absolute right-0 bottom-4 text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
+                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
                             </div>
                             <p id="transfer_error"
                                 class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
@@ -569,7 +568,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-10 flex items-center justify-between">
+                    <div class="pt-6 md:pt-10 flex items-center justify-between">
                         <button type="button" onclick="closeTransferModal()"
                             class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Cancelar
@@ -588,9 +587,9 @@
     <div id="tagsModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 max-h-[90vh] flex flex-col">
-            <div class="px-10 py-12 overflow-y-auto">
-                <div class="flex items-center justify-between mb-16">
-                    <h3 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase">Etiquetas</h3>
+            <div class="px-5 md:px-10 py-6 md:py-12 overflow-y-auto">
+                <div class="flex items-center justify-between mb-6 md:mb-16">
+                    <h3 class="text-xl md:text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase">Etiquetas</h3>
                     <button onclick="closeTagsModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -600,16 +599,16 @@
                     </button>
                 </div>
 
-                <form id="tagForm" method="POST" class="space-y-12 mb-12">
+                <form id="tagForm" method="POST" class="space-y-6 md:space-y-12 mb-6 md:mb-12">
                     @csrf
                     <input type="hidden" name="tag_id" id="tag_id">
 
-                    <div class="space-y-10">
+                    <div class="space-y-6 md:space-y-10">
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Nombre</label>
                             <input type="text" name="name" id="tag_name" required placeholder="Ej: Operativo, Inversión..."
                                 oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '')"
-                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-all">
+                                class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition-all">
                         </div>
 
                         <div>
@@ -622,7 +621,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-10 flex items-center justify-between">
+                    <div class="pt-6 md:pt-10 flex items-center justify-between">
                         <button type="button" onclick="resetTagForm()"
                             class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Limpiar
@@ -645,9 +644,9 @@
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div
             class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 border-2 border-red-500/20">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-12">
-                    <h3 class="text-3xl font-bold text-red-600 tracking-tighter uppercase">Acción Peligrosa</h3>
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-12">
+                    <h3 class="text-xl md:text-3xl font-bold text-red-600 tracking-tighter uppercase">Acción Peligrosa</h3>
                     <button onclick="closeDangerousDeleteModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -686,7 +685,7 @@
                     </p>
                 </div>
 
-                <div class="pt-12 flex items-center justify-between">
+                <div class="pt-6 md:pt-12 flex items-center justify-between">
                     <button type="button" onclick="closeDangerousDeleteModal()"
                         class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                         Cancelar
@@ -704,9 +703,9 @@
     <div id="simpleDeleteModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-sm animate-in fade-in zoom-in duration-500">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-12">
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Eliminar Caja
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-12">
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Eliminar Caja
                     </h3>
                     <button onclick="closeSimpleDeleteModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -717,7 +716,7 @@
                     </button>
                 </div>
 
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-relaxed mb-12">
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-relaxed mb-6 md:mb-12">
                     ¿Confirmas que deseas eliminar esta caja? Esta acción no se puede deshacer.
                 </p>
 
@@ -739,9 +738,9 @@
     <div id="deleteMovementModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-sm animate-in fade-in zoom-in duration-500">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-12">
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Deshacer Movimiento</h3>
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-12">
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Deshacer Movimiento</h3>
                     <button onclick="closeDeleteMovementModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -750,7 +749,7 @@
                     </button>
                 </div>
 
-                <div class="mb-8">
+                <div class="mb-4 md:mb-8">
                     <p id="deleteMovementDesc" class="text-sm font-bold text-gray-900 dark:text-white mb-2"></p>
                     <p id="deleteMovementAmount" class="text-2xl font-black tabular-nums mb-4"></p>
                     <p class="text-[10px] font-black text-red-500 uppercase tracking-[0.3em] leading-relaxed">
@@ -778,10 +777,10 @@
     <!-- Modal Detalle de Préstamo -->
     <div id="loanDetailModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500">
-            <div class="px-10 py-12">
-                <div class="flex items-center justify-between mb-12">
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Detalle del
+        <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 max-h-[90vh] overflow-y-auto">
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-12">
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Detalle del
                         Egreso</h3>
                     <button onclick="closeLoanDetailModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -792,11 +791,11 @@
                     </button>
                 </div>
 
-                <div id="loanDetailContent" class="space-y-8">
+                <div id="loanDetailContent" class="space-y-4 md:space-y-8">
                     <!-- JS populated -->
                 </div>
 
-                <div class="pt-12 flex justify-center">
+                <div class="pt-6 md:pt-12 flex justify-center">
                     <button type="button" onclick="closeLoanDetailModal()"
                         class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                         Cerrar
@@ -810,10 +809,10 @@
     <div id="codesModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div
-            class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-500 rounded-[2rem] overflow-hidden">
-            <div class="px-10 py-12 flex flex-col h-full overflow-hidden">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Códigos de
+            class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-500 rounded-xl md:rounded-[2rem] overflow-hidden">
+            <div class="px-5 md:px-10 py-6 md:py-12 flex flex-col h-full overflow-hidden">
+                <div class="flex items-center justify-between mb-4 md:mb-8">
+                    <h3 class="text-lg md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Códigos de
                         Movimientos</h3>
                     <button onclick="closeCodesModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -838,10 +837,10 @@
     <div id="historyModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div
-            class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-500 rounded-[2rem] overflow-hidden">
-            <div class="px-10 py-12 flex flex-col h-full overflow-hidden">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Historial de
+            class="bg-white dark:bg-gray-950 w-full max-w-4xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-500 rounded-xl md:rounded-[2rem] overflow-hidden">
+            <div class="px-5 md:px-10 py-6 md:py-12 flex flex-col h-full overflow-hidden">
+                <div class="flex items-center justify-between mb-4 md:mb-8">
+                    <h3 class="text-lg md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Historial de
                         Transacciones</h3>
                     <button onclick="closeHistoryModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -1103,38 +1102,38 @@
                     : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                 const html = `
-                                            <div class="movement-item px-4 md:px-12 py-5 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-2xl md:rounded-3xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
+                                            <div class="movement-item px-3 md:px-12 py-4 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-xl md:rounded-3xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
                                                  style="animation-delay: ${i * 0.05}s; ${tagBorderColor}"
                                                  ${clickAction}>
-                                                    <div class="flex items-center gap-4 md:gap-8">
-                                                        <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
-                                                            <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
-                                                            <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
+                                                    <div class="flex items-center gap-2 md:gap-8 min-w-0 flex-1">
+                                                        <div class="flex flex-col items-center w-8 md:w-12 flex-shrink-0">
+                                                            <span class="text-[7px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
+                                                            <span class="text-[6px] md:text-[8px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-0.5 md:mt-1">${time}</span>
                                                         </div>
-                                                        <div>
-                                                            <div class="flex items-center gap-2">
-                                                                <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
+                                                        <div class="min-w-0 flex-1">
+                                                            <div class="flex items-center gap-1 md:gap-2">
+                                                                <p class="text-xs md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">${m.description}</p>
                                                                 ${(m.reference_type === 'loan' && m.loan) || (m.reference_type === 'loan_installment' && m.installment) ? `
-                                                                    <button onclick="event.stopPropagation(); showLoanDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <button onclick="event.stopPropagation(); showLoanDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+                                                                        <svg class="w-3 md:w-3.5 h-3 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                         </svg>
                                                                     </button>
                                                                 ` : (m.reference_type === 'investment' && m.investment ? `
-                                                                    <button onclick="event.stopPropagation(); showInvestmentDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <button onclick="event.stopPropagation(); showInvestmentDetail(${m.id})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+                                                                        <svg class="w-3 md:w-3.5 h-3 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                         </svg>
                                                                     </button>
                                                                 ` : '')}
                                                             </div>
-                                                            <p class="text-[8px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
+                                                            <p class="text-[7px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1 leading-none truncate">
                                                                 ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <div class="text-right ml-2">
-                                                        <p class="text-sm md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
+                                                    <div class="text-right ml-2 flex-shrink-0">
+                                                        <p class="text-xs md:text-xl font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
                                                             ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                         </p>
                                                     </div>
@@ -1587,16 +1586,16 @@
                 const tagHtml = m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : '';
 
                 codesList.insertAdjacentHTML('beforeend', `
-                    <div class="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
+                    <div class="flex items-center justify-between py-3 md:py-4 border-b border-gray-100 dark:border-gray-900 last:border-0">
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">${m.description}</p>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 tracking-widest">${m.code || '—'}</span>
-                                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-[0.2em]">${displayType}${tagHtml}</span>
-                                <span class="text-[8px] text-gray-400">${date} ${time}</span>
+                            <p class="text-xs md:text-sm font-bold text-gray-900 dark:text-white truncate">${m.description}</p>
+                            <div class="flex flex-wrap items-center gap-1 md:gap-2 mt-1">
+                                <span class="text-[8px] md:text-[9px] font-black text-indigo-600 dark:text-indigo-400 tracking-widest">${m.code || '—'}</span>
+                                <span class="text-[7px] md:text-[8px] font-bold text-gray-400 uppercase tracking-[0.15em] md:tracking-[0.2em]">${displayType}${tagHtml}</span>
+                                <span class="text-[7px] md:text-[8px] text-gray-400">${date} ${time}</span>
                             </div>
                         </div>
-                        <p class="text-sm font-black tabular-nums ml-4 ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                        <p class="text-xs md:text-sm font-black tabular-nums ml-2 md:ml-4 flex-shrink-0 ${isIncome ? 'text-green-500' : 'text-red-500'}">
                             ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </p>
                     </div>
@@ -1953,38 +1952,38 @@
                             : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                         const html = `
-                                        <div class="movement-item px-4 py-4 flex items-center justify-between group transition-all duration-500 rounded-2xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
+                                        <div class="movement-item px-3 py-3 md:py-4 flex items-center justify-between group transition-all duration-500 rounded-xl md:rounded-2xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
                                              style="${tagBorderColor}"
                                              ${clickAction}>
-                                            <div class="flex items-center gap-4 md:gap-8">
-                                                <div class="flex flex-col items-center w-10 md:w-12 flex-shrink-0">
-                                                    <span class="text-[8px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
-                                                    <span class="text-[7px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-1">${time}</span>
+                                            <div class="flex items-center gap-2 md:gap-8 min-w-0 flex-1">
+                                                <div class="flex flex-col items-center w-8 md:w-12 flex-shrink-0">
+                                                    <span class="text-[7px] md:text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest tabular-nums leading-none">${date}</span>
+                                                    <span class="text-[6px] md:text-[7px] font-bold text-gray-400 uppercase tracking-widest tabular-nums mt-0.5 md:mt-1">${time}</span>
                                                 </div>
-                                                <div>
-                                                    <div class="flex items-center gap-2">
-                                                        <p class="text-sm md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight">${m.description}</p>
+                                                <div class="min-w-0 flex-1">
+                                                    <div class="flex items-center gap-1 md:gap-2">
+                                                        <p class="text-xs md:text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">${m.description}</p>
                                                         ${(m.reference_type === 'loan' && m.loan) || (m.reference_type === 'loan_installment' && m.installment) ? `
-                                                            <button onclick="event.stopPropagation(); showLoanDetailFromHistory(${m.id}, ${JSON.stringify(m).replace(/'/g, "&apos;")})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <button onclick="event.stopPropagation(); showLoanDetailFromHistory(${m.id}, ${JSON.stringify(m).replace(/'/g, "&apos;")})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+                                                                <svg class="w-3 md:w-3.5 h-3 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                 </svg>
                                                             </button>
                                                         ` : (m.reference_type === 'investment' && m.investment ? `
-                                                            <button onclick="event.stopPropagation(); showInvestmentDetailFromHistory(${m.id}, ${JSON.stringify(m).replace(/'/g, "&apos;")})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <button onclick="event.stopPropagation(); showInvestmentDetailFromHistory(${m.id}, ${JSON.stringify(m).replace(/'/g, "&apos;")})" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+                                                                <svg class="w-3 md:w-3.5 h-3 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                 </svg>
                                                             </button>
                                                         ` : '')}
                                                     </div>
-                                                    <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1 leading-none">
+                                                    <p class="text-[7px] md:text-[8px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1 leading-none truncate">
                                                         ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div class="text-right ml-2">
-                                                <p class="text-sm md:text-base font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
+                                            <div class="text-right ml-2 flex-shrink-0">
+                                                <p class="text-xs md:text-base font-black tabular-nums ${isIncome ? 'text-green-500' : 'text-red-500'} leading-none">
                                                     ${isIncome ? '+' : '-'} ${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                 </p>
                                             </div>
