@@ -12,6 +12,7 @@
     $pendingInstallments = $loan->installments()->where('status', 'pending')->count();
     $totalLateFees = $loan->installments()->get()->sum('late_fee');
     $nextDueDate = $loan->installments()->where('status', 'pending')->orderBy('due_date', 'asc')->first()?->due_date;
+    $activeLoansCount = $loan->user ? \App\Models\Loan::where('user_id', $loan->user_id)->whereIn('status', ['approved', 'pending'])->count() : 0;
 @endphp
 
 @section('content')
@@ -45,7 +46,7 @@
         <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
             <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Pendiente</p>
             <p class="text-lg font-black text-orange-600 tabular-nums">{{ $cur }}{{ number_format($totalPending, 2) }}</p>
-            <p class="text-[9px] text-orange-500 mt-0.5">{{ $pendingInstallments }} restantes</p>
+            <p class="text-[9px] text-orange-500 mt-0.5">{{ $activeLoansCount }} préstamo{{ $activeLoansCount > 1 ? 's' : '' }} activo{{ $activeLoansCount > 1 ? 's' : '' }}</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
             <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Mora</p>
