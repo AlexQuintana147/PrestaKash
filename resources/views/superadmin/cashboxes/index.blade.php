@@ -266,64 +266,56 @@
                     </div>
                 </div>
 
-                <div id="filterBar" class="mb-6 flex flex-wrap items-center gap-2">
-                    <div class="flex items-center gap-1.5 flex-wrap">
+                <div id="filterBar" class="mb-6 space-y-3">
+                    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
                         <button onclick="setFilter('type','all')" data-filter-type="all"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex-shrink-0">
                             Todos
                         </button>
                         <button onclick="setFilter('type','income')" data-filter-type="income"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 flex-shrink-0">
                             Ingresos
                         </button>
                         <button onclick="setFilter('type','expense')" data-filter-type="expense"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 flex-shrink-0">
                             Egresos
                         </button>
-                    </div>
 
-                    <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 hidden md:block"></div>
+                        <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 flex-shrink-0"></div>
 
-                    <div class="flex items-center gap-1.5 flex-wrap">
                         <button onclick="setFilter('ref','all')" data-filter-ref="all"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex-shrink-0">
                             Todo
                         </button>
                         <button onclick="setFilter('ref','loan')" data-filter-ref="loan"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 flex-shrink-0">
                             Préstamos
                         </button>
                         <button onclick="setFilter('ref','loan_installment')" data-filter-ref="loan_installment"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 flex-shrink-0">
                             Cobranzas
                         </button>
                         <button onclick="setFilter('ref','investment')" data-filter-ref="investment"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 flex-shrink-0">
                             Inversiones
                         </button>
                         <button onclick="setFilter('ref','manual')" data-filter-ref="manual"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 flex-shrink-0">
                             Manual
                         </button>
                         <button onclick="setFilter('ref','transfer')" data-filter-ref="transfer"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 hover:text-cyan-600 dark:hover:text-cyan-400">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 hover:text-cyan-600 dark:hover:text-cyan-400 flex-shrink-0">
                             Desplazamientos
                         </button>
                     </div>
 
-                    <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 hidden md:block"></div>
-
                     <div class="flex items-center gap-1.5">
-                        <div class="relative">
-                            <input type="date" id="filter_from_date" onchange="renderMovements()"
-                                class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2.5 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 w-[120px]">
-                        </div>
-                        <span class="text-[9px] text-gray-400 font-bold">→</span>
-                        <div class="relative">
-                            <input type="date" id="filter_to_date" onchange="renderMovements()"
-                                class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2.5 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 w-[120px]">
-                        </div>
-                        <button onclick="clearDateFilter()" id="clearDateBtn" class="hidden px-2 py-1.5 rounded-lg text-[9px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">✕</button>
+                        <input type="date" id="filter_from_date" onchange="renderMovements()"
+                            class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
+                        <span class="text-[9px] text-gray-400 font-bold flex-shrink-0">→</span>
+                        <input type="date" id="filter_to_date" onchange="renderMovements()"
+                            class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
+                        <button onclick="clearDateFilter()" id="clearDateBtn" class="hidden px-2 py-1.5 rounded-lg text-[9px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0">✕</button>
                     </div>
                 </div>
 
