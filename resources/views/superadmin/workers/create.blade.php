@@ -95,25 +95,37 @@
                             <input type="checkbox" name="{{ $base }}[can_view]" value="1" checked
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Ver</span>
-                            <span class="help-icon w-3.5 h-3.5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity" title="Puede ver y listar registros de {{ strtolower($label) }}">?</span>
+                            <span class="help-icon relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
+                                ?
+                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Ver y listar {{ strtolower($label) }}</span>
+                            </span>
                         </label>
                         <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
                             <input type="checkbox" name="{{ $base }}[can_create]" value="1"
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-emerald-500 focus:ring-emerald-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Crear</span>
-                            <span class="help-icon w-3.5 h-3.5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity" title="Puede crear nuevos registros de {{ strtolower($label) }}">?</span>
+                            <span class="help-icon relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
+                                ?
+                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Crear nuevos {{ strtolower($label) }}</span>
+                            </span>
                         </label>
                         <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
                             <input type="checkbox" name="{{ $base }}[can_edit]" value="1"
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-blue-500 focus:ring-blue-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Editar</span>
-                            <span class="help-icon w-3.5 h-3.5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity" title="Puede modificar registros existentes de {{ strtolower($label) }}">?</span>
+                            <span class="help-icon relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
+                                ?
+                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Modificar {{ strtolower($label) }}</span>
+                            </span>
                         </label>
                         <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
                             <input type="checkbox" name="{{ $base }}[can_delete]" value="1"
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-red-500 focus:ring-red-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Eliminar</span>
-                            <span class="help-icon w-3.5 h-3.5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity" title="Puede eliminar registros de {{ strtolower($label) }}">?</span>
+                            <span class="help-icon relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
+                                ?
+                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Eliminar {{ strtolower($label) }}</span>
+                            </span>
                         </label>
                     </div>
                     <input type="hidden" name="{{ $base }}[section]" value="{{ $key }}">
