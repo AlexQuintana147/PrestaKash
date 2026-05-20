@@ -3,10 +3,10 @@
 @section('title', 'Deudas pendientes - ' . $fullName)
 
 @section('content')
-<div class="px-5 md:px-10 py-8">
+<div class="px-4 md:px-10 py-6 md:py-8">
 
     <!-- Header -->
-    <div class="flex items-center gap-3 mb-8">
+    <div class="flex items-center gap-3 mb-6 md:mb-8">
         <a href="{{ route('superadmin.installments.index', ['filter' => 'overdue']) }}"
            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,8 +17,8 @@
             <img src="{{ $photo }}" class="w-full h-full object-cover" alt="{{ $fullName }}">
         </div>
         <div class="min-w-0 flex-1">
-            <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white truncate">{{ $fullName }}</h1>
-            <div class="flex items-center gap-3 mt-0.5">
+            <h1 class="text-base md:text-xl font-bold text-gray-900 dark:text-white truncate">{{ $fullName }}</h1>
+            <div class="flex flex-wrap items-center gap-2 md:gap-3 mt-0.5">
                 <a href="mailto:{{ $user->email }}"
                    class="text-xs text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1">
                     {{ $user->email }}
@@ -41,7 +41,7 @@
     @else
 
         <!-- Resumen -->
-        <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
             <div class="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-2xl p-4 text-center">
                 <p class="text-[10px] text-red-400 uppercase tracking-widest font-bold mb-1">Cuotas pendientes</p>
                 <p class="text-2xl font-black text-red-600 dark:text-red-400">{{ $pendingInstallments->count() }}</p>
@@ -56,8 +56,8 @@
             </div>
         </div>
 
-        <!-- Tabla de cuotas -->
-        <div class="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
+        <!-- Tabla desktop -->
+        <div class="hidden md:block bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
             <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 <div class="col-span-2">Préstamo</div>
                 <div class="col-span-1 text-center">N°</div>
@@ -136,14 +136,110 @@
                 @endforeach
             </div>
 
-            <!-- Total final -->
-            <div class="grid grid-cols-12 gap-4 px-4 py-4 bg-gray-900 dark:bg-gray-800 text-white items-center">
+            <!-- Total final desktop -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-4 bg-gray-100 dark:bg-white text-gray-900 dark:text-gray-900 items-center">
                 <div class="col-span-8 text-right pr-4">
-                    <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Total a cobrar</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-600">Total a cobrar</span>
                 </div>
                 <div class="col-span-4 text-right">
                     <p class="text-lg font-black">S/ {{ number_format($totalDebt + $totalLateFee, 2, '.', ',') }}</p>
                 </div>
+            </div>
+        </div>
+
+        <!-- Cards mobile -->
+        <div class="md:hidden space-y-3">
+            @foreach($pendingInstallments as $inst)
+                @php
+                    $isOverdue = $inst->due_date->lt(now()->startOfDay());
+                    $cur = $inst->loan->currency === 'USD' ? '$' : 'S/';
+                    $totalWithFee = $inst->amount + ($inst->late_fee ?? 0);
+                @endphp
+                <div class="bg-white dark:bg-gray-950 border rounded-2xl overflow-hidden shadow-sm
+                    {{ $isOverdue ? 'border-red-200 dark:border-red-800' : 'border-gray-200 dark:border-gray-800' }}">
+                    <!-- Card header -->
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800
+                        {{ $isOverdue ? 'bg-red-50/70 dark:bg-red-950/20' : 'bg-gray-50/50 dark:bg-gray-900/30' }}">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="inline-flex w-7 h-7 rounded-lg items-center justify-center text-[10px] font-black tabular-nums flex-shrink-0
+                                {{ $isOverdue ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' }}">
+                                #{{ $inst->installment_number }}
+                            </span>
+                            <a href="{{ route('superadmin.installments.index', ['filter' => 'grouped']) }}#loan-{{ $inst->loan_id }}"
+                               class="text-xs font-bold text-blue-500 hover:text-blue-600 dark:text-blue-400 truncate">
+                                {{ $inst->loan->code }}
+                            </a>
+                        </div>
+                        @if($isOverdue)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[9px] font-bold flex-shrink-0">
+                                VENCIDA
+                            </span>
+                        @elseif($inst->status === 'processing')
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 text-[9px] font-bold flex-shrink-0">
+                                VALIDANDO
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-[9px] font-bold flex-shrink-0">
+                                PENDIENTE
+                            </span>
+                        @endif
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="p-4 space-y-3">
+                        <!-- Fecha vencimiento -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Vencimiento</span>
+                            <div class="text-right">
+                                <p class="text-sm font-bold {{ $isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">
+                                    {{ $inst->due_date->format('d/m/Y') }}
+                                </p>
+                                @if($isOverdue)
+                                    <p class="text-[9px] text-red-400 dark:text-red-500 font-medium">
+                                        Hace {{ now()->startOfDay()->diffInDays($inst->due_date) }} días
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Cuota -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Cuota</span>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $cur }} {{ number_format($inst->amount, 2) }}</p>
+                                <p class="text-[9px] text-gray-400">C: {{ $cur }}{{ number_format($inst->capital ?? 0, 2) }} • I: {{ $cur }}{{ number_format($inst->interest ?? 0, 2) }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Mora -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Mora</span>
+                            @if($inst->late_fee > 0)
+                                <div class="text-right">
+                                    <p class="text-sm font-bold text-orange-500">{{ $cur }} {{ number_format($inst->late_fee, 2) }}</p>
+                                    <span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-orange-500">
+                                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 488.5 488.5"><path d="M196.7 169.5c41.2 0 74.7 33.4 74.7 74.7 0 41.2-33.4 74.7-74.7 74.7S122 285.5 122 244.2C122 203 155.4 169.5 196.7 169.5zM196.8 193.1c-.9 0-1.9 0-2.8 0c-3 .1-3.5.6-3.6 3.6c0 1.4 0 2.7 0 4.1c0 4 0 4-3.9 5.4c-9.3 3.4-15 9.7-15.7 19.9c-.5 9 4.1 15 11.5 19.5c4.5 2.7 9.6 4.3 14.4 6.5c1.9.8 3.7 1.8 5.2 3.1c4.6 3.8 3.8 10.2-1.7 12.6c-2.9 1.3-6 1.6-9.2 1.2c-4.9-.6-9.6-1.9-14.1-4.2c-2.6-1.4-3.4-1-4.2 1.8c-.8 2.4-1.4 4.9-2.1 7.3c-.9 3.3-.6 4.1 2.6 5.6c4 1.9 8.3 2.9 12.7 3.6c3.4.5 3.5.7 3.6 4.2c0 1.6 0 3.2 0 4.8c0 2 1 3.2 3.1 3.2c2.4 0 4.8 0 7.1 0c1.9 0 2.9-1.1 2.9-3.1c0-2.2.1-4.4 0-6.6s.9-3.4 3-4c5-1.4 9.2-4 12.5-8c9-11 5.6-27-7.2-34.1c-4-2.2-8.3-3.9-12.5-5.7c-2.4-1-4.8-2.2-6.9-3.9c-4.1-3.3-3.3-8.5 1.5-10.6c1.3-.6 2.8-.8 4.2-.9c5.5-.3 10.8.7 15.8 3.1c2.5 1.2 3.3.8 4.2-1.8c.9-2.7 1.6-5.5 2.4-8.3c.5-1.9-.1-3.1-1.9-3.9c-3.2-1.4-6.5-2.4-10-3c-4.5-.7-4.5-.7-4.5-5.3C203.2 193.1 203.2 193.1 196.8 193.1z"/></svg>
+                                        CON MORA
+                                    </span>
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-300 dark:text-gray-600 font-medium">—</p>
+                            @endif
+                        </div>
+
+                        <!-- Total card -->
+                        <div class="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total</span>
+                            <p class="text-base font-black {{ $isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">{{ $cur }} {{ number_format($totalWithFee, 2) }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+
+            <!-- Total final mobile -->
+            <div class="bg-gray-100 dark:bg-white border border-gray-200 dark:border-gray-300 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-700">Total a cobrar</span>
+                <p class="text-xl font-black text-gray-900 dark:text-gray-900">S/ {{ number_format($totalDebt + $totalLateFee, 2, '.', ',') }}</p>
             </div>
         </div>
     @endif

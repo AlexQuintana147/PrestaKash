@@ -490,17 +490,18 @@ class LoanController extends Controller
 
     public function debtorDetail(\App\Models\User $user)
     {
-        $pendingInstallments = \App\Models\LoanInstallment::with(['loan'])
+        $overdueInstallments = \App\Models\LoanInstallment::with(['loan'])
             ->whereHas('loan', function ($q) use ($user) {
                 $q->where('user_id', $user->id)->whereIn('status', ['approved', 'paid']);
             })
             ->where('status', '!=', 'approved')
+            ->where('due_date', '<', now()->startOfDay())
             ->orderBy('due_date', 'asc')
             ->get();
 
         $totalDebt = 0;
         $totalLateFee = 0;
-        foreach ($pendingInstallments as $inst) {
+        foreach ($overdueInstallments as $inst) {
             $totalDebt += $inst->amount;
             $totalLateFee += ($inst->late_fee ?? 0);
         }
@@ -513,7 +514,7 @@ class LoanController extends Controller
             'user' => $user,
             'photo' => $photo,
             'fullName' => $fullName,
-            'pendingInstallments' => $pendingInstallments,
+            'pendingInstallments' => $overdueInstallments,
             'totalDebt' => $totalDebt,
             'totalLateFee' => $totalLateFee,
         ]);
