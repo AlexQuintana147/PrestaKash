@@ -84,8 +84,7 @@
                             </a>
                         </div>
                         <div class="col-span-1 text-center">
-                            <span class="inline-flex w-6 h-6 rounded-full items-center justify-center text-[9px] font-black tabular-nums
-                                {{ $isOverdue ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' }}">
+                            <span class="inline-flex w-6 h-6 rounded-full items-center justify-center text-[9px] font-black tabular-nums bg-red-500 text-white">
                                 {{ $inst->installment_number }}
                             </span>
                         </div>
@@ -119,15 +118,15 @@
                         </div>
                         <div class="col-span-1 text-center">
                             @if($isOverdue)
-                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[8px] font-bold">
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">
                                     VENCIDA
                                 </span>
                             @elseif($inst->status === 'processing')
-                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 text-[8px] font-bold">
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">
                                     VALIDANDO
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-[8px] font-bold">
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">
                                     PENDIENTE
                                 </span>
                             @endif
@@ -161,8 +160,7 @@
                     <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800
                         {{ $isOverdue ? 'bg-red-50/70 dark:bg-red-950/20' : 'bg-gray-50/50 dark:bg-gray-900/30' }}">
                         <div class="flex items-center gap-2 min-w-0">
-                            <span class="inline-flex w-7 h-7 rounded-lg items-center justify-center text-[10px] font-black tabular-nums flex-shrink-0
-                                {{ $isOverdue ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' }}">
+                            <span class="inline-flex w-7 h-7 rounded-lg items-center justify-center text-[10px] font-black tabular-nums flex-shrink-0 bg-red-500 text-white">
                                 #{{ $inst->installment_number }}
                             </span>
                             <a href="{{ route('superadmin.installments.index', ['filter' => 'grouped']) }}#loan-{{ $inst->loan_id }}"
@@ -171,15 +169,15 @@
                             </a>
                         </div>
                         @if($isOverdue)
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[9px] font-bold flex-shrink-0">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">
                                 VENCIDA
                             </span>
                         @elseif($inst->status === 'processing')
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 text-[9px] font-bold flex-shrink-0">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">
                                 VALIDANDO
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-[9px] font-bold flex-shrink-0">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">
                                 PENDIENTE
                             </span>
                         @endif
