@@ -488,6 +488,37 @@ class LoanController extends Controller
         return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
     }
 
+    public function debtorDetail(\App\Models\User $user)
+    {
+        $pendingInstallments = \App\Models\LoanInstallment::with(['loan'])
+            ->whereHas('loan', function ($q) use ($user) {
+                $q->where('user_id', $user->id)->whereIn('status', ['approved', 'paid']);
+            })
+            ->where('status', '!=', 'approved')
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        $totalDebt = 0;
+        $totalLateFee = 0;
+        foreach ($pendingInstallments as $inst) {
+            $totalDebt += $inst->amount;
+            $totalLateFee += ($inst->late_fee ?? 0);
+        }
+
+        $selfie = $user->documents?->selfie;
+        $photo = $selfie ? \Storage::url($selfie) : ($user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name));
+        $fullName = $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '') ?: $user->name);
+
+        return view('superadmin.loans.debtor-detail', [
+            'user' => $user,
+            'photo' => $photo,
+            'fullName' => $fullName,
+            'pendingInstallments' => $pendingInstallments,
+            'totalDebt' => $totalDebt,
+            'totalLateFee' => $totalLateFee,
+        ]);
+    }
+
     public function installmentsGroup(Request $request, \App\Models\Loan $loan)
     {
         $page = (int) $request->get('page', 1);
