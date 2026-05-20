@@ -155,7 +155,7 @@
                             'suffix' => '%'
                         ] : null,
                         'Línea de crédito' => ($status === 'approved' && !$user->is_ghost) ? [
-                            'value' => number_format($user->credit_line ?? 500, 2, '.', ''),
+                            'value' => number_format($user->credit_line ?? 500, 2, '.', ','),
                             'editable' => true,
                             'field' => 'credit_line',
                             'prefix' => 'S/ '
