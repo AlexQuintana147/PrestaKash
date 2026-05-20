@@ -829,6 +829,8 @@
                 </div>
                 <div id="codesList" class="flex-1 overflow-y-auto space-y-2 pr-2">
                 </div>
+                <div id="codesPagination" class="mt-4 flex items-center justify-center gap-4">
+                </div>
             </div>
         </div>
     </div>
@@ -998,8 +1000,10 @@
 
         let currentMovements = [];
         let currentSymbol = 'S/';
-        let currentPage = 1;
         const itemsPerPage = 10;
+        const recentItemsCount = 5;
+        let codesCurrentPage = 1;
+        let codesFilteredMovements = [];
 
         function updateActiveCard() {
             let activeIndex = 0;
@@ -1041,7 +1045,6 @@
                 currentMovements = JSON.parse(activeCard.dataset.movements);
                 const currency = activeCard.querySelector('.cb-currency-label').textContent;
                 currentSymbol = currency === 'USD' ? '$' : 'S/';
-                currentPage = 1;
                 renderMovements();
             }
         }
@@ -1058,9 +1061,7 @@
 
             noMovements.classList.add('hidden');
 
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const paginatedItems = currentMovements.slice(start, end);
+            const paginatedItems = currentMovements.slice(0, recentItemsCount);
 
             paginatedItems.forEach((m, i) => {
                 const isIncome = m.type === 'income';
@@ -1141,58 +1142,6 @@
                                             `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
-
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const totalPages = Math.ceil(currentMovements.length / itemsPerPage);
-            if (totalPages <= 1) return;
-
-            let html = '';
-
-            // Previous button
-            html += `
-                                                                                                                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
-                                                                                                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                                                                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                                                                                                            </svg>
-                                                                                                                        </button>
-                                                                                                                    `;
-
-            // Page numbers (simplified for now, showing all if few, or range)
-            for (let i = 1; i <= totalPages; i++) {
-                const isActive = i === currentPage;
-                html += `
-                                                                                                                            <button onclick="changePage(${i})" 
-                                                                                                                                class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">
-                                                                                                                                ${i}
-                                                                                                                            </button>
-                                                                                                                        `;
-            }
-
-            // Next button
-            html += `
-                                                                                                                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
-                                                                                                                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all">
-                                                                                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                                                                                                            </svg>
-                                                                                                                        </button>
-                                                                                                                    `;
-
-            movementsPagination.innerHTML = html;
-        }
-
-        function changePage(page) {
-            const totalPages = Math.ceil(currentMovements.length / itemsPerPage);
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            renderMovements();
-
-            // Scroll to movements section top
-            movementsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function scrollCarousel(direction) {
@@ -1562,7 +1511,9 @@
 
         function renderCodesList(movements) {
             const codesList = document.getElementById('codesList');
+            const codesPagination = document.getElementById('codesPagination');
             codesList.innerHTML = '';
+            codesPagination.innerHTML = '';
 
             if (movements.length === 0) {
                 codesList.innerHTML = '<p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] text-center py-16">Sin resultados</p>';
@@ -1577,7 +1528,11 @@
                 'transfer': 'DESPLAZAMIENTO'
             };
 
-            movements.forEach(m => {
+            const start = (codesCurrentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = movements.slice(start, end);
+
+            paginatedItems.forEach(m => {
                 const isIncome = m.type === 'income';
                 const dateObj = new Date(m.date);
                 const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
@@ -1601,10 +1556,48 @@
                     </div>
                 `);
             });
+
+            renderCodesPagination(movements);
+        }
+
+        function renderCodesPagination(movements) {
+            const codesPagination = document.getElementById('codesPagination');
+            const totalPages = Math.ceil(movements.length / itemsPerPage);
+            if (totalPages <= 1) {
+                codesPagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            html += `<button onclick="changeCodesPage(${codesCurrentPage - 1})" ${codesCurrentPage === 1 ? 'disabled' : ''} class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>`;
+
+            let startPage = Math.max(1, codesCurrentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const isActive = i === codesCurrentPage;
+                html += `<button onclick="changeCodesPage(${i})" class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">${i}</button>`;
+            }
+
+            html += `<button onclick="changeCodesPage(${codesCurrentPage + 1})" ${codesCurrentPage === totalPages ? 'disabled' : ''} class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>`;
+
+            codesPagination.innerHTML = html;
+        }
+
+        function changeCodesPage(page) {
+            const totalPages = Math.ceil(codesFilteredMovements.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            codesCurrentPage = page;
+            renderCodesList(codesFilteredMovements);
+            document.getElementById('codesList').scrollTop = 0;
         }
 
         function openCodesModal() {
             document.getElementById('codeSearchInput').value = '';
+            codesCurrentPage = 1;
+            codesFilteredMovements = currentMovements;
             renderCodesList(currentMovements);
             document.getElementById('codesModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -1612,15 +1605,17 @@
 
         function filterCodes() {
             const query = document.getElementById('codeSearchInput').value.toLowerCase().trim();
+            codesCurrentPage = 1;
             if (!query) {
+                codesFilteredMovements = currentMovements;
                 renderCodesList(currentMovements);
                 return;
             }
-            const filtered = currentMovements.filter(m =>
+            codesFilteredMovements = currentMovements.filter(m =>
                 (m.code && m.code.toLowerCase().includes(query)) ||
                 (m.description && m.description.toLowerCase().includes(query))
             );
-            renderCodesList(filtered);
+            renderCodesList(codesFilteredMovements);
         }
 
         function closeCodesModal() {
