@@ -708,6 +708,13 @@
 <script>
 let currentScale = 1;
 
+function formatCurrencyInput(cents) {
+    let amount = cents / 100;
+    let parts = amount.toFixed(2).split('.');
+    let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return intPart + '.' + parts[1];
+}
+
 function openBlockModal() {
     document.getElementById('blockModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -837,6 +844,19 @@ document.getElementById('rejectModal').addEventListener('click', e => {
                     this.setSelectionRange(start, start);
                 }
             };
+        } else if (field === 'credit_line') {
+            fieldValueEl.placeholder = 'Ej: 2000 = 20.00';
+            let initialNum = parseFloat(value) || 0;
+            let cents = Math.round(initialNum * 100);
+            fieldValueEl.value = formatCurrencyInput(cents);
+            fieldValueEl.oninput = function() {
+                let rawDigits = this.value.replace(/\D/g, '');
+                if (rawDigits.length === 0) rawDigits = '0';
+                let cursorPos = this.value.length;
+                this.value = formatCurrencyInput(parseInt(rawDigits, 10));
+                let newPos = this.value.length;
+                this.setSelectionRange(newPos, newPos);
+            };
         }
 
         document.getElementById('editFieldModal').classList.remove('hidden');
@@ -866,6 +886,14 @@ document.getElementById('rejectModal').addEventListener('click', e => {
             const num = parseFloat(value);
             if (isNaN(num) || num < 0 || num > 100) {
                 error = 'La tasa debe ser un número entre 0 y 100.';
+            }
+        } else if (field === 'credit_line') {
+            let cleanValue = value.replace(/,/g, '');
+            const num = parseFloat(cleanValue);
+            if (isNaN(num) || num < 0) {
+                error = 'La línea de crédito debe ser un número positivo.';
+            } else {
+                document.getElementById('editFieldValue').value = cleanValue;
             }
         }
 
