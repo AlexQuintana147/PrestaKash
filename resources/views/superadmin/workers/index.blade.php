@@ -10,7 +10,7 @@
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Trabajadores</h1>
         </div>
         <a href="{{ route('superadmin.workers.create') }}"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg text-xs font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+            class="inline-flex items-center gap-2 px-0 py-2 bg-transparent border-0 border-b border-orange-300 dark:border-orange-800 text-orange-500 text-xs font-bold hover:border-orange-500 dark:hover:border-orange-500 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Nuevo trabajador
         </a>

@@ -147,9 +147,15 @@
             @enderror
         </div>
 
-        <div class="pt-6 flex flex-col sm:flex-row gap-3 justify-end">
-            <a href="{{ route('superadmin.workers.index') }}" class="px-6 py-2.5 text-center text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Cancelar</a>
-            <button type="submit" class="px-8 py-2.5 text-center text-sm font-bold text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors">Guardar trabajador</button>
+        <div class="pt-6 flex flex-col sm:flex-row gap-6 justify-end">
+            <button type="button" onclick="window.location='{{ route('superadmin.workers.index') }}'"
+                class="px-0 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-transparent border-0 border-b border-gray-300 dark:border-gray-700 hover:border-gray-500 dark:hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors text-left sm:text-right">
+                Cancelar
+            </button>
+            <button type="submit"
+                class="px-0 py-2 text-sm font-bold text-orange-500 bg-transparent border-0 border-b border-orange-300 dark:border-orange-800 hover:border-orange-500 dark:hover:border-orange-500 transition-colors text-left sm:text-right">
+                Guardar trabajador
+            </button>
         </div>
     </form>
 
