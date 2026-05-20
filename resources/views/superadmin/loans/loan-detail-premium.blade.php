@@ -62,7 +62,7 @@
             <div><p class="text-[9px] text-gray-400 mb-0.5">Tipo</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ $loan->type === 'cuotas' ? 'Cuotas' : 'Pago único' }}</p></div>
             <div><p class="text-[9px] text-gray-400 mb-0.5">Moneda</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ $loan->currency === 'USD' ? 'USD' : 'PEN' }}</p></div>
             <div><p class="text-[9px] text-gray-400 mb-0.5">Plazo</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ $loan->months ?? '-' }} meses</p></div>
-            <div><p class="text-[9px] text-gray-400 mb-0.5">Interés</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ ($loan->interest_rate ?? 0)*100 }}% mensual</p></div>
+            <div><p class="text-[9px] text-gray-400 mb-0.5">Interés</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ number_format(($loan->interest_rate ?? 0), 2) }}% mensual</p></div>
             <div><p class="text-[9px] text-gray-400 mb-0.5">Desembolso</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '-' }}</p></div>
             <div><p class="text-[9px] text-gray-400 mb-0.5">Estado</p><p class="text-xs font-semibold {{ $loan->in_default ? 'text-red-600' : 'text-emerald-600' }}">{{ $loan->in_default ? 'Default' : 'Normal' }}</p></div>
         </div>
@@ -164,8 +164,8 @@
     @if($userInstallments->hasPages())
     <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
         @if(!$userInstallments->onFirstPage())
-            <button type="button" onclick="loadGroupPage(this)" data-loan-id="{{ $loan->id }}" data-page="{{ $userInstallments->currentPage() - 1 }}"
-                class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 transition-colors">← Anterior</button>
+            <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $userInstallments->currentPage() - 1 }}&source=modal"
+                class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 transition-colors">← Anterior</a>
         @else
             <div></div>
         @endif
@@ -175,8 +175,8 @@
                 @if($i == $userInstallments->currentPage())
                     <span class="w-7 h-7 flex items-center justify-center rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold">{{ $i }}</span>
                 @elseif(abs($i - $userInstallments->currentPage()) <= 2 || $i == 1 || $i == $userInstallments->lastPage())
-                    <button type="button" onclick="loadGroupPage(this)" data-loan-id="{{ $loan->id }}" data-page="{{ $i }}"
-                        class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 transition-colors">{{ $i }}</button>
+                    <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $i }}&source=modal"
+                        class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 transition-colors">{{ $i }}</a>
                 @elseif(abs($i - $userInstallments->currentPage()) == 3)
                     <span class="text-gray-300 dark:text-gray-700 text-[10px]">...</span>
                 @endif
@@ -184,8 +184,8 @@
         </div>
 
         @if($userInstallments->hasMorePages())
-            <button type="button" onclick="loadGroupPage(this)" data-loan-id="{{ $loan->id }}" data-page="{{ $userInstallments->currentPage() + 1 }}"
-                class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg text-xs font-bold text-white dark:text-gray-900 transition-colors">Siguiente →</button>
+            <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $userInstallments->currentPage() + 1 }}&source=modal"
+                class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg text-xs font-bold text-white dark:text-gray-900 transition-colors">Siguiente →</a>
         @else
             <div></div>
         @endif
