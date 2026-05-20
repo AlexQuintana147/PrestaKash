@@ -108,6 +108,25 @@ class User extends Authenticatable
         return $this->role?->name === 'trabajador';
     }
 
+    public function workerPermissions()
+    {
+        return $this->hasMany(WorkerPermission::class);
+    }
+
+    public function hasPermission(string $section, string $action = 'view'): bool
+    {
+        if ($this->isSuperAdmin() || $this->isAdmin()) return true;
+        $perm = $this->workerPermissions()->where('section', $section)->first();
+        if (!$perm) return false;
+        return match($action) {
+            'view' => $perm->can_view,
+            'create' => $perm->can_create,
+            'edit' => $perm->can_edit,
+            'delete' => $perm->can_delete,
+            default => false,
+        };
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->role?->name === 'superadmin';

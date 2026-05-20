@@ -85,6 +85,14 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/solicitudes-cambio/{profileChangeRequest}/aprobar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'approveProfileChange'])->name('profile-changes.approve');
     Route::post('/solicitudes-cambio/{profileChangeRequest}/rechazar', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'rejectProfileChange'])->name('profile-changes.reject');
 
+    // Gestión de Trabajadores
+    Route::get('/trabajadores', [\App\Http\Controllers\SuperAdmin\WorkerController::class, 'index'])->name('workers.index');
+    Route::get('/trabajadores/crear', [\App\Http\Controllers\SuperAdmin\WorkerController::class, 'create'])->name('workers.create');
+    Route::post('/trabajadores', [\App\Http\Controllers\SuperAdmin\WorkerController::class, 'store'])->name('workers.store');
+    Route::get('/trabajadores/{worker}/editar', [\App\Http\Controllers\SuperAdmin\WorkerController::class, 'edit'])->name('workers.edit');
+    Route::put('/trabajadores/{worker}', [\App\Http\Controllers\SuperAdmin\WorkerController::class, 'update'])->name('workers.update');
+    Route::delete('/trabajadores/{worker}', [\App\Http\Controllers\SuperAdmin\WorkerController::class, 'destroy'])->name('workers.destroy');
+
     // Gestión de Inversores
     Route::get('/inversores', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'index'])->name('investors.index');
     Route::post('/inversores/{application}/aprobar', [\App\Http\Controllers\SuperAdmin\InvestorController::class, 'approve'])->name('investors.approve');
