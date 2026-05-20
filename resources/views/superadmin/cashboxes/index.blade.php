@@ -256,6 +256,10 @@
                             class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                             Exportar PDF
                         </button>
+                        <button onclick="exportExcel()"
+                            class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors">
+                            Exportar Excel
+                        </button>
                         <button onclick="openHistoryModal()"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                             Historial Completo
@@ -982,6 +986,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <script>
         const carousel = document.getElementById('cashboxCarousel');
@@ -1759,6 +1764,96 @@
                 doc.save(fileName);
             } catch (e) {
                 console.error('Error generando PDF:', e);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function exportExcel() {
+            const activeCard = document.querySelector('.cashbox-card.active');
+            if (!activeCard) return;
+
+            const cashboxId = activeCard.dataset.id;
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Generando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/gestion-interna/cajas/${cashboxId}/all-movements`);
+                const data = await res.json();
+
+                const cb = data.cashbox;
+                const symbol = cb.currency === 'USD' ? '$' : 'S/';
+                const movements = data.movements;
+
+                const typeLabels = {
+                    'loan': 'Préstamo',
+                    'loan_installment': 'Cobranza',
+                    'investment': 'Inversión',
+                    'manual': 'Manual',
+                    'transfer': 'Desplazamiento'
+                };
+
+                let totalIncome = 0;
+                let totalExpense = 0;
+                movements.forEach(m => {
+                    if (m.type === 'income') totalIncome += parseFloat(m.amount);
+                    else totalExpense += parseFloat(m.amount);
+                });
+
+                const wb = XLSX.utils.book_new();
+
+                const summaryData = [
+                    ['PrestaKash — Reporte de Movimientos'],
+                    [],
+                    ['Caja', cb.name],
+                    ['Banco', cb.bank_name],
+                    ['Cuenta', cb.account_number || '—'],
+                    ['Saldo Actual', `${symbol} ${parseFloat(cb.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
+                    ['Moneda', cb.currency],
+                    [],
+                    ['Total Ingresos', `${symbol} ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
+                    ['Total Egresos', `${symbol} ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
+                    ['Balance Neto', `${symbol} ${(totalIncome - totalExpense).toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
+                    [],
+                    ['Generado', new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })]
+                ];
+                const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+                wsSummary['!cols'] = [{ wch: 20 }, { wch: 40 }];
+                XLSX.utils.book_append_sheet(wb, wsSummary, 'Resumen');
+
+                const header = ['Código', 'Fecha', 'Hora', 'Descripción', 'Tipo', 'Clase', 'Registrado por', 'Monto', 'Moneda'];
+                const rows = movements.map(m => {
+                    const dateObj = new Date(m.date);
+                    const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+                    const type = m.type === 'income' ? 'Ingreso' : 'Egreso';
+                    const displayType = typeLabels[m.reference_type] || 'Operación';
+                    const amount = parseFloat(m.amount);
+                    const userName = m.user ? m.user.name : 'Sistema';
+                    return [m.code || '—', date, time, m.description, displayType, type, userName, amount, cb.currency];
+                });
+
+                const wsMovements = XLSX.utils.aoa_to_sheet([header, ...rows]);
+                wsMovements['!cols'] = [
+                    { wch: 16 },
+                    { wch: 16 },
+                    { wch: 8 },
+                    { wch: 35 },
+                    { wch: 16 },
+                    { wch: 10 },
+                    { wch: 20 },
+                    { wch: 14 },
+                    { wch: 8 }
+                ];
+                XLSX.utils.book_append_sheet(wb, wsMovements, 'Movimientos');
+
+                const fileName = `movimientos_${cb.name.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+            } catch (e) {
+                console.error('Error generando Excel:', e);
             } finally {
                 btn.textContent = originalText;
                 btn.disabled = false;
