@@ -42,17 +42,17 @@
 
         <!-- Resumen -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-            <div class="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-2xl p-4 text-center">
-                <p class="text-[10px] text-red-400 uppercase tracking-widest font-bold mb-1">Cuotas pendientes</p>
-                <p class="text-2xl font-black text-red-600 dark:text-red-400">{{ $pendingInstallments->count() }}</p>
+            <div class="bg-red-500 dark:bg-red-600 rounded-2xl p-4 text-center shadow-lg shadow-red-500/25">
+                <p class="text-[10px] text-red-100 uppercase tracking-widest font-bold mb-1">Cuotas pendientes</p>
+                <p class="text-2xl font-black text-white">{{ $pendingInstallments->count() }}</p>
             </div>
-            <div class="bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4 text-center">
+            <div class="bg-gray-900 dark:bg-black rounded-2xl p-4 text-center shadow-lg shadow-gray-900/25">
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Capital + Interés</p>
-                <p class="text-2xl font-black text-gray-900 dark:text-white">S/ {{ number_format($totalDebt, 2, '.', ',') }}</p>
+                <p class="text-2xl font-black text-white">S/ {{ number_format($totalDebt, 2, '.', ',') }}</p>
             </div>
-            <div class="bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 rounded-2xl p-4 text-center">
-                <p class="text-[10px] text-orange-400 uppercase tracking-widest font-bold mb-1">Mora acumulada</p>
-                <p class="text-2xl font-black text-orange-500">+ S/ {{ number_format($totalLateFee, 2, '.', ',') }}</p>
+            <div class="bg-orange-500 dark:bg-orange-600 rounded-2xl p-4 text-center shadow-lg shadow-orange-500/25">
+                <p class="text-[10px] text-orange-100 uppercase tracking-widest font-bold mb-1">Mora acumulada</p>
+                <p class="text-2xl font-black text-white">+ S/ {{ number_format($totalLateFee, 2, '.', ',') }}</p>
             </div>
         </div>
 
