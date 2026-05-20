@@ -56,11 +56,16 @@
                     Pagadas
                 </a>
             </div>
+            <a href="{{ route('superadmin.installments.index', ['filter' => 'overdue']) }}"
+               class="flex items-center justify-center gap-2 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border w-full mt-2
+                      {{ $filter === 'overdue' ? 'bg-red-600 text-white border-transparent' : 'bg-transparent text-red-500 border-red-200 dark:border-red-900' }}">
+                Cuotas vencidas
+            </a>
         </div>
 
         <!-- Filtros Desktop -->
         <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
-            @foreach(['all' => 'Todas las cuotas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas'] as $key => $label)
+            @foreach(['all' => 'Todas las cuotas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas', 'overdue' => 'Cuotas vencidas'] as $key => $label)
                 <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
                     class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors flex items-center gap-2
                               {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
@@ -71,7 +76,7 @@
                         </svg>
                     @endif
                     @if($filter === $key)
-                        <span class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'paid' ? 'bg-green-500' : 'bg-gray-900 dark:bg-white' }}"></span>
+                        <span class="absolute bottom-0 left-0 right-0 h-px {{ $key === 'paid' ? 'bg-green-500' : ($key === 'overdue' ? 'bg-red-600' : 'bg-gray-900 dark:bg-white') }}"></span>
                     @endif
                 </a>
             @endforeach
@@ -197,6 +202,50 @@
             @if(isset($loansPaginator) && $loansPaginator->hasPages())
                 <div class="mt-12 flex justify-center">
                     {{ $loansPaginator->links() }}
+                </div>
+            @endif
+        @elseif($filter === 'overdue')
+            <div class="space-y-3">
+                @forelse($overdueDebtors as $debtor)
+                    @php
+                        $user = $debtor['user'];
+                        $selfie = $user->documents?->selfie;
+                        $photo = $selfie ? Storage::url($selfie) : ($user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=fee2e2&color=b91c1c');
+                        $firstName = $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : ($user->first_name ?? $user->name);
+                        $daysOverdue = now()->startOfDay()->diffInDays($debtor['first_due_date']);
+                    @endphp
+                    <a href="{{ route('superadmin.users.show', $user) }}"
+                       class="flex items-center gap-4 p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 hover:border-red-300 dark:hover:border-red-700 transition-colors">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 ring-2 ring-red-200 dark:ring-red-800">
+                            <img src="{{ $photo }}" class="w-full h-full object-cover" alt="{{ $firstName }}">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $firstName }}</p>
+                            <div class="flex items-center gap-3 mt-1">
+                                <span class="text-[10px] font-medium text-red-600 dark:text-red-400">
+                                    Desde {{ $debtor['first_due_date']->format('d/m/Y') }}
+                                    ({{ $daysOverdue }} días)
+                                </span>
+                                <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                                    {{ $debtor['installments_count'] }} cuota{{ $debtor['installments_count'] > 1 ? 's' : '' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <p class="text-sm font-black text-red-600 dark:text-red-400">S/ {{ number_format($debtor['total_debt'], 2, '.', ',') }}</p>
+                        </div>
+                    </a>
+                @empty
+                    <div class="py-24 text-center">
+                        <svg class="w-12 h-12 mx-auto text-green-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">Sin cuotas vencidas</p>
+                    </div>
+                @endforelse
+            </div>
+
+            @if(method_exists($overdueDebtors, 'links') && $overdueDebtors->hasPages())
+                <div class="mt-12 flex justify-center">
+                    {{ $overdueDebtors->links() }}
                 </div>
             @endif
         @else

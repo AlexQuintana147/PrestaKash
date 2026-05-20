@@ -376,6 +376,51 @@ class LoanController extends Controller
             );
             $installments->withQueryString();
             return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
+        } elseif ($filter === 'overdue') {
+            $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
+                ->whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
+                ->where('status', '!=', 'approved')
+                ->where('due_date', '<', now()->startOfDay())
+                ->orderBy('due_date', 'asc')
+                ->get();
+
+            $debtors = [];
+            foreach ($overdueInstallments as $inst) {
+                $user = $inst->loan->user;
+                $userId = $user->id;
+                if (!isset($debtors[$userId])) {
+                    $debtors[$userId] = [
+                        'user' => $user,
+                        'first_due_date' => $inst->due_date,
+                        'installments_count' => 0,
+                        'total_debt' => 0,
+                    ];
+                }
+                if ($inst->due_date->lt($debtors[$userId]['first_due_date'])) {
+                    $debtors[$userId]['first_due_date'] = $inst->due_date;
+                }
+                $debtors[$userId]['installments_count']++;
+                $debtors[$userId]['total_debt'] += ($inst->amount + ($inst->late_fee ?? 0));
+            }
+
+            $page = LengthAwarePaginator::resolveCurrentPage();
+            $perPage = 15;
+            $debtorList = collect(array_values($debtors));
+            $sliced = $debtorList->slice(($page - 1) * $perPage, $perPage);
+            $overdueDebtors = new LengthAwarePaginator(
+                $sliced,
+                $debtorList->count(),
+                $perPage,
+                $page,
+                ['path' => LengthAwarePaginator::resolveCurrentPath()]
+            );
+            $overdueDebtors->withQueryString();
+
+            return view('superadmin.loans.installments', [
+                'overdueDebtors' => $overdueDebtors,
+                'filter' => $filter,
+                'cashboxes' => $cashboxes
+            ]);
         } elseif ($filter === 'paid') {
             $query->where(function ($q) {
                 $q->where('status', 'approved')
