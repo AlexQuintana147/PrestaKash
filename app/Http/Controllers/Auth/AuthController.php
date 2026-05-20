@@ -82,7 +82,7 @@ class AuthController extends Controller
             'name' => explode('@', $request->email)[0],
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => 2,
+            'role_id' => \App\Models\Role::where('name', 'usuario')->value('id') ?? 3,
             'profile_completed' => false,
             'step1_completed' => false,
             'referred_by' => $referredBy,

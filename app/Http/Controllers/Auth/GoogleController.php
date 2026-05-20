@@ -58,7 +58,7 @@ class GoogleController extends Controller
                 'name'      => $googleUser->getName(),
                 'google_id' => $googleUser->getId(),
                 'avatar'    => $googleUser->getAvatar(),
-                'role_id'   => 2,
+                'role_id'   => \App\Models\Role::where('name', 'usuario')->value('id') ?? 3,
                 'password'  => null,
                 'referral_code' => User::generateReferralCode(),
             ]
