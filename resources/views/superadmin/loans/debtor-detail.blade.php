@@ -74,14 +74,45 @@
                         $isOverdue = $inst->due_date->lt(now()->startOfDay());
                         $cur = $inst->loan->currency === 'USD' ? '$' : 'S/';
                         $totalWithFee = $inst->amount + ($inst->late_fee ?? 0);
+                        $daysOverdue = $isOverdue ? now()->startOfDay()->diffInDays($inst->due_date) : 0;
+                        $loan = $inst->loan;
+                        $accDebt = $inst->accumulated_debt;
                     @endphp
-                    <div class="grid grid-cols-12 gap-4 px-4 py-3 items-center
-                        {{ $isOverdue ? 'bg-red-50/50 dark:bg-red-950/10' : '' }} hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                    <div class="grid grid-cols-12 gap-4 px-4 py-3 items-center cursor-pointer
+                        {{ $isOverdue ? 'bg-red-50/50 dark:bg-red-950/10' : '' }} hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors installment-row"
+                        data-installment-id="{{ $inst->id }}"
+                        data-loan-code="{{ $loan->code }}"
+                        data-loan-type="{{ $loan->type }}"
+                        data-loan-currency="{{ $loan->currency }}"
+                        data-loan-amount="{{ $loan->amount }}"
+                        data-loan-total="{{ $loan->total_amount ?? $loan->amount }}"
+                        data-loan-interest-rate="{{ $loan->interest_rate ?? 0 }}"
+                        data-loan-months="{{ $loan->months ?? '-' }}"
+                        data-loan-disbursement="{{ $loan->disbursement_date ? (\Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y')) : '-' }}"
+                        data-loan-status="{{ $loan->status }}"
+                        data-late-fee-enabled="{{ $loan->late_fee_enabled ? 'true' : 'false' }}"
+                        data-grace-days="{{ $loan->grace_days ?? 0 }}"
+                        data-late-fee-rate="{{ $loan->late_fee_rate ?? 0 }}"
+                        data-late-daily="{{ $loan->late_fee_daily_amount ?? 0 }}"
+                        data-in-default="{{ $loan->in_default ? 'true' : 'false' }}"
+                        data-inst-number="{{ $inst->installment_number }}"
+                        data-inst-amount="{{ $inst->amount }}"
+                        data-inst-capital="{{ $inst->capital ?? 0 }}"
+                        data-inst-interest="{{ $inst->interest ?? 0 }}"
+                        data-inst-due-date="{{ $inst->due_date->format('d/m/Y') }}"
+                        data-inst-status="{{ $inst->status }}"
+                        data-inst-late-fee="{{ $inst->late_fee ?? 0 }}"
+                        data-total-with-fee="{{ $totalWithFee }}"
+                        data-days-overdue="{{ $daysOverdue }}"
+                        data-acc-base="{{ $accDebt['base'] }}"
+                        data-acc-mora="{{ $accDebt['mora'] }}"
+                        data-acc-total="{{ $accDebt['total'] }}"
+                        data-acc-count="{{ $accDebt['count'] }}"
+                        data-user-email="{{ $user->email }}"
+                        data-user-phone="{{ $user->phone }}"
+                        data-user-name="{{ $fullName }}">
                         <div class="col-span-2">
-                            <a href="{{ route('superadmin.installments.index', ['filter' => 'grouped']) }}#loan-{{ $inst->loan_id }}"
-                               class="text-xs font-bold text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 truncate block">
-                                {{ $inst->loan->code }}
-                            </a>
+                            <span class="text-xs font-bold text-blue-500 dark:text-blue-400 truncate block">{{ $inst->loan->code }}</span>
                         </div>
                         <div class="col-span-1 text-center">
                             <span class="inline-flex w-6 h-6 rounded-full items-center justify-center text-[9px] font-black tabular-nums bg-red-500 text-white">
@@ -94,7 +125,7 @@
                             </p>
                             @if($isOverdue)
                                 <p class="text-[9px] text-red-400 dark:text-red-500 mt-0.5">
-                                    Hace {{ now()->startOfDay()->diffInDays($inst->due_date) }} días
+                                    Hace {{ $daysOverdue }} días
                                 </p>
                             @endif
                         </div>
@@ -105,10 +136,6 @@
                         <div class="col-span-2 text-right">
                             @if($inst->late_fee > 0)
                                 <p class="text-xs font-bold text-orange-500">{{ $cur }} {{ number_format($inst->late_fee, 2) }}</p>
-                                <span class="inline-flex items-center gap-0.5 text-[8px] font-bold text-orange-500 mt-0.5">
-                                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 488.5 488.5"><path d="M196.7 169.5c41.2 0 74.7 33.4 74.7 74.7 0 41.2-33.4 74.7-74.7 74.7S122 285.5 122 244.2C122 203 155.4 169.5 196.7 169.5zM196.8 193.1c-.9 0-1.9 0-2.8 0c-3 .1-3.5.6-3.6 3.6c0 1.4 0 2.7 0 4.1c0 4 0 4-3.9 5.4c-9.3 3.4-15 9.7-15.7 19.9c-.5 9 4.1 15 11.5 19.5c4.5 2.7 9.6 4.3 14.4 6.5c1.9.8 3.7 1.8 5.2 3.1c4.6 3.8 3.8 10.2-1.7 12.6c-2.9 1.3-6 1.6-9.2 1.2c-4.9-.6-9.6-1.9-14.1-4.2c-2.6-1.4-3.4-1-4.2 1.8c-.8 2.4-1.4 4.9-2.1 7.3c-.9 3.3-.6 4.1 2.6 5.6c4 1.9 8.3 2.9 12.7 3.6c3.4.5 3.5.7 3.6 4.2c0 1.6 0 3.2 0 4.8c0 2 1 3.2 3.1 3.2c2.4 0 4.8 0 7.1 0c1.9 0 2.9-1.1 2.9-3.1c0-2.2.1-4.4 0-6.6s.9-3.4 3-4c5-1.4 9.2-4 12.5-8c9-11 5.6-27-7.2-34.1c-4-2.2-8.3-3.9-12.5-5.7c-2.4-1-4.8-2.2-6.9-3.9c-4.1-3.3-3.3-8.5 1.5-10.6c1.3-.6 2.8-.8 4.2-.9c5.5-.3 10.8.7 15.8 3.1c2.5 1.2 3.3.8 4.2-1.8c.9-2.7 1.6-5.5 2.4-8.3c.5-1.9-.1-3.1-1.9-3.9c-3.2-1.4-6.5-2.4-10-3c-4.5-.7-4.5-.7-4.5-5.3C203.2 193.1 203.2 193.1 196.8 193.1z"/></svg>
-                                    CON MORA
-                                </span>
                             @else
                                 <p class="text-xs text-gray-300 dark:text-gray-600">—</p>
                             @endif
@@ -118,17 +145,11 @@
                         </div>
                         <div class="col-span-1 text-center">
                             @if($isOverdue)
-                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">
-                                    VENCIDA
-                                </span>
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">VENCIDA</span>
                             @elseif($inst->status === 'processing')
-                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">
-                                    VALIDANDO
-                                </span>
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">VALIDANDO</span>
                             @else
-                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">
-                                    PENDIENTE
-                                </span>
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[8px] font-bold">PENDIENTE</span>
                             @endif
                         </div>
                     </div>
@@ -153,79 +174,75 @@
                     $isOverdue = $inst->due_date->lt(now()->startOfDay());
                     $cur = $inst->loan->currency === 'USD' ? '$' : 'S/';
                     $totalWithFee = $inst->amount + ($inst->late_fee ?? 0);
+                    $daysOverdue = $isOverdue ? now()->startOfDay()->diffInDays($inst->due_date) : 0;
+                    $loan = $inst->loan;
+                    $accDebt = $inst->accumulated_debt;
                 @endphp
-                <div class="bg-white dark:bg-gray-950 border rounded-2xl overflow-hidden shadow-sm
-                    {{ $isOverdue ? 'border-red-200 dark:border-red-800' : 'border-gray-200 dark:border-gray-800' }}">
-                    <!-- Card header -->
+                <div class="bg-white dark:bg-gray-950 border rounded-2xl overflow-hidden shadow-sm cursor-pointer installment-row
+                    {{ $isOverdue ? 'border-red-200 dark:border-red-800' : 'border-gray-200 dark:border-gray-800' }}"
+                    data-installment-id="{{ $inst->id }}"
+                    data-loan-code="{{ $loan->code }}"
+                    data-loan-type="{{ $loan->type }}"
+                    data-loan-currency="{{ $loan->currency }}"
+                    data-loan-amount="{{ $loan->amount }}"
+                    data-loan-total="{{ $loan->total_amount ?? $loan->amount }}"
+                    data-loan-interest-rate="{{ $loan->interest_rate ?? 0 }}"
+                    data-loan-months="{{ $loan->months ?? '-' }}"
+                    data-loan-disbursement="{{ $loan->disbursement_date ? (\Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y')) : '-' }}"
+                    data-loan-status="{{ $loan->status }}"
+                    data-late-fee-enabled="{{ $loan->late_fee_enabled ? 'true' : 'false' }}"
+                    data-grace-days="{{ $loan->grace_days ?? 0 }}"
+                    data-late-fee-rate="{{ $loan->late_fee_rate ?? 0 }}"
+                    data-late-daily="{{ $loan->late_fee_daily_amount ?? 0 }}"
+                    data-in-default="{{ $loan->in_default ? 'true' : 'false' }}"
+                    data-inst-number="{{ $inst->installment_number }}"
+                    data-inst-amount="{{ $inst->amount }}"
+                    data-inst-capital="{{ $inst->capital ?? 0 }}"
+                    data-inst-interest="{{ $inst->interest ?? 0 }}"
+                    data-inst-due-date="{{ $inst->due_date->format('d/m/Y') }}"
+                    data-inst-status="{{ $inst->status }}"
+                    data-inst-late-fee="{{ $inst->late_fee ?? 0 }}"
+                    data-total-with-fee="{{ $totalWithFee }}"
+                    data-days-overdue="{{ $daysOverdue }}"
+                    data-acc-base="{{ $accDebt['base'] }}"
+                    data-acc-mora="{{ $accDebt['mora'] }}"
+                    data-acc-total="{{ $accDebt['total'] }}"
+                    data-acc-count="{{ $accDebt['count'] }}"
+                    data-user-email="{{ $user->email }}"
+                    data-user-phone="{{ $user->phone }}"
+                    data-user-name="{{ $fullName }}">
                     <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800
                         {{ $isOverdue ? 'bg-red-50/70 dark:bg-red-950/20' : 'bg-gray-50/50 dark:bg-gray-900/30' }}">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="inline-flex w-7 h-7 rounded-lg items-center justify-center text-[10px] font-black tabular-nums flex-shrink-0 bg-red-500 text-white">
                                 #{{ $inst->installment_number }}
                             </span>
-                            <a href="{{ route('superadmin.installments.index', ['filter' => 'grouped']) }}#loan-{{ $inst->loan_id }}"
-                               class="text-xs font-bold text-blue-500 hover:text-blue-600 dark:text-blue-400 truncate">
-                                {{ $inst->loan->code }}
-                            </a>
+                            <span class="text-xs font-bold text-blue-500 dark:text-blue-400 truncate">{{ $inst->loan->code }}</span>
                         </div>
                         @if($isOverdue)
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">
-                                VENCIDA
-                            </span>
-                        @elseif($inst->status === 'processing')
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">
-                                VALIDANDO
-                            </span>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">VENCIDA</span>
                         @else
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">
-                                PENDIENTE
-                            </span>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex-shrink-0">PENDIENTE</span>
                         @endif
                     </div>
-
-                    <!-- Card body -->
                     <div class="p-4 space-y-3">
-                        <!-- Fecha vencimiento -->
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Vencimiento</span>
                             <div class="text-right">
-                                <p class="text-sm font-bold {{ $isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">
-                                    {{ $inst->due_date->format('d/m/Y') }}
-                                </p>
+                                <p class="text-sm font-bold {{ $isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">{{ $inst->due_date->format('d/m/Y') }}</p>
                                 @if($isOverdue)
-                                    <p class="text-[9px] text-red-400 dark:text-red-500 font-medium">
-                                        Hace {{ now()->startOfDay()->diffInDays($inst->due_date) }} días
-                                    </p>
+                                    <p class="text-[9px] text-red-400 dark:text-red-500 font-medium">Hace {{ $daysOverdue }} días</p>
                                 @endif
                             </div>
                         </div>
-
-                        <!-- Cuota -->
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Cuota</span>
-                            <div class="text-right">
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $cur }} {{ number_format($inst->amount, 2) }}</p>
-                                <p class="text-[9px] text-gray-400">C: {{ $cur }}{{ number_format($inst->capital ?? 0, 2) }} • I: {{ $cur }}{{ number_format($inst->interest ?? 0, 2) }}</p>
-                            </div>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $cur }} {{ number_format($inst->amount, 2) }}</p>
                         </div>
-
-                        <!-- Mora -->
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Mora</span>
-                            @if($inst->late_fee > 0)
-                                <div class="text-right">
-                                    <p class="text-sm font-bold text-orange-500">{{ $cur }} {{ number_format($inst->late_fee, 2) }}</p>
-                                    <span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-orange-500">
-                                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 488.5 488.5"><path d="M196.7 169.5c41.2 0 74.7 33.4 74.7 74.7 0 41.2-33.4 74.7-74.7 74.7S122 285.5 122 244.2C122 203 155.4 169.5 196.7 169.5zM196.8 193.1c-.9 0-1.9 0-2.8 0c-3 .1-3.5.6-3.6 3.6c0 1.4 0 2.7 0 4.1c0 4 0 4-3.9 5.4c-9.3 3.4-15 9.7-15.7 19.9c-.5 9 4.1 15 11.5 19.5c4.5 2.7 9.6 4.3 14.4 6.5c1.9.8 3.7 1.8 5.2 3.1c4.6 3.8 3.8 10.2-1.7 12.6c-2.9 1.3-6 1.6-9.2 1.2c-4.9-.6-9.6-1.9-14.1-4.2c-2.6-1.4-3.4-1-4.2 1.8c-.8 2.4-1.4 4.9-2.1 7.3c-.9 3.3-.6 4.1 2.6 5.6c4 1.9 8.3 2.9 12.7 3.6c3.4.5 3.5.7 3.6 4.2c0 1.6 0 3.2 0 4.8c0 2 1 3.2 3.1 3.2c2.4 0 4.8 0 7.1 0c1.9 0 2.9-1.1 2.9-3.1c0-2.2.1-4.4 0-6.6s.9-3.4 3-4c5-1.4 9.2-4 12.5-8c9-11 5.6-27-7.2-34.1c-4-2.2-8.3-3.9-12.5-5.7c-2.4-1-4.8-2.2-6.9-3.9c-4.1-3.3-3.3-8.5 1.5-10.6c1.3-.6 2.8-.8 4.2-.9c5.5-.3 10.8.7 15.8 3.1c2.5 1.2 3.3.8 4.2-1.8c.9-2.7 1.6-5.5 2.4-8.3c.5-1.9-.1-3.1-1.9-3.9c-3.2-1.4-6.5-2.4-10-3c-4.5-.7-4.5-.7-4.5-5.3C203.2 193.1 203.2 193.1 196.8 193.1z"/></svg>
-                                        CON MORA
-                                    </span>
-                                </div>
-                            @else
-                                <p class="text-sm text-gray-300 dark:text-gray-600 font-medium">—</p>
-                            @endif
+                            <p class="text-sm font-bold {{ $inst->late_fee > 0 ? 'text-orange-500' : 'text-gray-300 dark:text-gray-600' }}">{{ $inst->late_fee > 0 ? $cur . ' ' . number_format($inst->late_fee, 2) : '—' }}</p>
                         </div>
-
-                        <!-- Total card -->
                         <div class="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total</span>
                             <p class="text-base font-black {{ $isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">{{ $cur }} {{ number_format($totalWithFee, 2) }}</p>
@@ -242,4 +259,291 @@
         </div>
     @endif
 </div>
+
+<!-- Modal Detalle Cuota -->
+<div id="installment-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeInstallmentModal()"></div>
+    <div class="absolute inset-4 md:inset-8 lg:inset-16 flex items-center justify-center pointer-events-none">
+        <div id="installment-modal-content" class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl max-h-full overflow-hidden pointer-events-auto transform transition-all duration-300 opacity-0 scale-95">
+            <!-- Modal Header -->
+            <div class="relative px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-red-500 to-red-600">
+                <button onclick="closeInstallmentModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-red-100 text-[10px] font-bold uppercase tracking-widest">Detalle de Cuota Vencida</p>
+                        <h2 id="modal-title" class="text-lg font-black text-white"></h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="overflow-y-auto max-h-[calc(100vh-180px)] p-6 space-y-6">
+
+                <!-- Info Cliente -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-2">Cliente</p>
+                    <p id="modal-client-name" class="text-sm font-bold text-gray-900 dark:text-white"></p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <a id="modal-client-email" href="#" target="_blank" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-[9px] font-bold px-2 py-1 rounded-lg transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            Email
+                        </a>
+                        <a id="modal-client-whatsapp" href="#" target="_blank" class="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white text-[9px] font-bold px-2 py-1 rounded-lg transition-colors">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.587 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Grid 2 columnas: Préstamo + Cuota -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Datos Préstamo -->
+                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4">
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-3 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Datos del Préstamo
+                        </p>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Código</span>
+                                <span id="modal-loan-code" class="text-xs font-bold text-blue-500"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Tipo</span>
+                                <span id="modal-loan-type" class="text-xs font-bold text-gray-900 dark:text-white uppercase"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Moneda</span>
+                                <span id="modal-loan-currency" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Monto prestado</span>
+                                <span id="modal-loan-amount" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Total + intereses</span>
+                                <span id="modal-loan-total" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Tasa interés</span>
+                                <span id="modal-loan-rate" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Plazo</span>
+                                <span id="modal-loan-months" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Desembolso</span>
+                                <span id="modal-disbursement" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-500">Estado préstamo</span>
+                                <span id="modal-loan-status" class="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos Cuota -->
+                    <div class="bg-red-50 dark:bg-red-950/20 rounded-2xl p-4 border border-red-100 dark:border-red-900/30">
+                        <p class="text-[10px] text-red-400 uppercase tracking-widest font-bold mb-3 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Detalle de la Cuota
+                        </p>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-red-400/80">N° Cuota</span>
+                                <span id="modal-inst-number" class="text-xs font-black text-red-600 dark:text-red-400"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-red-400/80">Vencimiento</span>
+                                <span id="modal-due-date" class="text-xs font-bold text-red-600 dark:text-red-400"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-red-400/80">Días de mora</span>
+                                <span id="modal-days-overdue" class="text-xs font-black text-red-600 dark:text-red-400"></span>
+                            </div>
+                            <div class="border-t border-red-200 dark:border-red-800 pt-2 mt-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-red-400/80">Capital</span>
+                                    <span id="modal-capital" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-red-400/80">Interés</span>
+                                    <span id="modal-interest" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] text-red-400/80">Cuota total</span>
+                                    <span id="modal-amount" class="text-xs font-bold text-gray-900 dark:text-white"></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center pt-2 border-t border-red-200 dark:border-red-800">
+                                <span class="text-[10px] text-orange-500 font-bold">Mora acumulada</span>
+                                <span id="modal-late-fee" class="text-xs font-black text-orange-500"></span>
+                            </div>
+                            <div class="flex justify-between items-center bg-red-500/10 -mx-4 px-4 py-2 rounded-b-xl">
+                                <span class="text-[10px] text-red-600 dark:text-red-400 font-bold uppercase tracking-wide">Total a pagar</span>
+                                <span id="modal-total" class="text-sm font-black text-red-600 dark:text-red-400"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración de Mora -->
+                <div class="bg-orange-50 dark:bg-orange-950/15 rounded-2xl p-4 border border-orange-100 dark:border-orange-900/30">
+                    <p class="text-[10px] text-orange-500 uppercase tracking-widest font-bold mb-3 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 488.5 488.5"><path d="M196.7 169.5c41.2 0 74.7 33.4 74.7 74.7 0 41.2-33.4 74.7-74.7 74.7S122 285.5 122 244.2C122 203 155.4 169.5 196.7 169.5zM196.8 193.1c-.9 0-1.9 0-2.8 0c-3 .1-3.5.6-3.6 3.6c0 1.4 0 2.7 0 4.1c0 4 0 4-3.9 5.4c-9.3 3.4-15 9.7-15.7 19.9c-.5 9 4.1 15 11.5 19.5c4.5 2.7 9.6 4.3 14.4 6.5c1.9.8 3.7 1.8 5.2 3.1c4.6 3.8 3.8 10.2-1.7 12.6c-2.9 1.3-6 1.6-9.2 1.2c-4.9-.6-9.6-1.9-14.1-4.2c-2.6-1.4-3.4-1-4.2 1.8c-.8 2.4-1.4 4.9-2.1 7.3c-.9 3.3-.6 4.1 2.6 5.6c4 1.9 8.3 2.9 12.7 3.6c3.4.5 3.5.7 3.6 4.2c0 1.6 0 3.2 0 4.8c0 2 1 3.2 3.1 3.2c2.4 0 4.8 0 7.1 0c1.9 0 2.9-1.1 2.9-3.1c0-2.2.1-4.4 0-6.6s.9-3.4 3-4c5-1.4 9.2-4 12.5-8c9-11 5.6-27-7.2-34.1c-4-2.2-8.3-3.9-12.5-5.7c-2.4-1-4.8-2.2-6.9-3.9c-4.1-3.3-3.3-8.5 1.5-10.6c1.3-.6 2.8-.8 4.2-.9c5.5-.3 10.8.7 15.8 3.1c2.5 1.2 3.3.8 4.2-1.8c.9-2.7 1.6-5.5 2.4-8.3c.5-1.9-.1-3.1-1.9-3.9c-3.2-1.4-6.5-2.4-10-3c-4.5-.7-4.5-.7-4.5-5.3C203.2 193.1 203.2 193.1 196.8 193.1z"/></svg>
+                        Configuración de Mora
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="text-center">
+                            <p class="text-[9px] text-orange-400/70 uppercase">Mora activa</p>
+                            <p id="modal-late-enabled" class="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[9px] text-orange-400/70 uppercase">Días gracia</p>
+                            <p id="modal-grace-days" class="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[9px] text-orange-400/70 uppercase">Tasa mora</p>
+                            <p id="modal-late-rate" class="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[9px] text-orange-400/70 uppercase">Mora diaria</p>
+                            <p id="modal-late-daily" class="text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deuda Acumulada -->
+                <div class="bg-gray-900 dark:bg-black rounded-2xl p-4">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-3 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        Deuda Acumulada (esta + anteriores)
+                    </p>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div>
+                            <p class="text-[9px] text-gray-500 uppercase">Base</p>
+                            <p id="modal-acc-base" class="text-sm font-black text-white mt-1"></p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-gray-500 uppercase">Mora total</p>
+                            <p id="modal-acc-mora" class="text-sm font-black text-orange-400 mt-1"></p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-gray-500 uppercase">Total</p>
+                            <p id="modal-acc-total" class="text-sm font-black text-red-400 mt-1"></p>
+                        </div>
+                    </div>
+                    <p id="modal-acc-count" class="text-center text-[9px] text-gray-500 mt-2"></p>
+                </div>
+
+                <!-- Alerta Default -->
+                <div id="modal-default-alert" class="hidden bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-2xl p-4 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <div>
+                        <p class="text-xs font-bold text-red-600 dark:text-red-400">Préstamo en estado de DEFAULT</p>
+                        <p class="text-[10px] text-red-500/80 mt-0.5">Este préstamo ha sido marcado como en default. Se requieren acciones inmediatas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
+                <a id="modal-loan-link" href="#" class="text-[10px] font-bold text-blue-500 hover:text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-1 transition-colors">
+                    Ver préstamo completo
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+                <button onclick="closeInstallmentModal()" class="text-[10px] font-bold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 uppercase tracking-widest px-4 py-2 rounded-xl transition-colors">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openInstallmentModal(el) {
+    const d = el.dataset;
+    const cur = d.loanCurrency === 'USD' ? '$' : 'S/';
+
+    document.getElementById('modal-title').textContent = `Cuota #${d.instNumber} — ${d.loanCode}`;
+    document.getElementById('modal-client-name').textContent = d.userName;
+    document.getElementById('modal-client-email').href = 'mailto:' + d.userEmail;
+    document.getElementById('modal-client-whatsapp').href = 'https://wa.me/51' + d.userPhone.replace(/\D/g, '');
+
+    document.getElementById('modal-loan-code').textContent = d.loanCode;
+    document.getElementById('modal-loan-type').textContent = d.loanType === 'cuotas' ? 'Cuotas' : 'Único';
+    document.getElementById('modal-loan-currency').textContent = cur;
+    document.getElementById('modal-loan-amount').textContent = cur + ' ' + parseFloat(d.loanAmount).toFixed(2);
+    document.getElementById('modal-loan-total').textContent = cur + ' ' + parseFloat(d.loanTotal).toFixed(2);
+    document.getElementById('modal-loan-rate').textContent = (parseFloat(d.loanInterestRate) * 100).toFixed(1) + '%';
+    document.getElementById('modal-loan-months').textContent = d.loanMonths + ' meses';
+    document.getElementById('modal-disbursement').textContent = d.loanDisbursement;
+
+    const statusEl = document.getElementById('modal-loan-status');
+    statusEl.textContent = d.loanStatus;
+    statusEl.className = 'text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ' +
+        (d.loanStatus === 'approved' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+         d.loanStatus === 'paid' ? 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300' :
+         'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400');
+
+    document.getElementById('modal-inst-number').textContent = '#' + d.instNumber;
+    document.getElementById('modal-due-date').textContent = d.instDueDate;
+    document.getElementById('modal-days-overdue').textContent = d.daysOverdue + ' días';
+    document.getElementById('modal-capital').textContent = cur + ' ' + parseFloat(d.instCapital).toFixed(2);
+    document.getElementById('modal-interest').textContent = cur + ' ' + parseFloat(d.instInterest).toFixed(2);
+    document.getElementById('modal-amount').textContent = cur + ' ' + parseFloat(d.instAmount).toFixed(2);
+    document.getElementById('modal-late-fee').textContent = cur + ' ' + parseFloat(d.instLateFee).toFixed(2);
+    document.getElementById('modal-total').textContent = cur + ' ' + parseFloat(d.totalWithFee).toFixed(2);
+
+    document.getElementById('modal-late-enabled').textContent = d.lateFeeEnabled === 'true' ? 'SÍ' : 'NO';
+    document.getElementById('modal-grace-days').textContent = d.graceDays + ' días';
+    document.getElementById('modal-late-rate').textContent = (parseFloat(d.lateFeeRate) * 100).toFixed(1) + '%';
+    document.getElementById('modal-late-daily').textContent = cur + ' ' + parseFloat(d.lateDaily).toFixed(2);
+
+    document.getElementById('modal-acc-base').textContent = cur + ' ' + parseFloat(d.accBase).toFixed(2);
+    document.getElementById('modal-acc-mora').textContent = cur + ' ' + parseFloat(d.accMora).toFixed(2);
+    document.getElementById('modal-acc-total').textContent = cur + ' ' + parseFloat(d.accTotal).toFixed(2);
+    document.getElementById('modal-acc-count').textContent = '(incluye ' + d.accCount + ' cuota' + (d.accCount > 1 ? 's' : '') + ' pendiente' + (d.accCount > 1 ? 's' : '') + ')';
+
+    const defaultAlert = document.getElementById('modal-default-alert');
+    if (d.inDefault === 'true') {
+        defaultAlert.classList.remove('hidden');
+    } else {
+        defaultAlert.classList.add('hidden');
+    }
+
+    document.getElementById('modal-loan-link').href = '{{ route('superadmin.installments.index', ['filter' => 'grouped']) }}#loan-' + d.loanCode;
+
+    const modal = document.getElementById('installment-modal');
+    const content = document.getElementById('installment-modal-content');
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => {
+        content.classList.remove('opacity-0', 'scale-95');
+        content.classList.add('opacity-100', 'scale-100');
+    });
+}
+
+function closeInstallmentModal() {
+    const content = document.getElementById('installment-modal-content');
+    content.classList.remove('opacity-100', 'scale-100');
+    content.classList.add('opacity-0', 'scale-95');
+    setTimeout(() => {
+        document.getElementById('installment-modal').classList.add('hidden');
+    }, 200);
+}
+
+document.querySelectorAll('.installment-row').forEach(row => {
+    row.addEventListener('click', () => openInstallmentModal(row));
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeInstallmentModal();
+});
+</script>
 @endsection
