@@ -30,7 +30,13 @@ class WorkerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\p{L}\s\-\.]+$/u'],
+            'first_name' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u'],
+            'last_name' => ['required', 'string', 'min:4', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u', function ($attr, $value, $fail) {
+                $parts = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                if (count($parts) < 2) {
+                    $fail('Debes ingresar ambos apellidos (apellido paterno y materno).');
+                }
+            }],
             'dni' => ['required', 'string', 'regex:/^\d{8}$/', 'unique:users,dni'],
             'email' => ['required', 'email', 'unique:users,email', 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
             'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', 'unique:users,phone'],
@@ -51,8 +57,10 @@ class WorkerController extends Controller
             'permissions.*.can_edit' => 'boolean',
             'permissions.*.can_delete' => 'boolean',
         ], [
-            'name.regex' => 'El nombre solo puede contener letras, espacios, guiones y puntos.',
-            'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'first_name.regex' => 'Los nombres solo pueden contener letras, espacios, guiones y puntos.',
+            'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
+            'last_name.regex' => 'Los apellidos solo pueden contener letras, espacios, guiones y puntos.',
+            'last_name.min' => 'Los apellidos deben tener al menos 4 caracteres.',
             'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
             'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
             'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
@@ -63,7 +71,7 @@ class WorkerController extends Controller
 
         $worker = User::create([
             'role_id' => $trabajadorRole->id,
-            'name' => trim($validated['name']),
+            'name' => trim($validated['first_name']) . ' ' . trim($validated['last_name']),
             'dni' => $validated['dni'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
@@ -94,7 +102,10 @@ class WorkerController extends Controller
         }
         $sections = WorkerPermission::availableSections();
         $existingPermissions = $worker->workerPermissions()->pluck(null, 'section')->toArray();
-        return view('superadmin.workers.edit', compact('worker', 'sections', 'existingPermissions'));
+        $nameParts = explode(' ', trim($worker->name), 2);
+        $firstName = $nameParts[0] ?? '';
+        $lastName = $nameParts[1] ?? '';
+        return view('superadmin.workers.edit', compact('worker', 'sections', 'existingPermissions', 'firstName', 'lastName'));
     }
 
     public function update(Request $request, User $worker)
@@ -104,7 +115,13 @@ class WorkerController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\p{L}\s\-\.]+$/u'],
+            'first_name' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u'],
+            'last_name' => ['required', 'string', 'min:4', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u', function ($attr, $value, $fail) {
+                $parts = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                if (count($parts) < 2) {
+                    $fail('Debes ingresar ambos apellidos (apellido paterno y materno).');
+                }
+            }],
             'dni' => ['required', 'string', 'regex:/^\d{8}$/', Rule::unique('users', 'dni')->ignore($worker->id)],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($worker->id), 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
             'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', Rule::unique('users', 'phone')->ignore($worker->id)],
@@ -126,8 +143,10 @@ class WorkerController extends Controller
             'permissions.*.can_edit' => 'boolean',
             'permissions.*.can_delete' => 'boolean',
         ], [
-            'name.regex' => 'El nombre solo puede contener letras, espacios, guiones y puntos.',
-            'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'first_name.regex' => 'Los nombres solo pueden contener letras, espacios, guiones y puntos.',
+            'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
+            'last_name.regex' => 'Los apellidos solo pueden contener letras, espacios, guiones y puntos.',
+            'last_name.min' => 'Los apellidos deben tener al menos 4 caracteres.',
             'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
             'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
             'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
@@ -135,7 +154,7 @@ class WorkerController extends Controller
         ]);
 
         $worker->update([
-            'name' => trim($validated['name']),
+            'name' => trim($validated['first_name']) . ' ' . trim($validated['last_name']),
             'dni' => $validated['dni'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
