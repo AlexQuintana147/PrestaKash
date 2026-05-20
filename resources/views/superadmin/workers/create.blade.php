@@ -75,29 +75,29 @@
                 <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-950/50">
                     <span class="text-xs font-bold text-gray-700 dark:text-gray-300 w-28 flex-shrink-0">{{ $label }}</span>
                     <div class="flex items-center gap-2 flex-wrap">
-                        @php $base = "permissions[$key]" @endphp
+                        @php $base = "permissions[" . $key . "]" @endphp
                         <label class="inline-flex items-center gap-1 cursor-pointer">
-                            <input type="checkbox" name="{{ base }}[can_view]" value="1" checked
+                            <input type="checkbox" name="{{ $base }}[can_view]" value="1" checked
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Ver</span>
                         </label>
                         <label class="inline-flex items-center gap-1 cursor-pointer">
-                            <input type="checkbox" name="{{ base }}[can_create]" value="1"
+                            <input type="checkbox" name="{{ $base }}[can_create]" value="1"
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-emerald-500 focus:ring-emerald-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Crear</span>
                         </label>
                         <label class="inline-flex items-center gap-1 cursor-pointer">
-                            <input type="checkbox" name="{{ base }}[can_edit]" value="1"
+                            <input type="checkbox" name="{{ $base }}[can_edit]" value="1"
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-blue-500 focus:ring-blue-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Editar</span>
                         </label>
                         <label class="inline-flex items-center gap-1 cursor-pointer">
-                            <input type="checkbox" name="{{ base }}[can_delete]" value="1"
+                            <input type="checkbox" name="{{ $base }}[can_delete]" value="1"
                                 class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-red-500 focus:ring-red-500 dark:bg-gray-800">
                             <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Eliminar</span>
                         </label>
                     </div>
-                    <input type="hidden" name="{{ base }}[section]" value="{{ $key }}">
+                    <input type="hidden" name="{{ $base }}[section]" value="{{ $key }}">
                 </div>
                 @endforeach
             </div>
