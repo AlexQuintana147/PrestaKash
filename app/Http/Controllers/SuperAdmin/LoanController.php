@@ -535,6 +535,13 @@ class LoanController extends Controller
             ]);
         }
 
+        if ($request->get('source') === 'modal') {
+            return view('superadmin.loans.loan-detail-premium', [
+                'loan' => $loan,
+                'userInstallments' => $installments,
+            ]);
+        }
+
         return view('superadmin.loans.loan-detail', [
             'loan' => $loan,
             'userInstallments' => $installments,

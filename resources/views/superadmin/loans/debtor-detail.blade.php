@@ -527,7 +527,7 @@ function openInstallmentModal(el) {
         defaultAlert.classList.add('hidden');
     }
 
-    document.getElementById('modal-loan-link').href = '{{ route('superadmin.installments.group', ['loan' => 'LOAN_ID_PLACEHOLDER']) }}'.replace('LOAN_ID_PLACEHOLDER', d.loanId);
+    document.getElementById('modal-loan-link').href = '{{ route('superadmin.installments.group', ['loan' => 'LOAN_ID_PLACEHOLDER']) }}'.replace('LOAN_ID_PLACEHOLDER', d.loanId) + '?source=modal';
 
     const modal = document.getElementById('installment-modal');
     const content = document.getElementById('installment-modal-content');
