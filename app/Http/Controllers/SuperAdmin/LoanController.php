@@ -528,7 +528,14 @@ class LoanController extends Controller
             ->orderBy('due_date', 'asc')
             ->paginate(5, ['*'], 'page', $page);
 
-        return view('superadmin.loans.partials.installments-group-rows', [
+        if ($request->ajax()) {
+            return view('superadmin.loans.partials.installments-group-rows', [
+                'loan' => $loan,
+                'userInstallments' => $installments,
+            ]);
+        }
+
+        return view('superadmin.loans.loan-detail', [
             'loan' => $loan,
             'userInstallments' => $installments,
         ]);

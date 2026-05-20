@@ -363,6 +363,9 @@
                 container.innerHTML = html;
                 container.style.opacity = '';
                 container.style.pointerEvents = '';
+                if (window.tailwind) {
+                    try { tailwind.process(); } catch(e) { try { document.dispatchEvent(new CustomEvent('tailwind:process')); } catch(e2) {} }
+                }
             });
         }
 

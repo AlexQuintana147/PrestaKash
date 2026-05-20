@@ -81,6 +81,7 @@
                     <div class="grid grid-cols-12 gap-4 px-4 py-3 items-center cursor-pointer
                         {{ $isOverdue ? 'bg-red-50/50 dark:bg-red-950/10' : '' }} hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors installment-row"
                         data-installment-id="{{ $inst->id }}"
+                        data-loan-id="{{ $loan->id }}"
                         data-loan-code="{{ $loan->code }}"
                         data-loan-type="{{ $loan->type }}"
                         data-loan-currency="{{ $loan->currency }}"
@@ -181,6 +182,7 @@
                 <div class="bg-white dark:bg-gray-950 border rounded-2xl overflow-hidden shadow-sm cursor-pointer installment-row
                     {{ $isOverdue ? 'border-red-200 dark:border-red-800' : 'border-gray-200 dark:border-gray-800' }}"
                     data-installment-id="{{ $inst->id }}"
+                    data-loan-id="{{ $loan->id }}"
                     data-loan-code="{{ $loan->code }}"
                     data-loan-type="{{ $loan->type }}"
                     data-loan-currency="{{ $loan->currency }}"
@@ -525,7 +527,7 @@ function openInstallmentModal(el) {
         defaultAlert.classList.add('hidden');
     }
 
-    document.getElementById('modal-loan-link').href = '{{ route('superadmin.installments.index', ['filter' => 'grouped']) }}#loan-' + d.loanCode;
+    document.getElementById('modal-loan-link').href = '{{ route('superadmin.installments.group', ['loan' => 'LOAN_ID_PLACEHOLDER']) }}'.replace('LOAN_ID_PLACEHOLDER', d.loanId);
 
     const modal = document.getElementById('installment-modal');
     const content = document.getElementById('installment-modal-content');
