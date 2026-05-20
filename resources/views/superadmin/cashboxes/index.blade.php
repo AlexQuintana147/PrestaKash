@@ -266,6 +266,67 @@
                     </div>
                 </div>
 
+                <div id="filterBar" class="mb-6 flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button onclick="setFilter('type','all')" data-filter-type="all"
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900">
+                            Todos
+                        </button>
+                        <button onclick="setFilter('type','income')" data-filter-type="income"
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400">
+                            Ingresos
+                        </button>
+                        <button onclick="setFilter('type','expense')" data-filter-type="expense"
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400">
+                            Egresos
+                        </button>
+                    </div>
+
+                    <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 hidden md:block"></div>
+
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button onclick="setFilter('ref','all')" data-filter-ref="all"
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900">
+                            Todo
+                        </button>
+                        <button onclick="setFilter('ref','loan')" data-filter-ref="loan"
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400">
+                            Préstamos
+                        </button>
+                        <button onclick="setFilter('ref','loan_installment')" data-filter-ref="loan_installment"
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400">
+                            Cobranzas
+                        </button>
+                        <button onclick="setFilter('ref','investment')" data-filter-ref="investment"
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400">
+                            Inversiones
+                        </button>
+                        <button onclick="setFilter('ref','manual')" data-filter-ref="manual"
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400">
+                            Manual
+                        </button>
+                        <button onclick="setFilter('ref','transfer')" data-filter-ref="transfer"
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 hover:text-cyan-600 dark:hover:text-cyan-400">
+                            Desplazamientos
+                        </button>
+                    </div>
+
+                    <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 hidden md:block"></div>
+
+                    <div class="flex items-center gap-1.5">
+                        <div class="relative">
+                            <input type="date" id="filter_from_date" onchange="renderMovements()"
+                                class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2.5 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 w-[120px]">
+                        </div>
+                        <span class="text-[9px] text-gray-400 font-bold">→</span>
+                        <div class="relative">
+                            <input type="date" id="filter_to_date" onchange="renderMovements()"
+                                class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2.5 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 w-[120px]">
+                        </div>
+                        <button onclick="clearDateFilter()" id="clearDateBtn" class="hidden px-2 py-1.5 rounded-lg text-[9px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">✕</button>
+                    </div>
+                </div>
+
                 <div id="movementsList" class="space-y-2">
                     <!-- JS populated -->
                 </div>
@@ -1004,6 +1065,57 @@
         const recentItemsCount = 5;
         let codesCurrentPage = 1;
         let codesFilteredMovements = [];
+        let activeFilterType = 'all';
+        let activeFilterRef = 'all';
+
+        function setFilter(group, value) {
+            if (group === 'type') {
+                activeFilterType = value;
+                document.querySelectorAll('.filter-type-btn').forEach(btn => {
+                    const isActive = btn.dataset.filterType === value;
+                    btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
+                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+                    }`;
+                });
+            } else if (group === 'ref') {
+                activeFilterRef = value;
+                document.querySelectorAll('.filter-ref-btn').forEach(btn => {
+                    const isActive = btn.dataset.filterRef === value;
+                    btn.className = `filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
+                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`;
+                });
+            }
+            renderMovements();
+        }
+
+        function getFilteredMovements() {
+            const fromDate = document.getElementById('filter_from_date').value;
+            const toDate = document.getElementById('filter_to_date').value;
+            const clearBtn = document.getElementById('clearDateBtn');
+            clearBtn.classList.toggle('hidden', !fromDate && !toDate);
+
+            return currentMovements.filter(m => {
+                if (activeFilterType !== 'all' && m.type !== activeFilterType) return false;
+                if (activeFilterRef !== 'all' && m.reference_type !== activeFilterRef) return false;
+                if (fromDate) {
+                    const mDate = new Date(m.date).toISOString().slice(0, 10);
+                    if (mDate < fromDate) return false;
+                }
+                if (toDate) {
+                    const mDate = new Date(m.date).toISOString().slice(0, 10);
+                    if (mDate > toDate) return false;
+                }
+                return true;
+            });
+        }
+
+        function clearDateFilter() {
+            document.getElementById('filter_from_date').value = '';
+            document.getElementById('filter_to_date').value = '';
+            document.getElementById('clearDateBtn').classList.add('hidden');
+            renderMovements();
+        }
 
         function updateActiveCard() {
             let activeIndex = 0;
@@ -1045,6 +1157,18 @@
                 currentMovements = JSON.parse(activeCard.dataset.movements);
                 const currency = activeCard.querySelector('.cb-currency-label').textContent;
                 currentSymbol = currency === 'USD' ? '$' : 'S/';
+                activeFilterType = 'all';
+                activeFilterRef = 'all';
+                document.querySelectorAll('.filter-type-btn').forEach(btn => {
+                    btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
+                        btn.dataset.filterType === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+                    }`;
+                });
+                document.querySelectorAll('.filter-ref-btn').forEach(btn => {
+                    btn.className = `filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
+                        btn.dataset.filterRef === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`;
+                });
                 renderMovements();
             }
         }
@@ -1054,14 +1178,16 @@
             movementsList.innerHTML = '';
             movementsPagination.innerHTML = '';
 
-            if (currentMovements.length === 0) {
+            const filtered = getFilteredMovements();
+
+            if (filtered.length === 0) {
                 noMovements.classList.remove('hidden');
                 return;
             }
 
             noMovements.classList.add('hidden');
 
-            const paginatedItems = currentMovements.slice(0, recentItemsCount);
+            const paginatedItems = filtered.slice(0, recentItemsCount);
 
             paginatedItems.forEach((m, i) => {
                 const isIncome = m.type === 'income';
