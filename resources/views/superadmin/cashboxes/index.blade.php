@@ -987,7 +987,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 
     <script>
         const carousel = document.getElementById('cashboxCarousel');
@@ -1797,55 +1797,203 @@
                     else totalExpense += parseFloat(m.amount);
                 });
 
-                const wb = XLSX.utils.book_new();
+                const wb = new ExcelJS.Workbook();
+                wb.creator = 'PrestaKash';
+                wb.created = new Date();
 
-                const summaryData = [
-                    ['PrestaKash — Reporte de Movimientos'],
-                    [],
-                    ['Caja', cb.name],
-                    ['Banco', cb.bank_name],
-                    ['Cuenta', cb.account_number || '—'],
-                    ['Saldo Actual', `${symbol} ${parseFloat(cb.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
-                    ['Moneda', cb.currency],
-                    [],
-                    ['Total Ingresos', `${symbol} ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
-                    ['Total Egresos', `${symbol} ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
-                    ['Balance Neto', `${symbol} ${(totalIncome - totalExpense).toLocaleString('en-US', { minimumFractionDigits: 2 })}`],
-                    [],
-                    ['Generado', new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })]
+                const wsSummary = wb.addWorksheet('Resumen', {
+                    properties: { tabColor: { argb: 'FF4F46E5' } }
+                });
+
+                wsSummary.columns = [
+                    { width: 22 },
+                    { width: 42 }
                 ];
-                const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
-                wsSummary['!cols'] = [{ wch: 20 }, { wch: 40 }];
-                XLSX.utils.book_append_sheet(wb, wsSummary, 'Resumen');
 
-                const header = ['Código', 'Fecha', 'Hora', 'Descripción', 'Tipo', 'Clase', 'Registrado por', 'Monto', 'Moneda'];
-                const rows = movements.map(m => {
+                const titleRow = wsSummary.addRow(['PrestaKash — Reporte de Movimientos']);
+                titleRow.getCell(1).font = { size: 16, bold: true, color: { argb: 'FF4F46E5' } };
+                titleRow.getCell(1).alignment = { horizontal: 'left' };
+                wsSummary.mergeCells('A1:B1');
+
+                wsSummary.addRow([]);
+
+                const summaryItems = [
+                    { label: 'Caja', value: cb.name },
+                    { label: 'Banco', value: cb.bank_name },
+                    { label: 'Cuenta', value: cb.account_number || '—' },
+                    { label: 'Saldo Actual', value: `${symbol} ${parseFloat(cb.balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}` },
+                    { label: 'Moneda', value: cb.currency }
+                ];
+
+                summaryItems.forEach(item => {
+                    const row = wsSummary.addRow([item.label, item.value]);
+                    row.getCell(1).font = { bold: true, size: 11, color: { argb: 'FF374151' } };
+                    row.getCell(1).alignment = { horizontal: 'right' };
+                    row.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+                    row.getCell(2).font = { size: 11, color: { argb: 'FF111827' } };
+                    row.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+                });
+
+                wsSummary.addRow([]);
+
+                const totalsTitle = wsSummary.addRow(['Resumen Financiero']);
+                totalsTitle.getCell(1).font = { size: 13, bold: true, color: { argb: 'FF4F46E5' } };
+                wsSummary.mergeCells(`A${totalsTitle.number}:B${totalsTitle.number}`);
+
+                const incomeRow = wsSummary.addRow(['Total Ingresos', `${symbol} ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}`]);
+                incomeRow.getCell(1).font = { bold: true, size: 11, color: { argb: 'FF065F46' } };
+                incomeRow.getCell(1).alignment = { horizontal: 'right' };
+                incomeRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFECFDF5' } };
+                incomeRow.getCell(2).font = { bold: true, size: 12, color: { argb: 'FF059669' } };
+                incomeRow.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFECFDF5' } };
+
+                const expenseRow = wsSummary.addRow(['Total Egresos', `${symbol} ${totalExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}`]);
+                expenseRow.getCell(1).font = { bold: true, size: 11, color: { argb: 'FF991B1B' } };
+                expenseRow.getCell(1).alignment = { horizontal: 'right' };
+                expenseRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF2F2' } };
+                expenseRow.getCell(2).font = { bold: true, size: 12, color: { argb: 'FFDC2626' } };
+                expenseRow.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF2F2' } };
+
+                const netRow = wsSummary.addRow(['Balance Neto', `${symbol} ${(totalIncome - totalExpense).toLocaleString('en-US', { minimumFractionDigits: 2 })}`]);
+                const isNetPositive = (totalIncome - totalExpense) >= 0;
+                netRow.getCell(1).font = { bold: true, size: 11, color: { argb: isNetPositive ? 'FF065F46' : 'FF991B1B' } };
+                netRow.getCell(1).alignment = { horizontal: 'right' };
+                netRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isNetPositive ? 'FFD1FAE5' : 'FFFEE2E2' } };
+                netRow.getCell(1).border = { top: { style: 'medium', color: { argb: isNetPositive ? 'FF059669' : 'FFDC2626' } }, bottom: { style: 'medium', color: { argb: isNetPositive ? 'FF059669' : 'FFDC2626' } } };
+                netRow.getCell(2).font = { bold: true, size: 13, color: { argb: isNetPositive ? 'FF059669' : 'FFDC2626' } };
+                netRow.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isNetPositive ? 'FFD1FAE5' : 'FFFEE2E2' } };
+                netRow.getCell(2).border = { top: { style: 'medium', color: { argb: isNetPositive ? 'FF059669' : 'FFDC2626' } }, bottom: { style: 'medium', color: { argb: isNetPositive ? 'FF059669' : 'FFDC2626' } } };
+
+                wsSummary.addRow([]);
+
+                const dateRow = wsSummary.addRow(['Generado', new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })]);
+                dateRow.getCell(1).font = { size: 9, italic: true, color: { argb: 'FF9CA3AF' } };
+                dateRow.getCell(2).font = { size: 9, italic: true, color: { argb: 'FF9CA3AF' } };
+
+                const wsMovements = wb.addWorksheet('Movimientos', {
+                    properties: { tabColor: { argb: 'FF10B981' } }
+                });
+
+                wsMovements.columns = [
+                    { header: 'Código', key: 'code', width: 16 },
+                    { header: 'Fecha', key: 'date', width: 16 },
+                    { header: 'Hora', key: 'time', width: 10 },
+                    { header: 'Descripción', key: 'description', width: 38 },
+                    { header: 'Tipo', key: 'type', width: 16 },
+                    { header: 'Clase', key: 'class', width: 12 },
+                    { header: 'Registrado por', key: 'user', width: 22 },
+                    { header: 'Monto', key: 'amount', width: 16 },
+                    { header: 'Moneda', key: 'currency', width: 10 }
+                ];
+
+                const headerRow = wsMovements.getRow(1);
+                headerRow.eachCell((cell) => {
+                    cell.font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+                    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+                    cell.border = {
+                        bottom: { style: 'medium', color: { argb: 'FF3730A3' } }
+                    };
+                });
+                headerRow.height = 28;
+
+                movements.forEach((m, idx) => {
                     const dateObj = new Date(m.date);
                     const date = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
                     const time = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
-                    const type = m.type === 'income' ? 'Ingreso' : 'Egreso';
+                    const isIncome = m.type === 'income';
+                    const type = isIncome ? 'Ingreso' : 'Egreso';
                     const displayType = typeLabels[m.reference_type] || 'Operación';
                     const amount = parseFloat(m.amount);
                     const userName = m.user ? m.user.name : 'Sistema';
-                    return [m.code || '—', date, time, m.description, displayType, type, userName, amount, cb.currency];
+
+                    const row = wsMovements.addRow({
+                        code: m.code || '—',
+                        date: date,
+                        time: time,
+                        description: m.description,
+                        type: displayType,
+                        class: type,
+                        user: userName,
+                        amount: amount,
+                        currency: cb.currency
+                    });
+
+                    const isEven = idx % 2 === 0;
+                    const rowFill = isEven
+                        ? { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFFFF' } }
+                        : { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF9FAFB' } };
+
+                    row.eachCell((cell, colNumber) => {
+                        cell.fill = rowFill;
+                        cell.font = { size: 10, color: { argb: 'FF374151' } };
+                        cell.alignment = { vertical: 'middle' };
+                        cell.border = {
+                            bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } }
+                        };
+
+                        if (colNumber === 6) {
+                            if (isIncome) {
+                                cell.font = { size: 10, bold: true, color: { argb: 'FF059669' } };
+                                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFECFDF5' } };
+                            } else {
+                                cell.font = { size: 10, bold: true, color: { argb: 'FFDC2626' } };
+                                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF2F2' } };
+                            }
+                        }
+
+                        if (colNumber === 8) {
+                            if (isIncome) {
+                                cell.font = { size: 10, bold: true, color: { argb: 'FF059669' } };
+                            } else {
+                                cell.font = { size: 10, bold: true, color: { argb: 'FFDC2626' } };
+                            }
+                            cell.numFmt = '#,##0.00';
+                            cell.alignment = { horizontal: 'right', vertical: 'middle' };
+                        }
+                    });
                 });
 
-                const wsMovements = XLSX.utils.aoa_to_sheet([header, ...rows]);
-                wsMovements['!cols'] = [
-                    { wch: 16 },
-                    { wch: 16 },
-                    { wch: 8 },
-                    { wch: 35 },
-                    { wch: 16 },
-                    { wch: 10 },
-                    { wch: 20 },
-                    { wch: 14 },
-                    { wch: 8 }
-                ];
-                XLSX.utils.book_append_sheet(wb, wsMovements, 'Movimientos');
+                const totalRowNum = movements.length + 2;
+                wsMovements.addRow([]);
+                const totalsRow = wsMovements.addRow(['', '', '', '', '', 'TOTAL INGRESOS', '', totalIncome, cb.currency]);
+                totalsRow.getCell(7).font = { bold: true, size: 10, color: { argb: 'FF059669' } };
+                totalsRow.getCell(7).alignment = { horizontal: 'right' };
+                totalsRow.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFECFDF5' } };
+                totalsRow.getCell(8).font = { bold: true, size: 11, color: { argb: 'FF059669' } };
+                totalsRow.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFECFDF5' } };
+                totalsRow.getCell(8).numFmt = '#,##0.00';
+                totalsRow.getCell(8).alignment = { horizontal: 'right' };
 
-                const fileName = `movimientos_${cb.name.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.xlsx`;
-                XLSX.writeFile(wb, fileName);
+                const totalsRow2 = wsMovements.addRow(['', '', '', '', '', 'TOTAL EGRESOS', '', totalExpense, cb.currency]);
+                totalsRow2.getCell(7).font = { bold: true, size: 10, color: { argb: 'FFDC2626' } };
+                totalsRow2.getCell(7).alignment = { horizontal: 'right' };
+                totalsRow2.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF2F2' } };
+                totalsRow2.getCell(8).font = { bold: true, size: 11, color: { argb: 'FFDC2626' } };
+                totalsRow2.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF2F2' } };
+                totalsRow2.getCell(8).numFmt = '#,##0.00';
+                totalsRow2.getCell(8).alignment = { horizontal: 'right' };
+
+                const netRowM = wsMovements.addRow(['', '', '', '', '', 'BALANCE NETO', '', totalIncome - totalExpense, cb.currency]);
+                const isNetPositiveM = (totalIncome - totalExpense) >= 0;
+                netRowM.getCell(7).font = { bold: true, size: 10, color: { argb: isNetPositiveM ? 'FF059669' : 'FFDC2626' } };
+                netRowM.getCell(7).alignment = { horizontal: 'right' };
+                netRowM.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isNetPositiveM ? 'FFD1FAE5' : 'FFFEE2E2' } };
+                netRowM.getCell(7).border = { top: { style: 'medium', color: { argb: isNetPositiveM ? 'FF059669' : 'FFDC2626' } } };
+                netRowM.getCell(8).font = { bold: true, size: 12, color: { argb: isNetPositiveM ? 'FF059669' : 'FFDC2626' } };
+                netRowM.getCell(8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isNetPositiveM ? 'FFD1FAE5' : 'FFFEE2E2' } };
+                netRowM.getCell(8).numFmt = '#,##0.00';
+                netRowM.getCell(8).alignment = { horizontal: 'right' };
+                netRowM.getCell(8).border = { top: { style: 'medium', color: { argb: isNetPositiveM ? 'FF059669' : 'FFDC2626' } } };
+
+                const buffer = await wb.xlsx.writeBuffer();
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `movimientos_${cb.name.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                a.click();
+                URL.revokeObjectURL(url);
             } catch (e) {
                 console.error('Error generando Excel:', e);
             } finally {
