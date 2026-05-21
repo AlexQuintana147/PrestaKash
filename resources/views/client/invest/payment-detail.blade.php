@@ -54,17 +54,17 @@
     @endif
 
     <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-6 sm:mb-8">
-        <div class="bg-emerald-50 dark:bg-emerald-500/5 rounded-xl border border-emerald-100 dark:border-emerald-500/10 p-3 sm:p-4">
-            <p class="text-[8px] sm:text-[9px] text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Recibido</p>
-            <p class="text-sm sm:text-lg font-bold text-emerald-700 dark:text-emerald-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalReceived, 2) }}</p>
+        <div class="bg-emerald-500 rounded-xl p-3 sm:p-4">
+            <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Recibido</p>
+            <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalReceived, 2) }}</p>
         </div>
-        <div class="bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-100 dark:border-amber-500/10 p-3 sm:p-4">
-            <p class="text-[8px] sm:text-[9px] text-amber-600 dark:text-amber-400 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Pendiente</p>
-            <p class="text-sm sm:text-lg font-bold text-amber-700 dark:text-amber-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format(max(0, $totalExpectedReturn - $totalReceived), 2) }}</p>
+        <div class="bg-amber-500 rounded-xl p-3 sm:p-4">
+            <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Pendiente</p>
+            <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format(max(0, $totalExpectedReturn - $totalReceived), 2) }}</p>
         </div>
-        <div class="bg-indigo-50 dark:bg-indigo-500/5 rounded-xl border border-indigo-100 dark:border-indigo-500/10 p-3 sm:p-4">
-            <p class="text-[8px] sm:text-[9px] text-indigo-600 dark:text-indigo-400 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Retorno</p>
-            <p class="text-sm sm:text-lg font-bold text-indigo-700 dark:text-indigo-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalExpectedReturn, 2) }}</p>
+        <div class="bg-blue-500 rounded-xl p-3 sm:p-4">
+            <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Retorno</p>
+            <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalExpectedReturn, 2) }}</p>
         </div>
     </div>
 
