@@ -96,10 +96,12 @@ class InvestmentController extends Controller
 
         $validated = $request->validate([
             'amount' => 'required|numeric|min:' . $opportunity->min_investment . '|max:' . $opportunity->remaining_amount,
+            'amortization_type' => 'required|string|in:frances,americano',
         ]);
 
         $opportunity->investors()->attach($user->id, [
             'amount' => $validated['amount'],
+            'amortization_type' => $validated['amortization_type'],
             'status' => 'pending',
         ]);
 

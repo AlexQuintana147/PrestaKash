@@ -391,7 +391,50 @@
                                 </div>
                                 <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
                                 <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
+                                <input type="hidden" id="monthlyRate" value="{{ $opportunity->monthly_return_rate }}">
+                                <input type="hidden" id="termMonths" value="{{ $opportunity->term_months }}">
+                                <input type="hidden" id="currencySymbol" value="{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}">
                                 <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Mínimo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->min_investment, 2) }} · Máximo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->remaining_amount, 2) }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tipo de Amortización</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" onclick="selectAmortization('frances')" id="btn-frances"
+                                        class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-all">
+                                        Francés
+                                    </button>
+                                    <button type="button" onclick="selectAmortization('americano')" id="btn-americano"
+                                        class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300">
+                                        Americano
+                                    </button>
+                                </div>
+                                <input type="hidden" name="amortization_type" id="amortizationType" value="frances">
+                                <p id="amortDesc" class="text-[10px] sm:text-xs text-gray-400 mt-2">Cuotas fijas: pagas lo mismo cada mes (capital + interés)</p>
+                            </div>
+                            <div id="scheduleContainer" class="hidden">
+                                <div class="border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden">
+                                    <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cronograma de Pagos</p>
+                                    </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-xs">
+                                            <thead>
+                                                <tr class="border-b border-gray-100 dark:border-gray-800">
+                                                    <th class="px-3 py-2 text-left text-[9px] font-bold text-gray-400 uppercase">Cuota</th>
+                                                    <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Pago</th>
+                                                    <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Interés</th>
+                                                    <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Capital</th>
+                                                    <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Saldo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="scheduleBody"></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-800 flex justify-between">
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase">Total a Recibir</span>
+                                        <span id="scheduleTotal" class="text-xs font-bold text-green-600 dark:text-green-400"></span>
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70">
                                 Enviar Nueva Solicitud
@@ -427,7 +470,50 @@
                         </div>
                         <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
                         <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
+                        <input type="hidden" id="monthlyRate" value="{{ $opportunity->monthly_return_rate }}">
+                        <input type="hidden" id="termMonths" value="{{ $opportunity->term_months }}">
+                        <input type="hidden" id="currencySymbol" value="{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}">
                         <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Mínimo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->min_investment, 2) }} · Máximo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->remaining_amount, 2) }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tipo de Amortización</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="selectAmortization('frances')" id="btn-frances"
+                                class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-all">
+                                Francés
+                            </button>
+                            <button type="button" onclick="selectAmortization('americano')" id="btn-americano"
+                                class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300">
+                                Americano
+                            </button>
+                        </div>
+                        <input type="hidden" name="amortization_type" id="amortizationType" value="frances">
+                        <p id="amortDesc" class="text-[10px] sm:text-xs text-gray-400 mt-2">Cuotas fijas: pagas lo mismo cada mes (capital + interés)</p>
+                    </div>
+                    <div id="scheduleContainer" class="hidden">
+                        <div class="border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden">
+                            <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cronograma de Pagos</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                                            <th class="px-3 py-2 text-left text-[9px] font-bold text-gray-400 uppercase">Cuota</th>
+                                            <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Pago</th>
+                                            <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Interés</th>
+                                            <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Capital</th>
+                                            <th class="px-3 py-2 text-right text-[9px] font-bold text-gray-400 uppercase">Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scheduleBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-800 flex justify-between">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">Total a Recibir</span>
+                                <span id="scheduleTotal" class="text-xs font-bold text-green-600 dark:text-green-400"></span>
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70">
                         Enviar Solicitud de Inversión
@@ -538,7 +624,103 @@ document.addEventListener('DOMContentLoaded', function () {
         investAmount.closest('form')?.addEventListener('submit', function () {
             investAmount.value = investAmount.value.replace(/,/g, '');
         });
+
+        investAmount.addEventListener('input', function () {
+            updateSchedule();
+        });
+
+        investAmount.addEventListener('blur', function () {
+            updateSchedule();
+        });
+
+        updateSchedule();
     }
 });
+
+function selectAmortization(type) {
+    const btnFrances = document.getElementById('btn-frances');
+    const btnAmericano = document.getElementById('btn-americano');
+    const amortInput = document.getElementById('amortizationType');
+    const amortDesc = document.getElementById('amortDesc');
+
+    if (!btnFrances || !btnAmericano) return;
+    amortInput.value = type;
+
+    if (type === 'frances') {
+        btnFrances.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-all';
+        btnAmericano.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300';
+        amortDesc.textContent = 'Cuotas fijas: recibes lo mismo cada mes (capital + interés)';
+    } else {
+        btnAmericano.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-all';
+        btnFrances.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300';
+        amortDesc.textContent = 'Solo intereses cada mes, capital completo en la última cuota';
+    }
+
+    updateSchedule();
+}
+
+function updateSchedule() {
+    const amountInput = document.getElementById('investAmount');
+    const rateInput = document.getElementById('monthlyRate');
+    const termInput = document.getElementById('termMonths');
+    const typeInput = document.getElementById('amortizationType');
+    const symbolInput = document.getElementById('currencySymbol');
+    const container = document.getElementById('scheduleContainer');
+    const tbody = document.getElementById('scheduleBody');
+    const totalEl = document.getElementById('scheduleTotal');
+
+    if (!amountInput || !rateInput || !termInput || !typeInput || !container || !tbody || !totalEl) return;
+
+    const amount = parseFloat(amountInput.value.replace(/,/g, ''));
+    if (isNaN(amount) || amount <= 0) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    const rate = parseFloat(rateInput.value) / 100;
+    const term = parseInt(termInput.value);
+    const type = typeInput.value;
+    const symbol = symbolInput.value;
+
+    container.classList.remove('hidden');
+    tbody.innerHTML = '';
+
+    let balance = amount;
+    let totalPayment = 0;
+    let rows = '';
+
+    for (let i = 1; i <= term; i++) {
+        let interest, principal, payment;
+
+        if (type === 'frances') {
+            payment = amount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+            interest = balance * rate;
+            principal = payment - interest;
+        } else {
+            interest = amount * rate;
+            if (i === term) {
+                principal = balance;
+                payment = interest + principal;
+            } else {
+                principal = 0;
+                payment = interest;
+            }
+        }
+
+        balance = Math.max(0, balance - principal);
+        totalPayment += payment;
+
+        rows += '<tr class="border-b border-gray-50 dark:border-gray-900">' +
+            '<td class="px-3 py-1.5 text-gray-700 dark:text-gray-300">' + i + '</td>' +
+            '<td class="px-3 py-1.5 text-right font-medium text-gray-900 dark:text-white">' + symbol + ' ' + payment.toFixed(2) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-amber-600 dark:text-amber-400">' + symbol + ' ' + interest.toFixed(2) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-indigo-600 dark:text-indigo-400">' + symbol + ' ' + principal.toFixed(2) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-gray-500 dark:text-gray-400">' + symbol + ' ' + balance.toFixed(2) + '</td>' +
+            '</tr>';
+    }
+
+    tbody.innerHTML = rows;
+    totalEl.textContent = symbol + ' ' + totalPayment.toFixed(2);
+}
 </script>
 @endsection

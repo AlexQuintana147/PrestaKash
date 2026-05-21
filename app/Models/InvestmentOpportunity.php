@@ -48,7 +48,7 @@ class InvestmentOpportunity extends Model
     public function investors()
     {
         return $this->belongsToMany(User::class, 'investor_opportunity')
-            ->withPivot(['amount', 'status', 'admin_notes', 'payment_method', 'voucher_path', 'operation_number', 'approved_at', 'payment_submitted_at', 'payment_status'])
+            ->withPivot(['amount', 'amortization_type', 'status', 'admin_notes', 'payment_method', 'voucher_path', 'operation_number', 'approved_at', 'payment_submitted_at', 'payment_status'])
             ->withTimestamps();
     }
 
@@ -56,7 +56,7 @@ class InvestmentOpportunity extends Model
     {
         return $this->belongsToMany(User::class, 'investor_opportunity')
             ->wherePivot('status', 'approved')
-            ->withPivot(['amount', 'status', 'admin_notes', 'payment_method', 'voucher_path', 'operation_number', 'approved_at', 'payment_submitted_at', 'payment_status'])
+            ->withPivot(['amount', 'amortization_type', 'status', 'admin_notes', 'payment_method', 'voucher_path', 'operation_number', 'approved_at', 'payment_submitted_at', 'payment_status'])
             ->withTimestamps();
     }
 
