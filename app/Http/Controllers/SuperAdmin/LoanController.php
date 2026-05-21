@@ -868,39 +868,172 @@ class LoanController extends Controller
 
     public function unapproveInstallment(\App\Models\LoanInstallment $installment)
     {
-        // Solo se puede revertir la última cuota aprobada del préstamo
-        $lastApproved = $installment->loan->installments()
-            ->where('status', 'approved')
-            ->orderBy('installment_number', 'desc')
-            ->first();
+        $loan = $installment->loan;
+        $isInterestPayment = false;
+        $interestPaymentId = request('interest_payment_id');
+        $interestPayment = null;
 
-        if (!$lastApproved || $lastApproved->id !== $installment->id) {
-            return back()->withErrors(['unapprove' => 'Solo puedes revertir el último pago aprobado del préstamo.']);
-        }
+        // LÓGICA SIMPLIFICADA: Determinar qué tipo de pago es y si puede revertirse
 
-        \DB::transaction(function () use ($installment) {
-            $installment->update(['status' => 'processing']);
+        if ($installment->status === 'approved') {
+            // CASO A: Revertir cuota aprobada
+            // Verificar que sea el ÚLTIMO pago del préstamo (comparando fechas)
 
-            $loan = $installment->loan;
-            if ($loan->status === 'paid') {
-                $loan->update(['status' => 'approved']);
-            }
-
-            // Find and delete the associated cashbox movement
-            $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
-                ->where('reference_id', $installment->id)
+            // 1. Obtener última cuota aprobada
+            $lastApprovedInstallment = $loan->installments()
+                ->where('status', 'approved')
+                ->orderBy('paid_at', 'desc')
                 ->first();
 
-            if ($movement) {
-                $cashbox = $movement->cashbox;
-                if ($cashbox) {
-                    $cashbox->decrement('balance', $movement->amount);
+            // 2. Obtener último interés pagado
+            $lastInterestPayment = null;
+            $lastInterestDate = null;
+
+            $installmentsWithInterests = $loan->installments()
+                ->where('interest_payments_count', '>', 0)
+                ->get();
+
+            foreach ($installmentsWithInterests as $instWithInterest) {
+                $latestInterest = $instWithInterest->interestPayments()
+                    ->orderBy('paid_at', 'desc')
+                    ->first();
+
+                if ($latestInterest && (!$lastInterestDate || $latestInterest->paid_at > $lastInterestDate)) {
+                    $lastInterestPayment = $latestInterest;
+                    $lastInterestDate = $latestInterest->paid_at;
                 }
-                $movement->delete();
+            }
+
+            // 3. Comparar fechas para determinar el último pago real
+            $canRevertThis = true;
+
+            if ($lastInterestPayment && $lastInterestDate) {
+                // Si hay intereses, verificar que esta cuota sea posterior al último interés
+                if ($lastInterestDate > $installment->paid_at) {
+                    $canRevertThis = false;
+                }
+            }
+
+            // También verificar que sea efectivamente la última cuota aprobada
+            if ($lastApprovedInstallment && $lastApprovedInstallment->id !== $installment->id) {
+                $canRevertThis = false;
+            }
+
+            if (!$canRevertThis) {
+                return back()->withErrors(['unapprove' => 'Solo puedes revertir el último pago del préstamo.']);
+            }
+
+        } elseif ($installment->status === 'pending' && $installment->interest_payments_count > 0 && $interestPaymentId) {
+            // CASO B: Revertir pago de interés
+            $interestPayment = \App\Models\InterestPayment::find($interestPaymentId);
+
+            if (!$interestPayment || $interestPayment->loan_installment_id !== $installment->id) {
+                return back()->withErrors(['unapprove' => 'Pago de interés no encontrado.']);
+            }
+
+            // Verificar que sea el ÚLTIMO interés del préstamo completo
+            $lastInterestPaymentGlobal = null;
+            $lastInterestDateGlobal = null;
+
+            $allInstallmentsWithInterests = $loan->installments()
+                ->where('interest_payments_count', '>', 0)
+                ->get();
+
+            foreach ($allInstallmentsWithInterests as $instWithInterest) {
+                $latestInterest = $instWithInterest->interestPayments()
+                    ->orderBy('paid_at', 'desc')
+                    ->first();
+
+                if ($latestInterest && (!$lastInterestDateGlobal || $latestInterest->paid_at > $lastInterestDateGlobal)) {
+                    $lastInterestPaymentGlobal = $latestInterest;
+                    $lastInterestDateGlobal = $latestInterest->paid_at;
+                }
+            }
+
+            // Verificar que este interés sea el último
+            if (!$lastInterestPaymentGlobal || $lastInterestPaymentGlobal->id !== $interestPayment->id) {
+                return back()->withErrors(['unapprove' => 'Solo puedes revertir el último pago de interés del préstamo.']);
+            }
+
+            // Verificar que no haya cuotas aprobadas después de este interés
+            $lastApprovedAfterInterest = $loan->installments()
+                ->where('status', 'approved')
+                ->where('paid_at', '>', $interestPayment->paid_at)
+                ->exists();
+
+            if ($lastApprovedAfterInterest) {
+                return back()->withErrors(['unapprove' => 'No puedes revertir este pago porque hay una cuota aprobada posteriormente.']);
+            }
+
+            $isInterestPayment = true;
+
+        } else {
+            return back()->withErrors(['unapprove' => 'No se puede revertir este pago.']);
+        }
+
+        \DB::transaction(function () use ($installment, $loan, $isInterestPayment, $interestPayment) {
+            if ($isInterestPayment && $interestPayment) {
+                // REVERSIÓN DE PAGO DE INTERÉS
+
+                // 1. Eliminar movimiento de caja asociado a este interés
+                $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                    ->where('reference_id', $installment->id)
+                    ->where('interest_payment_id', $interestPayment->id)
+                    ->first();
+
+                if ($movement) {
+                    $cashbox = $movement->cashbox;
+                    if ($cashbox) {
+                        $cashbox->decrement('balance', $movement->amount);
+                    }
+                    $movement->delete();
+                }
+
+                // 2. Eliminar registro del interés
+                $voucherPath = $interestPayment->payment_voucher;
+                $interestPayment->delete();
+
+                // 3. Borrar voucher de almacenamiento
+                if ($voucherPath) {
+                    Storage::disk('public')->delete($voucherPath);
+                }
+
+                // 4. Decrementar contador de intereses
+                $newCount = max(0, $installment->interest_payments_count - 1);
+                $installment->update([
+                    'interest_payments_count' => $newCount,
+                    // Si ya no hay más intereses y la cuota está pendiente, resetear requested_type
+                    'requested_type' => $newCount === 0 ? 'full' : $installment->requested_type,
+                ]);
+
+            } else {
+                // REVERSIÓN DE CUOTA APROBADA (comportamiento original)
+                $installment->update(['status' => 'processing']);
+
+                if ($loan->status === 'paid') {
+                    $loan->update(['status' => 'approved']);
+                }
+
+                // Find and delete the associated cashbox movement
+                $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                    ->where('reference_id', $installment->id)
+                    ->first();
+
+                if ($movement) {
+                    $cashbox = $movement->cashbox;
+                    if ($cashbox) {
+                        $cashbox->decrement('balance', $movement->amount);
+                    }
+                    $movement->delete();
+                }
             }
         });
 
-        return back()->with('success', 'Aprobación revertida. El ingreso en caja ha sido eliminado y el pago vuelve a estar en revisión.');
+        if ($isInterestPayment) {
+            return back()->with('success', 'Pago de interés revertido. El ingreso en caja ha sido eliminado.');
+        } else {
+            return back()->with('success', 'Aprobación revertida. El ingreso en caja ha sido eliminado y el pago vuelve a estar en revisión.');
+        }
     }
 
     public function previewVoucherCleanup(Request $request, VoucherCleanupService $cleanup)

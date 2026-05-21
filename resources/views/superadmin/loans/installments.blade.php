@@ -268,9 +268,44 @@
             @endif
 
             <!-- Vista Lista Simple -->
+            @php
+                $_lastPaymentByLoan = [];
+
+                // Agrupar installments por loan_id para calcular último pago POR PRÉSTAMO
+                $loansInList = $installments->pluck('loan_id')->unique();
+
+                foreach ($loansInList as $lid) {
+                    $loanForCalc = \App\Models\Loan::find($lid);
+                    if (!$loanForCalc) continue;
+
+                    $pList = collect();
+
+                    // Cuotas aprobadas
+                    foreach ($loanForCalc->installments()->where('status', 'approved')->get() as $ai) {
+                        if ($ai->paid_at) {
+                            $pList->push(['date' => $ai->paid_at, 'type' => 'installment', 'id' => $ai->id, 'interest_id' => null]);
+                        }
+                    }
+
+                    // Intereses pagados
+                    foreach ($loanForCalc->installments()->where('interest_payments_count', '>', 0)->with('interestPayments')->get() as $iw) {
+                        foreach ($iw->interestPayments as $ip) {
+                            if ($ip->paid_at) {
+                                $pList->push(['date' => $ip->paid_at, 'type' => 'interest', 'id' => $iw->id, 'interest_id' => $ip->id]);
+                            }
+                        }
+                    }
+
+                    $pList = $pList->sortByDesc('date')->values();
+                    $_lastPaymentByLoan[$lid] = $pList->first();
+                }
+            @endphp
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($installments as $inst)
-                    @include('superadmin.loans.partials.installment-row', ['inst' => $inst])
+                    @include('superadmin.loans.partials.installment-row', [
+                        'inst' => $inst,
+                        '_lastPaymentByLoan' => $_lastPaymentByLoan,
+                    ])
                 @empty
                     <div class="py-24 text-center">
                         <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay cuotas registradas</p>

@@ -276,16 +276,31 @@
                         </svg>
                     </button>
                 @endif
-                @if($inst->status === 'approved')
+                @if($inst->status === 'approved' || (isset($inst->is_interest_payment) && $inst->is_interest_payment))
                     @php
-                        $lastApprovedId = $loan->installments()
-                            ->where('status', 'approved')
-                            ->orderBy('installment_number', 'desc')
-                            ->value('id');
+                        $canRevert = false;
+                        $loanId = $inst->loan_id ?? $inst->loan?->id;
+                        $lp = $_lastPaymentByLoan[$loanId] ?? null;
+
+                        if ($lp) {
+                            if ($lp['type'] === 'installment') {
+                                // Último pago = cuota aprobada → SOLO esa cuota (no sus intereses virtuales)
+                                $canRevert = (
+                                    $inst->status === 'approved' &&
+                                    !(isset($inst->is_interest_payment) && $inst->is_interest_payment) &&
+                                    (string)$inst->id === (string)$lp['id']
+                                );
+                            } elseif ($lp['type'] === 'interest') {
+                                // Último pago = interés → solo ese interés virtual
+                                if (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment)) {
+                                    $canRevert = ((string)$inst->interest_payment->id === (string)$lp['interest_id']);
+                                }
+                            }
+                        }
                     @endphp
-                    @if($lastApprovedId === $inst->id && !(isset($inst->is_interest_payment) && $inst->is_interest_payment))
+                    @if($canRevert)
                         <button type="button"
-                            onclick="openUnapproveModal('{{ route('superadmin.installments.unapprove', $inst) }}')"
+                            onclick="openUnapproveModal('{{ route('superadmin.installments.unapprove', $inst) }}{{ (isset($inst->interest_payment) && $inst->interest_payment) ? '?interest_payment_id=' . $inst->interest_payment->id : '' }}')"
                             class="text-[10px] font-black uppercase tracking-widest text-red-500 border-b border-red-400 pb-px hover:opacity-60 transition-opacity">
                             Revertir
                         </button>
