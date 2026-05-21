@@ -691,6 +691,10 @@ function updateSchedule() {
     let rows = '';
     let prevPayment = 0;
 
+    function fmt(n) {
+        return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
     for (let i = 1; i <= term; i++) {
         let interest, principal, payment;
 
@@ -719,15 +723,15 @@ function updateSchedule() {
 
         rows += '<tr class="border-b border-gray-50 dark:border-gray-900">' +
             '<td class="px-3 py-1.5 text-gray-700 dark:text-gray-300">' + i + '</td>' +
-            '<td class="px-3 py-1.5 text-right font-medium text-gray-900 dark:text-white">' + symbol + ' ' + payment.toFixed(2) + '</td>' +
-            '<td class="px-3 py-1.5 text-right text-amber-600 dark:text-amber-400">' + symbol + ' ' + interest.toFixed(2) + '</td>' +
-            '<td class="px-3 py-1.5 text-right text-indigo-600 dark:text-indigo-400">' + symbol + ' ' + principal.toFixed(2) + '</td>' +
-            '<td class="px-3 py-1.5 text-right text-gray-500 dark:text-gray-400">' + symbol + ' ' + balance.toFixed(2) + '</td>' +
+            '<td class="px-3 py-1.5 text-right font-medium text-gray-900 dark:text-white">' + symbol + ' ' + fmt(payment) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-amber-600 dark:text-amber-400">' + symbol + ' ' + fmt(interest) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-indigo-600 dark:text-indigo-400">' + symbol + ' ' + fmt(principal) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-gray-500 dark:text-gray-400">' + symbol + ' ' + fmt(balance) + '</td>' +
             '</tr>';
     }
 
     tbody.innerHTML = rows;
-    totalEl.textContent = symbol + ' ' + totalPayment.toFixed(2);
+    totalEl.textContent = symbol + ' ' + fmt(totalPayment);
 }
 </script>
 @endsection
