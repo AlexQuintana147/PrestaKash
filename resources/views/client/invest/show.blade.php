@@ -387,7 +387,7 @@
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
                                     <input type="text" name="amount" id="investAmount" required inputmode="decimal"
                                            placeholder="{{ number_format($opportunity->min_investment, 2) }}"
-                                           oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;}"
+                                           oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
                                            class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                                 </div>
                                 <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
@@ -467,7 +467,7 @@
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
                             <input type="text" name="amount" id="investAmount" required inputmode="decimal"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
-                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;}"
+                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
                                    class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                         </div>
                         <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
@@ -666,7 +666,8 @@ function updateSchedule() {
 
     if (!amountInput || !rateInput || !termInput || !typeInput || !container || !tbody || !totalEl) return;
 
-    const amount = parseFloat(amountInput.value.replace(/,/g, ''));
+    let rawVal = (amountInput.value || '0').replace(/,/g, '');
+    const amount = parseFloat(rawVal);
     if (isNaN(amount) || amount <= 0) {
         container.classList.add('hidden');
         return;
@@ -677,18 +678,29 @@ function updateSchedule() {
     const type = typeInput.value;
     const symbol = symbolInput.value;
 
+    if (!rate || !term || rate <= 0 || term <= 0) {
+        container.classList.add('hidden');
+        return;
+    }
+
     container.classList.remove('hidden');
     tbody.innerHTML = '';
 
     let balance = amount;
     let totalPayment = 0;
     let rows = '';
+    let prevPayment = 0;
 
     for (let i = 1; i <= term; i++) {
         let interest, principal, payment;
 
         if (type === 'frances') {
-            payment = amount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+            if (i === 1) {
+                payment = amount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+                prevPayment = payment;
+            } else {
+                payment = prevPayment;
+            }
             interest = balance * rate;
             principal = payment - interest;
         } else {
