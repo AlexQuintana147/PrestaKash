@@ -213,4 +213,92 @@ class InvestmentController extends Controller
 
         return view('client.invest.payments', compact('investments', 'payments'));
     }
+
+    public function paymentDetail(InvestmentOpportunity $opportunity)
+    {
+        $user = Auth::user();
+
+        if (!$user->is_investor) {
+            return redirect()->route('client.invertir');
+        }
+
+        $investor = $opportunity->investors()
+            ->where('user_id', $user->id)
+            ->wherePivot('status', 'approved')
+            ->wherePivot('payment_status', 'confirmed')
+            ->withPivot(['amount', 'amortization_type', 'status', 'payment_status', 'approved_at'])
+            ->first();
+
+        if (!$investor) {
+            return redirect()->route('client.investments.index')->with('error', 'No tienes acceso a esta inversión.');
+        }
+
+        $amount = $investor->pivot->amount;
+        $amortizationType = $investor->pivot->amortization_type;
+        $monthlyRate = $opportunity->monthly_return_rate / 100;
+        $termMonths = $opportunity->term_months;
+        $isClosed = in_array($opportunity->status, ['closed', 'cancelled']);
+        $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
+
+        $schedule = collect();
+        $totalExpectedReturn = 0;
+
+        if ($amortizationType === 'frances') {
+            $monthlyPayment = $monthlyRate > 0
+                ? $amount * ($monthlyRate * pow(1 + $monthlyRate, $termMonths)) / (pow(1 + $monthlyRate, $termMonths) - 1)
+                : $amount / $termMonths;
+
+            $balance = $amount;
+            for ($i = 1; $i <= $termMonths; $i++) {
+                $interest = round($balance * $monthlyRate, 2);
+                $principal = round($monthlyPayment - $interest, 2);
+                $balance = round($balance - $principal, 2);
+                if ($i === $termMonths) {
+                    $principal = round($principal + $balance, 2);
+                    $balance = 0;
+                }
+                $totalExpectedReturn += round($interest + $principal, 2);
+
+                $schedule->push((object)[
+                    'month' => $i,
+                    'date' => $startDate ? $startDate->copy()->addMonths($i) : null,
+                    'payment' => round($interest + $principal, 2),
+                    'interest' => $interest,
+                    'principal' => $principal,
+                    'balance' => max($balance, 0),
+                ]);
+            }
+        } else {
+            $monthlyInterest = round($amount * $monthlyRate, 2);
+            for ($i = 1; $i <= $termMonths; $i++) {
+                $isLast = $i === $termMonths;
+                $payment = $isLast ? $monthlyInterest + $amount : $monthlyInterest;
+                $totalExpectedReturn += $payment;
+
+                $schedule->push((object)[
+                    'month' => $i,
+                    'date' => $startDate ? $startDate->copy()->addMonths($i) : null,
+                    'payment' => $payment,
+                    'interest' => $monthlyInterest,
+                    'principal' => $isLast ? $amount : 0,
+                    'balance' => $isLast ? 0 : $amount,
+                ]);
+            }
+        }
+
+        $payments = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
+            ->where('reference_type', 'investment')
+            ->where('reference_id', $opportunity->id)
+            ->where('type', 'expense')
+            ->with(['cashbox:id,name,currency'])
+            ->orderByDesc('date')
+            ->get();
+
+        $totalReceived = $payments->sum('amount');
+
+        return view('client.invest.payment-detail', compact(
+            'opportunity', 'investor', 'amount', 'amortizationType', 'schedule',
+            'payments', 'totalReceived', 'totalExpectedReturn', 'isClosed', 'startDate'
+        ));
+    }
 }

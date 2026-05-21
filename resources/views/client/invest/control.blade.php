@@ -196,7 +196,7 @@
                         $lastPayment = $invPayments->where('type', 'expense')->sortByDesc('date')->first();
                     @endphp
 
-                    <a href="{{ route('client.investments.show', $opp) }}" class="block group">
+                    <a href="{{ route('client.investments.payment-detail', $opp) }}" class="block group">
                         <div class="relative bg-white dark:bg-gray-950 rounded-2xl border border-gray-100 dark:border-gray-800/60 p-5 hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 overflow-hidden">
                             <div class="absolute top-0 left-0 w-full h-1 bg-gray-100 dark:bg-gray-800">
                                 <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500" style="width: {{ min(100, $progressPct) }}%"></div>
