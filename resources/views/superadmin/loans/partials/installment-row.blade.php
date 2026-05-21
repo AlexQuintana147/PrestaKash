@@ -217,16 +217,19 @@
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Estado</p>
                 <span class="text-[9px] font-black uppercase tracking-widest
                     {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
-                    {{ $inst->status === 'pending' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) && $inst->requested_type !== 'interest' ? 'text-gray-400' : '' }}
+                    {{ $inst->status === 'pending' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) && $inst->requested_type !== 'interest' && $inst->interest_payments_count === 0 ? 'text-gray-400' : '' }}
                     {{ $inst->status === 'processing' ? 'text-purple-600 animate-pulse' : '' }}
                     {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}
-                    {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) ? 'text-amber-500' : '' }}">
-                    @if($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest'))
+                    {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) ? 'text-amber-500' : '' }}
+                    {{ ($inst->status === 'pending' && $inst->interest_payments_count > 0 && !(isset($inst->is_interest_payment) && $inst->is_interest_payment)) ? 'text-amber-500' : '' }}">
+                    @if($inst->status === 'approved')
+                        Pagado
+                    @elseif($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest'))
                         Interés pagado
+                    @elseif($inst->status === 'pending' && $inst->interest_payments_count > 0 && !(isset($inst->is_interest_payment) && $inst->is_interest_payment))
+                        Intereses pagados ({{ $inst->interest_payments_count }}x)
                     @else
                         {{ match ($inst->status) {
-        'approved' => 'Pagado',
-        'pending' => 'Pendiente',
         'processing' => 'Validar',
         'rejected' => 'Rechazado',
         default => $inst->status

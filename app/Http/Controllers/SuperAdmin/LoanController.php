@@ -434,8 +434,8 @@ class LoanController extends Controller
         // Expand installments with interest payments into separate rows
         $expandedInstallments = collect();
         foreach ($installments as $inst) {
-            if ($inst->interest_payments_count > 0 && $inst->status === 'approved') {
-                // Load actual interest payments - ONLY for approved installments
+            if ($inst->interest_payments_count > 0 && ($inst->status === 'approved' || $filter === 'paid')) {
+                // Load actual interest payments - for approved installments OR when viewing "Pagadas"
                 $interestPayments = $inst->interestPayments;
                 // If interest_payments table has data, use it
                 if ($interestPayments->isNotEmpty()) {
