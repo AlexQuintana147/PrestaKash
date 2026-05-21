@@ -322,7 +322,9 @@ class LoanController extends Controller
 
         if ($instId) {
             $query->where('id', $instId);
-            $filter = 'all';
+            if (!$highlightInterest) {
+                $filter = 'all';
+            }
         } elseif ($filter === 'grouped') {
             $loansPaginator = \App\Models\Loan::with(['user', 'user.documents'])
                 ->whereIn('status', ['approved', 'paid'])
