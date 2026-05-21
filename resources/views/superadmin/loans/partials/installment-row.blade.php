@@ -250,7 +250,7 @@
             </div>
 
             <div class="flex items-center gap-3">
-                @if($inst->status === 'processing')
+                @if($inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at))
                     @php
                         $displayAmount = $inst->requested_type === 'interest' 
                             ? $inst->interest + ($inst->late_fee ?? 0)
