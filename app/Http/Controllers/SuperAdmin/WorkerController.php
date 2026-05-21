@@ -8,10 +8,13 @@ use App\Models\User;
 use App\Models\WorkerPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rule;
 
 class WorkerController extends Controller
 {
+    const MAX_WORKERS = 50;
+
     public function index()
     {
         $trabajadorRole = Role::where('name', 'trabajador')->first();
@@ -29,6 +32,8 @@ class WorkerController extends Controller
 
     public function store(Request $request)
     {
+        $this->checkRateLimit($request);
+
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u'],
             'last_name' => ['required', 'string', 'min:4', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u', function ($attr, $value, $fail) {
@@ -37,7 +42,18 @@ class WorkerController extends Controller
                     $fail('Debes ingresar ambos apellidos (apellido paterno y materno).');
                 }
             }],
-            'dni' => ['required', 'string', 'regex:/^\d{8}$/', 'unique:users,dni'],
+            'dni' => [
+                'required',
+                'string',
+                'regex:/^[1-9]\d{7}$/',
+                'unique:users,dni',
+                function ($attr, $value, $fail) {
+                    if (!preg_match('/^[1-9]\d{7}$/', $value)) {
+                        $fail('El DNI no puede empezar con 0.');
+                        return;
+                    }
+                },
+            ],
             'email' => ['required', 'email', 'unique:users,email', 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
             'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', 'unique:users,phone'],
             'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
@@ -61,17 +77,25 @@ class WorkerController extends Controller
             'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
             'last_name.regex' => 'Los apellidos solo pueden contener letras, espacios, guiones y puntos.',
             'last_name.min' => 'Los apellidos deben tener al menos 4 caracteres.',
-            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
+            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos y no puede empezar con 0.',
+            'dni.unique' => 'Este DNI ya está registrado en el sistema.',
+            'email.unique' => 'Este correo electrónico ya está registrado en el sistema.',
             'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
+            'phone.unique' => 'Este número de celular ya está registrado en el sistema.',
             'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
             'password.regex' => 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.',
         ]);
 
+        $this->checkMaxWorkers();
+
         $trabajadorRole = Role::where('name', 'trabajador')->firstOrFail();
+
+        $firstName = strip_tags(trim($validated['first_name']));
+        $lastName = strip_tags(trim($validated['last_name']));
 
         $worker = User::create([
             'role_id' => $trabajadorRole->id,
-            'name' => trim($validated['first_name']) . ' ' . trim($validated['last_name']),
+            'name' => $firstName . ' ' . $lastName,
             'dni' => $validated['dni'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
@@ -114,6 +138,8 @@ class WorkerController extends Controller
             abort(404);
         }
 
+        $this->checkRateLimit($request);
+
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u'],
             'last_name' => ['required', 'string', 'min:4', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u', function ($attr, $value, $fail) {
@@ -122,9 +148,31 @@ class WorkerController extends Controller
                     $fail('Debes ingresar ambos apellidos (apellido paterno y materno).');
                 }
             }],
-            'dni' => ['required', 'string', 'regex:/^\d{8}$/', Rule::unique('users', 'dni')->ignore($worker->id)],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($worker->id), 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
-            'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', Rule::unique('users', 'phone')->ignore($worker->id)],
+            'dni' => [
+                'required',
+                'string',
+                'regex:/^[1-9]\d{7}$/',
+                Rule::unique('users', 'dni')->ignore($worker->id),
+                function ($attr, $value, $fail) {
+                    if (!preg_match('/^[1-9]\d{7}$/', $value)) {
+                        $fail('El DNI no puede empezar con 0.');
+                        return;
+                    }
+                },
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($worker->id),
+                'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i',
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'regex:/^(\+51)?\s?9\d{8}$/',
+                'max:15',
+                Rule::unique('users', 'phone')->ignore($worker->id),
+            ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'status' => 'nullable|string|in:active,inactive',
             'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
@@ -147,14 +195,20 @@ class WorkerController extends Controller
             'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
             'last_name.regex' => 'Los apellidos solo pueden contener letras, espacios, guiones y puntos.',
             'last_name.min' => 'Los apellidos deben tener al menos 4 caracteres.',
-            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
+            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos y no puede empezar con 0.',
+            'dni.unique' => 'Este DNI ya está registrado en el sistema por otro usuario.',
+            'email.unique' => 'Este correo electrónico ya está registrado en el sistema por otro usuario.',
             'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
+            'phone.unique' => 'Este número de celular ya está registrado en el sistema por otro usuario.',
             'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
             'password.regex' => 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.',
         ]);
 
+        $firstName = strip_tags(trim($validated['first_name']));
+        $lastName = strip_tags(trim($validated['last_name']));
+
         $worker->update([
-            'name' => trim($validated['first_name']) . ' ' . trim($validated['last_name']),
+            'name' => $firstName . ' ' . $lastName,
             'dni' => $validated['dni'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
@@ -189,5 +243,30 @@ class WorkerController extends Controller
         $worker->workerPermissions()->delete();
         $worker->delete();
         return redirect()->route('superadmin.workers.index')->with('success', 'Trabajador eliminado');
+    }
+
+    private function checkRateLimit(Request $request): void
+    {
+        $executed = RateLimiter::attempt(
+            key: 'workers-action:' . $request->ip(),
+            maxAttempts: 5,
+            callback: fn () => true,
+            decaySeconds: 60
+        );
+
+        if (!$executed) {
+            $seconds = RateLimiter::availableIn('workers-action:' . $request->ip());
+            abort(429, 'Demasiados intentos. Intenta en ' . $seconds . ' segundos.');
+        }
+    }
+
+    private function checkMaxWorkers(): void
+    {
+        $trabajadorRole = Role::where('name', 'trabajador')->first();
+        $currentCount = User::where('role_id', $trabajadorRole?->id)->count();
+
+        if ($currentCount >= self::MAX_WORKERS) {
+            abort(422, 'Se ha alcanzado el límite máximo de trabajadores (' . self::MAX_WORKERS . '). Contacta al administrador del sistema.');
+        }
     }
 }
