@@ -84,46 +84,48 @@
     <div class="mb-6 sm:mb-8">
         <h2 class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 sm:mb-4">Cronograma de Pagos</h2>
 
-        <div class="sm:hidden space-y-2">
-            @foreach($schedule as $item)
+        <div id="schedule-mobile" class="sm:hidden space-y-2">
+            @foreach($schedule as $i => $item)
                 @php
                     $isOverdue = false;
                     if ($isClosed && $item->date) {
                         $isOverdue = $item->date->lt(now());
                     }
                 @endphp
-                <div class="bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800/60 p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-gray-900 dark:text-white">Cuota {{ $item->month }}</span>
-                            @if(!$isClosed)
-                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pend.</span>
-                            @elseif($isOverdue)
-                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">Vencida</span>
-                            @else
-                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
-                            @endif
+                <div class="schedule-item" data-idx="{{ $i }}" style="display:none">
+                    <div class="bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800/60 p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-gray-900 dark:text-white">Cuota {{ $item->month }}</span>
+                                @if(!$isClosed)
+                                    <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pend.</span>
+                                @elseif($isOverdue)
+                                    <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">Vencida</span>
+                                @else
+                                    <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
+                                @endif
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-mono">{{ $item->date ? $item->date->format('d/m/y') : '—' }}</span>
                         </div>
-                        <span class="text-[10px] text-gray-400 font-mono">{{ $item->date ? $item->date->format('d/m/y') : '—' }}</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">Interés</p>
-                            <p class="text-[11px] font-medium text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Interés</p>
+                                <p class="text-[11px] font-medium text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Capital</p>
+                                <p class="text-[11px] font-medium text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Total</p>
+                                <p class="text-[11px] font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">Capital</p>
-                            <p class="text-[11px] font-medium text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</p>
-                        </div>
-                        <div>
-                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">Total</p>
-                            <p class="text-[11px] font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</p>
-                        </div>
-                    </div>
-                    <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-900/50">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[8px] text-gray-400 uppercase tracking-wider">Saldo</span>
-                            <span class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</span>
+                        <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-900/50">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[8px] text-gray-400 uppercase tracking-wider">Saldo</span>
+                                <span class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,15 +146,15 @@
                             <th class="px-4 py-3 text-center text-[9px] font-bold text-gray-400 uppercase tracking-wider">Estado</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach($schedule as $item)
+                    <tbody id="schedule-table-body">
+                        @foreach($schedule as $i => $item)
                             @php
                                 $isOverdue = false;
                                 if ($isClosed && $item->date) {
                                     $isOverdue = $item->date->lt(now());
                                 }
                             @endphp
-                            <tr class="border-b border-gray-50 dark:border-gray-900/50 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
+                            <tr class="schedule-item border-b border-gray-50 dark:border-gray-900/50 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors" data-idx="{{ $i }}" style="display:none">
                                 <td class="px-4 py-3 font-bold text-gray-900 dark:text-white">{{ $item->month }}</td>
                                 <td class="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono">{{ $item->date ? $item->date->format('d/m/Y') : '—' }}</td>
                                 <td class="px-4 py-3 text-right text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</td>
@@ -174,6 +176,8 @@
                 </table>
             </div>
         </div>
+
+        <div id="schedule-pagination" class="flex items-center justify-center gap-1.5 mt-4"></div>
     </div>
 
     @if($payments->count() > 0)
@@ -258,4 +262,98 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const perPage = 10;
+    const mobileItems = document.querySelectorAll('#schedule-mobile .schedule-item');
+    const desktopItems = document.querySelectorAll('#schedule-table-body .schedule-item');
+    const total = mobileItems.length;
+    const totalPages = Math.ceil(total / perPage);
+    const paginationEl = document.getElementById('schedule-pagination');
+    let currentPage = 1;
+
+    function showPage(page) {
+        currentPage = page;
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+
+        mobileItems.forEach(function(item) {
+            const idx = parseInt(item.getAttribute('data-idx'));
+            item.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
+
+        desktopItems.forEach(function(item) {
+            const idx = parseInt(item.getAttribute('data-idx'));
+            item.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
+
+        renderPagination();
+    }
+
+    function renderPagination() {
+        paginationEl.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        const prevBtn = document.createElement('button');
+        prevBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>';
+        prevBtn.className = 'w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', function() { showPage(currentPage - 1); });
+        paginationEl.appendChild(prevBtn);
+
+        var pages = getVisiblePages();
+
+        pages.forEach(function(p) {
+            if (p === '...') {
+                var dots = document.createElement('span');
+                dots.textContent = '...';
+                dots.className = 'w-8 h-8 flex items-center justify-center text-[10px] text-gray-400';
+                paginationEl.appendChild(dots);
+            } else {
+                var btn = document.createElement('button');
+                btn.textContent = p;
+                btn.className = p === currentPage
+                    ? 'w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold bg-indigo-600 text-white'
+                    : 'w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors';
+                btn.addEventListener('click', function() { showPage(p); });
+                paginationEl.appendChild(btn);
+            }
+        });
+
+        var nextBtn = document.createElement('button');
+        nextBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+        nextBtn.className = 'w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', function() { showPage(currentPage + 1); });
+        paginationEl.appendChild(nextBtn);
+    }
+
+    function getVisiblePages() {
+        if (totalPages <= 7) {
+            var arr = [];
+            for (var i = 1; i <= totalPages; i++) arr.push(i);
+            return arr;
+        }
+
+        var pages = [1];
+
+        if (currentPage > 3) pages.push('...');
+
+        var rangeStart = Math.max(2, currentPage - 1);
+        var rangeEnd = Math.min(totalPages - 1, currentPage + 1);
+
+        for (var j = rangeStart; j <= rangeEnd; j++) pages.push(j);
+
+        if (currentPage < totalPages - 2) pages.push('...');
+
+        pages.push(totalPages);
+
+        return pages;
+    }
+
+    showPage(1);
+});
+</script>
 @endsection
