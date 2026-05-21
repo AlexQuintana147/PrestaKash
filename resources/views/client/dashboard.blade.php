@@ -457,7 +457,7 @@
                     </div>
                     <div class="pk-card px-4 py-2.5 flex items-center justify-between">
                         <span class="text-xs text-gray-500 dark:text-gray-400">Ubicación</span>
-                        <span class="text-sm font-medium text-gray-900 dark:text-white text-right max-w-[60%]">{{ trim(collect([$user->district, $user->province, $user->department])->filter()->join(', ')) ?: '—' }}</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white text-right max-w-[60%]">{{ trim(collect([$district, $province, $department])->filter()->join(', ')) ?: '—' }}</span>
                     </div>
                 </div>
             </div>

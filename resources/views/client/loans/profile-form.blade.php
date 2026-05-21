@@ -131,12 +131,23 @@
 
     <div class="min-h-screen px-5 md:px-8 py-6">
 
-        <div class="mb-6">
-            <p class="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white">
-                {{ isset($editing) ? 'Editar perfil' : 'Completa tu perfil' }}
-            </h1>
-            <p class="text-xs text-gray-500 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <p class="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Préstamos</p>
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                    {{ isset($editing) ? 'Editar perfil' : 'Completa tu perfil' }}
+                </h1>
+                <p class="text-xs text-gray-500 mt-0.5">Necesitamos algunos datos antes de continuar.</p>
+            </div>
+            @if(isset($editing))
+            <a href="{{ route('client.dashboard') }}"
+                class="inline-flex items-center gap-2 text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver
+            </a>
+            @endif
         </div>
 
         @if($errors->any())
