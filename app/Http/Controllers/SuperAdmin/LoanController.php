@@ -431,7 +431,7 @@ class LoanController extends Controller
             });
         }
 
-        $installments = $query->orderBy('due_date', 'asc')
+        $installments = $query->with('interestPayments')->orderBy('due_date', 'asc')
             ->get();
 
         // Expand installments with interest payments into separate rows
@@ -613,16 +613,10 @@ class LoanController extends Controller
         \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull) {
             $loan = $installment->loan;
 
-            // Check if movement already exists for this installment to avoid duplicates
-            $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
-                ->where('reference_id', $installment->id)
-                ->first();
-
             if ($isInterestOnly) {
                 $currentNumber = $installment->installment_number;
                 $freq = $loan->payment_frequency;
 
-                // Capture payment fields before clearing
                 $savedVoucher = $installment->payment_voucher;
                 $savedMethod  = $installment->payment_method;
                 $savedBank    = $installment->bank_name;
@@ -630,22 +624,17 @@ class LoanController extends Controller
                 $savedLateFee = $installment->late_fee;
                 $savedInterest = $installment->interest;
 
-                // Register movement only if doesn't exist
-                if (!$existingMovement) {
-                    $movement = $cashbox->movements()->create([
-                        'user_id' => auth()->id(),
-                        'type' => 'income',
-                        'amount' => $amount,
-                        'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo {$loan->code} de {$loan->user->name}",
-                        'reference_type' => 'loan_installment',
-                        'reference_id' => $installment->id,
-                        'date' => now(),
-                    ]);
+                $movement = $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo {$loan->code} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
 
-                    $cashbox->increment('balance', $amount);
-                } else {
-                    $movement = $existingMovement;
-                }
+                $cashbox->increment('balance', $amount);
 
                 // Shift dates for all PENDING or REJECTED installments of this loan
                 $installmentsToShift = $loan->installments()
@@ -725,19 +714,17 @@ class LoanController extends Controller
                 $overdueInsts = $loan->overdue_installments;
                 $totalLateFees = $overdueInsts->sum('late_fee');
 
-                if (!$existingMovement) {
-                    $cashbox->movements()->create([
-                        'user_id' => auth()->id(),
-                        'type' => 'income',
-                        'amount' => $amount,
-                        'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
-                        'reference_type' => 'loan_installment',
-                        'reference_id' => $installment->id,
-                        'date' => now(),
-                    ]);
+                $movement = $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
 
-                    $cashbox->increment('balance', $amount);
-                }
+                $cashbox->increment('balance', $amount);
 
                 $interestPayment = \App\Models\InterestPayment::create([
                     'loan_installment_id' => $installment->id,
@@ -749,6 +736,8 @@ class LoanController extends Controller
                     'late_fee'            => $totalLateFees,
                     'paid_at'             => now(),
                 ]);
+
+                $movement->update(['interest_payment_id' => $interestPayment->id]);
 
                 $installment->update([
                     'status' => 'pending',
@@ -771,6 +760,10 @@ class LoanController extends Controller
                     'status' => 'approved',
                     'paid_at' => now()
                 ]);
+
+                $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                    ->where('reference_id', $installment->id)
+                    ->first();
 
                 if (!$existingMovement) {
                     $cashbox->movements()->create([
@@ -799,7 +792,10 @@ class LoanController extends Controller
                     'paid_at' => now()
                 ]);
 
-                // Register movement only if doesn't exist
+                $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                    ->where('reference_id', $installment->id)
+                    ->first();
+
                 if (!$existingMovement) {
                     $cashbox->movements()->create([
                         'user_id' => auth()->id(),
@@ -877,6 +873,13 @@ class LoanController extends Controller
         $interestPaymentId = request('interest_payment_id');
         $interestPayment = null;
 
+        \Log::info('Unapprove installment', [
+            'installment_id' => $installment->id,
+            'installment_status' => $installment->status,
+            'interest_payments_count' => $installment->interest_payments_count,
+            'interest_payment_id_param' => $interestPaymentId,
+        ]);
+
         // LÓGICA SIMPLIFICADA: Determinar qué tipo de pago es y si puede revertirse
 
         if ($installment->status === 'approved') {
@@ -895,16 +898,15 @@ class LoanController extends Controller
 
             $installmentsWithInterests = $loan->installments()
                 ->where('interest_payments_count', '>', 0)
+                ->with('interestPayments')
                 ->get();
 
             foreach ($installmentsWithInterests as $instWithInterest) {
-                $latestInterest = $instWithInterest->interestPayments()
-                    ->orderBy('paid_at', 'desc')
-                    ->first();
-
-                if ($latestInterest && (!$lastInterestDate || $latestInterest->paid_at > $lastInterestDate)) {
-                    $lastInterestPayment = $latestInterest;
-                    $lastInterestDate = $latestInterest->paid_at;
+                foreach ($instWithInterest->interestPayments as $ip) {
+                    if ($ip->paid_at && (!$lastInterestDate || $ip->paid_at > $lastInterestDate)) {
+                        $lastInterestPayment = $ip;
+                        $lastInterestDate = $ip->paid_at;
+                    }
                 }
             }
 
@@ -941,16 +943,15 @@ class LoanController extends Controller
 
             $allInstallmentsWithInterests = $loan->installments()
                 ->where('interest_payments_count', '>', 0)
+                ->with('interestPayments')
                 ->get();
 
             foreach ($allInstallmentsWithInterests as $instWithInterest) {
-                $latestInterest = $instWithInterest->interestPayments()
-                    ->orderBy('paid_at', 'desc')
-                    ->first();
-
-                if ($latestInterest && (!$lastInterestDateGlobal || $latestInterest->paid_at > $lastInterestDateGlobal)) {
-                    $lastInterestPaymentGlobal = $latestInterest;
-                    $lastInterestDateGlobal = $latestInterest->paid_at;
+                foreach ($instWithInterest->interestPayments as $ip) {
+                    if ($ip->paid_at && (!$lastInterestDateGlobal || $ip->paid_at > $lastInterestDateGlobal)) {
+                        $lastInterestPaymentGlobal = $ip;
+                        $lastInterestDateGlobal = $ip->paid_at;
+                    }
                 }
             }
 
