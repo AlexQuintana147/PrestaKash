@@ -8,6 +8,7 @@ use App\Services\VoucherCleanupService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 
 class LoanController extends Controller
 {
