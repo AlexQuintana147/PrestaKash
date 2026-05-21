@@ -459,10 +459,11 @@ class LoanController extends Controller
                     }
                 }
 
-                // Also push the original installment row (full payment)
-                $originalInst = clone $inst;
-                $originalInst->is_interest_payment = false;
-                $expandedInstallments->push($originalInst);
+                if ($inst->status === 'approved' || $filter !== 'paid') {
+                    $originalInst = clone $inst;
+                    $originalInst->is_interest_payment = false;
+                    $expandedInstallments->push($originalInst);
+                }
             } else {
                 // For non-approved installments OR installments without interest payments,
                 // show as single row without expansion
