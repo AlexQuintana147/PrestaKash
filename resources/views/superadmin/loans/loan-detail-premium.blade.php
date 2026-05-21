@@ -124,7 +124,7 @@
                 @endphp
 
                 <div class="group rounded-xl overflow-hidden {{ $isOverdue ? 'bg-red-50 dark:bg-red-950/15' : 'bg-gray-50 dark:bg-gray-900/60' }}
-                    {{ $inst->status === 'approved' ? 'opacity-65' : '' }}"
+                    {{ $inst->status === 'approved' || (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'opacity-65' : '' }}"
                     data-installment-id="{{ $inst->id }}"
                     data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
                     @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
@@ -136,7 +136,7 @@
                     <div class="flex items-stretch">
 
                         <div class="w-12 flex items-center justify-center flex-shrink-0
-                            {{ $inst->status === 'approved' ? 'bg-emerald-500' : ($isOverdue ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700') }}">
+                            {{ $inst->status === 'approved' ? 'bg-emerald-500' : ((isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'bg-emerald-500' : ($isOverdue ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700')) }}">
                             <span class="text-xs font-black text-white">{{ $inst->installment_number }}</span>
                         </div>
 
@@ -145,16 +145,22 @@
                                 <span class="text-xs font-bold {{ $isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }}">{{ $inst->due_date->format('d/m/Y') }}</span>
                                 <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase
                                     {{ $inst->status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
+                                       ((isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
                                        ($inst->status === 'processing' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 animate-pulse' :
                                        ($inst->status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' :
-                                       ($isOverdue ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'))) }}">
-                                    {{ match ($inst->status) {
-                                        'approved' => 'Pagado',
+                                       ($isOverdue ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400')))) }}">
+                                    @if($inst->status === 'approved')
+                                        Pagado
+                                    @elseif(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at)
+                                        Pagado
+                                    @else
+                                        {{ match ($inst->status) {
                                         'pending' => $isOverdue ? 'Vencida' : 'Pendiente',
                                         'processing' => 'Validar',
                                         'rejected' => 'Rechazado',
                                         default => $inst->status
                                     } }}
+                                    @endif
                                 </span>
                             </div>
                             <div class="flex items-center gap-3 text-[10px]">

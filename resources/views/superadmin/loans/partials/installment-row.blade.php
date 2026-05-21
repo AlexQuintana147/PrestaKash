@@ -217,13 +217,19 @@
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Estado</p>
                 <span class="text-[9px] font-black uppercase tracking-widest
                     {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
+                    {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'text-green-500' : '' }}
                     {{ $inst->status === 'pending' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) && $inst->requested_type !== 'interest' && $inst->interest_payments_count === 0 ? 'text-gray-400' : '' }}
-                    {{ $inst->status === 'processing' ? 'text-purple-600 animate-pulse' : '' }}
+                    {{ $inst->status === 'processing' && $inst->interest_payments_count === 0 ? 'text-purple-600 animate-pulse' : '' }}
+                    {{ $inst->status === 'processing' && $inst->interest_payments_count > 0 && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) ? 'text-amber-500' : '' }}
                     {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}
-                    {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) ? 'text-amber-500' : '' }}
+                    {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) && !(isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'text-amber-500' : '' }}
                     {{ ($inst->status === 'pending' && $inst->interest_payments_count > 0 && !(isset($inst->is_interest_payment) && $inst->is_interest_payment)) ? 'text-amber-500' : '' }}">
                     @if($inst->status === 'approved')
                         Pagado
+                    @elseif(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at)
+                        Pagado
+                    @elseif($inst->status === 'processing' && $inst->interest_payments_count > 0 && !(isset($inst->is_interest_payment) && $inst->is_interest_payment))
+                        Validar cuota ({{ $inst->interest_payments_count }}x interés pagado)
                     @elseif($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest'))
                         Interés pagado
                     @elseif($inst->status === 'pending' && $inst->interest_payments_count > 0 && !(isset($inst->is_interest_payment) && $inst->is_interest_payment))

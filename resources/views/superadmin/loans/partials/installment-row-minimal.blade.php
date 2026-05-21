@@ -63,15 +63,19 @@
     <div class="flex items-center gap-4">
         <span class="text-[8px] font-black uppercase tracking-widest
             {{ $inst->status === 'approved' ? 'text-green-500' : '' }}
+            {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'text-green-500' : '' }}
             {{ $inst->status === 'pending' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) && $inst->requested_type !== 'interest' ? 'text-gray-400' : '' }}
-            {{ $inst->status === 'processing' ? 'text-purple-600 animate-pulse' : '' }}
+            {{ $inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment) ? 'text-purple-600 animate-pulse' : '' }}
             {{ $inst->status === 'rejected' ? 'text-red-500' : '' }}
-            {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) ? 'text-amber-500' : '' }}">
-            @if($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest'))
+            {{ ($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')) && !(isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'text-amber-500' : '' }}">
+            @if($inst->status === 'approved')
+                Pagado
+            @elseif(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at)
+                Pagado
+            @elseif($inst->status === 'pending' && ((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest'))
                 Interés pagado
             @else
                 {{ match ($inst->status) {
-    'approved' => 'Pagado',
     'pending' => 'Pendiente',
     'processing' => 'Validar',
     'rejected' => 'Rechazado',

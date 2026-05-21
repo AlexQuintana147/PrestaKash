@@ -763,6 +763,7 @@ class LoanController extends Controller
 
                 $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
                     ->where('reference_id', $installment->id)
+                    ->whereNull('interest_payment_id')
                     ->first();
 
                 if (!$existingMovement) {
@@ -794,6 +795,7 @@ class LoanController extends Controller
 
                 $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
                     ->where('reference_id', $installment->id)
+                    ->whereNull('interest_payment_id')
                     ->first();
 
                 if (!$existingMovement) {
@@ -1011,16 +1013,20 @@ class LoanController extends Controller
                 $interestPayment->delete();
 
             } else {
-                // REVERSIÓN DE CUOTA APROBADA (comportamiento original)
-                $installment->update(['status' => 'processing']);
+                // REVERSIÓN DE CUOTA APROBADA → volver a "Por validar"
+                $installment->update([
+                    'status' => 'processing',
+                    'requested_type' => 'full',
+                    'paid_at' => null,
+                ]);
 
                 if ($loan->status === 'paid') {
                     $loan->update(['status' => 'approved']);
                 }
 
-                // Find and delete the associated cashbox movement
                 $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
                     ->where('reference_id', $installment->id)
+                    ->whereNull('interest_payment_id')
                     ->first();
 
                 if ($movement) {
