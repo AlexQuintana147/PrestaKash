@@ -187,6 +187,11 @@
                                         {{ $investor->pivot->payment_status === 'pending' ? 'Pago Pend.' : ($investor->pivot->payment_status === 'confirmed' ? 'Pago OK' : ($investor->pivot->payment_status === 'rejected' ? 'Pago Rech.' : 'Pago Exp.')) }}
                                     </span>
                                 @endif
+                                @if($investor->pivot->amortization_type)
+                                    <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                                        {{ $investor->pivot->amortization_type === 'frances' ? 'Francés' : 'Americano' }}
+                                    </span>
+                                @endif
                             </div>
                             <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">{{ $investor->pivot->created_at->format('d/m/Y') }}</p>
                         </div>
@@ -218,6 +223,70 @@
                         @endif
                     </div>
                 </div>
+                @if($investor->pivot->amortization_type && $investor->pivot->amount > 0)
+                    @php
+                        $amt = $investor->pivot->amount;
+                        $rate = $investment->monthly_return_rate / 100;
+                        $term = $investment->term_months;
+                        $type = $investor->pivot->amortization_type;
+                        $sym = $investment->currency === 'USD' ? '$' : 'S/';
+                        $bal = $amt;
+                        $totalPay = 0;
+                        $prevPmt = 0;
+                        $schedRows = [];
+                        for ($m = 1; $m <= $term; $m++) {
+                            if ($type === 'frances') {
+                                if ($m === 1) { $pmt = $amt * ($rate * pow(1 + $rate, $term)) / (pow(1 + $rate, $term) - 1); $prevPmt = $pmt; }
+                                else { $pmt = $prevPmt; }
+                                $int = $bal * $rate;
+                                $prin = $pmt - $int;
+                            } else {
+                                $int = $amt * $rate;
+                                if ($m === $term) { $prin = $bal; $pmt = $int + $prin; }
+                                else { $prin = 0; $pmt = $int; }
+                            }
+                            $bal = max(0, $bal - $prin);
+                            $totalPay += $pmt;
+                            $schedRows[] = ['n'=>$m, 'pmt'=>$pmt, 'int'=>$int, 'prin'=>$prin, 'bal'=>$bal];
+                        }
+                    @endphp
+                    <div class="mt-3 pl-16 md:pl-0">
+                        <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')" class="flex items-center gap-1.5 text-[10px] font-bold text-indigo-500 dark:text-indigo-400 hover:text-indigo-700 transition-colors">
+                            <svg class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            Cronograma de Pagos ({{ $type === 'frances' ? 'Francés' : 'Americano' }})
+                        </button>
+                        <div class="hidden mt-2 border border-gray-100 dark:border-gray-900 rounded-xl overflow-hidden">
+                            <table class="w-full text-[10px]">
+                                <thead>
+                                    <tr class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
+                                        <th class="px-2 py-1.5 text-left font-bold text-gray-400 uppercase">Cuota</th>
+                                        <th class="px-2 py-1.5 text-right font-bold text-gray-400 uppercase">Pago</th>
+                                        <th class="px-2 py-1.5 text-right font-bold text-gray-400 uppercase">Interés</th>
+                                        <th class="px-2 py-1.5 text-right font-bold text-gray-400 uppercase">Capital</th>
+                                        <th class="px-2 py-1.5 text-right font-bold text-gray-400 uppercase">Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($schedRows as $row)
+                                        <tr class="border-b border-gray-50 dark:border-gray-900">
+                                            <td class="px-2 py-1 text-gray-600">{{ $row['n'] }}</td>
+                                            <td class="px-2 py-1 text-right font-semibold text-gray-900 dark:text-white">{{ $sym }} {{ number_format($row['pmt'], 2) }}</td>
+                                            <td class="px-2 py-1 text-right text-amber-600 dark:text-amber-400">{{ $sym }} {{ number_format($row['int'], 2) }}</td>
+                                            <td class="px-2 py-1 text-right text-indigo-600 dark:text-indigo-400">{{ $sym }} {{ number_format($row['prin'], 2) }}</td>
+                                            <td class="px-2 py-1 text-right text-gray-500">{{ $sym }} {{ number_format($row['bal'], 2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-800">
+                                        <td colspan="4" class="px-2 py-1.5 text-left font-bold text-gray-400 uppercase text-[9px]">Total a Recibir</td>
+                                        <td class="px-2 py-1.5 text-right font-bold text-green-600 dark:text-green-400">{{ $sym }} {{ number_format($totalPay, 2) }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                @endif
             @endforeach
         </div>
 

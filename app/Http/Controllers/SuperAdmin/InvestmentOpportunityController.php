@@ -140,7 +140,7 @@ class InvestmentOpportunityController extends Controller
 
         $investors = $investment->investors()
             ->with(['documents'])
-            ->withPivot(['amount', 'status', 'admin_notes', 'created_at', 'payment_status', 'voucher_path', 'payment_submitted_at', 'operation_number'])
+            ->withPivot(['amount', 'amortization_type', 'status', 'admin_notes', 'created_at', 'payment_status', 'voucher_path', 'payment_submitted_at', 'operation_number'])
             ->orderByPivot('amount', 'desc')
             ->paginate(5, ['*'], 'investors_page')
             ->withQueryString();
