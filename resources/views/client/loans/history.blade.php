@@ -155,6 +155,38 @@
                                 </div>
                             </div>
 
+                            @php
+                                $pendingReview = $loan->installments->where('status', 'processing')->count();
+                                $rejected = $loan->installments->where('status', 'rejected')->count();
+                                $overdue = $loan->installments
+                                    ->where('status', '!=', 'approved')
+                                    ->filter(fn($i) => $i->due_date->isPast() && !$i->due_date->isToday())
+                                    ->count();
+                            @endphp
+
+                            @if($pendingReview > 0 || $rejected > 0 || $overdue > 0)
+                            <div class="flex flex-wrap items-center gap-2 lg:flex-col lg:items-end lg:gap-1.5 w-full lg:w-auto">
+                                @if($overdue > 0)
+                                    <span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 px-2 py-1 rounded-md border border-red-200 dark:border-red-900/40">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ $overdue }} cuota{{ $overdue > 1 ? 's' : '' }} atrasada{{ $overdue > 1 ? 's' : '' }}
+                                    </span>
+                                @endif
+                                @if($pendingReview > 0)
+                                    <span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 px-2 py-1 rounded-md border border-amber-200 dark:border-amber-900/40">
+                                        <svg class="w-3 h-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ $pendingReview }} en revisión
+                                    </span>
+                                @endif
+                                @if($rejected > 0)
+                                    <span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-700">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ $rejected }} rechazada{{ $rejected > 1 ? 's' : '' }}
+                                    </span>
+                                @endif
+                            </div>
+                            @endif
+
                             <!-- Flecha -->
                             <div class="hidden lg:block">
                                 <svg class="w-5 h-5 text-gray-300 dark:text-gray-700 group-hover:text-green-500 group-hover:translate-x-1 transition-all"
