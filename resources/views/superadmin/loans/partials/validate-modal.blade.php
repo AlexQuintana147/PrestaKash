@@ -27,7 +27,7 @@
 </style>
 <div id="validateModal"
     class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-2xl rounded-2xl shadow-2xl relative flex flex-col md:flex-row overflow-hidden"
+    <div class="bg-white dark:bg-gray-950 w-full max-w-xl lg:max-w-2xl rounded-2xl shadow-2xl relative flex flex-col md:flex-row overflow-hidden"
         style="max-height: 90vh;">
 
         <!-- Voucher (Izquierda) -->

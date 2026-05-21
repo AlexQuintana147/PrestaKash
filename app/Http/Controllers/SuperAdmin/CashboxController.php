@@ -17,9 +17,12 @@ class CashboxController extends Controller
                 $q->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])
                   ->where(function ($query) {
                       $query->where('reference_type', '!=', 'loan_installment')
-                            ->orWhereDoesntHave('installment', function ($instQuery) {
-                                  $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
-                              });
+                            ->orWhere(function ($sub) {
+                                $sub->whereNotNull('interest_payment_id')
+                                     ->orWhereDoesntHave('installment', function ($instQuery) {
+                                           $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
+                                       });
+                            });
                   })
                   ->latest()
                   ->limit(10);
@@ -44,9 +47,12 @@ class CashboxController extends Controller
 
         $query->where(function ($q) {
             $q->where('reference_type', '!=', 'loan_installment')
-              ->orWhereDoesntHave('installment', function ($instQuery) {
-                    $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
-                });
+              ->orWhere(function ($sub) {
+                  $sub->whereNotNull('interest_payment_id')
+                       ->orWhereDoesntHave('installment', function ($instQuery) {
+                             $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
+                         });
+              });
         });
 
         $movements = $query->paginate(10);
@@ -72,9 +78,12 @@ class CashboxController extends Controller
 
         $query->where(function ($q) {
             $q->where('reference_type', '!=', 'loan_installment')
-              ->orWhereDoesntHave('installment', function ($instQuery) {
-                    $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
-                });
+              ->orWhere(function ($sub) {
+                  $sub->whereNotNull('interest_payment_id')
+                       ->orWhereDoesntHave('installment', function ($instQuery) {
+                             $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
+                         });
+              });
         });
 
         $movements = $query->get();
