@@ -206,6 +206,7 @@
                                                 <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
                                                 <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                             </div>
+                                            <img id="previewImgCash" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
                                         </div>
                                     </div>
                                 </div>
@@ -329,6 +330,7 @@
                                                         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
+                                                    <img id="previewImgCash2" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
                                                 </div>
                                             </div>
                                         </div>
@@ -544,6 +546,7 @@ function selectPaymentMethod(method) {
     const paymentMethodInput = document.getElementById('payment_method');
     const dropzoneTransfer = document.getElementById('dropzoneTransfer');
     const dropzoneCash = document.getElementById('dropzoneCash');
+    const operationNumber = document.getElementById('operation_number');
 
     if (!transferFields || !cashFields || !btnTransfer || !btnCash) return;
     paymentMethodInput.value = method;
@@ -555,6 +558,7 @@ function selectPaymentMethod(method) {
         btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-900 dark:text-white border-b-2 border-green-500';
         if (dropzoneTransfer) dropzoneTransfer.classList.add('hidden');
         if (dropzoneCash) dropzoneCash.classList.remove('hidden');
+        if (operationNumber) operationNumber.removeAttribute('required');
     } else {
         transferFields.classList.remove('hidden');
         cashFields.classList.add('hidden');
@@ -562,12 +566,14 @@ function selectPaymentMethod(method) {
         btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
         if (dropzoneTransfer) dropzoneTransfer.classList.remove('hidden');
         if (dropzoneCash) dropzoneCash.classList.add('hidden');
+        if (operationNumber) operationNumber.setAttribute('required', '');
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     const voucherInput = document.getElementById('voucherInput');
     const previewImg = document.getElementById('previewImg');
+    const previewImgCash = document.getElementById('previewImgCash') || document.getElementById('previewImgCash2');
     const placeholderTransfer = document.getElementById('placeholderTransfer');
     const placeholderCash = document.getElementById('placeholderCash');
     const dropzoneTransfer = document.getElementById('dropzoneTransfer');
@@ -582,18 +588,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                if (previewImg && placeholderTransfer && placeholderCash) {
-                    previewImg.src = e.target.result;
-                    previewImg.classList.remove('hidden');
-                    placeholderTransfer.classList.add('hidden');
-                    placeholderCash.classList.add('hidden');
-                }
+                if (previewImg) { previewImg.src = e.target.result; previewImg.classList.remove('hidden'); }
+                if (previewImgCash) { previewImgCash.src = e.target.result; previewImgCash.classList.remove('hidden'); }
+                if (placeholderTransfer) placeholderTransfer.classList.add('hidden');
+                if (placeholderCash) placeholderCash.classList.add('hidden');
             };
             reader.readAsDataURL(this.files[0]);
         } else {
             if (dropzoneTransfer) { dropzoneTransfer.classList.remove('border-green-500'); dropzoneTransfer.classList.add('border-gray-200', 'border-dashed'); }
             if (dropzoneCash) { dropzoneCash.classList.remove('border-green-500'); dropzoneCash.classList.add('border-gray-200', 'border-dashed'); }
             if (previewImg) { previewImg.src = ''; previewImg.classList.add('hidden'); }
+            if (previewImgCash) { previewImgCash.src = ''; previewImgCash.classList.add('hidden'); }
             if (placeholderTransfer) placeholderTransfer.classList.remove('hidden');
             if (placeholderCash) placeholderCash.classList.remove('hidden');
         }
