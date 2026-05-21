@@ -978,7 +978,7 @@ class LoanController extends Controller
 
         \DB::transaction(function () use ($installment, $loan, $isInterestPayment, $interestPayment) {
             if ($isInterestPayment && $interestPayment) {
-                // REVERSIÓN DE PAGO DE INTERÉS
+                // REVERSIÓN DE PAGO DE INTERÉS → volver a "Por validar"
 
                 // 1. Eliminar movimiento de caja asociado a este interés
                 $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
@@ -994,22 +994,21 @@ class LoanController extends Controller
                     $movement->delete();
                 }
 
-                // 2. Eliminar registro del interés
-                $voucherPath = $interestPayment->payment_voucher;
-                $interestPayment->delete();
-
-                // 3. Borrar voucher de almacenamiento
-                if ($voucherPath) {
-                    Storage::disk('public')->delete($voucherPath);
-                }
-
-                // 4. Decrementar contador de intereses
+                // 2. Restaurar cuota a processing con datos del interés revertido
                 $newCount = max(0, $installment->interest_payments_count - 1);
                 $installment->update([
+                    'status' => 'processing',
+                    'payment_voucher' => $interestPayment->payment_voucher,
+                    'payment_method' => $interestPayment->payment_method,
+                    'bank_name' => $interestPayment->bank_name,
+                    'operation_number' => $interestPayment->operation_number,
+                    'requested_type' => 'interest',
+                    'paid_at' => null,
                     'interest_payments_count' => $newCount,
-                    // Si ya no hay más intereses y la cuota está pendiente, resetear requested_type
-                    'requested_type' => $newCount === 0 ? 'full' : $installment->requested_type,
                 ]);
+
+                // 3. Eliminar registro del interés (sin borrar voucher, se movió a la cuota)
+                $interestPayment->delete();
 
             } else {
                 // REVERSIÓN DE CUOTA APROBADA (comportamiento original)
@@ -1035,7 +1034,7 @@ class LoanController extends Controller
         });
 
         if ($isInterestPayment) {
-            return back()->with('success', 'Pago de interés revertido. El ingreso en caja ha sido eliminado.');
+            return back()->with('success', 'Pago de interés revertido. El pago vuelve a estar en revisión.');
         } else {
             return back()->with('success', 'Aprobación revertida. El ingreso en caja ha sido eliminado y el pago vuelve a estar en revisión.');
         }
