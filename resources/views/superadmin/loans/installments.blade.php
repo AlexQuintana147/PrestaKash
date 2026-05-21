@@ -564,4 +564,63 @@
             z-index: 2;
         }
     </style>
+
+    <!-- Modal de Confirmación para Revertir Pago -->
+    <div id="unapproveModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">¿Revertir pago?</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed mb-6">
+                    Esta acción eliminará el ingreso de caja y el pago volverá a estar en revisión. Solo se puede revertir el último pago aprobado.
+                </p>
+                <form id="unapproveForm" method="POST" action="{{ route('superadmin.installments.unapprove', 0) }}">
+                    @csrf
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button type="button" onclick="closeUnapproveModal()"
+                            class="flex-1 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="flex-1 px-6 py-3 text-sm font-bold text-white bg-red-500 rounded-xl hover:bg-red-600 transition-colors">
+                            Sí, revertir
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openUnapproveModal(url) {
+            document.getElementById('unapproveForm').action = url;
+            document.getElementById('unapproveModal').classList.remove('hidden');
+            document.getElementById('unapproveModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUnapproveModal() {
+            document.getElementById('unapproveModal').classList.add('hidden');
+            document.getElementById('unapproveModal').classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeUnapproveModal();
+            }
+        });
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('unapproveModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUnapproveModal();
+            }
+        });
+    </script>
 @endsection

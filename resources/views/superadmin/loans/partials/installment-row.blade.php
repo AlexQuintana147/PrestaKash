@@ -280,7 +280,7 @@
                             ->orderBy('installment_number', 'desc')
                             ->value('id');
                     @endphp
-                    @if($lastApprovedId === $inst->id && $inst->interest_payments_count === 0)
+                    @if($lastApprovedId === $inst->id && !(isset($inst->is_interest_payment) && $inst->is_interest_payment))
                         <button type="button"
                             onclick="openUnapproveModal('{{ route('superadmin.installments.unapprove', $inst) }}')"
                             class="text-[10px] font-black uppercase tracking-widest text-red-500 border-b border-red-400 pb-px hover:opacity-60 transition-opacity">

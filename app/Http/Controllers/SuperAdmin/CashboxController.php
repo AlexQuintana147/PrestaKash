@@ -14,7 +14,15 @@ class CashboxController extends Controller
     {
         $cashboxes = Cashbox::with([
             'movements' => function ($q) {
-                $q->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])->latest()->limit(10);
+                $q->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])
+                  ->where(function ($query) {
+                      $query->where('reference_type', '!=', 'loan_installment')
+                            ->orWhereDoesntHave('installment', function ($instQuery) {
+                                  $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
+                              });
+                  })
+                  ->latest()
+                  ->limit(10);
             }
         ])->orderBy('id', 'desc')->get();
         $tags = CashboxTag::orderBy('name')->get();
@@ -33,6 +41,13 @@ class CashboxController extends Controller
         if ($request->filled('from_date')) {
             $query->whereDate('date', '>=', $request->from_date);
         }
+
+        $query->where(function ($q) {
+            $q->where('reference_type', '!=', 'loan_installment')
+              ->orWhereDoesntHave('installment', function ($instQuery) {
+                    $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
+                });
+        });
 
         $movements = $query->paginate(10);
 
@@ -54,6 +69,13 @@ class CashboxController extends Controller
         if ($request->filled('to_date')) {
             $query->whereDate('date', '<=', $request->to_date);
         }
+
+        $query->where(function ($q) {
+            $q->where('reference_type', '!=', 'loan_installment')
+              ->orWhereDoesntHave('installment', function ($instQuery) {
+                    $instQuery->whereIn('status', ['processing', 'rejected', 'pending']);
+                });
+        });
 
         $movements = $query->get();
 

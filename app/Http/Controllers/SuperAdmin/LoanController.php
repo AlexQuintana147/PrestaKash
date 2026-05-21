@@ -434,8 +434,8 @@ class LoanController extends Controller
         // Expand installments with interest payments into separate rows
         $expandedInstallments = collect();
         foreach ($installments as $inst) {
-            if ($inst->interest_payments_count > 0) {
-                // Load actual interest payments
+            if ($inst->interest_payments_count > 0 && $inst->status === 'approved') {
+                // Load actual interest payments - ONLY for approved installments
                 $interestPayments = $inst->interestPayments;
                 // If interest_payments table has data, use it
                 if ($interestPayments->isNotEmpty()) {
@@ -460,13 +460,12 @@ class LoanController extends Controller
                 }
 
                 // Also push the original installment row (full payment)
-                // Skip pending/rejected in "paid" filter to avoid confusion
-                if ($inst->status === 'approved' || $inst->status === 'processing' || $filter !== 'paid') {
-                    $originalInst = clone $inst;
-                    $originalInst->is_interest_payment = false;
-                    $expandedInstallments->push($originalInst);
-                }
+                $originalInst = clone $inst;
+                $originalInst->is_interest_payment = false;
+                $expandedInstallments->push($originalInst);
             } else {
+                // For non-approved installments OR installments without interest payments,
+                // show as single row without expansion
                 $inst->is_interest_payment = false;
                 $expandedInstallments->push($inst);
             }
@@ -610,6 +609,11 @@ class LoanController extends Controller
         \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull) {
             $loan = $installment->loan;
 
+            // Check if movement already exists for this installment to avoid duplicates
+            $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                ->where('reference_id', $installment->id)
+                ->first();
+
             if ($isInterestOnly) {
                 $currentNumber = $installment->installment_number;
                 $freq = $loan->payment_frequency;
@@ -622,18 +626,22 @@ class LoanController extends Controller
                 $savedLateFee = $installment->late_fee;
                 $savedInterest = $installment->interest;
 
-                // Register movement
-                $movement = $cashbox->movements()->create([
-                    'user_id' => auth()->id(),
-                    'type' => 'income',
-                    'amount' => $amount,
-                    'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo {$loan->code} de {$loan->user->name}",
-                    'reference_type' => 'loan_installment',
-                    'reference_id' => $installment->id,
-                    'date' => now(),
-                ]);
+                // Register movement only if doesn't exist
+                if (!$existingMovement) {
+                    $movement = $cashbox->movements()->create([
+                        'user_id' => auth()->id(),
+                        'type' => 'income',
+                        'amount' => $amount,
+                        'description' => "Ingreso por SOLO INTERÉS de cuota #{$currentNumber} de préstamo {$loan->code} de {$loan->user->name}",
+                        'reference_type' => 'loan_installment',
+                        'reference_id' => $installment->id,
+                        'date' => now(),
+                    ]);
 
-                $cashbox->increment('balance', $amount);
+                    $cashbox->increment('balance', $amount);
+                } else {
+                    $movement = $existingMovement;
+                }
 
                 // Shift dates for all PENDING or REJECTED installments of this loan
                 $installmentsToShift = $loan->installments()
@@ -713,17 +721,19 @@ class LoanController extends Controller
                 $overdueInsts = $loan->overdue_installments;
                 $totalLateFees = $overdueInsts->sum('late_fee');
 
-                $cashbox->movements()->create([
-                    'user_id' => auth()->id(),
-                    'type' => 'income',
-                    'amount' => $amount,
-                    'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
-                    'reference_type' => 'loan_installment',
-                    'reference_id' => $installment->id,
-                    'date' => now(),
-                ]);
+                if (!$existingMovement) {
+                    $cashbox->movements()->create([
+                        'user_id' => auth()->id(),
+                        'type' => 'income',
+                        'amount' => $amount,
+                        'description' => "Ingreso por MORA + INTERÉS de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
+                        'reference_type' => 'loan_installment',
+                        'reference_id' => $installment->id,
+                        'date' => now(),
+                    ]);
 
-                $cashbox->increment('balance', $amount);
+                    $cashbox->increment('balance', $amount);
+                }
 
                 $interestPayment = \App\Models\InterestPayment::create([
                     'loan_installment_id' => $installment->id,
@@ -758,17 +768,19 @@ class LoanController extends Controller
                     'paid_at' => now()
                 ]);
 
-                $cashbox->movements()->create([
-                    'user_id' => auth()->id(),
-                    'type' => 'income',
-                    'amount' => $amount,
-                    'description' => "Ingreso por MORA + CUOTA COMPLETA #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
-                    'reference_type' => 'loan_installment',
-                    'reference_id' => $installment->id,
-                    'date' => now(),
-                ]);
+                if (!$existingMovement) {
+                    $cashbox->movements()->create([
+                        'user_id' => auth()->id(),
+                        'type' => 'income',
+                        'amount' => $amount,
+                        'description' => "Ingreso por MORA + CUOTA COMPLETA #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
+                        'reference_type' => 'loan_installment',
+                        'reference_id' => $installment->id,
+                        'date' => now(),
+                    ]);
 
-                $cashbox->increment('balance', $amount);
+                    $cashbox->increment('balance', $amount);
+                }
 
                 $loan->update(['in_default' => false]);
 
@@ -783,18 +795,20 @@ class LoanController extends Controller
                     'paid_at' => now()
                 ]);
 
-                // Register movement
-                $cashbox->movements()->create([
-                    'user_id' => auth()->id(),
-                    'type' => 'income',
-                    'amount' => $amount,
-                    'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
-                    'reference_type' => 'loan_installment',
-                    'reference_id' => $installment->id,
-                    'date' => now(),
-                ]);
+                // Register movement only if doesn't exist
+                if (!$existingMovement) {
+                    $cashbox->movements()->create([
+                        'user_id' => auth()->id(),
+                        'type' => 'income',
+                        'amount' => $amount,
+                        'description' => "Ingreso por pago de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
+                        'reference_type' => 'loan_installment',
+                        'reference_id' => $installment->id,
+                        'date' => now(),
+                    ]);
 
-                $cashbox->increment('balance', $amount);
+                    $cashbox->increment('balance', $amount);
+                }
 
                 // Check if all installments are paid
                 $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
@@ -822,19 +836,34 @@ class LoanController extends Controller
             'reason' => 'required|string|max:500'
         ]);
 
-        // Delete voucher from storage
-        if ($installment->payment_voucher) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($installment->payment_voucher);
-        }
+        \DB::transaction(function () use ($request, $installment) {
+            // Delete voucher from storage
+            if ($installment->payment_voucher) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($installment->payment_voucher);
+            }
 
-        $installment->update([
-            'status' => 'rejected',
-            'payment_voucher' => null,
-            'admin_notes' => $request->reason,
-            'paid_at' => null
-        ]);
+            // Find and delete the associated cashbox movement if exists
+            $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                ->where('reference_id', $installment->id)
+                ->first();
 
-        return back()->with('success', 'Pago rechazado. El cliente deberá subirlo nuevamente.');
+            if ($movement) {
+                $cashbox = $movement->cashbox;
+                if ($cashbox) {
+                    $cashbox->decrement('balance', $movement->amount);
+                }
+                $movement->delete();
+            }
+
+            $installment->update([
+                'status' => 'rejected',
+                'payment_voucher' => null,
+                'admin_notes' => $request->reason,
+                'paid_at' => null
+            ]);
+        });
+
+        return back()->with('success', 'Pago rechazado. El ingreso en caja ha sido eliminado y el cliente deberá subirlo nuevamente.');
     }
 
     public function unapproveInstallment(\App\Models\LoanInstallment $installment)
