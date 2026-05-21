@@ -387,6 +387,7 @@
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
                                     <input type="text" name="amount" id="investAmount" required inputmode="decimal"
                                            placeholder="{{ number_format($opportunity->min_investment, 2) }}"
+                                           oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;}"
                                            class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                                 </div>
                                 <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
@@ -466,6 +467,7 @@
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
                             <input type="text" name="amount" id="investAmount" required inputmode="decimal"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
+                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;}"
                                    class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                         </div>
                         <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
@@ -525,6 +527,15 @@
 </div>
 
 <script>
+window.formatInvestAmount = function(raw) {
+    let d = (raw || '').replace(/[^0-9]/g, '');
+    if (!d) return '';
+    d = d.padStart(3, '0');
+    let i = d.slice(0, -2).replace(/^0+/, '') || '0';
+    let dec = d.slice(-2);
+    return i.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + dec;
+};
+
 function selectPaymentMethod(method) {
     const transferFields = document.getElementById('transferFields');
     const cashFields = document.getElementById('cashFields');
@@ -593,44 +604,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const minVal = parseFloat(document.getElementById('minInvestment').value);
         const maxVal = parseFloat(document.getElementById('maxInvestment').value);
 
-        function formatAmount(num) {
-            let integerPart = Math.floor(num).toString();
-            let decimalPart = Math.round((num - Math.floor(num)) * 100).toString().padStart(2, '0');
-            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            return integerPart + '.' + decimalPart;
-        }
-
-        investAmount.addEventListener('input', function () {
-            let oldVal = this.value;
-            let val = oldVal.replace(/\D/g, '');
-            if (val.length === 0) { val = '0.00'; }
-            else {
-                while (val.length < 3) val = '0' + val;
-                let integerPart = val.slice(0, -2);
-                let decimalPart = val.slice(-2);
-                integerPart = parseInt(integerPart, 10).toString();
-                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                val = integerPart + '.' + decimalPart;
-            }
-            if (oldVal !== val) { this.value = val; this.setSelectionRange(val.length, val.length); }
-        });
-
-        investAmount.addEventListener('blur', function () {
-            let rawNum = parseFloat(this.value.replace(/,/g, ''));
-            if (isNaN(rawNum) || rawNum < minVal) this.value = formatAmount(minVal);
-            else if (rawNum > maxVal) this.value = formatAmount(maxVal);
-        });
-
-        investAmount.closest('form')?.addEventListener('submit', function () {
-            investAmount.value = investAmount.value.replace(/,/g, '');
-        });
-
-        investAmount.addEventListener('input', function () {
+        investAmount.addEventListener('input', function(e) {
+            e.preventDefault();
+            let pos = this.selectionStart;
+            let oldLen = this.value.length;
+            let formatted = window.formatInvestAmount(this.value);
+            this.value = formatted;
+            let newLen = formatted.length;
+            try { this.setSelectionRange(newLen, newLen); } catch(ex) {}
             updateSchedule();
         });
 
-        investAmount.addEventListener('blur', function () {
+        investAmount.addEventListener('blur', function() {
+            let n = parseFloat((this.value || '0').replace(/,/g, ''));
+            if (isNaN(n) || n <= 0) this.value = window.formatInvestAmount(String(minVal));
+            else if (n < minVal) this.value = window.formatInvestAmount(String(minVal));
+            else if (n > maxVal) this.value = window.formatInvestAmount(String(maxVal));
+            else this.value = window.formatInvestAmount(this.value);
             updateSchedule();
+        });
+
+        investAmount.closest('form')?.addEventListener('submit', function() {
+            investAmount.value = (investAmount.value || '0').replace(/,/g, '');
         });
 
         updateSchedule();
