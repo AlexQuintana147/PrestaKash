@@ -174,18 +174,16 @@
 
     <div id="panel-my-payments" class="hidden">
         @if($paymentInvestments->isEmpty())
-            <div class="text-center py-16">
-                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <div class="text-center py-20">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                    <svg class="w-7 h-7 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
-                <p class="text-sm font-bold text-gray-900 dark:text-white">Sin inversiones confirmadas</p>
-                <p class="text-xs text-gray-400 mt-1">Aún no tienes inversiones con pago confirmado.</p>
-                <button onclick="switchTab('opportunities')" class="mt-4 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline tracking-wide">
-                    EXPLORAR OPORTUNIDADES →
-                </button>
+                <p class="text-sm font-bold text-gray-900 dark:text-white">Sin pagos aún</p>
+                <p class="text-xs text-gray-400 mt-1">Tus pagos aparecerán cuando confirmen tu inversión.</p>
+                <button onclick="switchTab('opportunities')" class="mt-4 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline tracking-wide">EXPLORAR OPORTUNIDADES →</button>
             </div>
         @else
-            <div class="divide-y divide-gray-100 dark:divide-gray-900/60">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 @foreach($paymentInvestments as $inv)
                     @php
                         $opp = $inv;
@@ -194,98 +192,57 @@
                         $invPayments = $payments[$opp->id] ?? collect();
                         $totalReceived = $invPayments->where('type', 'expense')->sum('amount');
                         $progressPct = $inv->pivot->amount > 0 ? round($totalReceived / $inv->pivot->amount * 100) : 0;
+                        $currencySymbol = $opp->currency === 'USD' ? '$' : 'S/';
+                        $lastPayment = $invPayments->where('type', 'expense')->sortByDesc('date')->first();
                     @endphp
 
-                    <div class="py-5 sm:py-6">
-
-                        <div class="flex items-start justify-between gap-3 mb-4">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2 mb-0.5">
-                                    <span class="text-[10px] font-mono text-gray-400">{{ $opp->code }}</span>
-                                    <span class="px-1.5 py-px rounded-[4px] text-[8px] font-bold uppercase tracking-wider leading-none
-                                        {{ $isClosed ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : ($isFunded ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400') }}">
-                                        {{ $isClosed ? 'Cerrada' : ($isFunded ? 'Financiada' : 'Abierta') }}
-                                    </span>
-                                </div>
-                                <h2 class="text-sm font-bold text-gray-900 dark:text-white truncate pr-4">{{ $opp->title }}</h2>
+                    <a href="{{ route('client.investments.show', $opp) }}" class="block group">
+                        <div class="relative bg-white dark:bg-gray-950 rounded-2xl border border-gray-100 dark:border-gray-800/60 p-5 hover:border-indigo-200 dark:hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gray-100 dark:bg-gray-800">
+                                <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500" style="width: {{ min(100, $progressPct) }}%"></div>
                             </div>
-                            <div class="flex-shrink-0 text-right">
-                                <p class="text-lg font-bold text-gray-900 dark:text-white tabular-nums">{{ $opp->currency === 'USD' ? '$' : 'S/' }}{{ number_format($inv->pivot->amount, 2) }}</p>
-                            </div>
-                        </div>
 
-                        <div class="flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400 flex-wrap mb-4">
-                            <span>{{ $opp->term_months }}m</span>
-                            <span>·</span>
-                            <span>{{ $opp->monthly_return_rate }}%/mes</span>
-                            @if($inv->pivot->approved_at)
-                                <span>·</span>
-                                <span>desde {{ \Carbon\Carbon::parse($inv->pivot->approved_at)->format('d/m/y') }}</span>
-                            @endif
-                        </div>
-
-                        @if(!$isClosed)
-                            <div class="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-amber-50/70 dark:bg-amber-500/5 border border-amber-100/50 dark:border-amber-500/10 mb-4">
-                                <svg class="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <p class="text-[11px] text-amber-700 dark:text-amber-300 leading-snug">
-                                    {{ $isFunded ? 'En financiación.' : 'Abierta.' }} Pagos al cerrar.
-                                </p>
-                            </div>
-                        @endif
-
-                        @if($invPayments->isEmpty())
-                            <div class="py-6 text-center">
-                                @if($isClosed)
-                                    <p class="text-xs text-gray-400 italic">Sin pagos registrados.</p>
-                                @else
-                                    <p class="text-xs text-gray-300 dark:text-gray-600 italic">Pagos aquí al iniciar recuperación.</p>
-                                @endif
-                            </div>
-                        @else
-                            <div class="space-y-1">
-                                @foreach($invPayments as $payment)
-                                    <div class="flex items-center justify-between py-2.5 px-3 -mx-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors group">
-                                        <div class="min-w-0 flex-1">
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-xs font-medium text-gray-900 dark:text-white truncate">{{ $payment->description }}</span>
-                                            </div>
-                                            <div class="flex items-center gap-2 mt-0.5">
-                                                <span class="text-[10px] text-gray-400 font-mono">{{ $payment->date ? \Carbon\Carbon::parse($payment->date)->format('d/m/Y') : '—' }}</span>
-                                                @if($payment->cashbox->name ?? null)
-                                                    <span class="text-[10px] text-gray-300 dark:text-gray-600">·</span>
-                                                    <span class="text-[10px] text-gray-400 truncate max-w-[120px]">{{ $payment->cashbox->name }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <span class="flex-shrink-0 ml-3 text-xs font-bold tabular-nums {{ $payment->type === 'expense' ? 'text-green-600 dark:text-green-400' : 'text-gray-700 dark:text-gray-300' }}">
-                                            +{{ $opp->currency === 'USD' ? '$' : 'S/' }}{{ number_format($payment->amount, 2) }}
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2 mb-1.5">
+                                        <span class="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider
+                                            {{ $isClosed ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : ($isFunded ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400') }}">
+                                            {{ $isClosed ? 'Cerrada' : ($isFunded ? 'Financiada' : 'Abierta') }}
                                         </span>
                                     </div>
-                                @endforeach
-                            </div>
-                        @endif
-
-                        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-900/50">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">{{ $invPayments->count() }} pagos</span>
-                                    <div class="w-20 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all" style="width: {{ min(100, $progressPct) }}%"></div>
-                                    </div>
+                                    <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
                                 </div>
-                                <div class="flex items-center gap-4 text-right">
-                                    <div>
-                                        <p class="text-[9px] text-gray-400 uppercase tracking-wider">Recibido</p>
-                                        <p class="text-xs font-bold text-green-600 dark:text-green-400 tabular-nums">{{ $opp->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalReceived, 2) }}</p>
+                                <svg class="w-4 h-4 text-gray-300 dark:text-gray-700 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-baseline justify-between">
+                                    <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Invertido</span>
+                                    <span class="text-lg font-bold text-gray-900 dark:text-white tabular-nums">{{ $currencySymbol }}{{ number_format($inv->pivot->amount, 2) }}</span>
+                                </div>
+
+                                <div class="flex items-baseline justify-between">
+                                    <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Recibido</span>
+                                    <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $currencySymbol }}{{ number_format($totalReceived, 2) }}</span>
+                                </div>
+
+                                <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
+
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400">
+                                        <span>{{ $opp->monthly_return_rate }}%/mes</span>
+                                        <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                        <span>{{ $opp->term_months }}m</span>
+                                        @if($lastPayment)
+                                            <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                            <span>Último {{ \Carbon\Carbon::parse($lastPayment->date)->format('d/m') }}</span>
+                                        @endif
                                     </div>
-                                    <div>
-                                        <p class="text-[9px] text-gray-400 uppercase tracking-wider">Falta</p>
-                                        <p class="text-xs font-bold text-gray-500 dark:text-gray-400 tabular-nums">{{ $opp->currency === 'USD' ? '$' : 'S/' }}{{ number_format(max(0, $inv->pivot->amount - $totalReceived), 2) }}</p>
-                                    </div>
+                                    <span class="font-bold {{ $progressPct >= 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white' }}">{{ $progressPct }}%</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         @endif
