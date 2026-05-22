@@ -419,7 +419,10 @@
                 <div id="pay_voucher_section">
                     <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Comprobante de pago</label>
                     <div class="relative">
-                        <input type="file" id="pay_voucher" name="voucher" accept="image/*" class="block w-full text-[10px] text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 dark:file:bg-indigo-500/10 dark:file:text-indigo-400 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-500/15 file:transition-colors file:cursor-pointer">
+                        <input type="file" id="pay_voucher" name="voucher" accept="image/*" onchange="previewVoucher(event)" class="block w-full text-[10px] text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 dark:file:bg-indigo-500/10 dark:file:text-indigo-400 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-500/15 file:transition-colors file:cursor-pointer">
+                    </div>
+                    <div id="pay_voucher_preview" class="hidden mt-2">
+                        <img id="pay_voucher_preview_img" src="" alt="Preview" class="w-full max-h-48 object-contain rounded-xl border border-gray-100 dark:border-gray-800">
                     </div>
                     <p class="text-[8px] text-gray-400 mt-1">La imagen se convertirá a WebP automáticamente. Máx. 5MB.</p>
                 </div>
@@ -431,7 +434,7 @@
                 </div>
 
                 {{-- SUBMIT --}}
-                <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold uppercase tracking-widest transition-colors">
+                <button type="submit" id="pay_submit_btn" disabled class="w-full py-3 rounded-xl bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 text-[11px] font-bold uppercase tracking-widest transition-colors cursor-not-allowed">
                     Registrar pago
                 </button>
             </form>
@@ -735,7 +738,40 @@ function closePayModal() {
     document.getElementById('pay_voucher').value = '';
     document.getElementById('pay_operation_number').value = '';
     document.getElementById('pay_type_full').checked = true;
+    document.getElementById('pay_voucher_preview').classList.add('hidden');
+    document.getElementById('pay_voucher_preview_img').src = '';
+    resetSubmitBtn();
     togglePaymentMethod();
+}
+
+function previewVoucher(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('pay_voucher_preview');
+    const previewImg = document.getElementById('pay_voucher_preview_img');
+    const btn = document.getElementById('pay_submit_btn');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+        btn.disabled = false;
+        btn.classList.remove('bg-gray-300', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-500', 'cursor-not-allowed');
+        btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'text-white');
+    } else {
+        preview.classList.add('hidden');
+        previewImg.src = '';
+        resetSubmitBtn();
+    }
+}
+
+function resetSubmitBtn() {
+    const btn = document.getElementById('pay_submit_btn');
+    btn.disabled = true;
+    btn.classList.add('bg-gray-300', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-500', 'cursor-not-allowed');
+    btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700', 'text-white');
 }
 
 function togglePaymentMethod() {
