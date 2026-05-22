@@ -396,27 +396,27 @@
                 </div>
 
                 <!-- Configuración de Mora -->
-                <div class="bg-orange-50 dark:bg-orange-950/15 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-orange-100 dark:border-orange-900/30">
-                    <p class="text-[9px] sm:text-[10px] text-orange-500 uppercase tracking-widest font-bold mb-2 sm:mb-3 flex items-center gap-1.5">
+                <div class="bg-orange-500 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                    <p class="text-[9px] sm:text-[10px] text-white uppercase tracking-widest font-bold mb-2 sm:mb-3 flex items-center gap-1.5">
                         <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 488.5 488.5"><path d="M196.7 169.5c41.2 0 74.7 33.4 74.7 74.7 0 41.2-33.4 74.7-74.7 74.7S122 285.5 122 244.2C122 203 155.4 169.5 196.7 169.5zM196.8 193.1c-.9 0-1.9 0-2.8 0c-3 .1-3.5.6-3.6 3.6c0 1.4 0 2.7 0 4.1c0 4 0 4-3.9 5.4c-9.3 3.4-15 9.7-15.7 19.9c-.5 9 4.1 15 11.5 19.5c4.5 2.7 9.6 4.3 14.4 6.5c1.9.8 3.7 1.8 5.2 3.1c4.6 3.8 3.8 10.2-1.7 12.6c-2.9 1.3-6 1.6-9.2 1.2c-4.9-.6-9.6-1.9-14.1-4.2c-2.6-1.4-3.4-1-4.2 1.8c-.8 2.4-1.4 4.9-2.1 7.3c-.9 3.3-.6 4.1 2.6 5.6c4 1.9 8.3 2.9 12.7 3.6c3.4.5 3.5.7 3.6 4.2c0 1.6 0 3.2 0 4.8c0 2 1 3.2 3.1 3.2c2.4 0 4.8 0 7.1 0c1.9 0 2.9-1.1 2.9-3.1c0-2.2.1-4.4 0-6.6s.9-3.4 3-4c5-1.4 9.2-4 12.5-8c9-11 5.6-27-7.2-34.1c-4-2.2-8.3-3.9-12.5-5.7c-2.4-1-4.8-2.2-6.9-3.9c-4.1-3.3-3.3-8.5 1.5-10.6c1.3-.6 2.8-.8 4.2-.9c5.5-.3 10.8.7 15.8 3.1c2.5 1.2 3.3.8 4.2-1.8c.9-2.7 1.6-5.5 2.4-8.3c.5-1.9-.1-3.1-1.9-3.9c-3.2-1.4-6.5-2.4-10-3c-4.5-.7-4.5-.7-4.5-5.3C203.2 193.1 203.2 193.1 196.8 193.1z"/></svg>
                         Configuración de Mora
                     </p>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-                        <div class="text-center bg-white/50 dark:bg-black/20 rounded-lg p-2">
+                        <div class="text-center bg-black rounded-lg p-2">
                             <p class="text-[8px] sm:text-[9px] text-orange-400/70 uppercase">Mora activa</p>
-                            <p id="modal-late-enabled" class="text-[10px] sm:text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                            <p id="modal-late-enabled" class="text-[10px] sm:text-xs font-bold text-orange-400 mt-0.5"></p>
                         </div>
-                        <div class="text-center bg-white/50 dark:bg-black/20 rounded-lg p-2">
+                        <div class="text-center bg-black rounded-lg p-2">
                             <p class="text-[8px] sm:text-[9px] text-orange-400/70 uppercase">Días gracia</p>
-                            <p id="modal-grace-days" class="text-[10px] sm:text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                            <p id="modal-grace-days" class="text-[10px] sm:text-xs font-bold text-orange-400 mt-0.5"></p>
                         </div>
-                        <div class="text-center bg-white/50 dark:bg-black/20 rounded-lg p-2">
+                        <div class="text-center bg-black rounded-lg p-2">
                             <p class="text-[8px] sm:text-[9px] text-orange-400/70 uppercase">Tasa mora</p>
-                            <p id="modal-late-rate" class="text-[10px] sm:text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                            <p id="modal-late-rate" class="text-[10px] sm:text-xs font-bold text-orange-400 mt-0.5"></p>
                         </div>
-                        <div class="text-center bg-white/50 dark:bg-black/20 rounded-lg p-2">
+                        <div class="text-center bg-black rounded-lg p-2">
                             <p class="text-[8px] sm:text-[9px] text-orange-400/70 uppercase">Mora diaria</p>
-                            <p id="modal-late-daily" class="text-[10px] sm:text-xs font-bold text-orange-600 dark:text-orange-400 mt-0.5"></p>
+                            <p id="modal-late-daily" class="text-[10px] sm:text-xs font-bold text-orange-400 mt-0.5"></p>
                         </div>
                     </div>
                 </div>
