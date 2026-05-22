@@ -411,94 +411,142 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeInvestorModal();
 });
 
+let _scheduleData = null;
+let _scheduleCurrency = '';
+let _schedulePage = 0;
+const _schedulePerPage = 10;
+
+function renderSchedulePage() {
+    if (!_scheduleData) return;
+    const container = document.getElementById('modal_schedule_container');
+    const schedule = _scheduleData;
+    const data = { currency: _scheduleCurrency };
+    const totalPages = Math.ceil(schedule.length / _schedulePerPage);
+    const start = _schedulePage * _schedulePerPage;
+    const pageItems = schedule.slice(start, start + _schedulePerPage);
+
+    let html = '';
+
+    // Desktop table
+    html += '<div class="pk-schedule-table overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800">';
+    html += '<table class="w-full text-[11px]">';
+    html += '<thead><tr class="bg-gray-50 dark:bg-gray-900/40">';
+    html += '<th class="px-3 py-2 text-left text-[8px] uppercase tracking-widest font-semibold text-gray-400">Cuota</th>';
+    html += '<th class="px-3 py-2 text-left text-[8px] uppercase tracking-widest font-semibold text-gray-400">Vencimiento</th>';
+    html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Interés</th>';
+    html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Capital</th>';
+    html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Total</th>';
+    html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Saldo</th>';
+    html += '<th class="px-3 py-2 text-center text-[8px] uppercase tracking-widest font-semibold text-gray-400">Estado</th>';
+    html += '</tr></thead><tbody>';
+
+    pageItems.forEach(item => {
+        const isOverdue = item.is_overdue && !item.is_paid;
+        const rowClass = isOverdue ? 'bg-red-600 text-white' : (item.is_paid ? 'bg-emerald-50/50 dark:bg-emerald-500/5' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/20');
+        const textClass = isOverdue ? 'text-white' : 'text-gray-600 dark:text-gray-300';
+        const boldClass = isOverdue ? 'text-white font-bold' : 'text-gray-900 dark:text-white font-bold';
+
+        html += `<tr class="${rowClass} border-t border-gray-50 dark:border-gray-900/40 transition-colors">`;
+        html += `<td class="px-3 py-2.5 font-bold ${isOverdue ? 'text-white' : 'text-gray-900 dark:text-white'} pk-mono">${item.month}</td>`;
+        html += `<td class="px-3 py-2.5 ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} pk-mono">${item.date || '—'}</td>`;
+        html += `<td class="px-3 py-2.5 text-right ${textClass} pk-mono">${data.currency}${item.interest}</td>`;
+        html += `<td class="px-3 py-2.5 text-right ${textClass} pk-mono">${data.currency}${item.principal}</td>`;
+        html += `<td class="px-3 py-2.5 text-right ${boldClass} pk-mono">${data.currency}${item.payment}</td>`;
+        html += `<td class="px-3 py-2.5 text-right ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} pk-mono">${data.currency}${item.balance}</td>`;
+        html += '<td class="px-3 py-2.5 text-center">';
+        if (item.is_paid) {
+            html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>';
+        } else if (isOverdue) {
+            html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
+        } else {
+            html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+        }
+        html += '</td></tr>';
+    });
+
+    html += '</tbody></table></div>';
+
+    // Mobile cards
+    html += '<div class="pk-schedule-card space-y-2">';
+    pageItems.forEach(item => {
+        const isOverdue = item.is_overdue && !item.is_paid;
+        const cardBg = isOverdue ? 'bg-red-600' : (item.is_paid ? 'bg-emerald-50/80 dark:bg-emerald-500/5' : 'bg-gray-50/50 dark:bg-gray-900/20');
+        const textColor = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
+        const subTextColor = isOverdue ? 'text-white/70' : 'text-gray-500 dark:text-gray-400';
+        const monoText = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
+
+        let badge = '';
+        if (item.is_paid) {
+            badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">Pagada</span>';
+        } else if (isOverdue) {
+            badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
+        } else {
+            badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+        }
+
+        html += `<div class="${cardBg} rounded-xl p-3 border ${isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800'}">`;
+        html += `<div class="flex items-center justify-between mb-2">`;
+        html += `<div class="flex items-center gap-2">`;
+        html += `<span class="text-[11px] font-bold ${monoText} pk-mono">Cuota ${item.month}</span>`;
+        html += badge;
+        html += `</div>`;
+        html += `<span class="text-[9px] ${subTextColor} pk-mono">${item.date || '—'}</span>`;
+        html += `</div>`;
+        html += `<div class="grid grid-cols-2 gap-x-4 gap-y-1">`;
+        html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Interés</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.interest}</span></div>`;
+        html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Capital</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.principal}</span></div>`;
+        html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Total</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.payment}</span></div>`;
+        html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Saldo</span><span class="text-[10px] font-bold ${subTextColor} pk-mono">${data.currency}${item.balance}</span></div>`;
+        html += `</div>`;
+        html += `</div>`;
+    });
+    html += '</div>';
+
+    // Pagination
+    if (totalPages > 1) {
+        html += '<div class="flex items-center justify-center gap-1.5 mt-4">';
+        html += `<button onclick="goSchedulePage(0)" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
+        html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg></button>';
+        html += `<button onclick="goSchedulePage(${_schedulePage - 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
+        html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>';
+        for (let p = 0; p < totalPages; p++) {
+            const active = p === _schedulePage;
+            html += `<button onclick="goSchedulePage(${p})" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${active ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}">${p + 1}</button>`;
+        }
+        html += `<button onclick="goSchedulePage(${_schedulePage + 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === totalPages - 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === totalPages - 1 ? 'disabled' : ''}>`;
+        html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
+        html += `<button onclick="goSchedulePage(${totalPages - 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === totalPages - 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === totalPages - 1 ? 'disabled' : ''}>`;
+        html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg></button>';
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+function goSchedulePage(page) {
+    if (!_scheduleData) return;
+    const totalPages = Math.ceil(_scheduleData.length / _schedulePerPage);
+    if (page < 0 || page >= totalPages) return;
+    _schedulePage = page;
+    renderSchedulePage();
+    const scrollArea = document.querySelector('#investorModal .overflow-y-auto');
+    if (scrollArea) scrollArea.scrollTop = 0;
+}
+
 function buildScheduleTable(uid, data) {
     const container = document.getElementById('modal_schedule_container');
     const oppId = uid.replace('inv_', '').split('_')[0];
     const investorId = uid.replace('inv_', '').split('_')[1];
 
     container.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Cargando...</p>';
+    _schedulePage = 0;
 
     fetch(`{{ url('/gestion-interna') }}/inversiones/pagos/detalle/${oppId}/${investorId}`)
         .then(r => r.json())
         .then(schedule => {
-            let html = '';
-
-            // Desktop table
-            html += '<div class="pk-schedule-table overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800">';
-            html += '<table class="w-full text-[11px]">';
-            html += '<thead><tr class="bg-gray-50 dark:bg-gray-900/40">';
-            html += '<th class="px-3 py-2 text-left text-[8px] uppercase tracking-widest font-semibold text-gray-400">Cuota</th>';
-            html += '<th class="px-3 py-2 text-left text-[8px] uppercase tracking-widest font-semibold text-gray-400">Vencimiento</th>';
-            html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Interés</th>';
-            html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Capital</th>';
-            html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Total</th>';
-            html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Saldo</th>';
-            html += '<th class="px-3 py-2 text-center text-[8px] uppercase tracking-widest font-semibold text-gray-400">Estado</th>';
-            html += '</tr></thead><tbody>';
-
-            schedule.forEach(item => {
-                const isOverdue = item.is_overdue && !item.is_paid;
-                const rowClass = isOverdue ? 'bg-red-600 text-white' : (item.is_paid ? 'bg-emerald-50/50 dark:bg-emerald-500/5' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/20');
-                const textClass = isOverdue ? 'text-white' : 'text-gray-600 dark:text-gray-300';
-                const boldClass = isOverdue ? 'text-white font-bold' : 'text-gray-900 dark:text-white font-bold';
-
-                html += `<tr class="${rowClass} border-t border-gray-50 dark:border-gray-900/40 transition-colors">`;
-                html += `<td class="px-3 py-2.5 font-bold ${isOverdue ? 'text-white' : 'text-gray-900 dark:text-white'} pk-mono">${item.month}</td>`;
-                html += `<td class="px-3 py-2.5 ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} pk-mono">${item.date || '—'}</td>`;
-                html += `<td class="px-3 py-2.5 text-right ${textClass} pk-mono">${data.currency}${item.interest}</td>`;
-                html += `<td class="px-3 py-2.5 text-right ${textClass} pk-mono">${data.currency}${item.principal}</td>`;
-                html += `<td class="px-3 py-2.5 text-right ${boldClass} pk-mono">${data.currency}${item.payment}</td>`;
-                html += `<td class="px-3 py-2.5 text-right ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} pk-mono">${data.currency}${item.balance}</td>`;
-                html += '<td class="px-3 py-2.5 text-center">';
-                if (item.is_paid) {
-                    html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>';
-                } else if (isOverdue) {
-                    html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
-                } else {
-                    html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
-                }
-                html += '</td></tr>';
-            });
-
-            html += '</tbody></table></div>';
-
-            // Mobile cards
-            html += '<div class="pk-schedule-card space-y-2">';
-            schedule.forEach(item => {
-                const isOverdue = item.is_overdue && !item.is_paid;
-                const cardBg = isOverdue ? 'bg-red-600' : (item.is_paid ? 'bg-emerald-50/80 dark:bg-emerald-500/5' : 'bg-gray-50/50 dark:bg-gray-900/20');
-                const textColor = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
-                const subTextColor = isOverdue ? 'text-white/70' : 'text-gray-500 dark:text-gray-400';
-                const monoText = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
-
-                let badge = '';
-                if (item.is_paid) {
-                    badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">Pagada</span>';
-                } else if (isOverdue) {
-                    badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
-                } else {
-                    badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
-                }
-
-                html += `<div class="${cardBg} rounded-xl p-3 border ${isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800'}">`;
-                html += `<div class="flex items-center justify-between mb-2">`;
-                html += `<div class="flex items-center gap-2">`;
-                html += `<span class="text-[11px] font-bold ${monoText} pk-mono">Cuota ${item.month}</span>`;
-                html += badge;
-                html += `</div>`;
-                html += `<span class="text-[9px] ${subTextColor} pk-mono">${item.date || '—'}</span>`;
-                html += `</div>`;
-                html += `<div class="grid grid-cols-2 gap-x-4 gap-y-1">`;
-                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Interés</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.interest}</span></div>`;
-                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Capital</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.principal}</span></div>`;
-                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Total</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.payment}</span></div>`;
-                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Saldo</span><span class="text-[10px] font-bold ${subTextColor} pk-mono">${data.currency}${item.balance}</span></div>`;
-                html += `</div>`;
-                html += `</div>`;
-            });
-            html += '</div>';
-
-            container.innerHTML = html;
+            _scheduleData = schedule;
+            _scheduleCurrency = data.currency;
+            renderSchedulePage();
         })
         .catch(() => {
             container.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">Error al cargar cronograma</p>';
