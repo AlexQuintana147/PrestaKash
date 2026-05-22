@@ -30,33 +30,24 @@ class InvestmentController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        return view('client.invest.opportunities', compact('opportunities'));
+    }
+
+    public function myInvestments()
+    {
+        $user = Auth::user();
+
+        if (!$user->is_investor) {
+            return redirect()->route('client.invertir');
+        }
+
         $myInvestments = $user->investmentOpportunities()
             ->withPivot(['amount', 'status', 'admin_notes', 'created_at'])
             ->latest('pivot_created_at')
-            ->paginate(10, ['*'], 'my_page')
+            ->paginate(10)
             ->withQueryString();
 
-        $paymentInvestments = $user->investmentOpportunities()
-            ->wherePivot('status', 'approved')
-            ->wherePivot('payment_status', 'confirmed')
-            ->withPivot(['amount', 'status', 'payment_status', 'approved_at'])
-            ->latest('pivot_approved_at')
-            ->get();
-
-        $paymentInvestmentIds = $paymentInvestments->pluck('id')->toArray();
-
-        $payments = collect();
-        if ($paymentInvestmentIds) {
-            $payments = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
-                ->where('reference_type', 'investment')
-                ->whereIn('reference_id', $paymentInvestmentIds)
-                ->with(['cashbox:id,name,currency', 'investment:id,code,title,currency'])
-                ->orderByDesc('date')
-                ->get()
-                ->groupBy('reference_id');
-        }
-
-        return view('client.invest.control', compact('opportunities', 'myInvestments', 'paymentInvestments', 'payments'));
+        return view('client.invest.my-investments', compact('myInvestments'));
     }
 
     public function show(InvestmentOpportunity $opportunity)
@@ -217,7 +208,38 @@ class InvestmentController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts'));
+        $pendingPayoutsByOpportunity = $pendingPayouts->groupBy('investment_opportunity_id')->map->count();
+
+        $paidAmountsByInvestment = [];
+        foreach ($investmentIds as $invId) {
+            $cbDirect = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
+                ->where('reference_type', 'investment')
+                ->where('reference_id', $invId)
+                ->where('type', 'expense')
+                ->sum('amount');
+
+            $payoutTotal = \App\Models\InvestorPayout::where('investor_user_id', $user->id)
+                ->where('investment_opportunity_id', $invId)
+                ->whereIn('status', ['confirmed', 'paid'])
+                ->sum('amount');
+
+            $paidPayoutIds = \App\Models\InvestorPayout::where('investor_user_id', $user->id)
+                ->where('investment_opportunity_id', $invId)
+                ->whereIn('status', ['confirmed', 'paid'])
+                ->pluck('id');
+
+            $cbFromPayouts = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
+                ->where('reference_type', 'investment_payout')
+                ->whereIn('reference_id', $paidPayoutIds)
+                ->where('type', 'expense')
+                ->sum('amount');
+
+            $paidAmountsByInvestment[$invId] = max($cbDirect, $payoutTotal, $cbFromPayouts);
+        }
+
+        $confirmedPayoutsByOpportunity = collect($paidAmountsByInvestment);
+
+        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts', 'pendingPayoutsByOpportunity', 'confirmedPayoutsByOpportunity'));
     }
 
     public function paymentDetail(InvestmentOpportunity $opportunity)

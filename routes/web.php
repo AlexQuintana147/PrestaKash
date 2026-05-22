@@ -175,10 +175,11 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'create'])->name('invest.apply');
     Route::post('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'store'])->name('invest.store');
     Route::get('/invertir/control', [\App\Http\Controllers\Client\InvestmentController::class, 'index'])->name('investments.index');
+    Route::get('/invertir/mis-inversiones', [\App\Http\Controllers\Client\InvestmentController::class, 'myInvestments'])->name('investments.my-investments');
     Route::get('/invertir/control/{opportunity}', [\App\Http\Controllers\Client\InvestmentController::class, 'show'])->name('investments.show');
     Route::post('/invertir/control/{opportunity}/aplicar', [\App\Http\Controllers\Client\InvestmentController::class, 'apply'])->name('investments.apply');
     Route::put('/invertir/control/{opportunity}/voucher/{userId}', [\App\Http\Controllers\Client\InvestmentController::class, 'uploadVoucher'])->name('investments.upload-voucher');
-    Route::get('/invertir/pagos', [\App\Http\Controllers\Client\InvestmentController::class, 'payments'])->name('investments.payments');
+    Route::get('/invertir/mis-pagos', [\App\Http\Controllers\Client\InvestmentController::class, 'payments'])->name('investments.payments');
     Route::get('/invertir/control/{opportunity}/pagos', [\App\Http\Controllers\Client\InvestmentController::class, 'paymentDetail'])->name('investments.payment-detail');
     Route::post('/invertir/pagos/{payout}/aceptar', [\App\Http\Controllers\Client\InvestmentController::class, 'acceptPayout'])->name('investments.payouts.accept');
     Route::post('/invertir/pagos/{payout}/rechazar', [\App\Http\Controllers\Client\InvestmentController::class, 'rejectPayout'])->name('investments.payouts.reject');

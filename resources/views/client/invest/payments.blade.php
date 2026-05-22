@@ -6,10 +6,10 @@
 <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-10 max-w-5xl mx-auto font-sans">
 
     <div class="mb-8 sm:mb-12">
-        <a href="{{ route('client.investments.index') }}" class="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all duration-300 group mb-4">
-            <span class="group-hover:-translate-x-1 transition-transform duration-300">←</span>
-            <span class="border-b border-gray-300 dark:border-gray-600 group-hover:border-gray-900 dark:group-hover:border-white transition-colors">Volver a Mis Inversiones</span>
-        </a>
+        <div class="flex items-center gap-2 mb-1">
+            <a href="{{ route('client.investments.index') }}" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Invertir</a>
+            <svg class="w-3 h-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
         
         <div class="space-y-2">
             <h1 class="text-2xl sm:text-3xl lg:text-4xl font-light text-gray-900 dark:text-white tracking-tight">
@@ -116,16 +116,20 @@
                     $isClosed = in_array($opp->status, ['closed', 'cancelled']);
                     $isFunded = $opp->status === 'funded';
                     $invPayments = $payments[$opp->id] ?? collect();
-                    $totalReceived = $invPayments->where('type', 'expense')->sum('amount');
+                    $cashboxReceived = $invPayments->where('type', 'expense')->sum('amount');
+                    $confirmedPayoutTotal = $confirmedPayoutsByOpportunity[$opp->id] ?? 0;
+                    $totalReceived = max($cashboxReceived, $confirmedPayoutTotal);
                     $currencySymbol = $opp->currency === 'USD' ? '$' : 'S/';
                     $currencyLabel = $opp->currency === 'USD' ? 'USD' : 'PEN';
                     $totalExpected = $inv->pivot->amount * (1 + ($opp->monthly_return_rate * $opp->term_months / 100));
                     $pendingAmount = max(0, $totalExpected - $totalReceived);
                     $paymentCount = $invPayments->count();
                     $expectedPayments = $opp->term_months;
+                    $hasPendingPayout = ($pendingPayoutsByOpportunity[$opp->id] ?? 0) > 0;
+                    $progressPercent = $totalExpected > 0 ? min(100, round(($totalReceived / $totalExpected) * 100)) : 0;
                 @endphp
 
-                <div class="investment-card group bg-white dark:bg-gray-950 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-800/50 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" data-investment-id="{{ $opp->id }}">
+                <div class="investment-card group rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 {{ $hasPendingPayout ? 'bg-amber-50 dark:bg-amber-500/5 border-2 border-amber-300 dark:border-amber-500/30' : 'bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800/50' }}" data-investment-id="{{ $opp->id }}">
                     
                     <div class="card-header cursor-pointer p-5 sm:p-6 lg:p-8" onclick="toggleInvestment({{ $opp->id }})">
                         <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4 lg:gap-6">
@@ -140,6 +144,11 @@
                                     <span class="px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 ring-1 ring-gray-200 dark:ring-gray-700">
                                         {{ $currencyLabel }}
                                     </span>
+                                    @if($hasPendingPayout)
+                                        <span class="px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400 ring-1 ring-amber-300 dark:ring-amber-500/30 animate-pulse">
+                                            ⚠ Revisión pendiente
+                                        </span>
+                                    @endif
                                 </div>
 
                                 <h2 class="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white leading-tight group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
@@ -221,6 +230,20 @@
                             <div class="text-center p-3 sm:p-4 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10">
                                 <p class="text-[9px] uppercase tracking-widest text-amber-600 dark:text-amber-400 font-semibold mb-1">Pendiente</p>
                                 <p class="text-base sm:text-lg font-semibold text-amber-700 dark:text-amber-300">{{ $currencySymbol }}{{ number_format($pendingAmount, 0) }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 sm:mt-4">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-[9px] uppercase tracking-widest text-gray-400 dark:text-gray-500 font-semibold">Progreso</span>
+                                <span class="text-[11px] font-bold {{ $progressPercent >= 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white' }}">{{ $progressPercent }}%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-700 {{ $progressPercent >= 100 ? 'bg-emerald-500' : 'bg-indigo-500' }}" style="width: {{ $progressPercent }}%"></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1">
+                                <span class="text-[8px] text-gray-400">{{ $currencySymbol }}{{ number_format($totalReceived, 0) }}</span>
+                                <span class="text-[8px] text-gray-400">{{ $currencySymbol }}{{ number_format($totalExpected, 0) }}</span>
                             </div>
                         </div>
                     </div>

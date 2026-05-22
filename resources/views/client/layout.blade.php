@@ -192,28 +192,71 @@
                             ->where('user_id', Auth::id())
                             ->where('status', 'rejected')
                             ->exists();
+                    $isInvestActive = request()->routeIs('client.invertir*') || request()->routeIs('client.investments.*');
+                    $hasPendingPayouts = Auth::user() && Auth::user()->is_investor &&
+                        \App\Models\InvestorPayout::where('investor_user_id', Auth::id())
+                            ->where('status', 'pending')
+                            ->exists();
                 @endphp
 
-                <a href="{{ auth()->user() && auth()->user()->is_investor ? route('client.investments.index') : route('client.invertir') }}" onclick="closeSidebar()"
+                @if(auth()->user() && auth()->user()->is_investor)
+                <div>
+                    <button onclick="toggleInvestMenu()" id="invest-toggle-btn"
+                        class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                        {{ $isInvestActive ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            <span class="truncate">Invertir</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            @if($hasInvestmentNotification)
+                                <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                            @endif
+                            <svg id="invest-chevron" class="w-3.5 h-3.5 transition-transform duration-200 {{ $isInvestActive ? 'rotate-90' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </button>
+                    <div id="invest-submenu" class="mt-1 ml-4 space-y-0.5 {{ $isInvestActive ? '' : 'hidden' }}">
+                        <a href="{{ route('client.investments.index') }}" onclick="closeSidebar()"
+                            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
+                            {{ request()->routeIs('client.investments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                            Oportunidades
+                        </a>
+                        <a href="{{ route('client.investments.my-investments') }}" onclick="closeSidebar()"
+                            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
+                            {{ request()->routeIs('client.investments.my-investments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            Mis Inversiones
+                        </a>
+                        <a href="{{ route('client.investments.payments') }}" onclick="closeSidebar()"
+                            class="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
+                            {{ request()->routeIs('client.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                Mis Pagos
+                            </div>
+                            @if($hasPendingPayouts)
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                            @endif
+                        </a>
+                    </div>
+                </div>
+                @else
+                <a href="{{ route('client.invertir') }}" onclick="closeSidebar()"
                     class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('client.invertir*') || request()->routeIs('client.investments.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                      {{ request()->routeIs('client.invertir*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                     <div class="flex items-center gap-3 min-w-0">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>
                         <span class="truncate">Invertir</span>
                     </div>
-                    @if($hasInvestmentNotification)
-                        <div class="relative flex-shrink-0 ml-2">
-                            <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                        </div>
-                    @endif
                 </a>
+                @endif
             </nav>
 
             <!-- Theme + User + Logout -->
@@ -297,6 +340,13 @@
         function closeSidebar() {
             const sidebar = document.getElementById('sidebar');
             if (!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+        }
+
+        function toggleInvestMenu() {
+            const submenu = document.getElementById('invest-submenu');
+            const chevron = document.getElementById('invest-chevron');
+            submenu.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-90');
         }
 
         function toggleTheme() {
