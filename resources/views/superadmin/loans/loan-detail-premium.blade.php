@@ -14,6 +14,16 @@
     $nextDueDate = $loan->installments()->where('status', 'pending')->orderBy('due_date', 'asc')->first()?->due_date;
     $activeLoansCount = $loan->user ? \App\Models\Loan::where('user_id', $loan->user_id)->where('status', '!=', 'paid')->count() : 0;
     $activeLoans = $loan->user ? \App\Models\Loan::where('user_id', $loan->user_id)->where('status', '!=', 'paid')->orderBy('created_at', 'desc')->get() : collect([]);
+
+    $allInstallments = $loan->installments()->get();
+    $paidCapital = $allInstallments->where('status', 'approved')->sum('capital');
+    $paidInterest = $allInstallments->where('status', 'approved')->sum('interest');
+    $paidLateFees = $allInstallments->where('status', 'approved')->sum('late_fee');
+    $pendingCapital = $allInstallments->where('status', 'pending')->sum('capital');
+    $pendingInterest = $allInstallments->where('status', 'pending')->sum('interest');
+    $pendingLateFees = $allInstallments->where('status', 'pending')->sum('late_fee');
+    $totalExpectedReturn = $allInstallments->sum('amount') + $totalLateFees;
+    $balance = $pendingCapital + $pendingInterest + $pendingLateFees;
 @endphp
 
 @section('content')
@@ -39,10 +49,16 @@
             <p class="text-lg font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($loan->amount, 2) }}</p>
             <p class="text-[9px] text-gray-400 mt-0.5">{{ $loan->months ?? '-' }}m · {{ ($loan->interest_rate ?? 0)*100 }}%</p>
         </div>
-        <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
-            <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Pagado</p>
+        <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-950/15 transition-colors group" onclick="openPaidModal()">
+            <div class="flex items-start justify-between mb-1">
+                <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold">Pagado</p>
+                <svg class="w-3.5 h-3.5 text-gray-300 group-hover:text-emerald-400 transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
             <p class="text-lg font-black text-emerald-600 tabular-nums">{{ $cur }}{{ number_format($totalPaid, 2) }}</p>
-            <p class="text-[9px] text-emerald-500 mt-0.5">{{ $paidInstallments }}/{{ $totalInstallments }}</p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+                <p class="text-[9px] text-emerald-500">{{ $paidInstallments }}/{{ $totalInstallments }}</p>
+                <span class="px-1.5 py-0.5 bg-emerald-100/60 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[7px] font-bold rounded opacity-70 group-hover:opacity-100 transition-opacity">click</span>
+            </div>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-950/15 transition-colors group" onclick="openLoansModal()">
             <div class="flex items-start justify-between mb-1">
@@ -218,6 +234,112 @@
 
 </div>
 
+<div id="paid-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closePaidModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md sm:w-full bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div>
+                <h2 class="text-sm font-bold text-gray-900 dark:text-white">Detalle de pagos</h2>
+                <p class="text-[10px] text-gray-400">{{ $loan->code }} · {{ $paidInstallments }}/{{ $totalInstallments }} cuotas pagadas</p>
+            </div>
+            <button onclick="closePaidModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors -mr-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 space-y-3">
+
+            <div class="p-4 bg-emerald-50 dark:bg-emerald-950/15 rounded-xl border border-emerald-100 dark:border-emerald-900/30">
+                <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-3">Abonos Realizados</p>
+                <div class="space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Abono a Capital</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($paidCapital, 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Abono Intereses</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($paidInterest, 2) }}</span>
+                    </div>
+                    @if($paidLateFees > 0)
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Intereses por Mora pagados</span>
+                        <span class="text-xs font-bold text-orange-600 dark:text-orange-400 tabular-nums">{{ $cur }}{{ number_format($paidLateFees, 2) }}</span>
+                    </div>
+                    @endif
+                    <div class="pt-2 mt-1 border-t border-emerald-200/60 dark:border-emerald-800/30">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">Total Pagado</span>
+                            <span class="text-sm font-black text-emerald-700 dark:text-emerald-300 tabular-nums">{{ $cur }}{{ number_format($totalPaid + $paidLateFees, 2) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50">
+                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Balance Pendiente</p>
+                <div class="space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Deuda de Capital</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($pendingCapital, 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Intereses pendientes</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($pendingInterest, 2) }}</span>
+                    </div>
+                    @if($pendingLateFees > 0)
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-orange-500 dark:text-orange-400">Mora pendiente</span>
+                        <span class="text-xs font-bold text-orange-600 dark:text-orange-400 tabular-nums">{{ $cur }}{{ number_format($pendingLateFees, 2) }}</span>
+                    </div>
+                    @endif
+                    <div class="pt-2 mt-1 border-t border-gray-200 dark:border-gray-700/50">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-gray-700 dark:text-gray-300">Balance Total</span>
+                            <span class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($balance, 2) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-blue-50 dark:bg-blue-950/15 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                <p class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-3">Resumen del Préstamo</p>
+                <div class="space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Capital prestado</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($loan->amount, 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Retorno esperado total</span>
+                        <span class="text-xs font-bold text-blue-700 dark:text-blue-300 tabular-nums">{{ $cur }}{{ number_format($totalExpectedReturn, 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">% Recuperado</span>
+                        <span class="text-xs font-bold {{ ($totalPaid + $paidLateFees) >= $totalExpectedReturn ? 'text-emerald-600' : 'text-blue-600' }} dark:text-blue-300 tabular-nums">{{ $totalExpectedReturn > 0 ? round(($totalPaid + $paidLateFees) / $totalExpectedReturn * 100, 1) : 0 }}%</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex-shrink-0 px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+            <div class="grid grid-cols-3 gap-3">
+                <div class="text-center">
+                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Cuotas</p>
+                    <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $paidInstallments }}/{{ $totalInstallments }}</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Pagado</p>
+                    <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $cur }}{{ number_format($totalPaid, 2) }}</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[8px] text-gray-400 uppercase tracking-wider">Pendiente</p>
+                    <p class="text-sm font-black text-orange-600 dark:text-orange-400 tabular-nums">{{ $cur }}{{ number_format($balance, 2) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="loans-modal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/40" onclick="closeLoansModal()"></div>
     <div class="absolute bottom-0 left-0 right-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg sm:w-full bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
@@ -344,6 +466,15 @@ function openLoansModal() {
 }
 function closeLoansModal() {
     document.getElementById('loans-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function openPaidModal() {
+    document.getElementById('paid-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closePaidModal() {
+    document.getElementById('paid-modal').classList.add('hidden');
     document.body.style.overflow = '';
 }
 </script>
