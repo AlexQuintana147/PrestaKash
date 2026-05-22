@@ -211,7 +211,7 @@
                         <div class="w-12 h-12 md:w-14 md:h-14 rounded-full p-[2.5px] bg-gradient-to-br from-[#006BFF] to-[#8247f5]">
                             <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover border-2 border-white dark:border-gray-950">
                         </div>
-                        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#00D26A] rounded-full border-2 border-white dark:border-gray-950"></span>
+                        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 {{ $hasOverdue ? 'bg-red-500' : 'bg-[#00D26A]' }} rounded-full border-2 border-white dark:border-gray-950"></span>
                     </div>
                     <div class="min-w-0">
                         <p class="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $greeting }}</p>
@@ -231,6 +231,46 @@
             <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-[#8247f5]/6 to-transparent dark:from-[#8247f5]/4 dark:to-transparent rounded-tr-full pointer-events-none"></div>
         </div>
     </div>
+
+    @if($hasOverdue)
+    {{-- Alerta de Pagos Atrasados --}}
+    <div class="px-4 md:px-8 pb-2">
+        <div class="max-w-4xl mx-auto">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500 to-red-600 p-4 md:p-5 shadow-lg shadow-red-500/20">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="text-sm font-bold text-white">Tienes pagos atrasados</p>
+                                <span class="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-bold text-white">
+                                    {{ $overdueCount }} cuota{{ $overdueCount > 1 ? 's' : '' }}
+                                </span>
+                            </div>
+                            <div class="mt-2 grid grid-cols-2 gap-3">
+                                <div>
+                                    <p class="text-[10px] text-white uppercase tracking-wider">Total a pagar</p>
+                                    <p class="text-lg font-black text-white">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($overdueTotal, 2, '.', ',') }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-white uppercase tracking-wider">Mora acumulada</p>
+                                    <p class="text-lg font-black text-yellow-300">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($overdueLateFees, 2, '.', ',') }}</p>
+                                </div>
+                            </div>
+                            @if($oldestOverdue)
+                            <p class="text-[10px] text-white mt-1.5">La cuota más antigua venció el {{ $oldestOverdue->due_date->format('d/m/Y') }} — hace {{ now()->startOfDay()->diffInDays($oldestOverdue->due_date) }} días</p>
+                            @endif
+                            <a href="{{ route('client.loans') }}" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-red-600 text-xs font-bold hover:bg-white/90 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                Ver mis préstamos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     {{-- Línea de Crédito --}}
     <div class="px-4 md:px-8 pb-2">
@@ -329,7 +369,11 @@
                         </div>
                         <div>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Estado</p>
+                            @if($hasOverdue)
+                            <p class="text-sm font-medium text-red-500 dark:text-red-400 flex items-center"><span class="pk-status-dot" style="background:#EF4444"></span>Atrasado</p>
+                            @else
                             <p class="text-sm font-medium text-[#00A854] dark:text-[#00D26A] flex items-center"><span class="pk-status-dot pk-status-confirmed"></span>Al día</p>
+                            @endif
                         </div>
                     </div>
                 </div>

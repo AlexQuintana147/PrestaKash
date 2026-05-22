@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
+use App\Models\LoanInstallment;
 use App\Models\ProfileChangeRequest;
 use App\Models\UbigeoDepartment;
 use App\Models\UbigeoDistrict;
@@ -38,11 +39,27 @@ class DashboardController extends Controller
         $isInvestor = $user->is_investor;
         $hasInvestorApp = $user->investorApplication !== null;
 
+        $overdueInstallments = LoanInstallment::with('loan')
+            ->whereHas('loan', function ($q) use ($user) {
+                $q->where('user_id', $user->id)->whereIn('status', ['approved', 'disbursed', 'active', 'paid']);
+            })
+            ->where('status', '!=', 'approved')
+            ->where('due_date', '<', now()->startOfDay())
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        $hasOverdue = $overdueInstallments->isNotEmpty();
+        $overdueCount = $overdueInstallments->count();
+        $overdueTotal = $overdueInstallments->sum('amount') + $overdueInstallments->sum('late_fee');
+        $overdueLateFees = $overdueInstallments->sum('late_fee');
+        $oldestOverdue = $overdueInstallments->first();
+
         return view('client.dashboard', compact(
             'user', 'department', 'province', 'district',
             'activeLoans', 'pendingLoans', 'totalDebt', 'monthlyPayment',
             'hasProfile', 'pendingChange', 'rejectedChange',
-            'isInvestor', 'hasInvestorApp'
+            'isInvestor', 'hasInvestorApp',
+            'overdueInstallments', 'hasOverdue', 'overdueCount', 'overdueTotal', 'overdueLateFees', 'oldestOverdue'
         ));
     }
 
