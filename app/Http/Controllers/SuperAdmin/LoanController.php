@@ -998,7 +998,39 @@ class LoanController extends Controller
                     $movement->delete();
                 }
 
-                // 2. Restaurar cuota a processing con datos del interés revertido
+                // 2. Eliminar la última cuota (la que se creó al aprobar el interés)
+                $lastInst = $loan->installments()->orderBy('installment_number', 'desc')->first();
+                if ($lastInst && $lastInst->status === 'pending') {
+                    $lastInst->delete();
+                }
+
+                // 3. Renumber: decrementar installment_number para la cuota actual y posteriores
+                $currentNumber = $installment->installment_number;
+                $loan->installments()
+                    ->where('installment_number', '>', $currentNumber)
+                    ->decrement('installment_number');
+
+                // 4. Shift fechas hacia atrás (-1 período) para todas las cuotas pending/rejected/processing
+                $freq = $loan->payment_frequency;
+                $installmentsToShift = $loan->installments()
+                    ->whereIn('status', ['pending', 'rejected', 'processing'])
+                    ->get();
+
+                foreach ($installmentsToShift as $inst) {
+                    $date = $inst->due_date->copy();
+                    if ($freq === 'diario')
+                        $date->subDay();
+                    elseif ($freq === 'semanal')
+                        $date->subWeek();
+                    elseif ($freq === 'quincenal')
+                        $date->subDays(15);
+                    else
+                        $date->subMonth();
+
+                    $inst->update(['due_date' => $date]);
+                }
+
+                // 5. Restaurar cuota a processing con datos del interés revertido
                 $newCount = max(0, $installment->interest_payments_count - 1);
                 $installment->update([
                     'status' => 'processing',
@@ -1011,7 +1043,7 @@ class LoanController extends Controller
                     'interest_payments_count' => $newCount,
                 ]);
 
-                // 3. Eliminar registro del interés (sin borrar voucher, se movió a la cuota)
+                // 6. Eliminar registro del interés (sin borrar voucher, se movió a la cuota)
                 $interestPayment->delete();
 
             } else {
