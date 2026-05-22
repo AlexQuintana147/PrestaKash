@@ -97,14 +97,14 @@
 
                     @if($firstPayable && in_array($firstPayable->status, ['pending', 'rejected']))
                         <button type="button"
-                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($moraPlusInterest, 2) }}', {{ $totalLateFees }}, {{ $nextInst ? $nextInst->interest : 0 }}, 'mora_interest')"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($nextInst ? $nextInst->interest : 0, 2) }}', {{ $totalLateFees }}, {{ $nextInst ? $nextInst->interest : 0 }}, 'mora_interest')"
                             class="w-full py-3 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-red-500/20 mb-3">
                             Pagar mora acumulada + interés — {{ $cur }} {{ number_format($moraPlusInterest, 2) }}
                         </button>
 
                         @if(!$hasPreviousDebts)
                         <button type="button"
-                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($moraPlusFull, 2) }}', {{ $totalLateFees }}, {{ $nextInst ? $nextInst->interest : 0 }}, 'mora_full')"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $firstPayable->id }}, '{{ $cur }}{{ number_format($nextInst ? $nextInst->amount : 0, 2) }}', {{ $totalLateFees }}, {{ $nextInst ? $nextInst->interest : 0 }}, 'mora_full')"
                             class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-orange-500/20 mb-3">
                             Pagar mora + cuota total — {{ $cur }} {{ number_format($moraPlusFull, 2) }}
                         </button>

@@ -418,7 +418,13 @@
             document.getElementById('modal_info_text').innerHTML = `
                 <p class="text-xs text-gray-500">Usuario: <span class="text-gray-900 dark:text-white font-black">${data.user}</span></p>
                 <p class="text-xs text-gray-500">Cuota: <span class="text-gray-900 dark:text-white font-black">#${data.number}</span></p>
-                <p class="text-xs text-gray-500">Monto esperado: <span class="text-purple-600 font-black">${data.amount}</span></p>
+                ${data.lateFee ? `
+                    <p class="text-xs text-gray-500">Monto cuota: <span class="text-gray-900 dark:text-white font-black">${data.baseAmount}</span></p>
+                    <p class="text-xs text-gray-500">Mora: <span class="text-orange-500 font-black">${data.lateFee}</span></p>
+                    <p class="text-xs text-gray-500">Total esperado: <span class="text-purple-600 font-black">${data.amount}</span></p>
+                ` : `
+                    <p class="text-xs text-gray-500">Monto esperado: <span class="text-purple-600 font-black">${data.amount}</span></p>
+                `}
             `;
 
             // Populate new payment details

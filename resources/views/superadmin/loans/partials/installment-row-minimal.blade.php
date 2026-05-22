@@ -101,13 +101,16 @@
 
         @if($inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at))
                 @php
-                    $displayAmount = $inst->requested_type === 'interest' 
-                        ? $inst->interest + ($inst->late_fee ?? 0)
-                        : $inst->amount + ($inst->late_fee ?? 0);
+                    $baseAmount = $inst->requested_type === 'interest' 
+                        ? $inst->interest
+                        : $inst->amount;
+                    $displayAmount = $baseAmount + ($inst->late_fee ?? 0);
                 @endphp
                 <button type="button" onclick="openValidateModal({{ json_encode([
                 'id' => $inst->id,
                 'amount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($displayAmount, 2),
+                'baseAmount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($baseAmount, 2),
+                'lateFee' => ($inst->late_fee ?? 0) > 0 ? ($loan->currency === 'USD' ? '$' : 'S/') . number_format($inst->late_fee, 2) : null,
                 'user' => $inst->loan->user->name,
                 'number' => $inst->installment_number,
                 'voucher' => Storage::url($inst->payment_voucher),

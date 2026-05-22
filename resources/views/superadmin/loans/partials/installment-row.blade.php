@@ -252,13 +252,16 @@
             <div class="flex items-center gap-3">
                 @if($inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at))
                     @php
-                        $displayAmount = $inst->requested_type === 'interest' 
-                            ? $inst->interest + ($inst->late_fee ?? 0)
-                            : $inst->amount + ($inst->late_fee ?? 0);
+                        $baseAmount = $inst->requested_type === 'interest' 
+                            ? $inst->interest
+                            : $inst->amount;
+                        $displayAmount = $baseAmount + ($inst->late_fee ?? 0);
 
                         $validateData = [
                             'id' => $inst->id,
                             'amount' => $currency . number_format($displayAmount, 2),
+                            'baseAmount' => $currency . number_format($baseAmount, 2),
+                            'lateFee' => ($inst->late_fee ?? 0) > 0 ? $currency . number_format($inst->late_fee, 2) : null,
                             'user' => $user->name,
                             'number' => $inst->installment_number,
                             'voucher' => Storage::url($inst->payment_voucher),
