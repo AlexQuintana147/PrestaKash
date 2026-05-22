@@ -351,45 +351,45 @@
                     </div>
 
                     <!-- Datos Cuota -->
-                    <div class="bg-red-50 dark:bg-red-950/20 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-red-100 dark:border-red-900/30">
-                        <p class="text-[9px] sm:text-[10px] text-red-400 uppercase tracking-widest font-bold mb-2 sm:mb-3 flex items-center gap-1.5">
+                    <div class="bg-red-500 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                        <p class="text-[9px] sm:text-[10px] text-white uppercase tracking-widest font-bold mb-2 sm:mb-3 flex items-center gap-1.5">
                             <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Detalle de la Cuota
                         </p>
                         <div class="space-y-2">
                             <div class="flex justify-between items-center gap-2">
-                                <span class="text-[9px] sm:text-[10px] text-red-400/80 flex-shrink-0">N° Cuota</span>
-                                <span id="modal-inst-number" class="text-[10px] sm:text-xs font-black text-red-600 dark:text-red-400"></span>
+                                <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">N° Cuota</span>
+                                <span id="modal-inst-number" class="text-[10px] sm:text-xs font-black text-white"></span>
                             </div>
                             <div class="flex justify-between items-center gap-2">
-                                <span class="text-[9px] sm:text-[10px] text-red-400/80 flex-shrink-0">Vencimiento</span>
-                                <span id="modal-due-date" class="text-[10px] sm:text-xs font-bold text-red-600 dark:text-red-400"></span>
+                                <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">Vencimiento</span>
+                                <span id="modal-due-date" class="text-[10px] sm:text-xs font-bold text-white"></span>
                             </div>
                             <div class="flex justify-between items-center gap-2">
-                                <span class="text-[9px] sm:text-[10px] text-red-400/80 flex-shrink-0">Días de mora</span>
-                                <span id="modal-days-overdue" class="text-[10px] sm:text-xs font-black text-red-600 dark:text-red-400"></span>
+                                <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">Días de mora</span>
+                                <span id="modal-days-overdue" class="text-[10px] sm:text-xs font-black text-white"></span>
                             </div>
-                            <div class="border-t border-red-200 dark:border-red-800 pt-2 mt-2 space-y-2">
+                            <div class="border-t border-white/20 pt-2 mt-2 space-y-2">
                                 <div class="flex justify-between items-center gap-2">
-                                    <span class="text-[9px] sm:text-[10px] text-red-400/80 flex-shrink-0">Capital</span>
-                                    <span id="modal-capital" class="text-[10px] sm:text-xs font-bold text-gray-900 dark:text-white tabular-nums"></span>
+                                    <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">Capital</span>
+                                    <span id="modal-capital" class="text-[10px] sm:text-xs font-bold text-white tabular-nums"></span>
                                 </div>
                                 <div class="flex justify-between items-center gap-2">
-                                    <span class="text-[9px] sm:text-[10px] text-red-400/80 flex-shrink-0">Interés</span>
-                                    <span id="modal-interest" class="text-[10px] sm:text-xs font-bold text-gray-900 dark:text-white tabular-nums"></span>
+                                    <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">Interés</span>
+                                    <span id="modal-interest" class="text-[10px] sm:text-xs font-bold text-white tabular-nums"></span>
                                 </div>
                                 <div class="flex justify-between items-center gap-2">
-                                    <span class="text-[9px] sm:text-[10px] text-red-400/80 flex-shrink-0">Cuota total</span>
-                                    <span id="modal-amount" class="text-[10px] sm:text-xs font-bold text-gray-900 dark:text-white tabular-nums"></span>
+                                    <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">Cuota total</span>
+                                    <span id="modal-amount" class="text-[10px] sm:text-xs font-bold text-white tabular-nums"></span>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center gap-2 pt-2 border-t border-red-200 dark:border-red-800">
-                                <span class="text-[9px] sm:text-[10px] text-orange-500 font-bold flex-shrink-0">Mora acumulada</span>
-                                <span id="modal-late-fee" class="text-[10px] sm:text-xs font-black text-orange-500 tabular-nums"></span>
+                            <div class="flex justify-between items-center gap-2 pt-2 border-t border-white/20">
+                                <span class="text-[9px] sm:text-[10px] text-white font-bold flex-shrink-0">Mora acumulada</span>
+                                <span id="modal-late-fee" class="text-[10px] sm:text-xs font-black text-white tabular-nums"></span>
                             </div>
-                            <div class="flex justify-between items-center bg-red-500/10 -mx-3 sm:-mx-4 px-3 sm:px-4 py-2 rounded-b-xl sm:rounded-b-2xl mt-1">
-                                <span class="text-[9px] sm:text-[10px] text-red-600 dark:text-red-400 font-bold uppercase tracking-wide flex-shrink-0">Total a pagar</span>
-                                <span id="modal-total" class="text-xs sm:text-sm font-black text-red-600 dark:text-red-400 tabular-nums"></span>
+                            <div class="flex justify-between items-center bg-black/20 -mx-3 sm:-mx-4 px-3 sm:px-4 py-2 rounded-b-xl sm:rounded-b-2xl mt-1">
+                                <span class="text-[9px] sm:text-[10px] text-white font-bold uppercase tracking-wide flex-shrink-0">Total a pagar</span>
+                                <span id="modal-total" class="text-xs sm:text-sm font-black text-white tabular-nums"></span>
                             </div>
                         </div>
                     </div>
