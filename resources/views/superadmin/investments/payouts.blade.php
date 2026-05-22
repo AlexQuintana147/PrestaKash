@@ -264,8 +264,8 @@
 <div id="investorModal" class="fixed inset-0 z-50 hidden">
     <div class="modal-backdrop absolute inset-0" onclick="closeInvestorModal()"></div>
     <div class="pk-modal-wrap relative flex items-start justify-center min-h-screen p-0 sm:p-4 sm:pt-8">
-        <div class="pk-modal-enter bg-white dark:bg-gray-950 sm:rounded-2xl rounded-none border-0 sm:border sm:border-gray-200 dark:sm:border-gray-800 w-full sm:max-w-4xl h-screen sm:h-auto sm:max-h-[90vh] overflow-hidden shadow-none sm:shadow-2xl">
-            <div class="sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between">
+        <div class="pk-modal-enter bg-white dark:bg-gray-950 sm:rounded-2xl rounded-none border-0 sm:border sm:border-gray-200 dark:sm:border-gray-800 w-full sm:max-w-4xl h-screen sm:h-auto sm:max-h-[90vh] overflow-hidden shadow-none sm:shadow-2xl flex flex-col">
+            <div class="shrink-0 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2.5 sm:gap-3">
                     <img id="modal_photo" src="" alt="" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover ring-1 ring-inset ring-gray-100 dark:ring-gray-800">
                     <div>
@@ -278,7 +278,7 @@
                 </button>
             </div>
 
-            <div class="overflow-y-auto sm:max-h-[calc(90vh-80px)] flex-1">
+            <div class="overflow-y-auto sm:max-h-[calc(90vh-80px)] flex-1 min-h-0">
                 {{-- STATS GRID --}}
                 <div class="px-4 sm:px-5 py-3 sm:py-4 grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 bg-gray-50/50 dark:bg-gray-900/20 border-b border-gray-100 dark:border-gray-800">
                     <div>
