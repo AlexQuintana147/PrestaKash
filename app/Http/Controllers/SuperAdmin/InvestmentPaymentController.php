@@ -36,63 +36,196 @@ class InvestmentPaymentController extends Controller
             ->with(['investors' => function ($q) {
                 $q->wherePivot('status', 'approved')
                   ->wherePivot('payment_status', 'confirmed')
-                  ->withPivot(['amount', 'payment_status', 'approved_at']);
+                  ->withPivot(['amount', 'amortization_type', 'payment_status', 'approved_at']);
             }])
             ->get()
             ->filter(fn($op) => $op->investors->count() > 0);
 
-        $payouts = collect();
+        $opportunitiesData = collect();
         $now = now();
 
         foreach ($closedOpportunities as $opportunity) {
-            $totalInvested = 0;
-            foreach ($opportunity->investors as $investor) {
-                $totalInvested += $investor->pivot->amount;
-            }
+            $investorsData = collect();
 
             foreach ($opportunity->investors as $investor) {
-                $monthsSinceClose = $opportunity->closed_at->diffInMonths($now);
-                $maxMonths = min(max($monthsSinceClose, 1), $opportunity->term_months);
+                $amount = $investor->pivot->amount;
+                $amortizationType = $investor->pivot->amortization_type;
+                $monthlyRate = $opportunity->monthly_return_rate / 100;
+                $termMonths = $opportunity->term_months;
+                $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
 
-                if ($maxMonths <= 0) continue;
+                $schedule = collect();
+                $totalExpectedReturn = 0;
 
-                $monthlyAmount = round($investor->pivot->amount * ($opportunity->monthly_return_rate / 100), 2);
-                $totalReturn = round($monthlyAmount * $opportunity->term_months, 2);
-                $percentageOfTotal = $totalInvested > 0 ? round(($investor->pivot->amount / $totalInvested) * 100, 1) : 0;
+                if ($amortizationType === 'frances') {
+                    $monthlyPayment = $monthlyRate > 0
+                        ? $amount * ($monthlyRate * pow(1 + $monthlyRate, $termMonths)) / (pow(1 + $monthlyRate, $termMonths) - 1)
+                        : $amount / $termMonths;
 
-                for ($month = 1; $month <= $maxMonths; $month++) {
-                    $dueDate = $opportunity->closed_at->copy()->addMonths($month);
-                    $isOverdue = $dueDate->lt($now);
+                    $balance = $amount;
+                    for ($i = 1; $i <= $termMonths; $i++) {
+                        $interest = round($balance * $monthlyRate, 2);
+                        $principal = round($monthlyPayment - $interest, 2);
+                        $balance = round($balance - $principal, 2);
+                        if ($i === $termMonths) {
+                            $principal = round($principal + $balance, 2);
+                            $balance = 0;
+                        }
+                        $totalExpectedReturn += round($interest + $principal, 2);
 
-                    $payouts->push((object)[
-                        'opportunity' => $opportunity,
-                        'investor' => $investor,
-                        'month' => $month,
-                        'total_months' => $opportunity->term_months,
-                        'monthly_amount' => $monthlyAmount,
-                        'total_return' => $totalReturn,
-                        'percentage_of_total' => $percentageOfTotal,
-                        'due_date' => $dueDate,
-                        'is_overdue' => $isOverdue,
-                        'currency' => $opportunity->currency,
-                    ]);
+                        $dueDate = $startDate ? $startDate->copy()->addMonths($i) : null;
+                        $schedule->push((object)[
+                            'month' => $i,
+                            'date' => $dueDate,
+                            'payment' => round($interest + $principal, 2),
+                            'interest' => $interest,
+                            'principal' => $principal,
+                            'balance' => max($balance, 0),
+                            'is_overdue' => $dueDate ? $dueDate->lt($now) : false,
+                        ]);
+                    }
+                } else {
+                    $monthlyInterest = round($amount * $monthlyRate, 2);
+                    for ($i = 1; $i <= $termMonths; $i++) {
+                        $isLast = $i === $termMonths;
+                        $payment = $isLast ? $monthlyInterest + $amount : $monthlyInterest;
+                        $totalExpectedReturn += $payment;
+
+                        $dueDate = $startDate ? $startDate->copy()->addMonths($i) : null;
+                        $schedule->push((object)[
+                            'month' => $i,
+                            'date' => $dueDate,
+                            'payment' => $payment,
+                            'interest' => $monthlyInterest,
+                            'principal' => $isLast ? $amount : 0,
+                            'balance' => $isLast ? 0 : $amount,
+                            'is_overdue' => $dueDate ? $dueDate->lt($now) : false,
+                        ]);
+                    }
                 }
+
+                $payments = \App\Models\CashboxMovement::where('investor_user_id', $investor->id)
+                    ->where('reference_type', 'investment')
+                    ->where('reference_id', $opportunity->id)
+                    ->where('type', 'expense')
+                    ->orderByDesc('date')
+                    ->get();
+
+                $paidMonths = $payments->map(fn($p) => $p->date ? \Carbon\Carbon::parse($p->date)->format('Y-m') : null)->filter()->values()->toArray();
+
+                foreach ($schedule as $item) {
+                    $item->is_paid = $item->date ? in_array($item->date->format('Y-m'), $paidMonths) : false;
+                }
+
+                $totalReceived = $payments->sum('amount');
+                $overdueCount = $schedule->where('is_overdue', true)->where('is_paid', false)->count();
+                $overdueAmount = $schedule->where('is_overdue', true)->where('is_paid', false)->sum('payment');
+                $pendingCount = $schedule->where('is_paid', false)->count();
+
+                $investorsData->push((object)[
+                    'investor' => $investor,
+                    'amount' => $amount,
+                    'amortization_type' => $amortizationType,
+                    'schedule' => $schedule,
+                    'payments' => $payments,
+                    'total_received' => $totalReceived,
+                    'total_expected_return' => $totalExpectedReturn,
+                    'overdue_count' => $overdueCount,
+                    'overdue_amount' => $overdueAmount,
+                    'pending_count' => $pendingCount,
+                ]);
             }
+
+            $opportunityOverdue = $investorsData->sum('overdue_count');
+            $opportunityPendingAmount = $investorsData->sum(fn($d) => $d->schedule->where('is_paid', false)->sum('payment'));
+
+            $opportunitiesData->push((object)[
+                'opportunity' => $opportunity,
+                'investors' => $investorsData,
+                'overdue_count' => $opportunityOverdue,
+                'pending_amount' => $opportunityPendingAmount,
+            ]);
         }
 
         $cashboxes = Cashbox::orderBy('name')->get();
 
-        $perPage = 5;
-        $page = LengthAwarePaginator::resolveCurrentPage();
-        $payouts = new LengthAwarePaginator(
-            $payouts->forPage($page, $perPage)->values(),
-            $payouts->count(),
-            $perPage,
-            $page,
-            ['path' => LengthAwarePaginator::resolveCurrentPath(), 'query' => request()->query()]
-        );
+        return view('superadmin.investments.payouts', compact('opportunitiesData', 'cashboxes'));
+    }
 
-        return view('superadmin.investments.payouts', compact('payouts', 'cashboxes'));
+    public function scheduleDetail(InvestmentOpportunity $opportunity, $investor)
+    {
+        $investorModel = \App\Models\User::findOrFail($investor);
+        $pivot = $opportunity->investors()->where('user_id', $investor)->firstOrFail();
+        $amount = $pivot->pivot->amount;
+        $amortizationType = $pivot->pivot->amortization_type;
+        $monthlyRate = $opportunity->monthly_return_rate / 100;
+        $termMonths = $opportunity->term_months;
+        $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
+        $now = now();
+
+        $schedule = [];
+
+        if ($amortizationType === 'frances') {
+            $monthlyPayment = $monthlyRate > 0
+                ? $amount * ($monthlyRate * pow(1 + $monthlyRate, $termMonths)) / (pow(1 + $monthlyRate, $termMonths) - 1)
+                : $amount / $termMonths;
+
+            $balance = $amount;
+            for ($i = 1; $i <= $termMonths; $i++) {
+                $interest = round($balance * $monthlyRate, 2);
+                $principal = round($monthlyPayment - $interest, 2);
+                $balance = round($balance - $principal, 2);
+                if ($i === $termMonths) {
+                    $principal = round($principal + $balance, 2);
+                    $balance = 0;
+                }
+
+                $dueDate = $startDate ? $startDate->copy()->addMonths($i) : null;
+                $schedule[] = [
+                    'month' => $i,
+                    'date' => $dueDate ? $dueDate->format('d/m/Y') : null,
+                    'payment' => number_format(round($interest + $principal, 2), 2),
+                    'interest' => number_format($interest, 2),
+                    'principal' => number_format($principal, 2),
+                    'balance' => number_format(max($balance, 0), 2),
+                    'is_overdue' => $dueDate ? $dueDate->lt($now) : false,
+                    'is_paid' => false,
+                ];
+            }
+        } else {
+            $monthlyInterest = round($amount * $monthlyRate, 2);
+            for ($i = 1; $i <= $termMonths; $i++) {
+                $isLast = $i === $termMonths;
+                $payment = $isLast ? $monthlyInterest + $amount : $monthlyInterest;
+
+                $dueDate = $startDate ? $startDate->copy()->addMonths($i) : null;
+                $schedule[] = [
+                    'month' => $i,
+                    'date' => $dueDate ? $dueDate->format('d/m/Y') : null,
+                    'payment' => number_format($payment, 2),
+                    'interest' => number_format($monthlyInterest, 2),
+                    'principal' => number_format($isLast ? $amount : 0, 2),
+                    'balance' => number_format($isLast ? 0 : $amount, 2),
+                    'is_overdue' => $dueDate ? $dueDate->lt($now) : false,
+                    'is_paid' => false,
+                ];
+            }
+        }
+
+        $payments = \App\Models\CashboxMovement::where('investor_user_id', $investor)
+            ->where('reference_type', 'investment')
+            ->where('reference_id', $opportunity->id)
+            ->where('type', 'expense')
+            ->get();
+
+        $paidMonths = $payments->map(fn($p) => $p->date ? \Carbon\Carbon::parse($p->date)->format('Y-m') : null)->filter()->values()->toArray();
+
+        foreach ($schedule as &$item) {
+            $dateObj = $startDate ? $startDate->copy()->addMonths($item['month']) : null;
+            $item['is_paid'] = $dateObj ? in_array($dateObj->format('Y-m'), $paidMonths) : false;
+        }
+
+        return response()->json($schedule);
     }
 
     public function confirm(Request $request, InvestmentOpportunity $investment, $userId)

@@ -115,6 +115,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/inversiones/{investment}/inversor/{userId}/confirmar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'confirm'])->name('investments.confirm-payment');
     Route::post('/inversiones/{investment}/inversor/{userId}/rechazar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'reject'])->name('investments.reject-payment');
     Route::get('/pagos-inversores', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'payouts'])->name('investments.payouts');
+    Route::get('/inversiones/pagos/detalle/{opportunity}/{investor}', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'scheduleDetail'])->name('investments.schedule-detail');
 
     // Control de préstamos
     Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');
