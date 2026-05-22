@@ -331,11 +331,34 @@ class InvestmentController extends Controller
             \Storage::disk('public')->delete($payout->voucher_path);
         }
 
-        $payout->update([
-            'status' => 'confirmed',
-            'paid_at' => now(),
-            'voucher_path' => null,
-        ]);
+        \DB::transaction(function () use ($payout, $user) {
+            $payout->update([
+                'status' => 'confirmed',
+                'paid_at' => now(),
+                'voucher_path' => null,
+            ]);
+
+            $opportunity = $payout->opportunity;
+            $scheduleMonth = $payout->month_number;
+            $scheduleDate = null;
+
+            $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
+            if ($startDate) {
+                $scheduleDate = $startDate->copy()->addMonths($scheduleMonth);
+            }
+
+            \App\Models\CashboxMovement::create([
+                'user_id' => auth()->id(),
+                'cashbox_id' => 1,
+                'type' => 'expense',
+                'amount' => $payout->amount,
+                'description' => "Pago aceptado por inversor - Cuota #{$scheduleMonth} - {$opportunity->title}",
+                'reference_type' => 'investment',
+                'reference_id' => $opportunity->id,
+                'investor_user_id' => $user->id,
+                'date' => $scheduleDate ?? now(),
+            ]);
+        });
 
         return back()->with('success', 'Pago aceptado correctamente.');
     }

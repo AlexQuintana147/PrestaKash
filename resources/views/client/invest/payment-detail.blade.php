@@ -99,6 +99,8 @@
                     }
                     $payoutItem = $payouts->get($item->month);
                     $isPendingPayout = $payoutItem && $payoutItem->status === 'pending';
+                    $isConfirmedPayout = $payoutItem && $payoutItem->status === 'confirmed';
+                    if ($isConfirmedPayout) $isPaid = true;
                 @endphp
                 <div class="schedule-item {{ $isOverdue && !$isPaid ? 'bg-red-600 text-white' : 'bg-white dark:bg-gray-950' }} rounded-xl border {{ $isOverdue && !$isPaid ? 'border-red-500' : 'border-gray-100 dark:border-gray-800/60' }} p-3" data-idx="{{ $i }}" style="display:none">
                     <div class="flex items-center justify-between mb-2">
@@ -205,6 +207,8 @@
                                 $overdueRow = $isOverdue && !$isPaid;
                                 $payoutItem = $payouts->get($item->month);
                                 $isPendingPayout = $payoutItem && $payoutItem->status === 'pending';
+                                $isConfirmedPayout = $payoutItem && $payoutItem->status === 'confirmed';
+                                if ($isConfirmedPayout) $isPaid = true;
                             @endphp
                             <tr class="schedule-item border-b {{ $overdueRow ? 'border-red-500/30' : 'border-gray-50 dark:border-gray-900/50' }} {{ $overdueRow ? 'bg-red-600' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/30' }} transition-colors" data-idx="{{ $i }}" style="display:none">
                                 <td class="px-4 py-3 font-bold {{ $overdueRow ? 'text-white' : 'text-gray-900 dark:text-white' }}">{{ $item->month }}</td>
@@ -461,7 +465,10 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="flex gap-2">
                 <button onclick="closeAcceptModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
-                <button onclick="submitAccept()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Aceptar pago</button>
+                <form id="accept-form" method="POST" class="flex-1">
+                    @csrf
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Aceptar pago</button>
+                </form>
             </div>
         </div>
     </div>
@@ -484,7 +491,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <p class="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed mb-4">¿Estás seguro de que deseas rechazar este pago? El comprobante será eliminado y el administrador deberá registrar el pago nuevamente.</p>
             <div class="flex gap-2">
                 <button onclick="closeRejectModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
-                <button onclick="submitReject()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Rechazar pago</button>
+                <form id="reject-form" method="POST" class="flex-1">
+                    @csrf
+                    <button type="submit" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Rechazar pago</button>
+                </form>
             </div>
         </div>
     </div>
@@ -511,11 +521,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 
 <script>
-let _acceptPayoutId = null;
-let _rejectPayoutId = null;
-
 function openAcceptModal(payoutId) {
-    _acceptPayoutId = payoutId;
+    document.getElementById('accept-form').action = '{{ route("client.investments.payouts.accept", ["payout" => "__ID__"]) }}'.replace('__ID__', payoutId);
     document.getElementById('acceptModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
@@ -523,25 +530,10 @@ function openAcceptModal(payoutId) {
 function closeAcceptModal() {
     document.getElementById('acceptModal').classList.add('hidden');
     document.body.style.overflow = '';
-    _acceptPayoutId = null;
-}
-
-function submitAccept() {
-    if (!_acceptPayoutId) return;
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '{{ route("client.investments.payouts.accept", 0) }}'.replace('/0', '/' + _acceptPayoutId);
-    const csrf = document.createElement('input');
-    csrf.type = 'hidden';
-    csrf.name = '_token';
-    csrf.value = document.querySelector('meta[name="csrf-token"]').content;
-    form.appendChild(csrf);
-    document.body.appendChild(form);
-    form.submit();
 }
 
 function openRejectModal(payoutId) {
-    _rejectPayoutId = payoutId;
+    document.getElementById('reject-form').action = '{{ route("client.investments.payouts.reject", ["payout" => "__ID__"]) }}'.replace('__ID__', payoutId);
     document.getElementById('rejectModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
@@ -549,13 +541,6 @@ function openRejectModal(payoutId) {
 function closeRejectModal() {
     document.getElementById('rejectModal').classList.add('hidden');
     document.body.style.overflow = '';
-    _rejectPayoutId = null;
-}
-
-function submitReject() {
-    if (!_rejectPayoutId) return;
-    const form = document.getElementById('reject-form-' + _rejectPayoutId);
-    if (form) form.submit();
 }
 
 function openVoucherModal(src) {
