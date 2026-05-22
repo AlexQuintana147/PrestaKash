@@ -414,9 +414,6 @@ class InvestmentPaymentController extends Controller
                 ? $amount * ($monthlyRate * pow(1 + $monthlyRate, $termMonths)) / (pow(1 + $monthlyRate, $termMonths) - 1)
                 : $amount / $termMonths;
 
-            $balance = $amount;
-            $paidPrincipal = 0;
-
             $confirmedPayouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
                 ->where('investor_user_id', $validated['investor_id'])
                 ->where('status', 'confirmed')
@@ -425,11 +422,7 @@ class InvestmentPaymentController extends Controller
 
             $interestOnlyMonthNumbers = $confirmedPayouts->where('payment_type', 'interest_only')->pluck('month_number')->toArray();
 
-            foreach ($confirmedPayouts as $cp) {
-                $paidPrincipal += (float) $cp->principal_amount;
-            }
-
-            $balance = $amount - $paidPrincipal;
+            $balance = $amount;
 
             for ($i = 1; $i <= $validated['month_number']; $i++) {
                 $interest = round($balance * $monthlyRate, 2);
