@@ -339,7 +339,7 @@ class LoanController extends Controller
     {
         if ($loan->user_id !== Auth::id())
             abort(403);
-        $loan->load('installments');
+        $loan->load('installments.interestPayments');
         return view('client.loans.history-show', compact('loan'));
     }
 

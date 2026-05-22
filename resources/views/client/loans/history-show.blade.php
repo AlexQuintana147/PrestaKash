@@ -180,16 +180,9 @@
         $paidInterest = $loan->installments->where('status', 'approved')->sum('interest');
         $paidLateFees = 0;
         foreach ($loan->installments->where('status', 'approved') as $pi) {
-            if ($pi->paid_at && $loan->late_fee_enabled) {
-                $paidDate = $pi->paid_at->startOfDay();
-                $dueDate = $pi->due_date->startOfDay();
-                if ($paidDate->isAfter($dueDate)) {
-                    $daysLate = $dueDate->diffInDays($paidDate);
-                    if ($daysLate > ($loan->grace_days ?? 0)) {
-                        $daysForCalc = $daysLate - ($loan->grace_days ?? 0);
-                        $paidLateFees += round($pi->amount * ($loan->late_fee_rate / 100) * $daysForCalc, 2);
-                    }
-                }
+            $paidLateFees += $pi->charged_late_fee ?? 0;
+            foreach ($pi->interestPayments as $ip) {
+                $paidLateFees += $ip->late_fee ?? 0;
             }
         }
         $totalPaidWithFees = $totalPaidAmount + $paidLateFees;
