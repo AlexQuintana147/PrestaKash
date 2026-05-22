@@ -18,11 +18,25 @@
     $allInstallments = $loan->installments()->get();
     $paidCapital = $allInstallments->where('status', 'approved')->sum('capital');
     $paidInterest = $allInstallments->where('status', 'approved')->sum('interest');
-    $paidLateFees = $allInstallments->where('status', 'approved')->sum('late_fee');
+    $paidLateFees = 0;
+    foreach ($allInstallments->where('status', 'approved') as $pi) {
+        if ($pi->paid_at && $loan->late_fee_enabled) {
+            $paidDate = $pi->paid_at->startOfDay();
+            $dueDate = $pi->due_date->startOfDay();
+            if ($paidDate->isAfter($dueDate)) {
+                $daysLate = $dueDate->diffInDays($paidDate);
+                if ($daysLate > ($loan->grace_days ?? 0)) {
+                    $daysForCalc = $daysLate - ($loan->grace_days ?? 0);
+                    $paidLateFees += round($pi->amount * ($loan->late_fee_rate / 100) * $daysForCalc, 2);
+                }
+            }
+        }
+    }
     $pendingCapital = $allInstallments->where('status', 'pending')->sum('capital');
     $pendingInterest = $allInstallments->where('status', 'pending')->sum('interest');
     $pendingLateFees = $allInstallments->where('status', 'pending')->sum('late_fee');
-    $totalExpectedReturn = $allInstallments->sum('amount') + $totalLateFees;
+    $totalPaidWithFees = $totalPaid + $paidLateFees;
+    $totalExpectedReturn = $allInstallments->sum('amount') + $pendingLateFees + $paidLateFees;
     $balance = $pendingCapital + $pendingInterest + $pendingLateFees;
 @endphp
 
@@ -47,7 +61,7 @@
         <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
             <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-1">Monto</p>
             <p class="text-lg font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($loan->amount, 2) }}</p>
-            <p class="text-[9px] text-gray-400 mt-0.5">{{ $loan->months ?? '-' }}m · {{ ($loan->interest_rate ?? 0)*100 }}%</p>
+            <p class="text-[9px] text-gray-400 mt-0.5">{{ $loan->months ?? '-' }}m · {{ number_format($loan->interest_rate ?? 0, 2) }}%</p>
         </div>
         <div class="p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-950/15 transition-colors group" onclick="openPaidModal()">
             <div class="flex items-start justify-between mb-1">
@@ -269,7 +283,7 @@
                     <div class="pt-2 mt-1 border-t border-emerald-200/60 dark:border-emerald-800/30">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300">Total Pagado</span>
-                            <span class="text-sm font-black text-emerald-700 dark:text-emerald-300 tabular-nums">{{ $cur }}{{ number_format($totalPaid + $paidLateFees, 2) }}</span>
+                            <span class="text-sm font-black text-emerald-700 dark:text-emerald-300 tabular-nums">{{ $cur }}{{ number_format($totalPaidWithFees, 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -314,7 +328,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] text-gray-500 dark:text-gray-400">% Recuperado</span>
-                        <span class="text-xs font-bold {{ ($totalPaid + $paidLateFees) >= $totalExpectedReturn ? 'text-emerald-600' : 'text-blue-600' }} dark:text-blue-300 tabular-nums">{{ $totalExpectedReturn > 0 ? round(($totalPaid + $paidLateFees) / $totalExpectedReturn * 100, 1) : 0 }}%</span>
+                        <span class="text-xs font-bold {{ $totalPaidWithFees >= $totalExpectedReturn ? 'text-emerald-600' : 'text-blue-600' }} dark:text-blue-300 tabular-nums">{{ $totalExpectedReturn > 0 ? round($totalPaidWithFees / $totalExpectedReturn * 100, 1) : 0 }}%</span>
                     </div>
                 </div>
             </div>
@@ -329,7 +343,7 @@
                 </div>
                 <div class="text-center">
                     <p class="text-[8px] text-gray-400 uppercase tracking-wider">Pagado</p>
-                    <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $cur }}{{ number_format($totalPaid, 2) }}</p>
+                    <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $cur }}{{ number_format($totalPaidWithFees, 2) }}</p>
                 </div>
                 <div class="text-center">
                     <p class="text-[8px] text-gray-400 uppercase tracking-wider">Pendiente</p>
