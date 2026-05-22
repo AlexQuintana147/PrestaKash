@@ -241,6 +241,9 @@ class InvestmentPaymentController extends Controller
             $item['payout_status'] = $payout ? $payout->status : null;
             $item['payout_id'] = $payout ? $payout->id : null;
             $item['payout_type'] = $payout ? $payout->payment_type : null;
+            if ($payout && $payout->status === 'confirmed') {
+                $item['is_paid'] = true;
+            }
         }
 
         $nextPayableMonth = null;
