@@ -260,10 +260,10 @@
                             @if($oldestOverdue)
                             <p class="text-[10px] text-white mt-1.5">La cuota más antigua venció el {{ $oldestOverdue->due_date->format('d/m/Y') }} — hace {{ now()->startOfDay()->diffInDays($oldestOverdue->due_date) }} días</p>
                             @endif
-                            <a href="{{ route('client.loans') }}" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-red-600 text-xs font-bold hover:bg-white/90 transition-colors">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                                Ver mis préstamos
-                            </a>
+                            <button type="button" onclick="openOverdueModal()" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-red-600 text-xs font-bold hover:bg-white/90 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                Ver mis deudas
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -903,4 +903,76 @@
     tick();
 })();
 </script>
+
+@if($hasOverdue)
+{{-- Modal Deudas Atrasadas --}}
+<div id="overdueModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <div onclick="closeOverdueModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 max-h-[85vh] sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md sm:w-full bg-white dark:bg-gray-950 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Deudas atrasadas</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500">{{ $overdueByLoan->count() }} préstamo{{ $overdueByLoan->count() > 1 ? 's' : '' }} con mora</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeOverdueModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3">
+            @foreach($overdueByLoan as $debt)
+                @php
+                    $cur = $debt['currency'] === 'USD' ? '$' : 'S/';
+                @endphp
+                <a href="{{ route('client.loans.history.show', $debt['loan_id']) }}" class="block bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-4 hover:border-red-300 dark:hover:border-red-500/40 transition-colors group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-red-600 dark:text-red-400">{{ $debt['loan_code'] }}</span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-[9px] font-bold">
+                            {{ $debt['overdue_count'] }} cuota{{ $debt['overdue_count'] > 1 ? 's' : '' }}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Deuda total</p>
+                            <p class="text-sm font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($debt['total_with_fee'], 2, '.', ',') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Mora</p>
+                            <p class="text-sm font-black text-yellow-500">{{ $cur }} {{ number_format($debt['total_late_fee'], 2, '.', ',') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500">Venció el {{ $debt['oldest_due_date']->format('d/m/Y') }} · hace {{ $debt['days_overdue'] }} días</p>
+                        <svg class="w-4 h-4 text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+        <div class="flex-shrink-0 px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
+            <div class="flex items-center justify-between">
+                <p class="text-[10px] text-gray-400 dark:text-gray-500">Total general</p>
+                <p class="text-sm font-black text-red-600 dark:text-red-400">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($overdueTotal, 2, '.', ',') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openOverdueModal() {
+    document.getElementById('overdueModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeOverdueModal() {
+    document.getElementById('overdueModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+document.getElementById('overdueModal').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeOverdueModal();
+});
+</script>
+@endif
 @endsection

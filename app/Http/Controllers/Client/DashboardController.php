@@ -54,12 +54,28 @@ class DashboardController extends Controller
         $overdueLateFees = $overdueInstallments->sum('late_fee');
         $oldestOverdue = $overdueInstallments->first();
 
+        $overdueByLoan = $overdueInstallments->groupBy('loan_id')->map(function ($items) {
+            $loan = $items->first()->loan;
+            return [
+                'loan_id' => $loan->id,
+                'loan_code' => $loan->code,
+                'currency' => $loan->currency,
+                'overdue_count' => $items->count(),
+                'total_amount' => $items->sum('amount'),
+                'total_late_fee' => $items->sum('late_fee'),
+                'total_with_fee' => $items->sum('amount') + $items->sum('late_fee'),
+                'oldest_due_date' => $items->first()->due_date,
+                'days_overdue' => now()->startOfDay()->diffInDays($items->first()->due_date),
+            ];
+        })->values();
+
         return view('client.dashboard', compact(
             'user', 'department', 'province', 'district',
             'activeLoans', 'pendingLoans', 'totalDebt', 'monthlyPayment',
             'hasProfile', 'pendingChange', 'rejectedChange',
             'isInvestor', 'hasInvestorApp',
-            'overdueInstallments', 'hasOverdue', 'overdueCount', 'overdueTotal', 'overdueLateFees', 'oldestOverdue'
+            'overdueInstallments', 'hasOverdue', 'overdueCount', 'overdueTotal', 'overdueLateFees', 'oldestOverdue',
+            'overdueByLoan'
         ));
     }
 
