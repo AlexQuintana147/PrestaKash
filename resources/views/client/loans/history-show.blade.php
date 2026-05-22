@@ -174,6 +174,57 @@
         </div>
     @endif
 
+    @php
+        $totalPaidAmount = $loan->installments->where('status', 'approved')->sum('amount');
+        $paidCapital = $loan->installments->where('status', 'approved')->sum('capital');
+        $paidInterest = $loan->installments->where('status', 'approved')->sum('interest');
+        $paidLateFees = 0;
+        foreach ($loan->installments->where('status', 'approved') as $pi) {
+            if ($pi->paid_at && $loan->late_fee_enabled) {
+                $paidDate = $pi->paid_at->startOfDay();
+                $dueDate = $pi->due_date->startOfDay();
+                if ($paidDate->isAfter($dueDate)) {
+                    $daysLate = $dueDate->diffInDays($paidDate);
+                    if ($daysLate > ($loan->grace_days ?? 0)) {
+                        $daysForCalc = $daysLate - ($loan->grace_days ?? 0);
+                        $paidLateFees += round($pi->amount * ($loan->late_fee_rate / 100) * $daysForCalc, 2);
+                    }
+                }
+            }
+        }
+        $totalPaidWithFees = $totalPaidAmount + $paidLateFees;
+        $pendingFromTotal = max(0, $loan->total_amount - $totalPaidAmount);
+        $pendingLateFeesNow = $overdueInstallments->sum('late_fee');
+        $totalRemaining = $pendingFromTotal + $pendingLateFeesNow;
+        $pendingCapital = max(0, $loan->amount - $paidCapital);
+        $pendingInterest = max(0, ($loan->total_amount - $loan->amount) - $paidInterest);
+    @endphp
+
+    <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="bg-emerald-50 dark:bg-emerald-950/15 rounded-2xl px-4 py-4 border border-emerald-100 dark:border-emerald-900/30">
+            <p class="text-[8px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1">Pagado</p>
+            <p class="text-lg font-black text-emerald-700 dark:text-emerald-300 tabular-nums">{{ $cur }} {{ number_format($totalPaidWithFees, 2) }}</p>
+            <div class="mt-1.5 space-y-0.5">
+                <p class="text-[8px] text-emerald-500/70">Capital: {{ $cur }}{{ number_format($paidCapital, 2) }}</p>
+                <p class="text-[8px] text-emerald-500/70">Interés: {{ $cur }}{{ number_format($paidInterest, 2) }}</p>
+                @if($paidLateFees > 0)
+                <p class="text-[8px] text-orange-500/70">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
+                @endif
+            </div>
+        </div>
+        <div class="bg-orange-50 dark:bg-orange-950/15 rounded-2xl px-4 py-4 border border-orange-100 dark:border-orange-900/30">
+            <p class="text-[8px] font-black uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-1">Pendiente</p>
+            <p class="text-lg font-black text-orange-700 dark:text-orange-300 tabular-nums">{{ $cur }} {{ number_format($totalRemaining, 2) }}</p>
+            <div class="mt-1.5 space-y-0.5">
+                <p class="text-[8px] text-orange-500/70">Capital: {{ $cur }}{{ number_format($pendingCapital, 2) }}</p>
+                <p class="text-[8px] text-orange-500/70">Interés: {{ $cur }}{{ number_format($pendingInterest, 2) }}</p>
+                @if($overdueInstallments->sum('late_fee') > 0)
+                <p class="text-[8px] text-red-500/70">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
     <div class="grid grid-cols-3 gap-px bg-gray-100 dark:bg-gray-900 rounded-2xl overflow-hidden mb-6">
         <div class="bg-white dark:bg-gray-950 px-4 py-4">
             <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Prestado</p>
