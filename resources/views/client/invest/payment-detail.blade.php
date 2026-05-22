@@ -70,6 +70,10 @@
 
     @php
         $progressPct = $totalExpectedReturn > 0 ? round($totalReceived / $totalExpectedReturn * 100) : 0;
+        $paidMonths = [];
+        foreach ($payments as $p) {
+            $paidMonths[] = $p->date ? \Carbon\Carbon::parse($p->date)->format('Y-m') : null;
+        }
     @endphp
     <div class="mb-6 sm:mb-8">
         <div class="flex items-center justify-between mb-1.5 sm:mb-2">
@@ -88,46 +92,56 @@
             @foreach($schedule as $i => $item)
                 @php
                     $isOverdue = false;
+                    $isPaid = false;
                     if ($isClosed && $item->date) {
                         $isOverdue = $item->date->lt(now());
+                        $isPaid = in_array($item->date->format('Y-m'), $paidMonths);
                     }
                 @endphp
-                <div class="schedule-item" data-idx="{{ $i }}" style="display:none">
-                    <div class="bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800/60 p-3">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-gray-900 dark:text-white">Cuota {{ $item->month }}</span>
-                                @if(!$isClosed)
-                                    <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pend.</span>
-                                @elseif($isOverdue)
-                                    <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">Vencida</span>
-                                @else
-                                    <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
-                                @endif
-                            </div>
-                            <span class="text-[10px] text-gray-400 font-mono">{{ $item->date ? $item->date->format('d/m/y') : '—' }}</span>
+                <div class="schedule-item {{ $isOverdue && !$isPaid ? 'bg-red-600 text-white' : 'bg-white dark:bg-gray-950' }} rounded-xl border {{ $isOverdue && !$isPaid ? 'border-red-500' : 'border-gray-100 dark:border-gray-800/60' }} p-3" data-idx="{{ $i }}" style="display:none">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-900 dark:text-white' }}">Cuota {{ $item->month }}</span>
+                            @if(!$isClosed)
+                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pend.</span>
+                            @elseif($isPaid)
+                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>
+                            @elseif($isOverdue)
+                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>
+                            @else
+                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
+                            @endif
                         </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div>
-                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Interés</p>
-                                <p class="text-[11px] font-medium text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</p>
-                            </div>
-                            <div>
-                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Capital</p>
-                                <p class="text-[11px] font-medium text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</p>
-                            </div>
-                            <div>
-                                <p class="text-[8px] text-gray-400 uppercase tracking-wider">Total</p>
-                                <p class="text-[11px] font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</p>
-                            </div>
+                        <span class="text-[10px] {{ $isOverdue && !$isPaid ? 'text-white/70' : 'text-gray-400' }} font-mono">{{ $item->date ? $item->date->format('d/m/y') : '—' }}</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <p class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Interés</p>
+                            <p class="text-[11px] font-medium {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</p>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-900/50">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[8px] text-gray-400 uppercase tracking-wider">Saldo</span>
-                                <span class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</span>
-                            </div>
+                        <div>
+                            <p class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Capital</p>
+                            <p class="text-[11px] font-medium {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Total</p>
+                            <p class="text-[11px] font-bold {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</p>
                         </div>
                     </div>
+                    <div class="mt-2 pt-2 border-t {{ $isOverdue && !$isPaid ? 'border-white/20' : 'border-gray-50 dark:border-gray-900/50' }}">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Saldo</span>
+                            <span class="text-[11px] {{ $isOverdue && !$isPaid ? 'text-white/80' : 'text-gray-500 dark:text-gray-400' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</span>
+                        </div>
+                    </div>
+                    @if($isOverdue && !$isPaid)
+                    <div class="mt-2 pt-2 border-t border-white/20">
+                        <a href="https://wa.me/51917047937?text={{ urlencode('Hola, soy inversor de la oportunidad ' . $opportunity->code . '. Tengo un pago vencido correspondiente a la cuota ' . $item->month . ' con fecha ' . ($item->date ? $item->date->format('d/m/Y') : '—') . '. Me gustaría información sobre el estado de mi pago.') }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg text-[9px] font-bold uppercase tracking-widest text-white transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Consultar pago
+                        </a>
+                    </div>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -150,22 +164,33 @@
                         @foreach($schedule as $i => $item)
                             @php
                                 $isOverdue = false;
+                                $isPaid = false;
                                 if ($isClosed && $item->date) {
                                     $isOverdue = $item->date->lt(now());
+                                    $isPaid = in_array($item->date->format('Y-m'), $paidMonths);
                                 }
+                                $overdueRow = $isOverdue && !$isPaid;
                             @endphp
-                            <tr class="schedule-item border-b border-gray-50 dark:border-gray-900/50 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors" data-idx="{{ $i }}" style="display:none">
-                                <td class="px-4 py-3 font-bold text-gray-900 dark:text-white">{{ $item->month }}</td>
-                                <td class="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono">{{ $item->date ? $item->date->format('d/m/Y') : '—' }}</td>
-                                <td class="px-4 py-3 text-right text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</td>
-                                <td class="px-4 py-3 text-right text-gray-600 dark:text-gray-300 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</td>
-                                <td class="px-4 py-3 text-right font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</td>
-                                <td class="px-4 py-3 text-right text-gray-500 dark:text-gray-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</td>
+                            <tr class="schedule-item border-b {{ $overdueRow ? 'border-red-500/30' : 'border-gray-50 dark:border-gray-900/50' }} {{ $overdueRow ? 'bg-red-600' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/30' }} transition-colors" data-idx="{{ $i }}" style="display:none">
+                                <td class="px-4 py-3 font-bold {{ $overdueRow ? 'text-white' : 'text-gray-900 dark:text-white' }}">{{ $item->month }}</td>
+                                <td class="px-4 py-3 {{ $overdueRow ? 'text-white/80' : 'text-gray-500 dark:text-gray-400' }} font-mono">{{ $item->date ? $item->date->format('d/m/Y') : '—' }}</td>
+                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</td>
+                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</td>
+                                <td class="px-4 py-3 text-right font-bold {{ $overdueRow ? 'text-white' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</td>
+                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white/80' : 'text-gray-500 dark:text-gray-400' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</td>
                                 <td class="px-4 py-3 text-center">
                                     @if(!$isClosed)
                                         <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>
+                                    @elseif($isPaid)
+                                        <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>
                                     @elseif($isOverdue)
-                                        <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">Vencida</span>
+                                        <div class="flex flex-col items-center gap-1.5">
+                                            <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>
+                                            <a href="https://wa.me/51917047937?text={{ urlencode('Hola, soy inversor de la oportunidad ' . $opportunity->code . '. Tengo un pago vencido correspondiente a la cuota ' . $item->month . ' con fecha ' . ($item->date ? $item->date->format('d/m/Y') : '—') . '. Me gustaría información sobre el estado de mi pago.') }}" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 bg-white/20 hover:bg-white/30 rounded-md text-[8px] font-bold uppercase tracking-wider text-white transition-colors">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                                WhatsApp
+                                            </a>
+                                        </div>
                                     @else
                                         <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
                                     @endif
