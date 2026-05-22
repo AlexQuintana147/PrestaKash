@@ -49,7 +49,7 @@
                     $confirmedPayoutTotal = $confirmedPayoutsByOpportunity[$opp->id] ?? 0;
                     $totalReceived = max($cashboxReceived, $confirmedPayoutTotal);
                     $currencySymbol = $opp->currency === 'USD' ? '$' : 'S/';
-                    $totalExpected = $inv->pivot->amount * (1 + ($opp->monthly_return_rate * $opp->term_months / 100));
+                    $totalExpected = $inv->pivot->amount * (1 + ($opp->monthly_return_rate * $effectiveTermMonths / 100));
                     $pendingAmount = max(0, $totalExpected - $totalReceived);
                     $progressPercent = $totalExpected > 0 ? min(100, round(($totalReceived / $totalExpected) * 100)) : 0;
                     $hasPendingPayout = ($pendingPayoutsByOpportunity[$opp->id] ?? 0) > 0;
@@ -61,6 +61,8 @@
                     }
                     $payoutPaidQuotas = $paidQuotasByOpportunity[$opp->id] ?? 0;
                     $totalPaidQuotas = max($paidQuotas, $payoutPaidQuotas);
+                    $extraMonths = $interestOnlyByOpportunity[$opp->id] ?? 0;
+                    $effectiveTermMonths = $opp->term_months + $extraMonths;
                 @endphp
 
                 <a href="{{ route('client.investments.payment-detail', $opp) }}" class="block group">
@@ -91,7 +93,7 @@
                                 <div class="flex items-center gap-3 mt-1.5 text-[10px] text-gray-400">
                                     <span>{{ $opp->monthly_return_rate }}%/mes</span>
                                     <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                                    <span>{{ $opp->term_months }} meses</span>
+                                    <span>{{ $effectiveTermMonths }} meses</span>
                                     @if($lastPayment)
                                         <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                                         <span>Último pago {{ \Carbon\Carbon::parse($lastPayment->date)->format('d/m/Y') }}</span>
@@ -110,7 +112,7 @@
                                 </div>
                                 <div class="text-right">
                                     <p class="text-[9px] text-gray-400 uppercase tracking-wider font-semibold">Cuotas</p>
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">{{ $totalPaidQuotas }}<span class="text-gray-400 font-normal">/{{ $opp->term_months }}</span></p>
+                                    <p class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">{{ $totalPaidQuotas }}<span class="text-gray-400 font-normal">/{{ $effectiveTermMonths }}</span></p>
                                 </div>
                                 <div class="text-right w-16">
                                     <p class="text-[9px] text-gray-400 uppercase tracking-wider font-semibold">Progreso</p>

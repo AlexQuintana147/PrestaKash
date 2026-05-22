@@ -180,6 +180,18 @@ class InvestmentPaymentController extends Controller
         $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
         $now = now();
 
+        $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
+            ->where('investor_user_id', $investor)
+            ->get()
+            ->keyBy('month_number');
+
+        $interestOnlyMonths = $payouts->filter(fn($p) => in_array($p->status, ['confirmed', 'paid']) && $p->payment_type === 'interest_only')
+            ->keys()
+            ->toArray();
+
+        $extraMonths = count($interestOnlyMonths);
+        $effectiveTermMonths = $termMonths + $extraMonths;
+
         $schedule = [];
 
         if ($amortizationType === 'frances') {
@@ -188,16 +200,28 @@ class InvestmentPaymentController extends Controller
                 : $amount / $termMonths;
 
             $balance = $amount;
-            for ($i = 1; $i <= $termMonths; $i++) {
+            $dateOffset = 0;
+
+            for ($i = 1; $i <= $effectiveTermMonths; $i++) {
                 $interest = round($balance * $monthlyRate, 2);
                 $principal = round($monthlyPayment - $interest, 2);
                 $balance = round($balance - $principal, 2);
-                if ($i === $termMonths) {
+
+                if (in_array($i, $interestOnlyMonths)) {
+                    $principal = 0;
+                    $balance = round($balance + round($monthlyPayment - $interest, 2), 2);
+                }
+
+                if ($i === $effectiveTermMonths) {
                     $principal = round($principal + $balance, 2);
                     $balance = 0;
                 }
 
-                $dueDate = $startDate ? $startDate->copy()->addMonths($i) : null;
+                if (in_array($i, $interestOnlyMonths)) {
+                    $dateOffset++;
+                }
+
+                $dueDate = $startDate ? $startDate->copy()->addMonths($i + $dateOffset) : null;
                 $schedule[] = [
                     'month' => $i,
                     'date' => $dueDate ? $dueDate->format('d/m/Y') : null,
@@ -211,11 +235,17 @@ class InvestmentPaymentController extends Controller
             }
         } else {
             $monthlyInterest = round($amount * $monthlyRate, 2);
-            for ($i = 1; $i <= $termMonths; $i++) {
-                $isLast = $i === $termMonths;
+            $dateOffset = 0;
+
+            for ($i = 1; $i <= $effectiveTermMonths; $i++) {
+                $isLast = $i === $effectiveTermMonths;
                 $payment = $isLast ? $monthlyInterest + $amount : $monthlyInterest;
 
-                $dueDate = $startDate ? $startDate->copy()->addMonths($i) : null;
+                if (in_array($i, $interestOnlyMonths)) {
+                    $dateOffset++;
+                }
+
+                $dueDate = $startDate ? $startDate->copy()->addMonths($i + $dateOffset) : null;
                 $schedule[] = [
                     'month' => $i,
                     'date' => $dueDate ? $dueDate->format('d/m/Y') : null,
@@ -228,11 +258,6 @@ class InvestmentPaymentController extends Controller
                 ];
             }
         }
-
-        $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
-            ->where('investor_user_id', $investor)
-            ->get()
-            ->keyBy('month_number');
 
         $confirmedMonthNumbers = $payouts->filter(fn($p) => in_array($p->status, ['confirmed', 'paid']))->keys()->toArray();
 
@@ -371,6 +396,14 @@ class InvestmentPaymentController extends Controller
         $monthlyRate = $opportunity->monthly_return_rate / 100;
         $termMonths = $opportunity->term_months;
 
+        $interestOnlyCount = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
+            ->where('investor_user_id', $validated['investor_id'])
+            ->where('status', 'confirmed')
+            ->where('payment_type', 'interest_only')
+            ->count();
+
+        $effectiveTermMonths = $termMonths + $interestOnlyCount;
+
         $interestAmount = 0;
         $principalAmount = 0;
         $totalAmount = 0;
@@ -389,6 +422,8 @@ class InvestmentPaymentController extends Controller
                 ->orderBy('month_number')
                 ->get();
 
+            $interestOnlyMonthNumbers = $confirmedPayouts->where('payment_type', 'interest_only')->pluck('month_number')->toArray();
+
             foreach ($confirmedPayouts as $cp) {
                 $paidPrincipal += (float) $cp->principal_amount;
             }
@@ -399,7 +434,13 @@ class InvestmentPaymentController extends Controller
                 $interest = round($balance * $monthlyRate, 2);
                 $principal = round($monthlyPayment - $interest, 2);
                 $balance = round($balance - $principal, 2);
-                if ($i === $termMonths) {
+
+                if (in_array($i, $interestOnlyMonthNumbers)) {
+                    $principal = 0;
+                    $balance = round($balance + round($monthlyPayment - $interest, 2), 2);
+                }
+
+                if ($i === $effectiveTermMonths) {
                     $principal = round($principal + $balance, 2);
                     $balance = 0;
                 }
@@ -419,7 +460,7 @@ class InvestmentPaymentController extends Controller
             }
         } else {
             $monthlyInterest = round($amount * $monthlyRate, 2);
-            $isLast = $validated['month_number'] === $termMonths;
+            $isLast = $validated['month_number'] === $effectiveTermMonths;
 
             $interestAmount = $monthlyInterest;
             $principalAmount = $isLast ? $amount : 0;

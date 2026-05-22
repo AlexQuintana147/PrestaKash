@@ -246,7 +246,15 @@ class InvestmentController extends Controller
             ->groupBy('investment_opportunity_id')
             ->pluck('paid_count', 'investment_opportunity_id');
 
-        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts', 'pendingPayoutsByOpportunity', 'confirmedPayoutsByOpportunity', 'paidQuotasByOpportunity'));
+        $interestOnlyByOpportunity = \App\Models\InvestorPayout::where('investor_user_id', $user->id)
+            ->whereIn('investment_opportunity_id', $investmentIds)
+            ->whereIn('status', ['confirmed', 'paid'])
+            ->where('payment_type', 'interest_only')
+            ->selectRaw('investment_opportunity_id, COUNT(*) as io_count')
+            ->groupBy('investment_opportunity_id')
+            ->pluck('io_count', 'investment_opportunity_id');
+
+        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts', 'pendingPayoutsByOpportunity', 'confirmedPayoutsByOpportunity', 'paidQuotasByOpportunity', 'interestOnlyByOpportunity'));
     }
 
     public function paymentDetail(InvestmentOpportunity $opportunity)
@@ -275,6 +283,18 @@ class InvestmentController extends Controller
         $isClosed = in_array($opportunity->status, ['closed', 'cancelled']);
         $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
 
+        $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
+            ->where('investor_user_id', $user->id)
+            ->get()
+            ->keyBy('month_number');
+
+        $interestOnlyMonths = $payouts->filter(fn($p) => in_array($p->status, ['confirmed', 'paid']) && $p->payment_type === 'interest_only')
+            ->keys()
+            ->toArray();
+
+        $extraMonths = count($interestOnlyMonths);
+        $effectiveTermMonths = $termMonths + $extraMonths;
+
         $schedule = collect();
         $totalExpectedReturn = 0;
 
@@ -284,19 +304,32 @@ class InvestmentController extends Controller
                 : $amount / $termMonths;
 
             $balance = $amount;
-            for ($i = 1; $i <= $termMonths; $i++) {
+            $dateOffset = 0;
+
+            for ($i = 1; $i <= $effectiveTermMonths; $i++) {
                 $interest = round($balance * $monthlyRate, 2);
                 $principal = round($monthlyPayment - $interest, 2);
                 $balance = round($balance - $principal, 2);
-                if ($i === $termMonths) {
+
+                if (in_array($i, $interestOnlyMonths)) {
+                    $principal = 0;
+                    $balance = round($balance + round($monthlyPayment - $interest, 2), 2);
+                }
+
+                if ($i === $effectiveTermMonths) {
                     $principal = round($principal + $balance, 2);
                     $balance = 0;
                 }
+
+                if (in_array($i, $interestOnlyMonths)) {
+                    $dateOffset++;
+                }
+
                 $totalExpectedReturn += round($interest + $principal, 2);
 
                 $schedule->push((object)[
                     'month' => $i,
-                    'date' => $startDate ? $startDate->copy()->addMonths($i) : null,
+                    'date' => $startDate ? $startDate->copy()->addMonths($i + $dateOffset) : null,
                     'payment' => round($interest + $principal, 2),
                     'interest' => $interest,
                     'principal' => $principal,
@@ -305,14 +338,20 @@ class InvestmentController extends Controller
             }
         } else {
             $monthlyInterest = round($amount * $monthlyRate, 2);
-            for ($i = 1; $i <= $termMonths; $i++) {
-                $isLast = $i === $termMonths;
+            $dateOffset = 0;
+
+            for ($i = 1; $i <= $effectiveTermMonths; $i++) {
+                $isLast = $i === $effectiveTermMonths;
                 $payment = $isLast ? $monthlyInterest + $amount : $monthlyInterest;
                 $totalExpectedReturn += $payment;
 
+                if (in_array($i, $interestOnlyMonths)) {
+                    $dateOffset++;
+                }
+
                 $schedule->push((object)[
                     'month' => $i,
-                    'date' => $startDate ? $startDate->copy()->addMonths($i) : null,
+                    'date' => $startDate ? $startDate->copy()->addMonths($i + $dateOffset) : null,
                     'payment' => $payment,
                     'interest' => $monthlyInterest,
                     'principal' => $isLast ? $amount : 0,
@@ -330,12 +369,6 @@ class InvestmentController extends Controller
             ->get();
 
         $cashboxReceived = $payments->sum('amount');
-
-        $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
-            ->where('investor_user_id', $user->id)
-            ->orderBy('month_number')
-            ->get()
-            ->keyBy('month_number');
 
         $payoutReceived = $payouts->whereIn('status', ['confirmed', 'paid'])->sum('amount');
 
@@ -355,7 +388,7 @@ class InvestmentController extends Controller
 
         $nextPayoutDate = null;
         $nextMonth = $totalPaidQuotas + 1;
-        if ($nextMonth <= $termMonths) {
+        if ($nextMonth <= $effectiveTermMonths) {
             $nextScheduleItem = $schedule->firstWhere('month', $nextMonth);
             if ($nextScheduleItem && $nextScheduleItem->date) {
                 $nextPayoutDate = $nextScheduleItem->date;
