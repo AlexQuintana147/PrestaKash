@@ -211,7 +211,13 @@ class InvestmentController extends Controller
             ->get()
             ->groupBy('reference_id');
 
-        return view('client.invest.payments', compact('investments', 'payments'));
+        $pendingPayouts = \App\Models\InvestorPayout::where('investor_user_id', $user->id)
+            ->where('status', 'pending')
+            ->with(['opportunity:id,code,title,currency'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts'));
     }
 
     public function paymentDetail(InvestmentOpportunity $opportunity)
