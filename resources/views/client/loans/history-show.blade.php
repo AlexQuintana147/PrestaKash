@@ -211,6 +211,7 @@
                 <p class="text-[8px] text-orange-500/70">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
                 @endif
             </div>
+            <p class="text-[7px] text-emerald-400/60 mt-2 italic">Solo se contabilizan las cuotas pagadas. El total pagado en intereses no se incluye en este monto.</p>
         </div>
         <div class="bg-orange-50 dark:bg-orange-950/15 rounded-2xl px-4 py-4 border border-orange-100 dark:border-orange-900/30">
             <p class="text-[8px] font-black uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-1">Pendiente</p>
