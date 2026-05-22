@@ -433,6 +433,18 @@
                     <input type="text" id="pay_operation_number" name="operation_number" maxlength="50" placeholder="Ej: OP-123456" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-[11px] text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors pk-mono">
                 </div>
 
+                {{-- CASHBOX SELECTOR --}}
+                <div>
+                    <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Caja de egreso <span class="text-red-400">*</span></label>
+                    <select id="pay_cashbox_id" name="cashbox_id" required class="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-[11px] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors">
+                        <option value="" disabled selected>Selecciona la caja</option>
+                        @foreach($cashboxes as $cb)
+                            <option value="{{ $cb->id }}" data-currency="{{ $cb->currency }}">{{ $cb->name }} ({{ $cb->currency }})</option>
+                        @endforeach
+                    </select>
+                    <p id="pay_cashbox_warning" class="hidden text-[8px] text-red-500 mt-1">La moneda de la caja no coincide con la de la oportunidad</p>
+                </div>
+
                 {{-- SUBMIT --}}
                 <button type="submit" id="pay_submit_btn" disabled class="w-full py-3 rounded-xl bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 text-[11px] font-bold uppercase tracking-widest transition-colors cursor-not-allowed">
                     Registrar pago
@@ -562,7 +574,7 @@ function renderSchedulePage() {
         const textClass = isOverdue ? 'text-white' : 'text-gray-600 dark:text-gray-300';
         const boldClass = isOverdue ? 'text-white font-bold' : 'text-gray-900 dark:text-white font-bold';
 
-        html += `<tr class="${rowClass} border-t border-gray-50 dark:border-gray-900/40 transition-colors">`;
+        html += `<tr data-month="${item.month}" class="${rowClass} border-t border-gray-50 dark:border-gray-900/40 transition-colors">`;
         html += `<td class="px-3 py-2.5 font-bold ${isOverdue ? 'text-white' : 'text-gray-900 dark:text-white'} pk-mono">${item.month}</td>`;
         html += `<td class="px-3 py-2.5 ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} pk-mono">${item.date || '—'}</td>`;
         html += `<td class="px-3 py-2.5 text-right ${textClass} pk-mono">${data.currency}${item.interest}</td>`;
@@ -612,7 +624,7 @@ function renderSchedulePage() {
             badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
         }
 
-        html += `<div class="${cardBg} rounded-xl p-3 border ${isPendingPayout ? 'border-amber-200 dark:border-amber-500/20' : (isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800')}">`;
+        html += `<div data-month="${item.month}" class="${cardBg} rounded-xl p-3 border ${isPendingPayout ? 'border-amber-200 dark:border-amber-500/20' : (isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800')}">`;
         html += `<div class="flex items-center justify-between mb-2">`;
         html += `<div class="flex items-center gap-2">`;
         html += `<span class="text-[11px] font-bold ${monoText} pk-mono">Cuota ${item.month}</span>`;
@@ -735,6 +747,20 @@ function openPayModal(month, totalAmount, interestAmount) {
     document.getElementById('pay_opportunity_id').value = _scheduleOppId;
     document.getElementById('pay_investor_id').value = _scheduleInvestor.id;
 
+    const cashboxSelect = document.getElementById('pay_cashbox_id');
+    cashboxSelect.value = '';
+    document.getElementById('pay_cashbox_warning').classList.add('hidden');
+    cashboxSelect.onchange = function() {
+        const selected = cashboxSelect.options[cashboxSelect.selectedIndex];
+        const cashboxCurrency = selected ? selected.dataset.currency : '';
+        const warning = document.getElementById('pay_cashbox_warning');
+        if (cashboxCurrency && _scheduleCurrency && !cashboxCurrency.includes(_scheduleCurrency.replace('$','USD').replace('S/','PEN'))) {
+            warning.classList.remove('hidden');
+        } else {
+            warning.classList.add('hidden');
+        }
+    };
+
     modal.classList.remove('hidden');
 }
 
@@ -806,5 +832,40 @@ function togglePaymentType() {
         totalDisplay.textContent = _payOriginalTotal;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const highlightPayout = params.get('highlight_payout');
+    const oppId = params.get('opp_id');
+    const invId = params.get('inv_id');
+    const highlightMonth = params.get('month');
+
+    if (highlightPayout && oppId && invId) {
+        const uid = 'inv_' + oppId + '_' + invId;
+        setTimeout(() => {
+            openInvestorModal(uid);
+            const waitForSchedule = setInterval(() => {
+                if (_scheduleData && _scheduleData.length > 0) {
+                    clearInterval(waitForSchedule);
+                    const targetPage = Math.floor((parseInt(highlightMonth) - 1) / _schedulePerPage);
+                    _schedulePage = targetPage;
+                    renderSchedulePage();
+                    setTimeout(() => {
+                        const rows = document.querySelectorAll('#modal_schedule_container [data-month]');
+                        rows.forEach(row => {
+                            if (parseInt(row.dataset.month) === parseInt(highlightMonth)) {
+                                row.classList.add('ring-2', 'ring-yellow-400', 'bg-yellow-50', 'dark:bg-yellow-500/10');
+                                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                setTimeout(() => {
+                                    row.classList.remove('ring-2', 'ring-yellow-400', 'bg-yellow-50', 'dark:bg-yellow-500/10');
+                                }, 5000);
+                            }
+                        });
+                    }, 300);
+                }
+            }, 200);
+        }, 500);
+    }
+});
 </script>
 @endsection

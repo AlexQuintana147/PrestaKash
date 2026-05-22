@@ -442,17 +442,26 @@ class InvestmentController extends Controller
                 $scheduleDate = $startDate->copy()->addMonths($scheduleMonth);
             }
 
+            $cashboxId = $payout->cashbox_id;
+            if (!$cashboxId) {
+                $cashboxId = \App\Models\Cashbox::where('currency', $opportunity->currency)->first()?->id ?? 1;
+            }
+
+            $cashbox = \App\Models\Cashbox::findOrFail($cashboxId);
+
             \App\Models\CashboxMovement::create([
                 'user_id' => auth()->id(),
-                'cashbox_id' => 1,
+                'cashbox_id' => $cashboxId,
                 'type' => 'expense',
                 'amount' => $payout->amount,
-                'description' => "Pago aceptado por inversor - Cuota #{$scheduleMonth} - {$opportunity->title}",
-                'reference_type' => 'investment',
-                'reference_id' => $opportunity->id,
+                'description' => "Pago a inversor {$user->name} - Cuota #{$scheduleMonth} - {$opportunity->title}",
+                'reference_type' => 'investment_payout',
+                'reference_id' => $payout->id,
                 'investor_user_id' => $user->id,
                 'date' => $scheduleDate ?? now(),
             ]);
+
+            $cashbox->decrement('balance', $payout->amount);
         });
 
         return back()->with('success', 'Pago aceptado correctamente.');

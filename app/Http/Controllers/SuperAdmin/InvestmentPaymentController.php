@@ -354,6 +354,7 @@ class InvestmentPaymentController extends Controller
             'month_number' => 'required|integer|min:1',
             'payment_type' => 'required|in:full,interest_only',
             'payment_method' => 'required|in:transfer,cash',
+            'cashbox_id' => 'required|exists:cashboxes,id',
             'voucher' => 'nullable|image|max:5120',
             'operation_number' => 'nullable|string|max:50',
         ]);
@@ -482,6 +483,7 @@ class InvestmentPaymentController extends Controller
         \App\Models\InvestorPayout::create([
             'investment_opportunity_id' => $opportunity->id,
             'investor_user_id' => $validated['investor_id'],
+            'cashbox_id' => $validated['cashbox_id'],
             'month_number' => $validated['month_number'],
             'amount' => $totalAmount,
             'interest_amount' => $interestAmount,
@@ -518,6 +520,7 @@ class InvestmentPaymentController extends Controller
             $payout->update([
                 'status' => 'confirmed',
                 'paid_at' => now(),
+                'cashbox_id' => $cashbox->id,
             ]);
 
             $cashbox->movements()->create([

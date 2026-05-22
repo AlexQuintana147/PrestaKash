@@ -9,6 +9,7 @@ class InvestorPayout extends Model
     protected $fillable = [
         'investment_opportunity_id',
         'investor_user_id',
+        'cashbox_id',
         'month_number',
         'amount',
         'interest_amount',
@@ -36,5 +37,10 @@ class InvestorPayout extends Model
     public function investor()
     {
         return $this->belongsTo(User::class, 'investor_user_id');
+    }
+
+    public function cashbox()
+    {
+        return $this->belongsTo(Cashbox::class);
     }
 }

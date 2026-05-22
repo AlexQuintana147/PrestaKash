@@ -14,7 +14,7 @@ class CashboxController extends Controller
     {
         $cashboxes = Cashbox::with([
             'movements' => function ($q) {
-                $q->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])
+                $q->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'investorPayout.opportunity', 'investorPayout.investor', 'tag'])
                   ->where(function ($query) {
                       $query->where('reference_type', '!=', 'loan_installment')
                             ->orWhere(function ($sub) {
@@ -35,7 +35,7 @@ class CashboxController extends Controller
 
     public function history(Request $request, Cashbox $cashbox)
     {
-        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'tag'])->latest();
+        $query = $cashbox->movements()->with(['user', 'loan.user', 'installment.loan.user', 'investment', 'investorPayout.opportunity', 'investorPayout.investor', 'tag'])->latest();
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);

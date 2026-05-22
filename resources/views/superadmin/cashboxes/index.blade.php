@@ -1192,12 +1192,13 @@
                     'loan': 'PRÉSTAMO',
                     'loan_installment': 'COBRANZA',
                     'investment': 'INVERSIÓN',
+                    'investment_payout': 'PAGO INVERSOR',
                     'manual': 'MANUAL',
                     'transfer': 'DESPLAZAMIENTO'
                 };
                 const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                 const isLoanRelated = m.reference_type === 'loan' || m.reference_type === 'loan_installment';
-                const isInvestmentRelated = m.reference_type === 'investment';
+                const isInvestmentRelated = m.reference_type === 'investment' || m.reference_type === 'investment_payout';
                 let redirectUrl = '';
                 if (m.reference_type === 'loan') {
                     redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
@@ -1211,6 +1212,12 @@
                     }
                 } else if (m.reference_type === 'investment') {
                     redirectUrl = `/gestion-interna/inversiones/${m.reference_id}?highlight_investor=${m.investor_user_id}`;
+                } else if (m.reference_type === 'investment_payout') {
+                    const payoutId = m.reference_id;
+                    const oppId = m.investor_payout ? m.investor_payout.investment_opportunity_id : '';
+                    const invId = m.investor_user_id || (m.investor_payout ? m.investor_payout.investor_user_id : '');
+                    const monthNum = m.investor_payout ? m.investor_payout.month_number : '';
+                    redirectUrl = `/gestion-interna/pagos-inversores?highlight_payout=${payoutId}&opp_id=${oppId}&inv_id=${invId}&month=${monthNum}`;
                 }
 
                 const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
@@ -1244,7 +1251,13 @@
                                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                         </svg>
                                                                     </button>
-                                                                ` : '')}
+                                                                ` : (m.reference_type === 'investment_payout' ? `
+                                                                    <button onclick="event.stopPropagation(); window.location.href='${redirectUrl}'" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+                                                                        <svg class="w-3 md:w-3.5 h-3 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                        </svg>
+                                                                    </button>
+                                                                ` : ''))}
                                                             </div>
                                                             <p class="text-[7px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1 leading-none truncate">
                                                                 ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
@@ -1816,6 +1829,7 @@
                     'loan': 'Préstamo',
                     'loan_installment': 'Cobranza',
                     'investment': 'Inversión',
+                    'investment_payout': 'Pago Inversor',
                     'manual': 'Manual',
                     'transfer': 'Desplazamiento'
                 };
@@ -1904,6 +1918,7 @@
                     'loan': 'Préstamo',
                     'loan_installment': 'Cobranza',
                     'investment': 'Inversión',
+                    'investment_payout': 'Pago Inversor',
                     'manual': 'Manual',
                     'transfer': 'Desplazamiento'
                 };
@@ -2181,13 +2196,14 @@
                             'loan': 'PRÉSTAMO',
                             'loan_installment': 'COBRANZA',
                             'investment': 'INVERSIÓN',
+                            'investment_payout': 'PAGO INVERSOR',
                             'manual': 'MANUAL',
                             'transfer': 'DESPLAZAMIENTO'
                         };
                         const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                         const isLoanRelated = m.reference_type === 'loan' || m.reference_type ===
                             'loan_installment';
-                        const isInvestmentRelated = m.reference_type === 'investment';
+                        const isInvestmentRelated = m.reference_type === 'investment' || m.reference_type === 'investment_payout';
 
                         let redirectUrl = '';
                         if (m.reference_type === 'loan') {
@@ -2203,6 +2219,12 @@
                             }
                         } else if (m.reference_type === 'investment') {
                             redirectUrl = `/gestion-interna/inversiones/${m.reference_id}?highlight_investor=${m.investor_user_id}`;
+                        } else if (m.reference_type === 'investment_payout') {
+                            const payoutId = m.reference_id;
+                            const oppId = m.investor_payout ? m.investor_payout.investment_opportunity_id : '';
+                            const invId = m.investor_user_id || (m.investor_payout ? m.investor_payout.investor_user_id : '');
+                            const monthNum = m.investor_payout ? m.investor_payout.month_number : '';
+                            redirectUrl = `/gestion-interna/pagos-inversores?highlight_payout=${payoutId}&opp_id=${oppId}&inv_id=${invId}&month=${monthNum}`;
                         }
 
                         const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
@@ -2236,7 +2258,13 @@
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                                 </svg>
                                                             </button>
-                                                        ` : '')}
+                                                        ` : (m.reference_type === 'investment_payout' ? `
+                                                            <button onclick="event.stopPropagation(); window.location.href='${redirectUrl}'" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+                                                                <svg class="w-3 md:w-3.5 h-3 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                </svg>
+                                                            </button>
+                                                        ` : ''))}
                                                     </div>
                                                     <p class="text-[7px] md:text-[8px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1 leading-none truncate">
                                                         ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
