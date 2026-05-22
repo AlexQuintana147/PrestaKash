@@ -80,7 +80,7 @@
             <p class="text-[9px] text-orange-400 uppercase tracking-wider font-bold mb-2">Mora configurada</p>
             <div class="flex flex-wrap gap-3">
                 <span class="px-2 py-1 bg-orange-50 dark:bg-orange-950/20 rounded text-[10px] font-bold text-orange-700 dark:text-orange-300">Gracia: {{ $loan->grace_days ?? 0 }}d</span>
-                <span class="px-2 py-1 bg-orange-50 dark:bg-orange-950/20 rounded text-[10px] font-bold text-orange-700 dark:text-orange-300">Tasa: {{ ($loan->late_fee_rate ?? 0)*100 }}%</span>
+                <span class="px-2 py-1 bg-orange-50 dark:bg-orange-950/20 rounded text-[10px] font-bold text-orange-700 dark:text-orange-300">Tasa: {{ number_format($loan->late_fee_rate ?? 0, 2) }}%</span>
                 <span class="px-2 py-1 bg-orange-50 dark:bg-orange-950/20 rounded text-[10px] font-bold text-orange-700 dark:text-orange-300">Diaria: {{ $cur }}{{ number_format($loan->late_fee_daily_amount ?? 0, 2) }}</span>
             </div>
         </div>
