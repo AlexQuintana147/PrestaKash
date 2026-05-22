@@ -6,10 +6,10 @@
 <div class="min-h-screen px-4 sm:px-5 md:px-10 py-6 sm:py-8 max-w-5xl">
 
     <div class="mb-6 sm:mb-8">
-        <a href="{{ route('client.investments.index') }}" class="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors group mb-3">
-            <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
-            <span class="border-b border-gray-300 dark:border-gray-600 group-hover:border-gray-900 dark:group-hover:border-white transition-colors">Volver a Control</span>
-        </a>
+        <div class="flex items-center gap-2 mb-3">
+            <a href="{{ route('client.investments.payments') }}" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Mis Pagos</a>
+            <svg class="w-3 h-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
 
         <div class="flex items-start justify-between gap-3">
             <div>
@@ -53,7 +53,7 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-6 sm:mb-8">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8">
         <div class="bg-emerald-500 rounded-xl p-3 sm:p-4">
             <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Recibido</p>
             <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalReceived, 2) }}</p>
@@ -63,10 +63,92 @@
             <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format(max(0, $totalExpectedReturn - $totalReceived), 2) }}</p>
         </div>
         <div class="bg-blue-500 rounded-xl p-3 sm:p-4">
-            <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Retorno</p>
+            <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Retorno Total</p>
             <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalExpectedReturn, 2) }}</p>
         </div>
+        <div class="bg-indigo-500 rounded-xl p-3 sm:p-4">
+            <p class="text-[8px] sm:text-[9px] text-white/80 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">Intereses Ganados</p>
+            <p class="text-sm sm:text-lg font-bold text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalInterestEarned, 2) }}</p>
+        </div>
     </div>
+
+    @if($nextPayoutDate)
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/10 mb-6 sm:mb-8">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-500/15 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+                <p class="text-[10px] text-indigo-500 uppercase tracking-wider font-semibold">Próximo pago estimado</p>
+                <p class="text-sm font-bold text-indigo-700 dark:text-indigo-300">{{ $nextPayoutDate->format('d/m/Y') }} <span class="font-normal text-indigo-400">— Cuota #{{ $totalPaidQuotas + 1 }}</span></p>
+            </div>
+        </div>
+    @endif
+
+    @if($pendingPayouts->count() > 0)
+        <div class="mb-6 sm:mb-8">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-6 h-6 rounded-lg bg-amber-100 dark:bg-amber-500/15 flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                </div>
+                <h2 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Pagos por confirmar ({{ $pendingPayouts->count() }})</h2>
+            </div>
+            <div class="space-y-2">
+                @foreach($pendingPayouts as $payout)
+                    <div class="bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-200 dark:border-amber-500/15 p-3 sm:p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">Cuota #{{ $payout->month_number }}</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-bold uppercase tracking-wider bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">Por confirmar</span>
+                                    @if($payout->payment_type === 'interest_only')
+                                        <span class="px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Solo intereses</span>
+                                    @endif
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px] sm:text-[11px]">
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase tracking-wider">Monto</p>
+                                        <p class="font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($payout->amount, 2) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase tracking-wider">Método</p>
+                                        <p class="font-bold text-gray-900 dark:text-white">{{ $payout->payment_method === 'transfer' ? 'Transferencia' : 'Efectivo' }}</p>
+                                    </div>
+                                    @if($payout->operation_number)
+                                        <div>
+                                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">N° Operación</p>
+                                            <p class="font-bold text-gray-900 dark:text-white font-mono">{{ $payout->operation_number }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                @if($payout->voucher_path)
+                                    <div class="mt-2">
+                                        <button onclick="openVoucherModal('{{ \Storage::url($payout->voucher_path) }}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            Ver comprobante
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="flex flex-col gap-1.5 shrink-0">
+                                <form action="{{ route('client.investments.payouts.accept', $payout) }}" method="POST" id="accept-form-{{ $payout->id }}">
+                                    @csrf
+                                    <button type="button" onclick="openAcceptModal({{ $payout->id }})" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white transition-colors">
+                                        Aceptar
+                                    </button>
+                                </form>
+                                <form action="{{ route('client.investments.payouts.reject', $payout) }}" method="POST" id="reject-form-{{ $payout->id }}">
+                                    @csrf
+                                    <button type="button" onclick="openRejectModal({{ $payout->id }})" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white transition-colors">
+                                        Rechazar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     @php
         $progressPct = $totalExpectedReturn > 0 ? round($totalReceived / $totalExpectedReturn * 100) : 0;
@@ -86,7 +168,14 @@
     </div>
 
     <div class="mb-6 sm:mb-8">
-        <h2 class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 sm:mb-4">Cronograma de Pagos</h2>
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Cronograma de Pagos</h2>
+            <div class="flex items-center gap-3 text-[10px]">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {{ $totalPaidQuotas }} pagadas</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {{ $pendingPayouts->count() }} por confirmar</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></span> {{ $opportunity->term_months - $totalPaidQuotas - $pendingPayouts->count() }} pendientes</span>
+            </div>
+        </div>
 
         <div id="schedule-mobile" class="sm:hidden space-y-2">
             @foreach($schedule as $i => $item)
@@ -312,6 +401,14 @@
                 <span class="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalExpectedReturn - $amount, 2) }}</span>
             </div>
             <div class="flex items-center justify-between">
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Intereses ganados hasta ahora</span>
+                <span class="text-[11px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalInterestEarned, 2) }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Cuotas pagadas</span>
+                <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $totalPaidQuotas }} / {{ $opportunity->term_months }}</span>
+            </div>
+            <div class="flex items-center justify-between">
                 <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Sistema de amortización</span>
                 <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $amortizationType === 'frances' ? 'Francés' : 'Americano' }}</span>
             </div>
@@ -323,6 +420,12 @@
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Inicio de pagos</span>
                     <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $startDate->format('d/m/Y') }}</span>
+                </div>
+            @endif
+            @if($nextPayoutDate)
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Próximo pago estimado</span>
+                    <span class="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400">{{ $nextPayoutDate->format('d/m/Y') }}</span>
                 </div>
             @endif
             @if($investor->pivot->approved_at)

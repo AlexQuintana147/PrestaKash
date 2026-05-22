@@ -239,7 +239,14 @@ class InvestmentController extends Controller
 
         $confirmedPayoutsByOpportunity = collect($paidAmountsByInvestment);
 
-        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts', 'pendingPayoutsByOpportunity', 'confirmedPayoutsByOpportunity'));
+        $paidQuotasByOpportunity = \App\Models\InvestorPayout::where('investor_user_id', $user->id)
+            ->whereIn('investment_opportunity_id', $investmentIds)
+            ->whereIn('status', ['confirmed', 'paid'])
+            ->selectRaw('investment_opportunity_id, COUNT(*) as paid_count')
+            ->groupBy('investment_opportunity_id')
+            ->pluck('paid_count', 'investment_opportunity_id');
+
+        return view('client.invest.payments', compact('investments', 'payments', 'pendingPayouts', 'pendingPayoutsByOpportunity', 'confirmedPayoutsByOpportunity', 'paidQuotasByOpportunity'));
     }
 
     public function paymentDetail(InvestmentOpportunity $opportunity)
@@ -322,7 +329,7 @@ class InvestmentController extends Controller
             ->orderByDesc('date')
             ->get();
 
-        $totalReceived = $payments->sum('amount');
+        $cashboxReceived = $payments->sum('amount');
 
         $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
             ->where('investor_user_id', $user->id)
@@ -330,10 +337,43 @@ class InvestmentController extends Controller
             ->get()
             ->keyBy('month_number');
 
+        $payoutReceived = $payouts->whereIn('status', ['confirmed', 'paid'])->sum('amount');
+
+        $payoutCashboxReceived = \App\Models\CashboxMovement::where('investor_user_id', $user->id)
+            ->where('reference_type', 'investment_payout')
+            ->whereIn('reference_id', $payouts->whereIn('status', ['confirmed', 'paid'])->pluck('id'))
+            ->where('type', 'expense')
+            ->sum('amount');
+
+        $totalReceived = max($cashboxReceived, $payoutReceived, $payoutCashboxReceived);
+
+        $paidQuotas = $payments->count();
+        $payoutPaidQuotas = $payouts->whereIn('status', ['confirmed', 'paid'])->count();
+        $totalPaidQuotas = max($paidQuotas, $payoutPaidQuotas);
+
+        $pendingPayouts = $payouts->where('status', 'pending');
+
+        $nextPayoutDate = null;
+        $nextMonth = $totalPaidQuotas + 1;
+        if ($nextMonth <= $termMonths) {
+            $nextScheduleItem = $schedule->firstWhere('month', $nextMonth);
+            if ($nextScheduleItem && $nextScheduleItem->date) {
+                $nextPayoutDate = $nextScheduleItem->date;
+            }
+        }
+
+        $totalInterestEarned = 0;
+        foreach ($schedule as $s) {
+            if ($s->month <= $totalPaidQuotas) {
+                $totalInterestEarned += $s->interest;
+            }
+        }
+
         return view('client.invest.payment-detail', compact(
             'opportunity', 'investor', 'amount', 'amortizationType', 'schedule',
             'payments', 'totalReceived', 'totalExpectedReturn', 'isClosed', 'startDate',
-            'payouts'
+            'payouts', 'totalPaidQuotas', 'pendingPayouts', 'nextPayoutDate',
+            'totalInterestEarned'
         ));
     }
 
