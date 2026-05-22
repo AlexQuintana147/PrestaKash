@@ -170,21 +170,21 @@
                 <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Monto</p>
                 @if($inst->requested_type === 'mora_interest')
                     <p class="text-sm font-black text-red-600 dark:text-red-400 tabular-nums">
-                        {{ $currency }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
+                        {{ $currency }} {{ number_format($inst->interest + $lateFee, 2) }}
                     </p>
                     <p class="text-[8px] text-red-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         Mora + Interés
                     </p>
                 @elseif($inst->requested_type === 'mora_full')
                     <p class="text-sm font-black text-orange-600 dark:text-orange-400 tabular-nums">
-                        {{ $currency }} {{ number_format($inst->amount + ($inst->late_fee ?? 0), 2) }}
+                        {{ $currency }} {{ number_format($inst->amount + $lateFee, 2) }}
                     </p>
                     <p class="text-[8px] text-orange-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         Mora + Cuota Total
                     </p>
                 @elseif($inst->requested_type === 'interest' || (isset($inst->is_interest_payment) && $inst->is_interest_payment))
                     <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
-                        {{ $currency }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
+                        {{ $currency }} {{ number_format($inst->interest + $lateFee, 2) }}
                     </p>
                     <p class="text-[8px] text-amber-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         @if(isset($inst->is_interest_payment) && $inst->is_interest_payment)
@@ -195,7 +195,7 @@
                     </p>
                 @else
                     <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">
-                        {{ $currency }} {{ number_format($inst->amount + ($inst->late_fee ?? 0), 2) }}
+                        {{ $currency }} {{ number_format($inst->amount + $lateFee, 2) }}
                     </p>
                     <p class="text-[8px] text-gray-400 font-bold mt-0.5">
                         C: {{ $currency }}{{ number_format($inst->capital, 2) }} • I: {{ $currency }}{{ number_format($inst->interest, 2) }}
@@ -205,7 +205,7 @@
                     </p>
                 @endif
                 @if($lateFee > 0)
-                    <p class="text-[8px] font-bold text-orange-500 mt-0.5">+ {{ number_format($lateFee, 2) }} mora</p>
+                    <p class="text-[8px] font-bold text-orange-500 mt-0.5">+ {{ $currency }}{{ number_format($lateFee, 2) }} mora</p>
                 @endif
             </div>
         </div>
@@ -255,13 +255,13 @@
                         $baseAmount = $inst->requested_type === 'interest' 
                             ? $inst->interest
                             : $inst->amount;
-                        $displayAmount = $baseAmount + ($inst->late_fee ?? 0);
+                        $displayAmount = $baseAmount + $lateFee;
 
                         $validateData = [
                             'id' => $inst->id,
                             'amount' => $currency . number_format($displayAmount, 2),
                             'baseAmount' => $currency . number_format($baseAmount, 2),
-                            'lateFee' => ($inst->late_fee ?? 0) > 0 ? $currency . number_format($inst->late_fee, 2) : null,
+                            'lateFee' => $lateFee > 0 ? $currency . number_format($lateFee, 2) : null,
                             'user' => $user->name,
                             'number' => $inst->installment_number,
                             'voucher' => Storage::url($inst->payment_voucher),

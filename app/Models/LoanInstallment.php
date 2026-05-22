@@ -21,6 +21,7 @@ class LoanInstallment extends Model
         'operation_number',
         'requested_type',
         'paid_at',
+        'charged_late_fee',
         'admin_notes',
         'interest_payments_count',
     ];
@@ -76,6 +77,15 @@ class LoanInstallment extends Model
     public function getLateFeeAttribute()
     {
         $loan = $this->loan;
+
+        if ($this->status === 'approved' && $this->charged_late_fee > 0) {
+            return $this->charged_late_fee;
+        }
+
+        if (isset($this->is_interest_payment) && $this->is_interest_payment && $this->interest_payment) {
+            return $this->interest_payment->late_fee ?? 0;
+        }
+
         if (!$loan->late_fee_enabled || $this->status === 'approved' || $this->due_date->isFuture()) {
             return 0;
         }

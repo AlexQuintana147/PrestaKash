@@ -758,7 +758,8 @@ class LoanController extends Controller
 
                 $installment->update([
                     'status' => 'approved',
-                    'paid_at' => now()
+                    'paid_at' => now(),
+                    'charged_late_fee' => $totalLateFees,
                 ]);
 
                 $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
@@ -790,7 +791,8 @@ class LoanController extends Controller
             } else {
                 $installment->update([
                     'status' => 'approved',
-                    'paid_at' => now()
+                    'paid_at' => now(),
+                    'charged_late_fee' => $installment->late_fee,
                 ]);
 
                 $existingMovement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')

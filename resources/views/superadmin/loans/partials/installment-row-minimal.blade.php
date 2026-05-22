@@ -25,12 +25,12 @@
             </span>
             <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400' }} font-bold tabular-nums">
                 @if((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
-                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + ($inst->late_fee ?? 0), 2) }}
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + $lateFee, 2) }}
                 @else
-                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount, 2) }}
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount + $lateFee, 2) }}
                 @endif
                 @if($lateFee > 0)
-                    <span class="text-orange-500 ml-1">+ {{ number_format($lateFee, 2) }} mora</span>
+                    <span class="text-orange-500 ml-1">+ {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($lateFee, 2) }} mora</span>
                 @endif
             </span>
         </div>
@@ -104,13 +104,13 @@
                     $baseAmount = $inst->requested_type === 'interest' 
                         ? $inst->interest
                         : $inst->amount;
-                    $displayAmount = $baseAmount + ($inst->late_fee ?? 0);
+                    $displayAmount = $baseAmount + $lateFee;
                 @endphp
                 <button type="button" onclick="openValidateModal({{ json_encode([
                 'id' => $inst->id,
                 'amount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($displayAmount, 2),
                 'baseAmount' => ($loan->currency === 'USD' ? '$' : 'S/') . number_format($baseAmount, 2),
-                'lateFee' => ($inst->late_fee ?? 0) > 0 ? ($loan->currency === 'USD' ? '$' : 'S/') . number_format($inst->late_fee, 2) : null,
+                'lateFee' => $lateFee > 0 ? ($loan->currency === 'USD' ? '$' : 'S/') . number_format($lateFee, 2) : null,
                 'user' => $inst->loan->user->name,
                 'number' => $inst->installment_number,
                 'voucher' => Storage::url($inst->payment_voucher),
