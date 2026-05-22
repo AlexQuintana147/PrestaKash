@@ -205,24 +205,25 @@
             <p class="text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pagado</p>
             <p class="text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalPaidWithFees, 2) }}</p>
             <div class="mt-1.5 space-y-0.5">
-                <p class="text-[8px] text-white/70">Capital: {{ $cur }}{{ number_format($paidCapital, 2) }}</p>
-                <p class="text-[8px] text-white/70">Interés: {{ $cur }}{{ number_format($paidInterest, 2) }}</p>
+                <p class="text-[8px] text-white">Capital: {{ $cur }}{{ number_format($paidCapital, 2) }}</p>
+                <p class="text-[8px] text-white">Interés: {{ $cur }}{{ number_format($paidInterest, 2) }}</p>
                 @if($paidLateFees > 0)
-                <p class="text-[8px] text-white/70">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
+                <p class="text-[8px] text-white">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
                 @endif
             </div>
-            <p class="text-[7px] text-white/50 mt-2 italic">Solo se contabilizan las cuotas pagadas. El total pagado en intereses no se incluye en este monto.</p>
+            <p class="text-[7px] text-white mt-2 italic">Solo se contabilizan las cuotas pagadas. El total pagado en intereses no se incluye en este monto.</p>
         </div>
         <div class="bg-orange-500 rounded-2xl px-4 py-4">
             <p class="text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pendiente</p>
             <p class="text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalRemaining, 2) }}</p>
             <div class="mt-1.5 space-y-0.5">
-                <p class="text-[8px] text-white/70">Capital: {{ $cur }}{{ number_format($pendingCapital, 2) }}</p>
-                <p class="text-[8px] text-white/70">Interés: {{ $cur }}{{ number_format($pendingInterest, 2) }}</p>
+                <p class="text-[8px] text-white">Capital: {{ $cur }}{{ number_format($pendingCapital, 2) }}</p>
+                <p class="text-[8px] text-white">Interés: {{ $cur }}{{ number_format($pendingInterest, 2) }}</p>
                 @if($overdueInstallments->sum('late_fee') > 0)
-                <p class="text-[8px] text-white/70">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
+                <p class="text-[8px] text-white">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
                 @endif
             </div>
+            <p class="text-[7px] text-white mt-2 italic">Recuerda pagar a tiempo para evitar recargos por mora. El monto puede variar si se acumulan intereses por atraso.</p>
         </div>
     </div>
 
