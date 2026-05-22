@@ -296,9 +296,65 @@ class InvestmentController extends Controller
 
         $totalReceived = $payments->sum('amount');
 
+        $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
+            ->where('investor_user_id', $user->id)
+            ->orderBy('month_number')
+            ->get()
+            ->keyBy('month_number');
+
         return view('client.invest.payment-detail', compact(
             'opportunity', 'investor', 'amount', 'amortizationType', 'schedule',
-            'payments', 'totalReceived', 'totalExpectedReturn', 'isClosed', 'startDate'
+            'payments', 'totalReceived', 'totalExpectedReturn', 'isClosed', 'startDate',
+            'payouts'
         ));
+    }
+
+    public function acceptPayout(\App\Models\InvestorPayout $payout)
+    {
+        $user = Auth::user();
+
+        if ($payout->investor_user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($payout->status !== 'pending') {
+            return back()->with('error', 'Este pago ya fue procesado.');
+        }
+
+        if ($payout->voucher_path && \Storage::disk('public')->exists($payout->voucher_path)) {
+            \Storage::disk('public')->delete($payout->voucher_path);
+        }
+
+        $payout->update([
+            'status' => 'confirmed',
+            'paid_at' => now(),
+            'voucher_path' => null,
+        ]);
+
+        return back()->with('success', 'Pago aceptado correctamente.');
+    }
+
+    public function rejectPayout(Request $request, \App\Models\InvestorPayout $payout)
+    {
+        $user = Auth::user();
+
+        if ($payout->investor_user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($payout->status !== 'pending') {
+            return back()->with('error', 'Este pago ya fue procesado.');
+        }
+
+        if ($payout->voucher_path && \Storage::disk('public')->exists($payout->voucher_path)) {
+            \Storage::disk('public')->delete($payout->voucher_path);
+        }
+
+        $payout->update([
+            'status' => 'rejected',
+            'voucher_path' => null,
+        ]);
+
+        return back()->with('success', 'Pago rechazado.');
     }
 }

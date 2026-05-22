@@ -332,6 +332,113 @@
     </div>
 </div>
 
+{{-- PAY MODAL --}}
+<div id="payModal" class="fixed inset-0 z-[60] hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="closePayModal()"></div>
+    <div class="relative flex items-start justify-center min-h-screen p-0 sm:p-4 sm:pt-8">
+        <div class="pk-modal-enter bg-white dark:bg-gray-950 sm:rounded-2xl rounded-none border-0 sm:border sm:border-gray-200 dark:sm:border-gray-800 w-full sm:max-w-lg h-screen sm:h-auto sm:max-h-[90vh] overflow-y-auto shadow-none sm:shadow-2xl">
+            <div class="shrink-0 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/15 flex items-center justify-center">
+                        <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <h3 class="text-[12px] font-bold text-gray-900 dark:text-white">Pagar cuota #<span id="pay_month_display"></span></h3>
+                </div>
+                <button onclick="closePayModal()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form id="pay_form" method="POST" enctype="multipart/form-data" class="p-4 space-y-4">
+                @csrf
+                <input type="hidden" id="pay_opportunity_id" name="opportunity_id">
+                <input type="hidden" id="pay_investor_id" name="investor_id">
+                <input type="hidden" id="pay_month" name="month_number">
+
+                {{-- AMOUNT INFO --}}
+                <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/15">
+                    <div class="flex items-center justify-between mb-1">
+                        <span id="pay_interest_label" class="text-[9px] uppercase tracking-widest font-semibold text-indigo-500">Interés de la cuota:</span>
+                        <span id="pay_interest_display" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 pk-mono"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] uppercase tracking-widest font-semibold text-gray-500">Total cuota:</span>
+                        <span id="pay_total_display" class="text-[13px] font-bold text-gray-900 dark:text-white pk-mono"></span>
+                    </div>
+                </div>
+
+                {{-- PAYMENT TYPE --}}
+                <div id="pay_interest_only_wrap" class="hidden">
+                    <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Tipo de pago</label>
+                    <div class="flex gap-2">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="payment_type" value="full" id="pay_type_full" checked class="peer hidden" onchange="togglePaymentType()">
+                            <div class="p-2.5 rounded-xl border-2 border-gray-200 dark:border-gray-800 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-500/5 transition-all text-center">
+                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">Cuota completa</p>
+                                <p class="text-[8px] text-gray-400">Interés + Capital</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="payment_type" value="interest_only" class="peer hidden" onchange="togglePaymentType()">
+                            <div class="p-2.5 rounded-xl border-2 border-gray-200 dark:border-gray-800 peer-checked:border-amber-500 peer-checked:bg-amber-50 dark:peer-checked:bg-amber-500/5 transition-all text-center">
+                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">Solo intereses</p>
+                                <p class="text-[8px] text-gray-400">Cuota se posterga 1 mes</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- PAYMENT METHOD --}}
+                <div>
+                    <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Método de pago</label>
+                    <div class="flex gap-2">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="payment_method" value="transfer" checked class="peer hidden" onchange="togglePaymentMethod()">
+                            <div class="p-2.5 rounded-xl border-2 border-gray-200 dark:border-gray-800 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-500/5 transition-all text-center">
+                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">Transferencia</p>
+                                <p class="text-[8px] text-gray-400">Depósito bancario</p>
+                            </div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="payment_method" value="cash" class="peer hidden" onchange="togglePaymentMethod()">
+                            <div class="p-2.5 rounded-xl border-2 border-gray-200 dark:border-gray-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-500/5 transition-all text-center">
+                                <p class="text-[10px] font-bold text-gray-900 dark:text-white">Efectivo</p>
+                                <p class="text-[8px] text-gray-400">Pago en mano</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- BANK ACCOUNTS --}}
+                <div id="pay_bank_section">
+                    <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Cuentas bancarias del inversor</label>
+                    <div id="pay_bank_accounts" class="space-y-2"></div>
+                </div>
+
+                {{-- VOUCHER --}}
+                <div id="pay_voucher_section">
+                    <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Comprobante de pago</label>
+                    <div class="relative">
+                        <input type="file" id="pay_voucher" name="voucher" accept="image/*" class="block w-full text-[10px] text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-wider file:bg-indigo-50 file:text-indigo-600 dark:file:bg-indigo-500/10 dark:file:text-indigo-400 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-500/15 file:transition-colors file:cursor-pointer">
+                    </div>
+                    <p class="text-[8px] text-gray-400 mt-1">La imagen se convertirá a WebP automáticamente. Máx. 5MB.</p>
+                </div>
+
+                {{-- OPERATION NUMBER --}}
+                <div>
+                    <label class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 block mb-2">Número de operación <span class="text-gray-300">(opcional)</span></label>
+                    <input type="text" id="pay_operation_number" name="operation_number" maxlength="50" placeholder="Ej: OP-123456" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-[11px] text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors pk-mono">
+                </div>
+
+                {{-- SUBMIT --}}
+                <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold uppercase tracking-widest transition-colors">
+                    Registrar pago
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 function switchOppPage(pageIndex) {
     document.querySelectorAll('.opp-page').forEach(el => el.classList.remove('active'));
@@ -415,6 +522,10 @@ let _scheduleData = null;
 let _scheduleCurrency = '';
 let _schedulePage = 0;
 const _schedulePerPage = 10;
+let _scheduleInvestor = null;
+let _scheduleAmortType = '';
+let _scheduleOppId = null;
+let _scheduleNextPayable = null;
 
 function renderSchedulePage() {
     if (!_scheduleData) return;
@@ -427,7 +538,6 @@ function renderSchedulePage() {
 
     let html = '';
 
-    // Desktop table
     html += '<div class="pk-schedule-table overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800">';
     html += '<table class="w-full text-[11px]">';
     html += '<thead><tr class="bg-gray-50 dark:bg-gray-900/40">';
@@ -438,11 +548,14 @@ function renderSchedulePage() {
     html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Total</th>';
     html += '<th class="px-3 py-2 text-right text-[8px] uppercase tracking-widest font-semibold text-gray-400">Saldo</th>';
     html += '<th class="px-3 py-2 text-center text-[8px] uppercase tracking-widest font-semibold text-gray-400">Estado</th>';
+    html += '<th class="px-3 py-2 text-center text-[8px] uppercase tracking-widest font-semibold text-gray-400">Acción</th>';
     html += '</tr></thead><tbody>';
 
     pageItems.forEach(item => {
         const isOverdue = item.is_overdue && !item.is_paid;
-        const rowClass = isOverdue ? 'bg-red-600 text-white' : (item.is_paid ? 'bg-emerald-50/50 dark:bg-emerald-500/5' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/20');
+        const isPendingPayout = item.payout_status === 'pending';
+        const isPayable = !item.is_paid && !isPendingPayout && item.month === _scheduleNextPayable;
+        const rowClass = isPendingPayout ? 'bg-amber-50/50 dark:bg-amber-500/5' : (isOverdue ? 'bg-red-600 text-white' : (item.is_paid ? 'bg-emerald-50/50 dark:bg-emerald-500/5' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/20'));
         const textClass = isOverdue ? 'text-white' : 'text-gray-600 dark:text-gray-300';
         const boldClass = isOverdue ? 'text-white font-bold' : 'text-gray-900 dark:text-white font-bold';
 
@@ -456,21 +569,31 @@ function renderSchedulePage() {
         html += '<td class="px-3 py-2.5 text-center">';
         if (item.is_paid) {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>';
+        } else if (isPendingPayout) {
+            html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">Por confirmar</span>';
         } else if (isOverdue) {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
         } else {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+        }
+        html += '</td>';
+        html += '<td class="px-3 py-2.5 text-center">';
+        if (isPayable) {
+            html += `<button onclick="openPayModal(${item.month}, '${data.currency}${item.payment}', '${data.currency}${item.interest}')" class="px-2 py-1 rounded-lg text-[8px] font-bold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">Pagar</button>`;
+        } else if (isPendingPayout) {
+            html += `<span class="text-[8px] text-amber-500 font-semibold">Pendiente</span>`;
         }
         html += '</td></tr>';
     });
 
     html += '</tbody></table></div>';
 
-    // Mobile cards
     html += '<div class="pk-schedule-card space-y-2">';
     pageItems.forEach(item => {
         const isOverdue = item.is_overdue && !item.is_paid;
-        const cardBg = isOverdue ? 'bg-red-600' : (item.is_paid ? 'bg-emerald-50/80 dark:bg-emerald-500/5' : 'bg-gray-50/50 dark:bg-gray-900/20');
+        const isPendingPayout = item.payout_status === 'pending';
+        const isPayable = !item.is_paid && !isPendingPayout && item.month === _scheduleNextPayable;
+        const cardBg = isPendingPayout ? 'bg-amber-50/80 dark:bg-amber-500/5' : (isOverdue ? 'bg-red-600' : (item.is_paid ? 'bg-emerald-50/80 dark:bg-emerald-500/5' : 'bg-gray-50/50 dark:bg-gray-900/20'));
         const textColor = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
         const subTextColor = isOverdue ? 'text-white/70' : 'text-gray-500 dark:text-gray-400';
         const monoText = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
@@ -478,13 +601,15 @@ function renderSchedulePage() {
         let badge = '';
         if (item.is_paid) {
             badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">Pagada</span>';
+        } else if (isPendingPayout) {
+            badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">Por confirmar</span>';
         } else if (isOverdue) {
             badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
         } else {
             badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
         }
 
-        html += `<div class="${cardBg} rounded-xl p-3 border ${isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800'}">`;
+        html += `<div class="${cardBg} rounded-xl p-3 border ${isPendingPayout ? 'border-amber-200 dark:border-amber-500/20' : (isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800')}">`;
         html += `<div class="flex items-center justify-between mb-2">`;
         html += `<div class="flex items-center gap-2">`;
         html += `<span class="text-[11px] font-bold ${monoText} pk-mono">Cuota ${item.month}</span>`;
@@ -498,11 +623,15 @@ function renderSchedulePage() {
         html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Total</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.payment}</span></div>`;
         html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Saldo</span><span class="text-[10px] font-bold ${subTextColor} pk-mono">${data.currency}${item.balance}</span></div>`;
         html += `</div>`;
+        if (isPayable) {
+            html += `<button onclick="openPayModal(${item.month}, '${data.currency}${item.payment}', '${data.currency}${item.interest}')" class="mt-2 w-full py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">Pagar cuota</button>`;
+        } else if (isPendingPayout) {
+            html += `<p class="mt-2 text-[9px] text-amber-500 font-semibold text-center">Pago pendiente de confirmación</p>`;
+        }
         html += `</div>`;
     });
     html += '</div>';
 
-    // Pagination
     if (totalPages > 1) {
         html += '<div class="flex items-center justify-center gap-1.5 mt-4">';
         html += `<button onclick="goSchedulePage(0)" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
@@ -543,14 +672,98 @@ function buildScheduleTable(uid, data) {
 
     fetch(`{{ url('/gestion-interna') }}/inversiones/pagos/detalle/${oppId}/${investorId}`)
         .then(r => r.json())
-        .then(schedule => {
-            _scheduleData = schedule;
+        .then(res => {
+            _scheduleData = res.schedule;
             _scheduleCurrency = data.currency;
+            _scheduleInvestor = res.investor;
+            _scheduleAmortType = res.amortization_type;
+            _scheduleOppId = res.opportunity_id;
+            _scheduleNextPayable = res.next_payable_month;
             renderSchedulePage();
         })
         .catch(() => {
             container.innerHTML = '<p class="text-xs text-gray-400 text-center py-8">Error al cargar cronograma</p>';
         });
+}
+
+function openPayModal(month, totalAmount, interestAmount) {
+    const modal = document.getElementById('payModal');
+    document.getElementById('pay_month').value = month;
+    document.getElementById('pay_month_display').textContent = month;
+    document.getElementById('pay_total_display').textContent = totalAmount;
+    document.getElementById('pay_interest_display').textContent = interestAmount;
+
+    const interestOnlyWrap = document.getElementById('pay_interest_only_wrap');
+    if (_scheduleAmortType === 'frances') {
+        interestOnlyWrap.classList.remove('hidden');
+    } else {
+        interestOnlyWrap.classList.add('hidden');
+    }
+
+    const bankContainer = document.getElementById('pay_bank_accounts');
+    if (_scheduleInvestor && _scheduleInvestor.bank_accounts && _scheduleInvestor.bank_accounts.length > 0) {
+        let bankHtml = '';
+        _scheduleInvestor.bank_accounts.forEach(ba => {
+            bankHtml += `<div class="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900/40 border border-gray-100 dark:border-gray-800">`;
+            bankHtml += `<div class="flex items-center justify-between mb-1">`;
+            bankHtml += `<span class="text-[10px] font-bold text-gray-900 dark:text-white">${ba.bank_name}</span>`;
+            bankHtml += `<span class="text-[7px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">${ba.account_type}</span>`;
+            bankHtml += `</div>`;
+            bankHtml += `<p class="text-[9px] text-gray-500 dark:text-gray-400">Cuenta: <span class="font-mono font-bold text-gray-900 dark:text-white">${ba.account_number}</span></p>`;
+            if (ba.cci) {
+                bankHtml += `<p class="text-[9px] text-gray-500 dark:text-gray-400">CCI: <span class="font-mono font-bold text-gray-900 dark:text-white">${ba.cci}</span></p>`;
+            }
+            bankHtml += `<p class="text-[8px] text-gray-400 mt-1">${ba.currency}</p>`;
+            bankHtml += `</div>`;
+        });
+        bankContainer.innerHTML = bankHtml;
+        document.getElementById('pay_bank_section').classList.remove('hidden');
+    } else {
+        bankContainer.innerHTML = '<p class="text-[10px] text-gray-400">El inversor no tiene cuentas bancarias registradas.</p>';
+        document.getElementById('pay_bank_section').classList.remove('hidden');
+    }
+
+    document.getElementById('pay_form').action = '{{ route("superadmin.investments.payouts.store") }}';
+    document.getElementById('pay_opportunity_id').value = _scheduleOppId;
+    document.getElementById('pay_investor_id').value = _scheduleInvestor.id;
+
+    modal.classList.remove('hidden');
+}
+
+function closePayModal() {
+    document.getElementById('payModal').classList.add('hidden');
+    document.getElementById('pay_voucher').value = '';
+    document.getElementById('pay_operation_number').value = '';
+    document.getElementById('pay_type_full').checked = true;
+    togglePaymentMethod();
+}
+
+function togglePaymentMethod() {
+    const method = document.querySelector('input[name="payment_method"]:checked')?.value;
+    const voucherSection = document.getElementById('pay_voucher_section');
+    const bankSection = document.getElementById('pay_bank_section');
+
+    if (method === 'cash') {
+        voucherSection.classList.remove('hidden');
+        bankSection.classList.add('hidden');
+    } else {
+        voucherSection.classList.remove('hidden');
+        bankSection.classList.remove('hidden');
+    }
+}
+
+function togglePaymentType() {
+    const type = document.querySelector('input[name="payment_type"]:checked')?.value;
+    const interestDisplay = document.getElementById('pay_interest_display');
+    const totalDisplay = document.getElementById('pay_total_display');
+    const interestLabel = document.getElementById('pay_interest_label');
+
+    if (type === 'interest_only') {
+        interestLabel.textContent = 'Monto a pagar (solo intereses):';
+        totalDisplay.textContent = interestDisplay.textContent;
+    } else {
+        interestLabel.textContent = 'Interés de la cuota:';
+    }
 }
 </script>
 @endsection

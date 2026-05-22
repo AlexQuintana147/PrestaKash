@@ -116,6 +116,9 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/inversiones/{investment}/inversor/{userId}/rechazar-pago', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'reject'])->name('investments.reject-payment');
     Route::get('/pagos-inversores', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'payouts'])->name('investments.payouts');
     Route::get('/inversiones/pagos/detalle/{opportunity}/{investor}', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'scheduleDetail'])->name('investments.schedule-detail');
+    Route::post('/inversiones/pagos/registrar', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'storePayout'])->name('investments.payouts.store');
+    Route::post('/inversiones/pagos/{payout}/confirmar', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'confirmPayout'])->name('investments.payouts.confirm');
+    Route::post('/inversiones/pagos/{payout}/rechazar', [\App\Http\Controllers\SuperAdmin\InvestmentPaymentController::class, 'rejectPayout'])->name('investments.payouts.reject');
 
     // Control de préstamos
     Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');
@@ -177,6 +180,8 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::put('/invertir/control/{opportunity}/voucher/{userId}', [\App\Http\Controllers\Client\InvestmentController::class, 'uploadVoucher'])->name('investments.upload-voucher');
     Route::get('/invertir/pagos', [\App\Http\Controllers\Client\InvestmentController::class, 'payments'])->name('investments.payments');
     Route::get('/invertir/control/{opportunity}/pagos', [\App\Http\Controllers\Client\InvestmentController::class, 'paymentDetail'])->name('investments.payment-detail');
+    Route::post('/invertir/pagos/{payout}/aceptar', [\App\Http\Controllers\Client\InvestmentController::class, 'acceptPayout'])->name('investments.payouts.accept');
+    Route::post('/invertir/pagos/{payout}/rechazar', [\App\Http\Controllers\Client\InvestmentController::class, 'rejectPayout'])->name('investments.payouts.reject');
 
     // Historial crediticio
     Route::get('/historial-crediticio', [\App\Http\Controllers\Client\LoanController::class, 'history'])->name('loans.history');

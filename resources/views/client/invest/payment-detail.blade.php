@@ -205,6 +205,71 @@
         <div id="schedule-pagination" class="flex items-center justify-center gap-1.5 mt-4"></div>
     </div>
 
+    @php
+        $pendingPayouts = $payouts->where('status', 'pending');
+    @endphp
+
+    @if($pendingPayouts->count() > 0)
+        <div class="mb-6 sm:mb-8">
+            <h2 class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 sm:mb-4">Pagos por confirmar</h2>
+            <div class="space-y-2">
+                @foreach($pendingPayouts as $payout)
+                    <div class="bg-amber-50 dark:bg-amber-500/5 rounded-xl border border-amber-200 dark:border-amber-500/15 p-3 sm:p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">Cuota #{{ $payout->month_number }}</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-bold uppercase tracking-wider bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">Por confirmar</span>
+                                    @if($payout->payment_type === 'interest_only')
+                                        <span class="px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Solo intereses</span>
+                                    @endif
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px] sm:text-[11px]">
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase tracking-wider">Monto</p>
+                                        <p class="font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($payout->amount, 2) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase tracking-wider">Método</p>
+                                        <p class="font-bold text-gray-900 dark:text-white">{{ $payout->payment_method === 'transfer' ? 'Transferencia' : 'Efectivo' }}</p>
+                                    </div>
+                                    @if($payout->operation_number)
+                                        <div>
+                                            <p class="text-[8px] text-gray-400 uppercase tracking-wider">N° Operación</p>
+                                            <p class="font-bold text-gray-900 dark:text-white font-mono">{{ $payout->operation_number }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                @if($payout->voucher_path)
+                                    <div class="mt-2">
+                                        <button onclick="openVoucherModal('{{ Storage::url($payout->voucher_path) }}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            Ver comprobante
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="flex flex-col gap-1.5 shrink-0">
+                                <form action="{{ route('client.investments.payouts.accept', $payout) }}" method="POST">
+                                    @csrf
+                                    <button type="button" onclick="openAcceptModal({{ $payout->id }})" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white transition-colors">
+                                        Aceptar
+                                    </button>
+                                </form>
+                                <form action="{{ route('client.investments.payouts.reject', $payout) }}" method="POST" id="reject-form-{{ $payout->id }}">
+                                    @csrf
+                                    <button type="button" onclick="openRejectModal({{ $payout->id }})" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white transition-colors">
+                                        Rechazar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     @if($payments->count() > 0)
         <div class="mb-6 sm:mb-8">
             <h2 class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 sm:mb-4">Pagos Recibidos</h2>
@@ -379,6 +444,146 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     showPage(1);
+});
+</script>
+
+{{-- ACCEPT MODAL --}}
+<div id="acceptModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAcceptModal()"></div>
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md p-5 shadow-2xl" style="animation: modalIn .3s ease-out both">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Confirmar aceptación</h3>
+                    <p class="text-[10px] text-gray-400">El comprobante será eliminado</p>
+                </div>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15 mb-4">
+                <div class="flex items-start gap-2">
+                    <svg class="w-4 h-4 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    <p class="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">Por motivos de rendimiento, el comprobante de pago será eliminado del servidor al aceptar. Asegúrate de haberlo descargado si lo necesitas.</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="closeAcceptModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button onclick="submitAccept()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Aceptar pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- REJECT MODAL --}}
+<div id="rejectModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeRejectModal()"></div>
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md p-5 shadow-2xl" style="animation: modalIn .3s ease-out both">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Confirmar rechazo</h3>
+                    <p class="text-[10px] text-gray-400">Esta acción no se puede deshacer</p>
+                </div>
+            </div>
+            <p class="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed mb-4">¿Estás seguro de que deseas rechazar este pago? El comprobante será eliminado y el administrador deberá registrar el pago nuevamente.</p>
+            <div class="flex gap-2">
+                <button onclick="closeRejectModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button onclick="submitReject()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Rechazar pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- VOUCHER PREVIEW MODAL --}}
+<div id="voucherModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeVoucherModal()"></div>
+    <div class="relative flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-lg p-4 shadow-2xl" style="animation: modalIn .3s ease-out both">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white">Comprobante de pago</h3>
+                <button onclick="closeVoucherModal()" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <img id="voucherImage" src="" alt="Comprobante" class="w-full rounded-xl">
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes modalIn { from { opacity:0; transform:scale(.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+</style>
+
+<script>
+let _acceptPayoutId = null;
+let _rejectPayoutId = null;
+
+function openAcceptModal(payoutId) {
+    _acceptPayoutId = payoutId;
+    document.getElementById('acceptModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAcceptModal() {
+    document.getElementById('acceptModal').classList.add('hidden');
+    document.body.style.overflow = '';
+    _acceptPayoutId = null;
+}
+
+function submitAccept() {
+    if (!_acceptPayoutId) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("client.investments.payouts.accept", 0) }}'.replace('/0', '/' + _acceptPayoutId);
+    const csrf = document.createElement('input');
+    csrf.type = 'hidden';
+    csrf.name = '_token';
+    csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+    form.appendChild(csrf);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function openRejectModal(payoutId) {
+    _rejectPayoutId = payoutId;
+    document.getElementById('rejectModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeRejectModal() {
+    document.getElementById('rejectModal').classList.add('hidden');
+    document.body.style.overflow = '';
+    _rejectPayoutId = null;
+}
+
+function submitReject() {
+    if (!_rejectPayoutId) return;
+    const form = document.getElementById('reject-form-' + _rejectPayoutId);
+    if (form) form.submit();
+}
+
+function openVoucherModal(src) {
+    document.getElementById('voucherImage').src = src;
+    document.getElementById('voucherModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVoucherModal() {
+    document.getElementById('voucherModal').classList.add('hidden');
+    document.body.style.overflow = '';
+    document.getElementById('voucherImage').src = '';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAcceptModal();
+        closeRejectModal();
+        closeVoucherModal();
+    }
 });
 </script>
 @endsection
