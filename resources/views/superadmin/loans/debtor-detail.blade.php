@@ -483,7 +483,7 @@ function openInstallmentModal(el) {
     document.getElementById('modal-loan-currency').textContent = cur;
     document.getElementById('modal-loan-amount').textContent = cur + ' ' + parseFloat(d.loanAmount).toFixed(2);
     document.getElementById('modal-loan-total').textContent = cur + ' ' + parseFloat(d.loanTotal).toFixed(2);
-    document.getElementById('modal-loan-rate').textContent = (parseFloat(d.loanInterestRate) * 100).toFixed(1) + '%';
+    document.getElementById('modal-loan-rate').textContent = parseFloat(d.loanInterestRate).toFixed(2) + '%';
     document.getElementById('modal-loan-months').textContent = d.loanMonths + ' meses';
     document.getElementById('modal-disbursement').textContent = d.loanDisbursement;
 
@@ -512,7 +512,7 @@ function openInstallmentModal(el) {
 
     document.getElementById('modal-late-enabled').textContent = d.lateFeeEnabled === 'true' ? 'SÍ' : 'NO';
     document.getElementById('modal-grace-days').textContent = d.graceDays + ' días';
-    document.getElementById('modal-late-rate').textContent = (parseFloat(d.lateFeeRate) * 100).toFixed(1) + '%';
+    document.getElementById('modal-late-rate').textContent = parseFloat(d.lateFeeRate).toFixed(2) + '%';
     document.getElementById('modal-late-daily').textContent = cur + ' ' + parseFloat(d.lateDaily).toFixed(2);
 
     document.getElementById('modal-acc-base').textContent = cur + ' ' + parseFloat(d.accBase).toFixed(2);
