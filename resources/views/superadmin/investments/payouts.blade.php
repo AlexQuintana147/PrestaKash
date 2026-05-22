@@ -689,12 +689,17 @@ function buildScheduleTable(uid, data) {
         });
 }
 
+let _payOriginalTotal = '';
+let _payOriginalInterest = '';
+
 function openPayModal(month, totalAmount, interestAmount) {
     const modal = document.getElementById('payModal');
     document.getElementById('pay_month').value = month;
     document.getElementById('pay_month_display').textContent = month;
     document.getElementById('pay_total_display').textContent = totalAmount;
     document.getElementById('pay_interest_display').textContent = interestAmount;
+    _payOriginalTotal = totalAmount;
+    _payOriginalInterest = interestAmount;
 
     const interestOnlyWrap = document.getElementById('pay_interest_only_wrap');
     if (_scheduleAmortType === 'frances') {
@@ -790,15 +795,15 @@ function togglePaymentMethod() {
 
 function togglePaymentType() {
     const type = document.querySelector('input[name="payment_type"]:checked')?.value;
-    const interestDisplay = document.getElementById('pay_interest_display');
     const totalDisplay = document.getElementById('pay_total_display');
     const interestLabel = document.getElementById('pay_interest_label');
 
     if (type === 'interest_only') {
         interestLabel.textContent = 'Monto a pagar (solo intereses):';
-        totalDisplay.textContent = interestDisplay.textContent;
+        totalDisplay.textContent = _payOriginalInterest;
     } else {
         interestLabel.textContent = 'Interés de la cuota:';
+        totalDisplay.textContent = _payOriginalTotal;
     }
 }
 </script>
