@@ -16,19 +16,29 @@
     .inv-page.active { display: block; }
     .opp-page { display: none; }
     .opp-page.active { display: block; }
+    @media (max-width: 639px) {
+        .pk-modal-wrap { position: fixed; inset: 0; padding: 0; }
+        .pk-modal-wrap .pk-modal-enter { max-width: 100%; max-height: 100vh; border-radius: 0; height: 100vh; }
+        .pk-schedule-card { display: block; }
+        .pk-schedule-table { display: none; }
+    }
+    @media (min-width: 640px) {
+        .pk-schedule-card { display: none; }
+        .pk-schedule-table { display: block; }
+    }
 </style>
 
-<div class="min-h-screen px-5 md:px-8 lg:px-10 py-8 max-w-7xl mx-auto pk-font">
+<div class="min-h-screen px-3 sm:px-5 md:px-8 lg:px-10 py-5 sm:py-8 max-w-7xl mx-auto pk-font">
 
     {{-- HEADER --}}
-    <div class="flex items-start justify-between mb-8 pk-fade-up">
+    <div class="flex items-start justify-between mb-5 sm:mb-8 pk-fade-up">
         <div>
-            <a href="{{ route('superadmin.investments.index') }}" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-3 group">
+            <a href="{{ route('superadmin.investments.index') }}" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-2 sm:mb-3 group">
                 <svg class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 Inversiones
             </a>
-            <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">Pagos a inversores</h1>
-            <p class="text-[11px] text-gray-400 mt-1.5">Inversiones cerradas · Cronograma de retornos</p>
+            <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">Pagos a inversores</h1>
+            <p class="text-[10px] sm:text-[11px] text-gray-400 mt-1">Inversiones cerradas · Cronograma de retornos</p>
         </div>
         <p class="hidden md:block text-[11px] font-medium text-gray-400 pk-mono mt-1">{{ now()->format('d.m.Y') }}</p>
     </div>
@@ -61,29 +71,29 @@
             $totalOppPages = $oppChunks->count();
         @endphp
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-8 pk-fade-up" style="animation-delay:60ms">
-            <div class="px-4 py-3 rounded-xl bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850">
-                <p class="text-[9px] uppercase tracking-widest font-semibold text-gray-400">Inversiones</p>
-                <p class="text-lg font-bold text-gray-900 dark:text-white pk-mono mt-0.5">{{ $opportunitiesData->count() }}</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-2.5 mb-5 sm:mb-8 pk-fade-up" style="animation-delay:60ms">
+            <div class="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850">
+                <p class="text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold text-gray-400">Inversiones</p>
+                <p class="text-base sm:text-lg font-bold text-gray-900 dark:text-white pk-mono mt-0.5">{{ $opportunitiesData->count() }}</p>
             </div>
-            <div class="px-4 py-3 rounded-xl bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850">
-                <p class="text-[9px] uppercase tracking-widest font-semibold text-gray-400">Inversores</p>
-                <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400 pk-mono mt-0.5">{{ $totalInvestors }}</p>
+            <div class="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850">
+                <p class="text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold text-gray-400">Inversores</p>
+                <p class="text-base sm:text-lg font-bold text-indigo-600 dark:text-indigo-400 pk-mono mt-0.5">{{ $totalInvestors }}</p>
             </div>
-            <div class="px-4 py-3 rounded-xl {{ $totalOverdue > 0 ? 'bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/15' : 'bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850' }}">
-                <p class="text-[9px] uppercase tracking-widest font-semibold {{ $totalOverdue > 0 ? 'text-red-500' : 'text-gray-400' }}">Cuotas vencidas</p>
-                <p class="text-lg font-bold {{ $totalOverdue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }} pk-mono mt-0.5">{{ $totalOverdue }}</p>
+            <div class="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl {{ $totalOverdue > 0 ? 'bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/15' : 'bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850' }}">
+                <p class="text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold {{ $totalOverdue > 0 ? 'text-red-500' : 'text-gray-400' }}">Cuotas vencidas</p>
+                <p class="text-base sm:text-lg font-bold {{ $totalOverdue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' }} pk-mono mt-0.5">{{ $totalOverdue }}</p>
             </div>
-            <div class="px-4 py-3 rounded-xl bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850">
-                <p class="text-[9px] uppercase tracking-widest font-semibold text-gray-400">Total pagado</p>
-                <p class="text-lg font-bold text-emerald-600 dark:text-emerald-400 pk-mono mt-0.5">{{ $symbol }}{{ number_format($totalReceived, 2) }}</p>
+            <div class="px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850">
+                <p class="text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold text-gray-400">Total pagado</p>
+                <p class="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400 pk-mono mt-0.5">{{ $symbol }}{{ number_format($totalReceived, 2) }}</p>
             </div>
         </div>
 
         {{-- OPPORTUNITY PAGES --}}
         @foreach($oppChunks as $pageIndex => $pageOpportunities)
             <div class="opp-page {{ $pageIndex === 0 ? 'active' : '' }}" data-opp-page="{{ $pageIndex }}">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
                     @foreach($pageOpportunities as $oppData)
                         @php
                             $opportunity = $oppData->opportunity;
@@ -96,21 +106,21 @@
                         <section class="pk-fade-up" style="animation-delay: {{ min($loop->index * 60 + 80, 400) }}ms">
                             <div class="bg-white dark:bg-[#0c0c0f] border border-gray-100 dark:border-gray-850 rounded-2xl overflow-hidden h-full flex flex-col">
                                 {{-- OPPORTUNITY HEADER --}}
-                                <div class="px-4 py-3 flex items-center justify-between border-b border-gray-100 dark:border-gray-850">
-                                    <div class="flex items-center gap-2.5 min-w-0">
-                                        <div class="shrink-0 w-8 h-8 rounded-lg {{ $oppData->overdue_count > 0 ? 'bg-red-50 dark:bg-red-500/10 ring-1 ring-inset ring-red-200 dark:ring-red-500/15' : 'bg-indigo-50 dark:bg-indigo-500/10 ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/15' }} flex items-center justify-center">
+                                <div class="px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between border-b border-gray-100 dark:border-gray-850">
+                                    <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                                        <div class="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg {{ $oppData->overdue_count > 0 ? 'bg-red-50 dark:bg-red-500/10 ring-1 ring-inset ring-red-200 dark:ring-red-500/15' : 'bg-indigo-50 dark:bg-indigo-500/10 ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/15' }} flex items-center justify-center">
                                             @if($oppData->overdue_count > 0)
-                                                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             @else
-                                                <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             @endif
                                         </div>
                                         <div class="min-w-0">
-                                            <div class="flex items-center gap-1.5">
-                                                <h2 class="text-[12px] font-bold text-gray-900 dark:text-white tracking-tight truncate">{{ $opportunity->title }}</h2>
-                                                <span class="shrink-0 text-[8px] font-mono text-gray-400 bg-gray-100 dark:bg-gray-900 px-1 py-0.5 rounded">{{ $opportunity->code }}</span>
+                                            <div class="flex items-center gap-1 sm:gap-1.5">
+                                                <h2 class="text-[11px] sm:text-[12px] font-bold text-gray-900 dark:text-white tracking-tight truncate">{{ $opportunity->title }}</h2>
+                                                <span class="shrink-0 text-[7px] sm:text-[8px] font-mono text-gray-400 bg-gray-100 dark:bg-gray-900 px-1 py-0.5 rounded">{{ $opportunity->code }}</span>
                                             </div>
-                                            <div class="flex items-center gap-1.5 mt-0.5 text-[9px] text-gray-400">
+                                            <div class="flex items-center gap-1 sm:gap-1.5 mt-0.5 text-[8px] sm:text-[9px] text-gray-400 flex-wrap">
                                                 <span>{{ $opportunity->monthly_return_rate }}%</span>
                                                 <span class="text-gray-200 dark:text-gray-700">·</span>
                                                 <span>{{ $opportunity->term_months }}m</span>
@@ -123,7 +133,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <span class="shrink-0 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded {{ $opportunity->currency === 'USD' ? 'bg-blue-50 dark:bg-blue-500/8 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-500/8 text-emerald-600 dark:text-emerald-400' }}">{{ $opportunity->currency }}</span>
+                                    <span class="shrink-0 text-[7px] sm:text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded {{ $opportunity->currency === 'USD' ? 'bg-blue-50 dark:bg-blue-500/8 text-blue-600 dark:text-blue-400' : 'bg-emerald-50 dark:bg-emerald-500/8 text-emerald-600 dark:text-emerald-400' }}">{{ $opportunity->currency }}</span>
                                 </div>
 
                                 {{-- INVESTOR LIST (paginated) --}}
@@ -141,21 +151,21 @@
                                                     @endphp
 
                                                     <div class="hover:bg-gray-50/50 dark:hover:bg-gray-900/20 transition-colors">
-                                                        <button onclick="openInvestorModal('{{ $uid }}')" class="w-full text-left px-4 py-3 flex items-center justify-between cursor-pointer group focus:outline-none">
-                                                            <div class="flex items-center gap-2.5 min-w-0">
-                                                                <img src="{{ $photo }}" alt="{{ $investor->name }}" class="w-8 h-8 rounded-lg object-cover ring-1 ring-inset ring-gray-100 dark:ring-gray-800 shrink-0">
+                                                        <button onclick="openInvestorModal('{{ $uid }}')" class="w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between cursor-pointer group focus:outline-none">
+                                                            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                                                                <img src="{{ $photo }}" alt="{{ $investor->name }}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover ring-1 ring-inset ring-gray-100 dark:ring-gray-800 shrink-0">
                                                                 <div class="min-w-0">
-                                                                    <div class="flex items-center gap-1.5">
-                                                                        <h3 class="text-[12px] font-semibold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $investor->name }}</h3>
+                                                                    <div class="flex items-center gap-1 sm:gap-1.5">
+                                                                        <h3 class="text-[11px] sm:text-[12px] font-semibold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $investor->name }}</h3>
                                                                         @if($invData->overdue_count > 0)
-                                                                            <span class="shrink-0 text-[7px] font-bold uppercase tracking-wider px-1 py-px rounded bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400">{{ $invData->overdue_count }}v</span>
+                                                                            <span class="shrink-0 text-[6px] sm:text-[7px] font-bold uppercase tracking-wider px-1 py-px rounded bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400">{{ $invData->overdue_count }}v</span>
                                                                         @endif
                                                                     </div>
-                                                                    <p class="text-[9px] text-gray-400 truncate">{{ $investor->email }}</p>
+                                                                    <p class="text-[8px] sm:text-[9px] text-gray-400 truncate">{{ $investor->email }}</p>
                                                                 </div>
                                                             </div>
 
-                                                            <div class="flex items-center gap-3">
+                                                            <div class="flex items-center gap-2 sm:gap-3">
                                                                 <div class="hidden sm:flex items-center gap-3">
                                                                     <div class="text-right">
                                                                         <p class="text-[7px] uppercase tracking-widest font-semibold text-gray-400">Invertido</p>
@@ -177,18 +187,18 @@
                                                         </button>
 
                                                         {{-- MOBILE SUMMARY --}}
-                                                        <div class="sm:hidden px-4 pb-2.5 -mt-1 grid grid-cols-3 gap-2">
+                                                        <div class="sm:hidden px-3 pb-2 -mt-0.5 grid grid-cols-3 gap-1.5">
                                                             <div>
-                                                                <p class="text-[7px] uppercase tracking-widest font-semibold text-gray-400">Invertido</p>
-                                                                <p class="text-[10px] font-bold text-gray-900 dark:text-white pk-mono">{{ $curSymbol }}{{ number_format($invData->amount, 2) }}</p>
+                                                                <p class="text-[6px] uppercase tracking-widest font-semibold text-gray-400">Invertido</p>
+                                                                <p class="text-[9px] font-bold text-gray-900 dark:text-white pk-mono">{{ $curSymbol }}{{ number_format($invData->amount, 0) }}</p>
                                                             </div>
                                                             <div>
-                                                                <p class="text-[7px] uppercase tracking-widest font-semibold text-gray-400">Pagado</p>
-                                                                <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 pk-mono">{{ $curSymbol }}{{ number_format($invData->total_received, 2) }}</p>
+                                                                <p class="text-[6px] uppercase tracking-widest font-semibold text-gray-400">Pagado</p>
+                                                                <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 pk-mono">{{ $curSymbol }}{{ number_format($invData->total_received, 0) }}</p>
                                                             </div>
                                                             <div>
-                                                                <p class="text-[7px] uppercase tracking-widest font-semibold text-gray-400">Progreso</p>
-                                                                <p class="text-[10px] font-bold text-gray-900 dark:text-white pk-mono">{{ $progressPct }}%</p>
+                                                                <p class="text-[6px] uppercase tracking-widest font-semibold text-gray-400">Progreso</p>
+                                                                <p class="text-[9px] font-bold text-gray-900 dark:text-white pk-mono">{{ $progressPct }}%</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -217,8 +227,8 @@
 
                                 {{-- INVESTOR PAGINATION --}}
                                 @if($totalInvPages > 1)
-                                    <div class="px-4 py-2 border-t border-gray-100 dark:border-gray-850 flex items-center justify-between bg-gray-50/30 dark:bg-gray-900/10">
-                                        <span class="text-[9px] text-gray-400">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
+                                    <div class="px-3 sm:px-4 py-2 border-t border-gray-100 dark:border-gray-850 flex items-center justify-between bg-gray-50/30 dark:bg-gray-900/10">
+                                        <span class="text-[8px] sm:text-[9px] text-gray-400">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
                                         <div class="flex items-center gap-1">
                                             @for($p = 0; $p < $totalInvPages; $p++)
                                                 <button onclick="switchInvPage('{{ $oppUid }}', {{ $p }})" class="inv-page-btn w-6 h-6 rounded-md text-[9px] font-bold transition-colors {{ $p === 0 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600' }}" data-opp-uid="{{ $oppUid }}" data-inv-page-btn="{{ $p }}">{{ $p + 1 }}</button>
@@ -235,15 +245,15 @@
 
         {{-- OPPORTUNITY PAGINATION --}}
         @if($totalOppPages > 1)
-            <div class="mt-8 flex items-center justify-center gap-2 pk-fade-up">
-                <button onclick="switchOppPage({{ 0 }})" class="opp-page-btn-first px-3 py-2 rounded-lg text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg>
+            <div class="mt-5 sm:mt-8 flex items-center justify-center gap-1.5 sm:gap-2 pk-fade-up overflow-x-auto px-2">
+                <button onclick="switchOppPage({{ 0 }})" class="opp-page-btn-first shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg>
                 </button>
                 @for($p = 0; $p < $totalOppPages; $p++)
-                    <button onclick="switchOppPage({{ $p }})" class="opp-page-btn px-3 py-2 rounded-lg text-[10px] font-bold transition-colors {{ $p === 0 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600' }}" data-opp-page-btn="{{ $p }}">{{ $p + 1 }}</button>
+                    <button onclick="switchOppPage({{ $p }})" class="opp-page-btn shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[10px] font-bold transition-colors {{ $p === 0 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600' }}" data-opp-page-btn="{{ $p }}">{{ $p + 1 }}</button>
                 @endfor
-                <button onclick="switchOppPage({{ $totalOppPages - 1 }})" class="opp-page-btn-last px-3 py-2 rounded-lg text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg>
+                <button onclick="switchOppPage({{ $totalOppPages - 1 }})" class="opp-page-btn-last shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg>
                 </button>
             </div>
         @endif
@@ -253,14 +263,14 @@
 {{-- INVESTOR DETAIL MODAL --}}
 <div id="investorModal" class="fixed inset-0 z-50 hidden">
     <div class="modal-backdrop absolute inset-0" onclick="closeInvestorModal()"></div>
-    <div class="relative flex items-start justify-center min-h-screen p-4 pt-8">
-        <div class="pk-modal-enter bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl">
-            <div class="sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-5 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <img id="modal_photo" src="" alt="" class="w-10 h-10 rounded-xl object-cover ring-1 ring-inset ring-gray-100 dark:ring-gray-800">
+    <div class="pk-modal-wrap relative flex items-start justify-center min-h-screen p-0 sm:p-4 sm:pt-8">
+        <div class="pk-modal-enter bg-white dark:bg-gray-950 sm:rounded-2xl rounded-none border-0 sm:border sm:border-gray-200 dark:sm:border-gray-800 w-full sm:max-w-4xl h-screen sm:h-auto sm:max-h-[90vh] overflow-hidden shadow-none sm:shadow-2xl">
+            <div class="sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                    <img id="modal_photo" src="" alt="" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover ring-1 ring-inset ring-gray-100 dark:ring-gray-800">
                     <div>
-                        <h3 id="modal_name" class="text-sm font-bold text-gray-900 dark:text-white"></h3>
-                        <p id="modal_email" class="text-[10px] text-gray-400"></p>
+                        <h3 id="modal_name" class="text-[13px] sm:text-sm font-bold text-gray-900 dark:text-white"></h3>
+                        <p id="modal_email" class="text-[9px] sm:text-[10px] text-gray-400"></p>
                     </div>
                 </div>
                 <button onclick="closeInvestorModal()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -268,49 +278,53 @@
                 </button>
             </div>
 
-            <div class="overflow-y-auto max-h-[calc(90vh-80px)]">
-                <div class="px-5 py-4 grid grid-cols-2 md:grid-cols-5 gap-3 bg-gray-50/50 dark:bg-gray-900/20 border-b border-gray-100 dark:border-gray-800">
+            <div class="overflow-y-auto sm:max-h-[calc(90vh-80px)] flex-1">
+                {{-- STATS GRID --}}
+                <div class="px-4 sm:px-5 py-3 sm:py-4 grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 bg-gray-50/50 dark:bg-gray-900/20 border-b border-gray-100 dark:border-gray-800">
                     <div>
-                        <p class="text-[8px] uppercase tracking-widest font-semibold text-gray-400">Invertido</p>
-                        <p id="modal_amount" class="text-sm font-bold text-gray-900 dark:text-white pk-mono"></p>
+                        <p class="text-[7px] sm:text-[8px] uppercase tracking-widest font-semibold text-gray-400">Invertido</p>
+                        <p id="modal_amount" class="text-[13px] sm:text-sm font-bold text-gray-900 dark:text-white pk-mono"></p>
                     </div>
                     <div>
-                        <p class="text-[8px] uppercase tracking-widest font-semibold text-gray-400">Pagado</p>
-                        <p id="modal_received" class="text-sm font-bold text-emerald-600 dark:text-emerald-400 pk-mono"></p>
+                        <p class="text-[7px] sm:text-[8px] uppercase tracking-widest font-semibold text-gray-400">Pagado</p>
+                        <p id="modal_received" class="text-[13px] sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 pk-mono"></p>
                     </div>
                     <div>
-                        <p class="text-[8px] uppercase tracking-widest font-semibold text-gray-400">Retorno total</p>
-                        <p id="modal_expected" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 pk-mono"></p>
+                        <p class="text-[7px] sm:text-[8px] uppercase tracking-widest font-semibold text-gray-400">Retorno total</p>
+                        <p id="modal_expected" class="text-[13px] sm:text-sm font-bold text-indigo-600 dark:text-indigo-400 pk-mono"></p>
                     </div>
                     <div>
-                        <p class="text-[8px] uppercase tracking-widest font-semibold text-gray-400">Sistema</p>
-                        <p id="modal_amort" class="text-sm font-bold text-gray-900 dark:text-white"></p>
+                        <p class="text-[7px] sm:text-[8px] uppercase tracking-widest font-semibold text-gray-400">Sistema</p>
+                        <p id="modal_amort" class="text-[13px] sm:text-sm font-bold text-gray-900 dark:text-white"></p>
                     </div>
-                    <div>
-                        <p class="text-[8px] uppercase tracking-widest font-semibold text-gray-400">Tasa / Plazo</p>
-                        <p class="text-sm font-bold text-gray-900 dark:text-white"><span id="modal_rate"></span> · <span id="modal_term"></span> meses</p>
+                    <div class="col-span-2 sm:col-span-1">
+                        <p class="text-[7px] sm:text-[8px] uppercase tracking-widest font-semibold text-gray-400">Tasa / Plazo</p>
+                        <p class="text-[13px] sm:text-sm font-bold text-gray-900 dark:text-white"><span id="modal_rate"></span> · <span id="modal_term"></span> meses</p>
                     </div>
                 </div>
 
-                <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+                {{-- PROGRESS BAR --}}
+                <div class="px-4 sm:px-5 py-3 border-b border-gray-100 dark:border-gray-800">
                     <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-[9px] uppercase tracking-widest font-semibold text-gray-400">Progreso de pagos</span>
-                        <span id="modal_progress_text" class="text-[10px] font-bold pk-mono text-gray-900 dark:text-white"></span>
+                        <span class="text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold text-gray-400">Progreso de pagos</span>
+                        <span id="modal_progress_text" class="text-[10px] sm:text-[11px] font-bold pk-mono text-gray-900 dark:text-white"></span>
                     </div>
                     <div class="w-full h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                         <div id="modal_progress_bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div>
                     </div>
                 </div>
 
-                <div id="modal_overdue_alert" class="hidden mx-5 mt-4 p-3 bg-red-50 dark:bg-red-500/8 border border-red-200 dark:border-red-500/15 rounded-xl">
+                {{-- OVERDUE ALERT --}}
+                <div id="modal_overdue_alert" class="hidden mx-4 sm:mx-5 mt-3 sm:mt-4 p-2.5 sm:p-3 bg-red-50 dark:bg-red-500/8 border border-red-200 dark:border-red-500/15 rounded-xl">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                        <p class="text-[11px] font-semibold text-red-600 dark:text-red-400"><span id="modal_overdue_count"></span> cuota(s) vencida(s) sin pago</p>
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                        <p class="text-[10px] sm:text-[11px] font-semibold text-red-600 dark:text-red-400"><span id="modal_overdue_count"></span> cuota(s) vencida(s) sin pago</p>
                     </div>
                 </div>
 
-                <div class="px-5 py-4">
-                    <h4 class="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">Cronograma de pagos</h4>
+                {{-- SCHEDULE --}}
+                <div class="px-4 sm:px-5 py-3 sm:py-4">
+                    <h4 class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">Cronograma de pagos</h4>
                     <div id="modal_schedule_container"></div>
                 </div>
             </div>
@@ -407,7 +421,10 @@ function buildScheduleTable(uid, data) {
     fetch(`{{ url('/gestion-interna') }}/inversiones/pagos/detalle/${oppId}/${investorId}`)
         .then(r => r.json())
         .then(schedule => {
-            let html = '<div class="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800">';
+            let html = '';
+
+            // Desktop table
+            html += '<div class="pk-schedule-table overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800">';
             html += '<table class="w-full text-[11px]">';
             html += '<thead><tr class="bg-gray-50 dark:bg-gray-900/40">';
             html += '<th class="px-3 py-2 text-left text-[8px] uppercase tracking-widest font-semibold text-gray-400">Cuota</th>';
@@ -444,6 +461,43 @@ function buildScheduleTable(uid, data) {
             });
 
             html += '</tbody></table></div>';
+
+            // Mobile cards
+            html += '<div class="pk-schedule-card space-y-2">';
+            schedule.forEach(item => {
+                const isOverdue = item.is_overdue && !item.is_paid;
+                const cardBg = isOverdue ? 'bg-red-600' : (item.is_paid ? 'bg-emerald-50/80 dark:bg-emerald-500/5' : 'bg-gray-50/50 dark:bg-gray-900/20');
+                const textColor = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
+                const subTextColor = isOverdue ? 'text-white/70' : 'text-gray-500 dark:text-gray-400';
+                const monoText = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
+
+                let badge = '';
+                if (item.is_paid) {
+                    badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">Pagada</span>';
+                } else if (isOverdue) {
+                    badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
+                } else {
+                    badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+                }
+
+                html += `<div class="${cardBg} rounded-xl p-3 border ${isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-800'}">`;
+                html += `<div class="flex items-center justify-between mb-2">`;
+                html += `<div class="flex items-center gap-2">`;
+                html += `<span class="text-[11px] font-bold ${monoText} pk-mono">Cuota ${item.month}</span>`;
+                html += badge;
+                html += `</div>`;
+                html += `<span class="text-[9px] ${subTextColor} pk-mono">${item.date || '—'}</span>`;
+                html += `</div>`;
+                html += `<div class="grid grid-cols-2 gap-x-4 gap-y-1">`;
+                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Interés</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.interest}</span></div>`;
+                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Capital</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.principal}</span></div>`;
+                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Total</span><span class="text-[10px] font-bold ${monoText} pk-mono">${data.currency}${item.payment}</span></div>`;
+                html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Saldo</span><span class="text-[10px] font-bold ${subTextColor} pk-mono">${data.currency}${item.balance}</span></div>`;
+                html += `</div>`;
+                html += `</div>`;
+            });
+            html += '</div>';
+
             container.innerHTML = html;
         })
         .catch(() => {
