@@ -229,31 +229,24 @@ class InvestmentPaymentController extends Controller
             }
         }
 
-        $payments = \App\Models\CashboxMovement::where('investor_user_id', $investor)
-            ->where('reference_type', 'investment')
-            ->where('reference_id', $opportunity->id)
-            ->where('type', 'expense')
-            ->get();
-
-        $paidMonths = $payments->map(fn($p) => $p->date ? \Carbon\Carbon::parse($p->date)->format('Y-m') : null)->filter()->values()->toArray();
-
         $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
             ->where('investor_user_id', $investor)
-            ->orderBy('month_number')
             ->get()
             ->keyBy('month_number');
 
+        $confirmedMonthNumbers = $payouts->filter(fn($p) => in_array($p->status, ['confirmed', 'paid']))->keys()->toArray();
+
         foreach ($schedule as &$item) {
-            $dateObj = $startDate ? $startDate->copy()->addMonths($item['month']) : null;
-            $item['is_paid'] = $dateObj ? in_array($dateObj->format('Y-m'), $paidMonths) : false;
             $payout = $payouts->get($item['month']);
+            $item['is_paid'] = in_array($item['month'], $confirmedMonthNumbers);
             $item['payout_status'] = $payout ? $payout->status : null;
             $item['payout_id'] = $payout ? $payout->id : null;
             $item['payout_type'] = $payout ? $payout->payment_type : null;
-            if ($payout && $payout->status === 'confirmed') {
-                $item['is_paid'] = true;
-            }
         }
+        unset($item);
+
+        usort($schedule, fn($a, $b) => $a['month'] - $b['month']);
+        $schedule = array_values($schedule);
 
         $nextPayableMonth = null;
         foreach ($schedule as $item) {

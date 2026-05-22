@@ -528,7 +528,7 @@ class LoanController extends Controller
         $page = (int) $request->get('page', 1);
 
         $installments = $loan->installments()
-            ->orderBy('due_date', 'asc')
+            ->orderBy('installment_number', 'asc')
             ->paginate(5, ['*'], 'page', $page);
 
         if ($request->ajax()) {
