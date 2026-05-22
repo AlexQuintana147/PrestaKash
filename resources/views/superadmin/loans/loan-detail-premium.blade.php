@@ -91,7 +91,11 @@
     <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-900/80 rounded-xl">
         <p class="text-[9px] text-gray-400 uppercase tracking-wider font-bold mb-3">Cliente</p>
         <div class="flex items-center gap-3">
-            <img src="{{ $loan->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($loan->user->name) . '&background=6366f1&color=fff' }}" 
+            @php
+                $selfie = $loan->user->documents?->selfie;
+                $userPhoto = $selfie ? \Storage::url($selfie) : ($loan->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($loan->user->name) . '&background=6366f1&color=fff');
+            @endphp
+            <img src="{{ $userPhoto }}" 
                  class="w-10 h-10 rounded-lg object-cover flex-shrink-0" alt="">
             <div class="min-w-0 flex-1">
                 <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $loan->user->name }}</p>
