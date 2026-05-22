@@ -123,9 +123,18 @@ class InvestmentPaymentController extends Controller
                 foreach ($schedule as $item) {
                     $item->is_paid = $item->date ? in_array($item->date->format('Y-m'), $paidMonths) : false;
                     $item->payout = $payouts->get($item->month);
+                    if ($item->payout && $item->payout->status === 'confirmed') {
+                        $item->is_paid = true;
+                    }
                 }
 
                 $totalReceived = $payments->sum('amount');
+                $confirmedPayoutsTotal = $payouts->where('status', 'confirmed')->sum('amount');
+                if ($confirmedPayoutsTotal > 0 && $totalReceived == 0) {
+                    $totalReceived = $confirmedPayoutsTotal;
+                } elseif ($confirmedPayoutsTotal > $totalReceived) {
+                    $totalReceived = $confirmedPayoutsTotal;
+                }
                 $overdueCount = $schedule->where('is_overdue', true)->where('is_paid', false)->count();
                 $overdueAmount = $schedule->where('is_overdue', true)->where('is_paid', false)->sum('payment');
                 $pendingCount = $schedule->where('is_paid', false)->count();
