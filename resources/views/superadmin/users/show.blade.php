@@ -461,6 +461,20 @@
         </summary>
         <div class="px-5 pb-4 space-y-3">
             @foreach($profileChangeRequests->where('status', '!=', 'pending') as $req)
+            @php
+                $reqChanges = [];
+                $fieldLabels = \App\Models\ProfileChangeRequest::fieldLabels();
+                $oldData = $req->old_data ?? [];
+                $newData = $req->new_data ?? [];
+                foreach ($newData as $field => $newVal) {
+                    $oldVal = $oldData[$field] ?? null;
+                    $reqChanges[] = [
+                        'label' => $fieldLabels[$field] ?? $field,
+                        'old' => \App\Models\ProfileChangeRequest::formatValue($field, $oldVal),
+                        'new' => \App\Models\ProfileChangeRequest::formatValue($field, $newVal),
+                    ];
+                }
+            @endphp
             <div class="req-row flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-gray-100 dark:border-gray-800' : '' }}">
                 <div class="text-xs text-gray-600 dark:text-gray-400">
                     {{ $req->created_at->format('d/m/Y H:i') }}
@@ -471,10 +485,8 @@
                     @else
                         <span class="text-gray-400 font-medium">— Cancelada</span>
                     @endif
-                    @if($req->rejection_reason)
-                        <span class="text-gray-400">: {{ $req->rejection_reason }}</span>
-                    @endif
                 </div>
+                <button type="button" onclick='openReqDetailModal({{ json_encode($reqChanges) }})' class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">Ver detalles</button>
             </div>
             @endforeach
             <div id="req-pagination" class="flex items-center justify-center gap-3 pt-2" style="display:none">
@@ -526,6 +538,43 @@
         });
     }
 })();
+</script>
+
+<div id="reqDetailModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Detalles del cambio</h3>
+            <button type="button" onclick="closeReqDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div id="reqDetailContent" class="px-5 py-4 space-y-3 max-h-[60vh] overflow-y-auto"></div>
+    </div>
+</div>
+
+<script>
+function openReqDetailModal(changes) {
+    const container = document.getElementById('reqDetailContent');
+    container.innerHTML = changes.map(c => `
+        <div class="py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">${c.label}</p>
+            <div class="flex items-center gap-2 text-xs">
+                <span class="text-red-400 line-through flex-1">${c.old}</span>
+                <svg class="w-3 h-3 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-green-600 dark:text-green-400 font-medium flex-1">${c.new}</span>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('reqDetailModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeReqDetailModal() {
+    document.getElementById('reqDetailModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+document.getElementById('reqDetailModal').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeReqDetailModal();
+});
 </script>
 @endif
 
