@@ -387,7 +387,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value">
+                    <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=window.unformatInvestAmount(this.querySelector('[name=amount]').value)">
                         @csrf
                         <div class="space-y-4">
                             <div>
@@ -467,7 +467,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value">
+            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=window.unformatInvestAmount(this.querySelector('[name=amount]').value)">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -541,11 +541,13 @@ window.formatInvestAmount = function(raw) {
     if (!val) return '';
     val = parseInt(val, 10).toString();
     let numericValue = parseFloat(val) / 100;
-    return numericValue.toFixed(2);
+    let parts = numericValue.toFixed(2).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
 };
 
 window.unformatInvestAmount = function(formatted) {
-    return (formatted || '0');
+    return (formatted || '0').replace(/,/g, '');
 };
 
 function selectPaymentMethod(method) {
@@ -636,12 +638,14 @@ document.addEventListener('DOMContentLoaded', function () {
             let numericVal = parseFloat(val) / 100;
             if (numericVal < minVal) numericVal = minVal;
             else if (numericVal > maxVal) numericVal = maxVal;
-            this.value = numericVal.toFixed(2);
+            let parts = numericVal.toFixed(2).split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            this.value = parts.join('.');
             updateSchedule();
         });
 
         investAmount.closest('form')?.addEventListener('submit', function() {
-            investAmount.value = (investAmount.value || '0');
+            investAmount.value = window.unformatInvestAmount(investAmount.value);
         });
 
         updateSchedule();
@@ -682,7 +686,7 @@ function updateSchedule() {
 
     if (!amountInput || !rateInput || !termInput || !typeInput || !container || !tbody || !totalEl) return;
 
-    let rawVal = (amountInput.value || '0');
+    let rawVal = (amountInput.value || '0').replace(/,/g, '');
     const amount = parseFloat(rawVal);
     if (isNaN(amount) || amount <= 0) {
         container.classList.add('hidden');
