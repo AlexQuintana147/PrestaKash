@@ -131,6 +131,7 @@
                                     <div class="flex items-center gap-2 mt-0.5">
                                         <p class="text-sm font-black text-gray-900 dark:text-white tracking-tighter">{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
                                         <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-black uppercase tracking-widest flex-shrink-0">{{ $loan->type === 'cuotas' ? 'Cuotas' : 'Único' }}</span>
+                                        <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-bold tracking-wider flex-shrink-0">{{ $loan->code }}</span>
                                         @php $hasProcessing = $loan->installments->where('status', 'processing')->count() > 0; @endphp
                                         @if($hasProcessing)
                                             <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}" onclick="event.stopPropagation()" class="px-1.5 py-0.5 text-purple-600 text-[8px] font-black rounded-full bg-purple-50 dark:bg-purple-500/10 flex-shrink-0">PAGO PEND.</a>
@@ -187,6 +188,7 @@
                                         <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-black uppercase tracking-widest">
                                             {{ $loan->type === 'cuotas' ? 'Cuotas' : 'Unico' }}
                                         </span>
+                                        <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-bold tracking-wider">{{ $loan->code }}</span>
                                     </div>
                                     <p class="text-[9px] text-gray-400 dark:text-gray-600 font-medium">
                                         {{ $loan->created_at->format('d/m/Y H:i') }}
@@ -579,6 +581,7 @@
                                             <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded font-black uppercase tracking-widest">
                                                 {{ $loan->type === 'cuotas' ? 'CUOTAS' : 'ÚNICO' }}
                                             </span>
+                                            <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-bold tracking-wider">{{ $loan->code }}</span>
                                         </div>
                                         <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">
                                             {{ $loan->created_at->format('d/m/Y H:i') }}
