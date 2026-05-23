@@ -396,7 +396,7 @@
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
                                     <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
-                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
+                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);let r=(v||'').replace(/[^\d]/g,'');if(r){let n=parseFloat(r)/100;let mx=parseFloat(document.getElementById('maxInvestment').value);if(n>mx){let p=mx.toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');v=p.join('.');}}if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
                                    class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                             </div>
                             <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
@@ -476,7 +476,7 @@
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
                             <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
-                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
+                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);let r=(v||'').replace(/[^\d]/g,'');if(r){let n=parseFloat(r)/100;let mx=parseFloat(document.getElementById('maxInvestment').value);if(n>mx){let p=mx.toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');v=p.join('.');}}if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
                                    class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                         </div>
                         <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
@@ -626,6 +626,15 @@ document.addEventListener('DOMContentLoaded', function () {
             let pos = this.selectionStart;
             let oldLen = this.value.length;
             let formatted = window.formatInvestAmount(this.value);
+            let rawVal = (formatted || '').replace(/[^\d]/g, '');
+            if (rawVal) {
+                let numericVal = parseFloat(rawVal) / 100;
+                if (numericVal > maxVal) {
+                    let parts = maxVal.toFixed(2).split('.');
+                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    formatted = parts.join('.');
+                }
+            }
             this.value = formatted;
             let newLen = formatted.length;
             try { this.setSelectionRange(newLen, newLen); } catch(ex) {}
