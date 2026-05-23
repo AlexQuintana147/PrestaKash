@@ -310,10 +310,10 @@
                     </div>
 
                     <div class="flex items-center gap-1.5">
-                        <input type="date" id="filter_from_date" onchange="renderMovements()"
+                        <input type="date" id="filter_from_date" onchange="recentCurrentPage = 1; renderMovements()"
                             class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
                         <span class="text-[9px] text-gray-400 font-bold flex-shrink-0">→</span>
-                        <input type="date" id="filter_to_date" onchange="renderMovements()"
+                        <input type="date" id="filter_to_date" onchange="recentCurrentPage = 1; renderMovements()"
                             class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
                         <button onclick="clearDateFilter()" id="clearDateBtn" class="hidden px-2 py-1.5 rounded-lg text-[9px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0">✕</button>
                     </div>
@@ -1055,6 +1055,7 @@
         let currentSymbol = 'S/';
         const itemsPerPage = 10;
         const recentItemsCount = 5;
+        let recentCurrentPage = 1;
         let codesCurrentPage = 1;
         let codesFilteredMovements = [];
         let activeFilterType = 'all';
@@ -1078,6 +1079,7 @@
                     }`;
                 });
             }
+            recentCurrentPage = 1;
             renderMovements();
         }
 
@@ -1106,6 +1108,7 @@
             document.getElementById('filter_from_date').value = '';
             document.getElementById('filter_to_date').value = '';
             document.getElementById('clearDateBtn').classList.add('hidden');
+            recentCurrentPage = 1;
             renderMovements();
         }
 
@@ -1151,6 +1154,7 @@
                 currentSymbol = currency === 'USD' ? '$' : 'S/';
                 activeFilterType = 'all';
                 activeFilterRef = 'all';
+                recentCurrentPage = 1;
                 document.querySelectorAll('.filter-type-btn').forEach(btn => {
                     btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
                         btn.dataset.filterType === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
@@ -1179,7 +1183,13 @@
 
             noMovements.classList.add('hidden');
 
-            const paginatedItems = filtered.slice(0, recentItemsCount);
+            const totalPages = Math.ceil(filtered.length / recentItemsCount);
+            if (recentCurrentPage > totalPages) recentCurrentPage = totalPages;
+            if (recentCurrentPage < 1) recentCurrentPage = 1;
+
+            const start = (recentCurrentPage - 1) * recentItemsCount;
+            const end = start + recentItemsCount;
+            const paginatedItems = filtered.slice(start, end);
 
             paginatedItems.forEach((m, i) => {
                 const isIncome = m.type === 'income';
@@ -1273,6 +1283,26 @@
                                             `;
                 movementsList.insertAdjacentHTML('beforeend', html);
             });
+
+            if (totalPages > 1) {
+                const prevDisabled = recentCurrentPage <= 1;
+                const nextDisabled = recentCurrentPage >= totalPages;
+
+                let paginationHtml = `
+                    <button onclick="recentCurrentPage = ${recentCurrentPage - 1}; renderMovements(); movementsSection.scrollIntoView({behavior:'smooth',block:'start'})" 
+                            ${prevDisabled ? 'disabled' : ''} 
+                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 disabled:pointer-events-none transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest tabular-nums">${recentCurrentPage} / ${totalPages}</span>
+                    <button onclick="recentCurrentPage = ${recentCurrentPage + 1}; renderMovements(); movementsSection.scrollIntoView({behavior:'smooth',block:'start'})" 
+                            ${nextDisabled ? 'disabled' : ''} 
+                            class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 disabled:pointer-events-none transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                `;
+                movementsPagination.innerHTML = paginationHtml;
+            }
         }
 
         function scrollCarousel(direction) {
