@@ -247,7 +247,7 @@
     @php
         $daysToNext = null;
         if ($firstNonApproved) {
-            $daysToNext = (int) now()->diffInDays($firstNonApproved->due_date, false);
+            $daysToNext = (int) now()->startOfDay()->diffInDays($firstNonApproved->due_date->startOfDay(), false);
         }
     @endphp
 

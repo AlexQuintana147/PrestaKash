@@ -82,7 +82,7 @@
                         $percent_inst = ($paid_h / ($total_h ?: 1)) * 100;
 
                         $nextPending = $loan->installments->where('status', '!=', 'approved')->sortBy('due_date')->first();
-                        $daysLeft = $nextPending ? (int) now()->diffInDays($nextPending->due_date, false) : null;
+                        $daysLeft = $nextPending ? (int) now()->startOfDay()->diffInDays($nextPending->due_date->startOfDay(), false) : null;
 
                         $pendingReview = $loan->installments->where('status', 'processing')->count();
                         $rejected = $loan->installments->where('status', 'rejected')->count();
