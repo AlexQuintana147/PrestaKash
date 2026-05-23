@@ -13,7 +13,6 @@ class InvestorApplicationController extends Controller
     {
         $user = Auth::user();
         
-        // Verificar si ya tiene una solicitud pendiente o aprobada
         $existingApplication = InvestorApplication::where('user_id', $user->id)
             ->whereIn('status', ['pending', 'approved', 'rejected'])
             ->latest()
@@ -27,34 +26,27 @@ class InvestorApplicationController extends Controller
             if ($existingApplication->status === 'pending') {
                 return redirect()->route('client.invertir')->with('info', 'Tu solicitud ya está siendo procesada.');
             }
-
-            if ($existingApplication->status === 'rejected') {
-                $nextEligibleDate = $existingApplication->updated_at->addMonth();
-                if (now()->lessThan($nextEligibleDate)) {
-                    return redirect()->route('client.invertir')->with('error', 'De momento no eres apto para invertir. Podrás volver a realizar el formulario el próximo mes (' . $nextEligibleDate->format('d/m/Y') . ').');
-                }
-            }
         }
 
-        return view('client.invest.apply');
+        $rejectedApplication = InvestorApplication::where('user_id', $user->id)
+            ->where('status', 'rejected')
+            ->latest()
+            ->first();
+
+        return view('client.invest.apply', compact('rejectedApplication'));
     }
 
     public function store(Request $request)
     {
         $user = Auth::user();
 
-        // Doble verificación de seguridad
         $existingApplication = InvestorApplication::where('user_id', $user->id)
-            ->whereIn('status', ['pending', 'approved', 'rejected'])
-            ->latest()
+            ->whereIn('status', ['pending', 'approved'])
             ->first();
 
         if ($existingApplication) {
             if ($existingApplication->status === 'approved') return redirect()->route('client.dashboard');
             if ($existingApplication->status === 'pending') return redirect()->route('client.invertir');
-            if ($existingApplication->status === 'rejected' && now()->lessThan($existingApplication->updated_at->addMonth())) {
-                return redirect()->route('client.invertir');
-            }
         }
 
         $request->validate([
