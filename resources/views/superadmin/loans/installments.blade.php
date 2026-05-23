@@ -38,7 +38,7 @@
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
-            <input type="text" id="cobranzas-search" placeholder="Buscar por nombre o DNI..."
+            <input type="text" id="cobranzas-search" placeholder="Buscar por nombre o DNI{{ in_array($filter, ['grouped', 'pending_validation', 'paid']) ? ', o código de préstamo' : '' }}..."
                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
             <button type="button" id="cobranzas-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
                             'reason'            => $loan->reason,
                         ];
                     @endphp
-                    <div class="cobranzas-row" data-search-name="{{ strtolower($user->name) }}" data-search-dni="{{ $user->dni ?? '' }}">
+                    <div class="cobranzas-row" data-search-name="{{ strtolower($user->name) }}" data-search-dni="{{ $user->dni ?? '' }}" data-search-code="{{ strtolower($loan->code) }}">
                         <div class="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-gray-900 mb-2">
                             <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800">
                                 <img src="{{ $photo }}" class="w-full h-full object-cover">
@@ -903,7 +903,8 @@
                     }
                     const name = (row.dataset.searchName || '').toLowerCase();
                     const dni = (row.dataset.searchDni || '').toLowerCase();
-                    const match = name.includes(term) || dni.includes(term);
+                    const code = (row.dataset.searchCode || '').toLowerCase();
+                    const match = name.includes(term) || dni.includes(term) || code.includes(term);
                     row.style.display = match ? '' : 'none';
                 });
             }
