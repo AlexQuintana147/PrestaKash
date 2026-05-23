@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\OnboardingController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
@@ -33,20 +32,6 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/');
 })->name('logout')->middleware('auth');
-
-Route::middleware(['auth', \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class])->withoutMiddleware([
-    \App\Http\Middleware\RedirectIfIncomplete::class,
-    \App\Http\Middleware\RedirectSuperAdmin::class,
-    \App\Http\Middleware\RedirectClient::class,
-])->prefix('notifications')->name('notifications.')->group(function () {
-    Route::get('/', [NotificationController::class, 'index'])->name('index');
-    Route::get('/unread-count', [NotificationController::class, 'unreadCount'])->name('unread-count');
-    Route::post('/{notification}/read', [NotificationController::class, 'markAsRead'])->name('read');
-    Route::post('/{notification}/unread', [NotificationController::class, 'markAsUnread'])->name('unread');
-    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
-    Route::delete('/{notification}', [NotificationController::class, 'destroy'])->name('destroy');
-    Route::post('/send', [NotificationController::class, 'send'])->name('send');
-});
 
 // Validation pending
 Route::get('/validation-pending', function () {
