@@ -395,6 +395,13 @@
                 </button>
             </div>
 
+            <div class="px-5 py-2.5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="borrower-loans-search" placeholder="Buscar por código..." oninput="filterBorrowerLoans()" class="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-gray-300 dark:focus:border-gray-500 transition-colors">
+                </div>
+            </div>
+
             <div id="borrower-loans-list" class="flex-1 overflow-y-auto overscroll-contain divide-y divide-gray-100 dark:divide-gray-800/60">
                 <div class="py-16 flex items-center justify-center">
                     <svg class="w-6 h-6 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
@@ -459,17 +466,31 @@
         let _borrowerLoansData = [];
         let _borrowerLoansPage = 1;
         const _borrowerLoansPerPage = 5;
+        let _borrowerLoansFiltered = [];
+
+        function filterBorrowerLoans() {
+            const q = (document.getElementById('borrower-loans-search').value || '').toLowerCase().trim();
+            if (!q) {
+                _borrowerLoansFiltered = _borrowerLoansData;
+            } else {
+                _borrowerLoansFiltered = _borrowerLoansData.filter(l => l.code.toLowerCase().includes(q));
+            }
+            _borrowerLoansPage = 1;
+            renderBorrowerLoansPage();
+        }
 
         function renderBorrowerLoansPage() {
             const container = document.getElementById('borrower-loans-list');
-            if (_borrowerLoansData.length === 0) {
-                container.innerHTML = '<div class="py-16 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div><p class="text-sm font-medium text-gray-400">Sin préstamos</p><p class="text-[11px] text-gray-300 mt-0.5">No hay préstamos activos para este cliente</p></div>';
+            const data = _borrowerLoansFiltered;
+            if (data.length === 0) {
+                const q = (document.getElementById('borrower-loans-search').value || '').trim();
+                container.innerHTML = '<div class="py-16 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div><p class="text-sm font-medium text-gray-400">' + (q ? 'Sin resultados para "' + q + '"' : 'Sin préstamos') + '</p><p class="text-[11px] text-gray-300 mt-0.5">' + (q ? 'Intenta con otro código' : 'No hay préstamos activos para este cliente') + '</p></div>';
                 document.getElementById('borrower-loans-pagination').classList.add('hidden');
                 return;
             }
-            const totalPages = Math.ceil(_borrowerLoansData.length / _borrowerLoansPerPage);
+            const totalPages = Math.ceil(data.length / _borrowerLoansPerPage);
             const start = (_borrowerLoansPage - 1) * _borrowerLoansPerPage;
-            const pageItems = _borrowerLoansData.slice(start, start + _borrowerLoansPerPage);
+            const pageItems = data.slice(start, start + _borrowerLoansPerPage);
             let html = '';
             pageItems.forEach(function(l, idx) {
                 const num = start + idx + 1;
@@ -516,11 +537,13 @@
         }
 
         function borrowerLoansPrevPage() { if (_borrowerLoansPage > 1) { _borrowerLoansPage--; renderBorrowerLoansPage(); } }
-        function borrowerLoansNextPage() { const tp = Math.ceil(_borrowerLoansData.length / _borrowerLoansPerPage); if (_borrowerLoansPage < tp) { _borrowerLoansPage++; renderBorrowerLoansPage(); } }
+        function borrowerLoansNextPage() { const tp = Math.ceil(_borrowerLoansFiltered.length / _borrowerLoansPerPage); if (_borrowerLoansPage < tp) { _borrowerLoansPage++; renderBorrowerLoansPage(); } }
 
         function openBorrowerLoansModal(userId) {
             _borrowerLoansData = [];
+            _borrowerLoansFiltered = [];
             _borrowerLoansPage = 1;
+            document.getElementById('borrower-loans-search').value = '';
             document.getElementById('borrower-loans-name').textContent = 'Cargando...';
             document.getElementById('borrower-loans-list').innerHTML = '<div class="py-16 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg></div>';
             document.getElementById('borrower-loans-pagination').classList.add('hidden');
@@ -534,6 +557,7 @@
             .then(res => {
                 document.getElementById('borrower-loans-name').textContent = res.user;
                 _borrowerLoansData = res.loans;
+                _borrowerLoansFiltered = res.loans;
                 renderBorrowerLoansPage();
             })
             .catch(() => {

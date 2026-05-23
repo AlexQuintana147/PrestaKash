@@ -367,6 +367,13 @@
             </button>
         </div>
 
+        <div class="px-5 py-2.5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="loans-search" placeholder="Buscar por código..." oninput="filterLoans()" class="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-gray-300 dark:focus:border-gray-500 transition-colors">
+            </div>
+        </div>
+
         <div id="loans-list" class="flex-1 overflow-y-auto overscroll-contain divide-y divide-gray-100 dark:divide-gray-800/60"></div>
 
         <div id="loans-pagination" class="px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0 hidden">
@@ -407,17 +414,31 @@ const loansData = [
 ];
 let loansPage = 1;
 const loansPerPage = 5;
-const loansTotalPages = Math.ceil(loansData.length / loansPerPage);
+let loansFiltered = loansData;
+
+function filterLoans() {
+    const q = (document.getElementById('loans-search').value || '').toLowerCase().trim();
+    if (!q) {
+        loansFiltered = loansData;
+    } else {
+        loansFiltered = loansData.filter(l => l.code.toLowerCase().includes(q));
+    }
+    loansPage = 1;
+    renderLoansPage();
+}
 
 function renderLoansPage() {
     const container = document.getElementById('loans-list');
-    if (loansData.length === 0) {
-        container.innerHTML = `<div class="py-16 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div><p class="text-sm font-medium text-gray-400">Sin préstamos</p><p class="text-[11px] text-gray-300 mt-0.5">No hay préstamos activos para este cliente</p></div>`;
+    const data = loansFiltered;
+    if (data.length === 0) {
+        const q = (document.getElementById('loans-search').value || '').trim();
+        container.innerHTML = `<div class="py-16 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div><p class="text-sm font-medium text-gray-400">${q ? 'Sin resultados para "' + q + '"' : 'Sin préstamos'}</p><p class="text-[11px] text-gray-300 mt-0.5">${q ? 'Intenta con otro código' : 'No hay préstamos activos para este cliente'}</p></div>`;
         document.getElementById('loans-pagination').classList.add('hidden');
         return;
     }
+    const totalPages = Math.ceil(data.length / loansPerPage);
     const start = (loansPage - 1) * loansPerPage;
-    const pageItems = loansData.slice(start, start + loansPerPage);
+    const pageItems = data.slice(start, start + loansPerPage);
     let html = '';
     pageItems.forEach(function(l) {
         const badgeColor = l.isCurrent ? 'bg-orange-500' : (l.overdue > 0 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700');
