@@ -32,7 +32,6 @@
                     'all'      => ['label' => 'Todos',       'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'pending'  => ['label' => 'Solicitudes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'approved' => ['label' => 'Interesados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
-                    'rejected' => ['label' => 'Rechazados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                 ] as $key => $cfg)
                     <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
                        class="flex items-center justify-center gap-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
@@ -48,7 +47,7 @@
         <div class="hidden md:flex flex-col border-b border-gray-200 dark:border-gray-800 mb-8">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-0">
-                    @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados', 'rejected' => 'Rechazados'] as $key => $label)
+                    @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados'] as $key => $label)
                         <a href="{{ route('superadmin.investors.index', ['filter' => $key, 'search' => request('search'), 'from_date' => request('from_date'), 'to_date' => request('to_date')]) }}"
                            class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
                                   {{ $filter === $key
@@ -155,7 +154,6 @@
             @php
                 $svgColor = match($app->status) {
                     'approved' => '#22c55e',
-                    'rejected' => '#ef4444',
                     'pending'  => '#eab308',
                     default    => '#9ca3af',
                 };
@@ -173,8 +171,7 @@
                 @endif
                 <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-950
                     {{ $app->status === 'approved' ? 'bg-green-500' : '' }}
-                    {{ $app->status === 'pending' ? 'bg-yellow-500' : '' }}
-                    {{ $app->status === 'rejected' ? 'bg-red-500' : '' }}">
+                    {{ $app->status === 'pending' ? 'bg-yellow-500' : '' }}">
                 </div>
             </div>
             <div class="min-w-0">
@@ -225,9 +222,6 @@
             @elseif($app->status === 'approved')
                 <span class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></span>
                 <span class="text-xs text-green-500">Interesado</span>
-            @elseif($app->status === 'rejected')
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></span>
-                <span class="text-xs text-red-500">Rechazado</span>
             @endif
         </div>
 
@@ -243,10 +237,6 @@
             @elseif($app->status === 'approved')
                 <button onclick="openConfirmModal('unapprove', {{ $app->id }})" class="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-xl transition-colors" title="Desaprobar Interesado">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </button>
-            @else
-                <button onclick="openConfirmModal('approve', {{ $app->id }})" class="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors" title="Aprobar Interesado (Revertir)">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </button>
             @endif
         </div>
@@ -544,9 +534,9 @@ function openInvestorModal(data) {
     }
 
     const badge = document.getElementById('modalBadge');
-    badge.textContent = data.status === 'pending' ? 'Solicitud' : (data.status === 'approved' ? 'Interesado' : 'Rechazado');
+    badge.textContent = data.status === 'pending' ? 'Solicitud' : 'Interesado';
     badge.className = 'mt-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ' + 
-        (data.status === 'approved' ? 'bg-green-100 text-green-700' : (data.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'));
+        (data.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700');
 
     const actions = document.getElementById('modalActions');
     actions.innerHTML = '';
@@ -558,10 +548,6 @@ function openInvestorModal(data) {
     } else if (data.status === 'approved') {
         actions.innerHTML = `
             <button onclick="closeInvestorModal(); openConfirmModal('unapprove', ${data.id})" class="text-sm font-bold text-yellow-600 border-b-2 border-yellow-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
-        `;
-    } else if (data.status === 'rejected') {
-        actions.innerHTML = `
-            <button onclick="closeInvestorModal(); openConfirmModal('approve', ${data.id})" class="text-sm font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
         `;
     }
 

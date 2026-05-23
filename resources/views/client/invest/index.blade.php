@@ -39,7 +39,7 @@
                 </div>
             @endif
 
-            @if(isset($rejectedApplication) && $rejectedApplication)
+            @if($rejectionReason)
                 <div class="mb-8 bg-red-50 dark:bg-red-500/10 p-5 rounded-2xl border border-red-100 dark:border-red-500/20">
                     <div class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,11 +47,7 @@
                         </svg>
                         <div class="flex-1">
                             <p class="text-sm font-bold text-red-600 dark:text-red-400 mb-1">Tu solicitud anterior fue rechazada</p>
-                            @if($rejectedApplication->admin_notes)
-                                <p class="text-sm text-red-500 dark:text-red-300 mb-3">Motivo: {{ $rejectedApplication->admin_notes }}</p>
-                            @else
-                                <p class="text-sm text-red-500 dark:text-red-300 mb-3">No se especificó un motivo.</p>
-                            @endif
+                            <p class="text-sm text-red-500 dark:text-red-300 mb-3">Motivo: {{ $rejectionReason }}</p>
                             <a href="{{ route('client.invest.apply') }}" class="inline-flex items-center gap-2 text-sm font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors">
                                 Volver a postularme
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +59,7 @@
                 </div>
             @endif
 
-            @if(!isset($rejectedApplication) || !$rejectedApplication)
+            @if(!$rejectionReason)
             <a href="{{ route('client.invest.apply') }}" class="group inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-green-600 dark:hover:text-green-400 transition-colors">
                 Postularme como Inversor
                 <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

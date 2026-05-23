@@ -16,7 +16,7 @@
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">Postulación</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">Completa tu perfil para unirte a nuestra red de inversión.</p>
 
-        @if(isset($rejectedApplication) && $rejectedApplication)
+        @if($rejectionReason)
             <div class="mt-6 bg-red-50 dark:bg-red-500/10 p-4 rounded-2xl border border-red-100 dark:border-red-500/20">
                 <div class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,11 +24,7 @@
                     </svg>
                     <div>
                         <p class="text-sm font-bold text-red-600 dark:text-red-400">Tu solicitud anterior fue rechazada</p>
-                        @if($rejectedApplication->admin_notes)
-                            <p class="text-sm text-red-500 dark:text-red-300 mt-1">Motivo: {{ $rejectedApplication->admin_notes }}</p>
-                        @else
-                            <p class="text-sm text-red-500 dark:text-red-300 mt-1">No se especificó un motivo.</p>
-                        @endif
+                        <p class="text-sm text-red-500 dark:text-red-300 mt-1">Motivo: {{ $rejectionReason }}</p>
                         <p class="text-xs text-red-400 dark:text-red-400/70 mt-2">Puedes corregir y enviar una nueva solicitud.</p>
                     </div>
                 </div>

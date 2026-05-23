@@ -108,11 +108,8 @@ class DashboardController extends Controller
 
     public function invest()
     {
-        $rejectedApplication = \App\Models\InvestorApplication::where('user_id', auth()->id())
-            ->where('status', 'rejected')
-            ->latest()
-            ->first();
+        $rejectionReason = auth()->user()->investor_rejection_reason;
 
-        return view('client.invest.index', compact('rejectedApplication'));
+        return view('client.invest.index', compact('rejectionReason'));
     }
 }

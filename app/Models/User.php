@@ -36,6 +36,7 @@ class User extends Authenticatable
         'loan_interest_rate',
         'credit_line',
         'is_ghost',
+        'investor_rejection_reason',
     ];
 
     protected $hidden = ['password', 'remember_token'];

@@ -44,7 +44,6 @@ class InvestorController extends Controller
             'all' => InvestorApplication::count(),
             'pending' => InvestorApplication::where('status', 'pending')->count(),
             'approved' => InvestorApplication::where('status', 'approved')->count(),
-            'rejected' => InvestorApplication::where('status', 'rejected')->count(),
         ];
 
         return view('superadmin.investors.index', compact('applications', 'counts', 'filter'));
@@ -72,10 +71,8 @@ class InvestorController extends Controller
 
     public function reject(Request $request, InvestorApplication $application)
     {
-        $application->update([
-            'status' => 'rejected',
-            'admin_notes' => $request->reason
-        ]);
+        $application->user->update(['investor_rejection_reason' => $request->reason]);
+        $application->delete();
 
         return back()->with('success', 'Solicitud rechazada.');
     }

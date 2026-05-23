@@ -14,7 +14,7 @@ class InvestorApplicationController extends Controller
         $user = Auth::user();
         
         $existingApplication = InvestorApplication::where('user_id', $user->id)
-            ->whereIn('status', ['pending', 'approved', 'rejected'])
+            ->whereIn('status', ['pending', 'approved'])
             ->latest()
             ->first();
 
@@ -28,12 +28,9 @@ class InvestorApplicationController extends Controller
             }
         }
 
-        $rejectedApplication = InvestorApplication::where('user_id', $user->id)
-            ->where('status', 'rejected')
-            ->latest()
-            ->first();
+        $rejectionReason = $user->investor_rejection_reason;
 
-        return view('client.invest.apply', compact('rejectedApplication'));
+        return view('client.invest.apply', compact('rejectionReason'));
     }
 
     public function store(Request $request)
@@ -76,6 +73,8 @@ class InvestorApplicationController extends Controller
             'preferred_term' => $request->preferred_term,
             'status' => 'pending',
         ]);
+
+        $user->update(['investor_rejection_reason' => null]);
 
         return redirect()->route('client.invertir')->with('success', 'Tu solicitud ha sido enviada con éxito. Nos pondremos en contacto contigo pronto.');
     }
