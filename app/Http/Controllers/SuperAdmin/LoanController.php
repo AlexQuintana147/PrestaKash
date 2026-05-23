@@ -328,7 +328,10 @@ class LoanController extends Controller
             }
         } elseif ($filter === 'all') {
             $borrowersQuery = \App\Models\User::whereHas('loans', function ($q) {
-                $q->whereIn('status', ['approved', 'paid']);
+                $q->whereIn('status', ['approved', 'paid'])
+                  ->whereHas('installments', function ($iq) {
+                      $iq->where('status', 'pending');
+                  });
             })->with(['documents']);
 
             $page = LengthAwarePaginator::resolveCurrentPage();
@@ -343,21 +346,26 @@ class LoanController extends Controller
                 $totalDebt = 0;
                 $activeCount = 0;
                 $overdueCount = 0;
+                $pendingCount = 0;
                 foreach ($loans as $l) {
                     $pending = $l->installments()->where('status', 'pending')->sum('amount');
                     $lateFees = $l->installments()->get()->sum('late_fee');
                     $totalDebt += $pending + $lateFees;
                     if ($l->status === 'approved') $activeCount++;
                     $overdueCount += $l->installments()->where('status', 'pending')->where('due_date', '<', now()->startOfDay())->count();
+                    $pendingCount += $l->installments()->where('status', 'pending')->count();
                 }
                 $selfie = $user->documents?->selfie;
                 $photo = $selfie ? \Storage::url($selfie) : ($user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name));
                 $borrowersWithLoans[] = [
                     'user' => $user,
                     'photo' => $photo,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
                     'loans_count' => $loans->count(),
                     'active_count' => $activeCount,
                     'overdue_count' => $overdueCount,
+                    'pending_count' => $pendingCount,
                     'total_debt' => $totalDebt,
                 ];
             }
