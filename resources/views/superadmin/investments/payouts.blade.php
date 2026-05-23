@@ -255,9 +255,14 @@
                     <p id="modal_email" class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest"></p>
                 </div>
             </div>
-            <button onclick="closeInvestorModal()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="exportSchedulePDF()" title="Exportar cronograma a PDF" class="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v6a1 1 0 001 1h6"/></svg>
+                </button>
+                <button onclick="closeInvestorModal()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
         </div>
 
         <div class="overflow-y-auto flex-1 min-h-0">
@@ -419,6 +424,9 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 function switchOppPage(pageIndex) {
     document.querySelectorAll('.opp-page').forEach(el => el.classList.add('hidden'));
@@ -492,6 +500,122 @@ function openInvestorModal(uid) {
 function closeInvestorModal() {
     document.getElementById('investorModal').classList.add('hidden');
     document.body.style.overflow = '';
+}
+
+function exportSchedulePDF() {
+    if (!_scheduleData || _scheduleData.length === 0) return;
+
+    const jsPDF = window.jspdf?.jsPDF || window.jsPDF;
+    const doc = new jsPDF('landscape');
+
+    const investorName = document.getElementById('modal_name').textContent || '';
+    const oppCode = _scheduleOppCode || '';
+    const currency = _scheduleCurrency || '';
+    const amortType = _scheduleAmortType === 'frances' ? 'Francés' : 'Americano';
+    const rate = document.getElementById('modal_rate')?.textContent || '';
+    const term = document.getElementById('modal_term')?.textContent || '';
+    const amount = document.getElementById('modal_amount')?.textContent || '';
+    const received = document.getElementById('modal_received')?.textContent || '';
+    const expected = document.getElementById('modal_expected')?.textContent || '';
+
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, 297, 38, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PrestaKash', 14, 16);
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Cronograma de Pagos', 14, 24);
+
+    doc.setFontSize(7);
+    doc.text(`Generado: ${new Date().toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`, 14, 32);
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text(investorName, 180, 14);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.text(`Código: ${oppCode}`, 180, 20);
+    doc.text(`Sistema: ${amortType}  |  Tasa: ${rate}  |  Plazo: ${term} meses`, 180, 26);
+    doc.text(`Invertido: ${amount}  |  Pagado: ${received}  |  Retorno: ${expected}`, 180, 32);
+
+    const rows = _scheduleData.map(item => {
+        let status = 'Pendiente';
+        if (item.is_paid) status = 'Pagada';
+        else if (item.payout_status === 'pending') status = 'Por confirmar';
+        else if (item.is_overdue) status = 'Vencida';
+
+        return [
+            item.month,
+            item.date || '—',
+            `${currency}${item.interest}`,
+            `${currency}${item.principal}`,
+            `${currency}${item.payment}`,
+            `${currency}${item.balance}`,
+            status,
+            item.paid_at || '—'
+        ];
+    });
+
+    doc.autoTable({
+        startY: 44,
+        head: [['Cuota', 'Vencimiento', 'Interés', 'Capital', 'Total', 'Saldo', 'Estado', 'F. Pago']],
+        body: rows,
+        theme: 'grid',
+        headStyles: {
+            fillColor: [30, 64, 175],
+            textColor: [255, 255, 255],
+            fontSize: 7,
+            fontStyle: 'bold',
+            halign: 'center'
+        },
+        bodyStyles: {
+            fontSize: 7,
+            halign: 'center'
+        },
+        columnStyles: {
+            0: { halign: 'center', cellWidth: 15 },
+            1: { halign: 'center', cellWidth: 28 },
+            2: { halign: 'right', cellWidth: 28 },
+            3: { halign: 'right', cellWidth: 28 },
+            4: { halign: 'right', cellWidth: 28 },
+            5: { halign: 'right', cellWidth: 28 },
+            6: { halign: 'center', cellWidth: 25 },
+            7: { halign: 'center', cellWidth: 25 }
+        },
+        didParseCell: function(data) {
+            if (data.section === 'body') {
+                const status = data.row.raw[6];
+                if (data.column.index === 6) {
+                    if (status === 'Pagada') {
+                        data.cell.styles.textColor = [22, 163, 74];
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (status === 'Vencida') {
+                        data.cell.styles.textColor = [220, 38, 38];
+                        data.cell.styles.fontStyle = 'bold';
+                    } else if (status === 'Por confirmar') {
+                        data.cell.styles.textColor = [217, 119, 6];
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            }
+        },
+        didDrawPage: function(data) {
+            doc.setFillColor(15, 23, 42);
+            doc.rect(0, 200, 297, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(7);
+            doc.text('PrestaKash — Cronograma confidencial', 14, 206);
+            doc.text(`Página ${data.pageNumber}`, 283, 206, { align: 'right' });
+        }
+    });
+
+    const fileName = `cronograma_${oppCode}_${investorName.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.pdf`;
+    doc.save(fileName);
 }
 
 document.addEventListener('keydown', function(e) {
