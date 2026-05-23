@@ -104,6 +104,15 @@
             @endforeach
         </div>
 
+        @php
+            $borrowers = $borrowers ?? null;
+            $borrowersWithLoans = $borrowersWithLoans ?? [];
+            $groupedInstallments = $groupedInstallments ?? [];
+            $overdueDebtors = $overdueDebtors ?? [];
+            $installments = $installments ?? collect();
+            $loansPaginator = $loansPaginator ?? null;
+        @endphp
+
         @if($filter === 'grouped')
             <!-- Vista Agrupada (2 columnas) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
@@ -272,7 +281,7 @@
                 @endforelse
             </div>
 
-            @if(method_exists($borrowers, 'links') && $borrowers->hasPages())
+            @if($borrowers && method_exists($borrowers, 'links') && $borrowers->hasPages())
                 <div class="mt-12 flex justify-center">
                     {{ $borrowers->links() }}
                 </div>
