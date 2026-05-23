@@ -214,6 +214,24 @@
                 </div>
             @endif
         @elseif($filter === 'all')
+            <form method="GET" action="{{ route('superadmin.installments.index') }}" class="mb-6">
+                <input type="hidden" name="filter" value="all">
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar por nombre o DNI..."
+                           class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
+                    @if($search)
+                        <a href="{{ route('superadmin.installments.index', ['filter' => 'all']) }}"
+                           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </a>
+                    @endif
+                </div>
+            </form>
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($borrowersWithLoans as $bw)
                     <div class="flex items-center gap-4 px-2 py-4 hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors cursor-pointer group"

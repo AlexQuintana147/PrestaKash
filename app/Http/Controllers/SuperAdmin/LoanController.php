@@ -314,6 +314,7 @@ class LoanController extends Controller
         $instId = $request->get('installment_id');
         $highlightInterest = $request->get('highlight_interest', false);
         $movementDate = $request->get('movement_date');
+        $search = $request->get('search');
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
         $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents', 'interestPayments'])
@@ -333,6 +334,13 @@ class LoanController extends Controller
                       $iq->where('status', 'pending');
                   });
             })->with(['documents']);
+
+            if ($search) {
+                $borrowersQuery->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('dni', 'like', "%{$search}%");
+                });
+            }
 
             $page = LengthAwarePaginator::resolveCurrentPage();
             $perPage = 15;
@@ -374,7 +382,8 @@ class LoanController extends Controller
                 'borrowers' => $borrowers,
                 'borrowersWithLoans' => $borrowersWithLoans,
                 'filter' => $filter,
-                'cashboxes' => $cashboxes
+                'cashboxes' => $cashboxes,
+                'search' => $search,
             ]);
         } elseif ($filter === 'grouped') {
             $loansPaginator = \App\Models\Loan::with(['user', 'user.documents'])
