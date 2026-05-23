@@ -39,19 +39,19 @@
                 </a>
             </div>
         @else
-            <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
+            <div class="flex flex-col gap-3 mb-8">
+                    <div class="relative">
                         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <input type="text" id="search-code" placeholder="Buscar por código..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-all">
+                        <input type="text" id="search-code" placeholder="Buscar por código..." class="w-full pl-10 pr-4 py-3 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-all">
                     </div>
-                    <div class="flex gap-2">
-                        <button type="button" data-filter="all" class="filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-black dark:bg-white text-white dark:text-black">
+                    <div class="flex gap-2 overflow-x-auto -mx-5 px-5 sm:mx-0 sm:px-0 pb-1 sm:pb-0 scrollbar-none">
+                        <button type="button" data-filter="all" class="filter-btn px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-black dark:bg-white text-white dark:text-black whitespace-nowrap flex-shrink-0">
                             Todos
                         </button>
-                        <button type="button" data-filter="approved" class="filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600">
+                        <button type="button" data-filter="approved" class="filter-btn px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 whitespace-nowrap flex-shrink-0">
                             Activos
                         </button>
-                        <button type="button" data-filter="paid" class="filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600">
+                        <button type="button" data-filter="paid" class="filter-btn px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 whitespace-nowrap flex-shrink-0">
                             Pagados
                         </button>
                     </div>
@@ -72,8 +72,8 @@
                 @foreach($loans as $loan)
                     <a href="{{ route('client.loans.history.show', $loan) }}"
                         data-code="{{ strtoupper($loan->code) }}" data-status="{{ $loan->status }}"
-                        class="loan-card group block py-6 lg:py-8 border-b border-gray-100 dark:border-gray-900 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-all duration-300">
-                        <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start lg:items-center">
+                        class="loan-card group relative block py-5 px-1 sm:py-6 lg:py-8 pr-8 sm:pr-1 border-b border-gray-100 dark:border-gray-900 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 active:bg-gray-100 dark:active:bg-gray-800/50 transition-all duration-300">
+                        <div class="flex flex-col lg:flex-row gap-4 lg:gap-8 items-start lg:items-center">
 
                             <!-- Monto y Tipo -->
                             <div class="flex items-center gap-4 lg:gap-6 w-full lg:w-auto lg:min-w-[240px]">
@@ -220,9 +220,8 @@
                             </div>
                             @endif
 
-                            <!-- Flecha -->
-                            <div class="hidden lg:block">
-                                <svg class="w-5 h-5 text-gray-300 dark:text-gray-700 group-hover:text-green-500 group-hover:translate-x-1 transition-all"
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 sm:static sm:translate-y-0 sm:block">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-300 dark:text-gray-700 group-hover:text-green-500 group-hover:translate-x-1 transition-all"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
@@ -236,6 +235,7 @@
 
     </div>
 
+    <style>.scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{-ms-overflow-style:none;scrollbar-width:none}</style>
     <script>
     (function() {
         const searchInput = document.getElementById('search-code');

@@ -68,16 +68,16 @@
     @endphp
 
     @if($isInDefault && $overdueInstallments->count() > 0)
-        <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-6">
-            <div class="flex items-start gap-4">
-                <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-4 sm:p-6">
+            <div class="flex items-start gap-3 sm:gap-4">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                 </div>
-                <div class="flex-1">
-                    <h3 class="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Estado de Mora</h3>
-                    <p class="text-[11px] text-red-500/80 leading-relaxed mb-4">
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-xs sm:text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Estado de Mora</h3>
+                    <p class="text-[10px] sm:text-[11px] text-red-500/80 leading-relaxed mb-3 sm:mb-4">
                         Tienes mora pendiente. Debes regularizar tu situación antes de realizar otros pagos.
                     </p>
 
@@ -124,11 +124,11 @@
             </div>
         </div>
     @elseif($accumulatedDebt > 0)
-        <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-6">
-            <div class="flex items-start gap-4">
-                <div class="flex-1">
-                    <h3 class="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Deuda Acumulada</h3>
-                    <p class="text-[11px] text-red-500/80 leading-relaxed mb-4">
+        <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-4 sm:p-6">
+            <div class="flex items-start gap-3 sm:gap-4">
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-xs sm:text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Deuda Acumulada</h3>
+                    <p class="text-[10px] sm:text-[11px] text-red-500/80 leading-relaxed mb-3 sm:mb-4">
                         Tienes cuotas vencidas. Para regularizar tu situación, debes pagar las cuotas atrasadas más la mora generada y, si lo deseas, la cuota actual.
                     </p>
 
@@ -191,45 +191,45 @@
         $pendingInterest = max(0, ($loan->total_amount - $loan->amount) - $paidInterest);
     @endphp
 
-    <div class="grid grid-cols-2 gap-3 mb-4">
-        <div class="bg-emerald-500 rounded-2xl px-4 py-4">
-            <p class="text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pagado</p>
-            <p class="text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalPaidWithFees, 2) }}</p>
+    <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-4">
+        <div class="bg-emerald-500 rounded-2xl px-3 sm:px-4 py-3 sm:py-4">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pagado</p>
+            <p class="text-base sm:text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalPaidWithFees, 2) }}</p>
             <div class="mt-1.5 space-y-0.5">
-                <p class="text-[8px] text-white">Capital: {{ $cur }}{{ number_format($paidCapital, 2) }}</p>
-                <p class="text-[8px] text-white">Interés: {{ $cur }}{{ number_format($paidInterest, 2) }}</p>
+                <p class="text-[7px] sm:text-[8px] text-white">Capital: {{ $cur }}{{ number_format($paidCapital, 2) }}</p>
+                <p class="text-[7px] sm:text-[8px] text-white">Interés: {{ $cur }}{{ number_format($paidInterest, 2) }}</p>
                 @if($paidLateFees > 0)
-                <p class="text-[8px] text-white">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
+                <p class="text-[7px] sm:text-[8px] text-white">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
                 @endif
             </div>
-            <p class="text-[7px] text-white mt-2 italic">Solo se contabilizan las cuotas pagadas. El total pagado en intereses no se incluye en este monto.</p>
+            <p class="text-[6px] sm:text-[7px] text-white mt-2 italic">Solo se contabilizan las cuotas pagadas. El total pagado en intereses no se incluye en este monto.</p>
         </div>
-        <div class="bg-orange-500 rounded-2xl px-4 py-4">
-            <p class="text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pendiente</p>
-            <p class="text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalRemaining, 2) }}</p>
+        <div class="bg-orange-500 rounded-2xl px-3 sm:px-4 py-3 sm:py-4">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pendiente</p>
+            <p class="text-base sm:text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalRemaining, 2) }}</p>
             <div class="mt-1.5 space-y-0.5">
-                <p class="text-[8px] text-white">Capital: {{ $cur }}{{ number_format($pendingCapital, 2) }}</p>
-                <p class="text-[8px] text-white">Interés: {{ $cur }}{{ number_format($pendingInterest, 2) }}</p>
+                <p class="text-[7px] sm:text-[8px] text-white">Capital: {{ $cur }}{{ number_format($pendingCapital, 2) }}</p>
+                <p class="text-[7px] sm:text-[8px] text-white">Interés: {{ $cur }}{{ number_format($pendingInterest, 2) }}</p>
                 @if($overdueInstallments->sum('late_fee') > 0)
-                <p class="text-[8px] text-white">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
+                <p class="text-[7px] sm:text-[8px] text-white">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
                 @endif
             </div>
-            <p class="text-[7px] text-white mt-2 italic">Recuerda pagar a tiempo para evitar recargos por mora. El monto puede variar si se acumulan intereses por atraso.</p>
+            <p class="text-[6px] sm:text-[7px] text-white mt-2 italic">Recuerda pagar a tiempo para evitar recargos por mora. El monto puede variar si se acumulan intereses por atraso.</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-px bg-gray-100 dark:bg-gray-900 rounded-2xl overflow-hidden mb-6">
-        <div class="bg-white dark:bg-gray-950 px-4 py-4">
-            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Prestado</p>
-            <p class="text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->amount, 2) }}</p>
+    <div class="grid grid-cols-3 gap-1 sm:gap-px bg-gray-100 dark:bg-gray-900 rounded-2xl overflow-hidden mb-6">
+        <div class="bg-white dark:bg-gray-950 px-2 sm:px-4 py-3 sm:py-4">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Prestado</p>
+            <p class="text-sm sm:text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->amount, 2) }}</p>
         </div>
-        <div class="bg-white dark:bg-gray-950 px-4 py-4">
-            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Total a pagar</p>
-            <p class="text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->total_amount, 2) }}</p>
+        <div class="bg-white dark:bg-gray-950 px-2 sm:px-4 py-3 sm:py-4">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Total a pagar</p>
+            <p class="text-sm sm:text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->total_amount, 2) }}</p>
         </div>
-        <div class="bg-white dark:bg-gray-950 px-4 py-4">
-            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Por cuota</p>
-            <p class="text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->monthly_payment, 2) }}</p>
+        <div class="bg-white dark:bg-gray-950 px-2 sm:px-4 py-3 sm:py-4">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Por cuota</p>
+            <p class="text-sm sm:text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->monthly_payment, 2) }}</p>
         </div>
     </div>
 
@@ -245,16 +245,16 @@
     </div>
 
     <!-- Info clave -->
-    <div class="grid grid-cols-2 gap-3 mb-8">
+    <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-8">
         @foreach([
             'Vencimiento próximo' => $firstNonApproved ? $firstNonApproved->due_date->format('d M Y') : '—',
             'Frecuencia'          => ucfirst($loan->payment_frequency),
             'Banco destino'       => $loan->bank_name,
             'Desembolso'          => $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d M Y') : '—',
         ] as $label => $value)
-        <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl px-4 py-3">
-            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">{{ $label }}</p>
-            <p class="text-xs font-bold text-gray-900 dark:text-white">{{ $value }}</p>
+        <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">{{ $label }}</p>
+            <p class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white truncate">{{ $value }}</p>
         </div>
         @endforeach
     </div>
@@ -262,9 +262,9 @@
     <!-- Cronograma -->
     <div>
         <!-- Título + filtros -->
-        <div class="flex items-center justify-between mb-4">
-            <p class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white">Cronograma</p>
-            <div class="flex items-center gap-0 border-b border-gray-100 dark:border-gray-900">
+        <div class="flex items-center justify-between mb-4 gap-2">
+            <p class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white flex-shrink-0">Cronograma</p>
+            <div class="flex items-center gap-0 border-b border-gray-100 dark:border-gray-900 overflow-x-auto scrollbar-none">
                 @foreach(['all' => 'Todas', 'pending' => 'Pendientes', 'paid' => 'Pagadas'] as $fkey => $flabel)
                 <button type="button"
                     onclick="setFilter('{{ $fkey }}')"
@@ -287,7 +287,7 @@
                 $canPay = $firstPayable && $firstPayable->id === $inst->id;
                 $statusKey = $inst->status === 'approved' ? 'paid' : 'pending';
             @endphp
-            <div class="inst-row py-4 flex items-center gap-4" data-status="{{ $statusKey }}">
+            <div class="inst-row py-3 sm:py-4 flex items-center gap-2 sm:gap-4" data-status="{{ $statusKey }}">
                 <!-- Número -->
                 <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0
                     {{ $inst->status === 'approved' ? 'bg-green-500/10' : ($isOverdue ? 'bg-red-500/10' : 'bg-gray-100 dark:bg-gray-900') }}">
@@ -405,6 +405,7 @@
 
 <!-- Modal Pago -->
 <style>
+    .scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{-ms-overflow-style:none;scrollbar-width:none}
     #uploadModal select {
         color-scheme: light;
     }
@@ -421,9 +422,9 @@
     }
 </style>
 <div id="uploadModal"
-    class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+    class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center"
     onclick="if(event.target===this) closeUploadModal()">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-2xl shadow-2xl p-6 relative">
+    <div class="bg-white dark:bg-gray-950 w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto">
         <button onclick="closeUploadModal()"
             class="absolute top-5 right-5 text-gray-300 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
