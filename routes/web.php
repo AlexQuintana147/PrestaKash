@@ -131,6 +131,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     // Gestión de pagos
     Route::get('/pagos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsIndex'])->name('installments.index');
     Route::get('/pagos/deudor/{user}', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'debtorDetail'])->name('installments.debtor');
+    Route::get('/pagos/prestamos/{user}', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'userLoans'])->name('installments.user-loans');
     Route::get('/pagos/grupo/{loan}', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsGroup'])->name('installments.group');
     Route::post('/pagos/mora/{loan}', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'updateLateFee'])->name('installments.late-fee');
     Route::patch('/pagos/{installment}/numero-operacion', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'updateOperationNumber'])->name('installments.update-operation');

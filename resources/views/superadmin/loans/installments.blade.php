@@ -38,7 +38,7 @@
         <div class="md:hidden mb-8">
             <div class="grid grid-cols-2 gap-2 mb-2">
                 @foreach([
-                    'all'     => ['label' => 'Todas',     'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'all'     => ['label' => 'Personas',     'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'grouped' => ['label' => 'Por Grupo', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                 ] as $key => $cfg)
                     <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
@@ -74,7 +74,7 @@
 
         <!-- Filtros Desktop -->
         <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
-            @foreach(['all' => 'Todas las cuotas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas', 'overdue' => 'Cuotas vencidas'] as $key => $label)
+            @foreach(['all' => 'Personas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas', 'overdue' => 'Cuotas vencidas'] as $key => $label)
                 <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
                     class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors flex items-center gap-2
                               {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
@@ -213,6 +213,43 @@
                     {{ $loansPaginator->links() }}
                 </div>
             @endif
+        @elseif($filter === 'all')
+            <div class="divide-y divide-gray-100 dark:divide-gray-900">
+                @forelse($borrowersWithLoans as $bw)
+                    <div class="flex items-center gap-4 px-2 py-4 hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors cursor-pointer group"
+                         onclick="openBorrowerLoansModal({{ $bw['user']->id }})">
+                        <div class="w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800 flex-shrink-0">
+                            <img src="{{ $bw['photo'] }}" class="w-full h-full object-cover" alt="">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $bw['user']->name }}</h3>
+                                @if($bw['overdue_count'] > 0)
+                                    <span class="px-1.5 py-px bg-red-500 text-white text-[8px] font-bold rounded flex-shrink-0">{{ $bw['overdue_count'] }} vencida{{ $bw['overdue_count'] > 1 ? 's' : '' }}</span>
+                                @endif
+                            </div>
+                            <div class="flex items-center gap-x-4 gap-y-1 mt-1 text-[10px] text-gray-400">
+                                <span>{{ $bw['loans_count'] }} préstamo{{ $bw['loans_count'] > 1 ? 's' : '' }}</span>
+                                <span>{{ $bw['active_count'] }} activo{{ $bw['active_count'] > 1 ? 's' : '' }}</span>
+                                @if($bw['total_debt'] > 0)
+                                    <span>Deuda: <strong class="text-orange-600 dark:text-orange-400 tabular-nums">{{ number_format($bw['total_debt'], 2) }}</strong></span>
+                                @endif
+                            </div>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
+                @empty
+                    <div class="py-24 text-center">
+                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay prestatarios registrados</p>
+                    </div>
+                @endforelse
+            </div>
+
+            @if(method_exists($borrowers, 'links') && $borrowers->hasPages())
+                <div class="mt-12 flex justify-center">
+                    {{ $borrowers->links() }}
+                </div>
+            @endif
         @elseif($filter === 'overdue')
             <div class="space-y-3">
                 @forelse($overdueDebtors as $debtor)
@@ -344,6 +381,38 @@
         @include('superadmin.loans.partials.voucher-cleanup-modal')
     @endif
 
+    <!-- Modal Préstamos del Prestatario -->
+    <div id="borrower-loans-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40" onclick="closeBorrowerLoansModal()"></div>
+        <div class="absolute bottom-0 left-0 right-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg sm:w-full bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+            <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-900 dark:text-white">Préstamos activos</h2>
+                    <p id="borrower-loans-name" class="text-[10px] text-gray-400"></p>
+                </div>
+                <button onclick="closeBorrowerLoansModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors -mr-1">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div id="borrower-loans-list" class="flex-1 overflow-y-auto overscroll-contain divide-y divide-gray-100 dark:divide-gray-800/60">
+                <div class="py-16 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                </div>
+            </div>
+
+            <div id="borrower-loans-pagination" class="px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0 hidden">
+                <div class="flex items-center justify-between gap-3">
+                    <button onclick="borrowerLoansPrevPage()" id="borrower-loans-prev-btn"
+                        class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 transition-colors disabled:opacity-30 disabled:pointer-events-none">← Anterior</button>
+                    <div id="borrower-loans-page-dots" class="flex items-center gap-1"></div>
+                    <button onclick="borrowerLoansNextPage()" id="borrower-loans-next-btn"
+                        class="px-3 py-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-gray-200 rounded-lg text-[10px] font-bold text-white dark:text-gray-900 transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Editar Número de Operación -->
     <div id="editOperationModal"
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[130] flex items-center justify-center p-4">
@@ -386,6 +455,97 @@
 
     <script>
         const allCashboxes = @json($cashboxes);
+
+        let _borrowerLoansData = [];
+        let _borrowerLoansPage = 1;
+        const _borrowerLoansPerPage = 5;
+
+        function renderBorrowerLoansPage() {
+            const container = document.getElementById('borrower-loans-list');
+            if (_borrowerLoansData.length === 0) {
+                container.innerHTML = '<div class="py-16 text-center"><div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></div><p class="text-sm font-medium text-gray-400">Sin préstamos</p><p class="text-[11px] text-gray-300 mt-0.5">No hay préstamos activos para este cliente</p></div>';
+                document.getElementById('borrower-loans-pagination').classList.add('hidden');
+                return;
+            }
+            const totalPages = Math.ceil(_borrowerLoansData.length / _borrowerLoansPerPage);
+            const start = (_borrowerLoansPage - 1) * _borrowerLoansPerPage;
+            const pageItems = _borrowerLoansData.slice(start, start + _borrowerLoansPerPage);
+            let html = '';
+            pageItems.forEach(function(l, idx) {
+                const num = start + idx + 1;
+                const badgeColor = l.overdue > 0 ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700';
+                const debtColor = l.overdue > 0 ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400';
+                let badges = '';
+                if (l.overdue > 0) badges += '<span class="px-1.5 py-px bg-red-500 text-white text-[8px] font-bold rounded">' + l.overdue + '</span>';
+
+                html += '<a href="' + l.url + '" class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors active:bg-gray-100 dark:active:bg-gray-800/50 group">';
+                html += '<div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ' + badgeColor + '">';
+                html += '<span class="text-xs font-black text-white tabular-nums">#' + num + '</span>';
+                html += '</div>';
+                html += '<div class="flex-1 min-w-0">';
+                html += '<div class="flex items-center gap-1.5 mb-1">';
+                html += '<span class="text-sm font-bold text-gray-900 dark:text-white">' + l.code + '</span>' + badges;
+                html += '</div>';
+                html += '<div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-400 dark:text-gray-500">';
+                html += '<span>' + l.cur + '<strong class="text-gray-600 dark:text-gray-300 tabular-nums ml-0.5">' + Number(l.amount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
+                html += '<span>Pagado: <strong class="text-emerald-600 dark:text-emerald-400 tabular-nums">' + Number(l.paid).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
+                html += '<span>Deuda: <strong class="' + debtColor + ' tabular-nums">' + Number(l.debt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
+                html += '</div></div>';
+                html += '<svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+                html += '</a>';
+            });
+            container.innerHTML = html;
+
+            const pagDiv = document.getElementById('borrower-loans-pagination');
+            if (totalPages > 1) {
+                pagDiv.classList.remove('hidden');
+                document.getElementById('borrower-loans-prev-btn').disabled = _borrowerLoansPage <= 1;
+                document.getElementById('borrower-loans-next-btn').disabled = _borrowerLoansPage >= totalPages;
+                const dotsContainer = document.getElementById('borrower-loans-page-dots');
+                dotsContainer.innerHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'w-7 h-7 flex items-center justify-center rounded-md text-[10px] font-bold transition-colors ' + (i === _borrowerLoansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400');
+                    dot.textContent = i;
+                    dot.onclick = function() { _borrowerLoansPage = i; renderBorrowerLoansPage(); };
+                    dotsContainer.appendChild(dot);
+                }
+            } else {
+                pagDiv.classList.add('hidden');
+            }
+        }
+
+        function borrowerLoansPrevPage() { if (_borrowerLoansPage > 1) { _borrowerLoansPage--; renderBorrowerLoansPage(); } }
+        function borrowerLoansNextPage() { const tp = Math.ceil(_borrowerLoansData.length / _borrowerLoansPerPage); if (_borrowerLoansPage < tp) { _borrowerLoansPage++; renderBorrowerLoansPage(); } }
+
+        function openBorrowerLoansModal(userId) {
+            _borrowerLoansData = [];
+            _borrowerLoansPage = 1;
+            document.getElementById('borrower-loans-name').textContent = 'Cargando...';
+            document.getElementById('borrower-loans-list').innerHTML = '<div class="py-16 flex items-center justify-center"><svg class="w-6 h-6 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg></div>';
+            document.getElementById('borrower-loans-pagination').classList.add('hidden');
+            document.getElementById('borrower-loans-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            fetch('/gestion-interna/pagos/prestamos/' + userId, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(res => {
+                document.getElementById('borrower-loans-name').textContent = res.user;
+                _borrowerLoansData = res.loans;
+                renderBorrowerLoansPage();
+            })
+            .catch(() => {
+                document.getElementById('borrower-loans-name').textContent = 'Error al cargar';
+                document.getElementById('borrower-loans-list').innerHTML = '<div class="py-16 text-center"><p class="text-sm text-red-400">Error al cargar los préstamos</p></div>';
+            });
+        }
+
+        function closeBorrowerLoansModal() {
+            document.getElementById('borrower-loans-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
 
         function loadGroupPage(btn) {
             const loanId = btn.dataset.loanId;

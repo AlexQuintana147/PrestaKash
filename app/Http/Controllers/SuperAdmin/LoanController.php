@@ -326,6 +326,48 @@ class LoanController extends Controller
             if (!$highlightInterest) {
                 $filter = 'all';
             }
+        } elseif ($filter === 'all') {
+            $borrowersQuery = \App\Models\User::whereHas('loans', function ($q) {
+                $q->whereIn('status', ['approved', 'paid']);
+            })->with(['documents']);
+
+            $page = LengthAwarePaginator::resolveCurrentPage();
+            $perPage = 15;
+            $borrowers = $borrowersQuery->orderBy('name', 'asc')->paginate($perPage)->withQueryString();
+
+            $borrowersWithLoans = [];
+            foreach ($borrowers as $user) {
+                $loans = \App\Models\Loan::where('user_id', $user->id)
+                    ->whereIn('status', ['approved', 'paid'])
+                    ->get();
+                $totalDebt = 0;
+                $activeCount = 0;
+                $overdueCount = 0;
+                foreach ($loans as $l) {
+                    $pending = $l->installments()->where('status', 'pending')->sum('amount');
+                    $lateFees = $l->installments()->get()->sum('late_fee');
+                    $totalDebt += $pending + $lateFees;
+                    if ($l->status === 'approved') $activeCount++;
+                    $overdueCount += $l->installments()->where('status', 'pending')->where('due_date', '<', now()->startOfDay())->count();
+                }
+                $selfie = $user->documents?->selfie;
+                $photo = $selfie ? \Storage::url($selfie) : ($user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name));
+                $borrowersWithLoans[] = [
+                    'user' => $user,
+                    'photo' => $photo,
+                    'loans_count' => $loans->count(),
+                    'active_count' => $activeCount,
+                    'overdue_count' => $overdueCount,
+                    'total_debt' => $totalDebt,
+                ];
+            }
+
+            return view('superadmin.loans.installments', [
+                'borrowers' => $borrowers,
+                'borrowersWithLoans' => $borrowersWithLoans,
+                'filter' => $filter,
+                'cashboxes' => $cashboxes
+            ]);
         } elseif ($filter === 'grouped') {
             $loansPaginator = \App\Models\Loan::with(['user', 'user.documents'])
                 ->whereIn('status', ['approved', 'paid'])
@@ -489,6 +531,38 @@ class LoanController extends Controller
         $installments->withQueryString();
 
         return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
+    }
+
+    public function userLoans(\App\Models\User $user)
+    {
+        $loans = \App\Models\Loan::where('user_id', $user->id)
+            ->whereIn('status', ['approved', 'paid'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $data = [];
+        foreach ($loans as $loan) {
+            $cur = $loan->currency === 'USD' ? '$' : 'S/';
+            $paid = $loan->installments()->where('status', 'approved')->sum('amount');
+            $pending = $loan->installments()->where('status', 'pending')->sum('amount');
+            $overdue = $loan->installments()->where('status', 'pending')->where('due_date', '<', now()->startOfDay())->count();
+            $lateFees = $loan->installments()->get()->sum('late_fee');
+            $data[] = [
+                'code' => $loan->code,
+                'url' => route('superadmin.installments.group', $loan) . '?source=modal',
+                'status' => $loan->status === 'approved' ? 'Activo' : 'Pagado',
+                'overdue' => $overdue,
+                'cur' => $cur,
+                'amount' => (float) $loan->amount,
+                'paid' => (float) $paid,
+                'debt' => (float) ($pending + $lateFees),
+            ];
+        }
+
+        return response()->json([
+            'user' => $user->name,
+            'loans' => $data,
+        ]);
     }
 
     public function debtorDetail(\App\Models\User $user)
