@@ -469,14 +469,14 @@ function renderLoansPage() {
     container.innerHTML = html;
 
     const pagDiv = document.getElementById('loans-pagination');
-    if (loansTotalPages > 1) {
+    if (totalPages > 1) {
         pagDiv.classList.remove('hidden');
         document.getElementById('loans-prev-btn').disabled = loansPage <= 1;
-        document.getElementById('loans-next-btn').disabled = loansPage >= loansTotalPages;
+        document.getElementById('loans-next-btn').disabled = loansPage >= totalPages;
 
         const dotsContainer = document.getElementById('loans-page-dots');
         dotsContainer.innerHTML = '';
-        for (let i = 1; i <= loansTotalPages; i++) {
+        for (let i = 1; i <= totalPages; i++) {
             const dot = document.createElement('button');
             dot.className = `w-7 h-7 flex items-center justify-center rounded-md text-[10px] font-bold transition-colors ${
                 i === loansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400'
@@ -491,10 +491,12 @@ function renderLoansPage() {
 }
 
 function loansPrevPage() { if (loansPage > 1) { loansPage--; renderLoansPage(); } }
-function loansNextPage() { if (loansPage < loansTotalPages) { loansPage++; renderLoansPage(); } }
+function loansNextPage() { const tp = Math.ceil(loansFiltered.length / loansPerPage); if (loansPage < tp) { loansPage++; renderLoansPage(); } }
 
 function openLoansModal() {
     loansPage = 1;
+    document.getElementById('loans-search').value = '';
+    loansFiltered = loansData;
     renderLoansPage();
     document.getElementById('loans-modal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
