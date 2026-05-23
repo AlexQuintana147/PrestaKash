@@ -455,7 +455,7 @@
         </summary>
         <div class="px-5 pb-4 space-y-3">
             @foreach($profileChangeRequests->where('status', '!=', 'pending') as $req)
-            <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-gray-100 dark:border-gray-800' : '' }}">
+            <div class="req-row flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-gray-100 dark:border-gray-800' : '' }}">
                 <div class="text-xs text-gray-600 dark:text-gray-400">
                     {{ $req->created_at->format('d/m/Y H:i') }}
                     @if($req->status === 'approved')
@@ -471,9 +471,56 @@
                 </div>
             </div>
             @endforeach
+            <div id="req-pagination" class="flex items-center justify-center gap-3 pt-2" style="display:none">
+                <button type="button" id="req-btn-prev" onclick="reqChangePage(-1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
+                <span id="req-page-info" class="text-xs font-medium text-gray-400 dark:text-gray-500"></span>
+                <button type="button" id="req-btn-next" onclick="reqChangePage(1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Siguiente</button>
+            </div>
         </div>
     </details>
 </div>
+<script>
+(function() {
+    const PER_PAGE = 5;
+    let currentPage = 1;
+
+    function getRows() {
+        return Array.from(document.querySelectorAll('.req-row'));
+    }
+
+    function render() {
+        const rows = getRows();
+        const total = rows.length;
+        const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        rows.forEach(r => r.style.display = 'none');
+        const start = (currentPage - 1) * PER_PAGE;
+        rows.slice(start, start + PER_PAGE).forEach(r => r.style.display = '');
+
+        const pagination = document.getElementById('req-pagination');
+        pagination.style.display = totalPages <= 1 ? 'none' : 'flex';
+        document.getElementById('req-page-info').textContent = totalPages > 1 ? currentPage + ' / ' + totalPages : '';
+        document.getElementById('req-btn-prev').disabled = currentPage === 1;
+        document.getElementById('req-btn-next').disabled = currentPage === totalPages;
+    }
+
+    window.reqChangePage = function(delta) {
+        currentPage += delta;
+        render();
+    };
+
+    const details = document.querySelector('details');
+    if (details) {
+        details.addEventListener('toggle', function() {
+            if (details.open) {
+                currentPage = 1;
+                render();
+            }
+        });
+    }
+})();
+</script>
 @endif
 
 <div id="rejectChangeModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
