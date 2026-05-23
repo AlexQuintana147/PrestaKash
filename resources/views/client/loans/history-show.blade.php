@@ -287,7 +287,7 @@
         <div class="flex items-center justify-between mb-4 gap-2">
             <p class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white flex-shrink-0">Cronograma</p>
             <div class="flex items-center gap-0 border-b border-gray-100 dark:border-gray-900 overflow-x-auto scrollbar-none">
-                @foreach(['all' => 'Todas', 'pending' => 'Pendientes', 'paid' => 'Pagadas'] as $fkey => $flabel)
+                @foreach(['all' => 'Todas', 'pending' => 'Pendientes', 'processing' => 'En revisión', 'paid' => 'Pagadas'] as $fkey => $flabel)
                 <button type="button"
                     onclick="setFilter('{{ $fkey }}')"
                     id="filter-{{ $fkey }}"
@@ -307,7 +307,7 @@
             @php
                 $isOverdue = $inst->due_date->isPast() && $inst->status !== 'approved';
                 $canPay = $firstPayable && $firstPayable->id === $inst->id;
-                $statusKey = $inst->status === 'approved' ? 'paid' : 'pending';
+                $statusKey = $inst->status === 'approved' ? 'paid' : ($inst->status === 'processing' ? 'processing' : 'pending');
             @endphp
             <div class="inst-row py-3 sm:py-4 flex items-center gap-2 sm:gap-4" data-status="{{ $statusKey }}">
                 <!-- Número -->
@@ -589,12 +589,10 @@ function render() {
     const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
     if (currentPage > totalPages) currentPage = totalPages;
 
-    // Hide all, show current page
-    document.querySelectorAll('.inst-row').forEach(r => r.classList.add('hidden'));
+    document.querySelectorAll('.inst-row').forEach(r => r.style.display = 'none');
     const start = (currentPage - 1) * PER_PAGE;
-    rows.slice(start, start + PER_PAGE).forEach(r => r.classList.remove('hidden'));
+    rows.slice(start, start + PER_PAGE).forEach(r => r.style.display = '');
 
-    // Pagination controls
     document.getElementById('page-info').textContent = totalPages > 1 ? `${currentPage} / ${totalPages}` : '';
     document.getElementById('btn-prev').disabled = currentPage === 1;
     document.getElementById('btn-next').disabled = currentPage === totalPages;
@@ -606,7 +604,7 @@ function setFilter(f) {
     currentPage = 1;
 
     // Update tab styles
-    ['all', 'pending', 'paid'].forEach(k => {
+    ['all', 'pending', 'processing', 'paid'].forEach(k => {
         const btn = document.getElementById('filter-' + k);
         const line = document.getElementById('filter-line-' + k);
         if (k === f) {

@@ -328,7 +328,7 @@ class LoanController extends Controller
     public function history()
     {
         $loans = Auth::user()->loans()
-            ->where('status', 'approved')
+            ->whereIn('status', ['approved', 'paid'])
             ->with('installments')
             ->latest()
             ->get();
