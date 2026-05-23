@@ -39,27 +39,23 @@
                 </a>
             </div>
         @else
-            <form method="GET" action="{{ route('client.loans.history') }}" class="mb-8">
-                <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex flex-col sm:flex-row gap-3">
                     <div class="relative flex-1">
                         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <input type="text" name="code" value="{{ request('code') }}" placeholder="Buscar por código..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-all">
+                        <input type="text" id="search-code" placeholder="Buscar por código..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-all">
                     </div>
                     <div class="flex gap-2">
-                        @php $currentFilter = request('filter', 'all'); @endphp
-                        <button type="submit" name="filter" value="all" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all {{ $currentFilter === 'all' || !$currentFilter ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600' }}">
+                        <button type="button" data-filter="all" class="filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-black dark:bg-white text-white dark:text-black">
                             Todos
                         </button>
-                        <button type="submit" name="filter" value="active" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all {{ $currentFilter === 'active' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600' }}">
+                        <button type="button" data-filter="approved" class="filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600">
                             Activos
                         </button>
-                        <button type="submit" name="filter" value="paid" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all {{ $currentFilter === 'paid' ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600' }}">
+                        <button type="button" data-filter="paid" class="filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600">
                             Pagados
                         </button>
                     </div>
                 </div>
-                <input type="hidden" name="code" value="{{ request('code') }}" id="hidden-code">
-            </form>
 
             @if($loans->isEmpty())
                 <div class="text-center py-12">
@@ -68,10 +64,15 @@
                     <a href="{{ route('client.loans.history') }}" class="text-xs font-bold text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-0.5 hover:opacity-60 transition-opacity mt-2 inline-block">Limpiar filtros</a>
                 </div>
             @else
+            <div id="no-results" class="text-center py-12" style="display:none">
+                <svg class="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Sin resultados para la búsqueda</p>
+            </div>
             <div class="grid grid-cols-1">
                 @foreach($loans as $loan)
                     <a href="{{ route('client.loans.history.show', $loan) }}"
-                        class="group block py-6 lg:py-8 border-b border-gray-100 dark:border-gray-900 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-all duration-300">
+                        data-code="{{ strtoupper($loan->code) }}" data-status="{{ $loan->status }}"
+                        class="loan-card group block py-6 lg:py-8 border-b border-gray-100 dark:border-gray-900 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-all duration-300">
                         <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start lg:items-center">
 
                             <!-- Monto y Tipo -->
@@ -234,12 +235,48 @@
         @endif
 
     </div>
-@endsection
 
-@push('scripts')
-<script>
-document.querySelector('input[name="code"]')?.addEventListener('input', function() {
-    document.getElementById('hidden-code').value = this.value;
-});
-</script>
-@endpush
+    <script>
+    (function() {
+        const searchInput = document.getElementById('search-code');
+        const cards = document.querySelectorAll('.loan-card');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const noResults = document.getElementById('no-results');
+        let activeFilter = 'all';
+
+        function applyFilters() {
+            const query = searchInput.value.trim().toUpperCase();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const code = card.dataset.code || '';
+                const status = card.dataset.status || '';
+                const matchesCode = !query || code.includes(query);
+                const matchesFilter = activeFilter === 'all' || status === activeFilter;
+                const show = matchesCode && matchesFilter;
+
+                card.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            if (noResults) noResults.style.display = visibleCount === 0 ? '' : 'none';
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                activeFilter = this.dataset.filter;
+                filterBtns.forEach(b => {
+                    b.className = b.className.replace(/bg-black|dark:bg-white|text-white|dark:text-black/g, '').trim();
+                    if (!b.className.includes('bg-white')) {
+                        b.className += ' bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800';
+                    }
+                });
+                this.className = 'filter-btn px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-black dark:bg-white text-white dark:text-black';
+                applyFilters();
+            });
+        });
+    })();
+    </script>
+@endsection
