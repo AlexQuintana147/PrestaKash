@@ -46,9 +46,12 @@
     <!-- Header -->
     <div class="flex items-start justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                Préstamo
-            </h1>
+            <div class="flex items-center gap-2 mb-1">
+                <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                    Préstamo
+                </h1>
+                <span class="text-[10px] font-mono text-white dark:text-black bg-black dark:bg-white px-2 py-0.5 rounded">{{ $loan->code }}</span>
+            </div>
             <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">{{ $loan->created_at->format('d M Y') }}</p>
         </div>
         <span class="flex-shrink-0 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full mt-1

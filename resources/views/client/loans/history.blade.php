@@ -69,6 +69,9 @@
                                 </div>
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="text-[9px] font-mono text-white dark:text-black bg-black dark:bg-white px-1.5 py-0.5 rounded">{{ $loan->code }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mb-0.5">
                                         <h3 class="text-lg lg:text-xl font-bold text-gray-900 dark:text-white truncate">
                                             {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2) }}
                                         </h3>
