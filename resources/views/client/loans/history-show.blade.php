@@ -244,6 +244,13 @@
         </div>
     </div>
 
+    @php
+        $daysToNext = null;
+        if ($firstNonApproved) {
+            $daysToNext = (int) now()->diffInDays($firstNonApproved->due_date, false);
+        }
+    @endphp
+
     <!-- Info clave -->
     <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-8">
         @foreach([
@@ -257,6 +264,21 @@
             <p class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white truncate">{{ $value }}</p>
         </div>
         @endforeach
+
+        @if($daysToNext !== null)
+        <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Próxima cuota en</p>
+            @if($daysToNext < 0)
+                <p class="text-[11px] sm:text-xs font-black text-red-500">{{ abs($daysToNext) }} día{{ abs($daysToNext) !== 1 ? 's' : '' }} de atraso</p>
+            @elseif($daysToNext === 0)
+                <p class="text-[11px] sm:text-xs font-black text-orange-500">Vence hoy</p>
+            @elseif($daysToNext <= 3)
+                <p class="text-[11px] sm:text-xs font-black text-orange-500">{{ $daysToNext }} día{{ $daysToNext !== 1 ? 's' : '' }}</p>
+            @else
+                <p class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $daysToNext }} día{{ $daysToNext !== 1 ? 's' : '' }}</p>
+            @endif
+        </div>
+        @endif
     </div>
 
     <!-- Cronograma -->
