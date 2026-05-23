@@ -16,8 +16,8 @@
                 <div class="flex items-center gap-2 mb-1">
                     <span class="text-[10px] font-mono text-gray-400">{{ $opportunity->code }}</span>
                     <span class="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider
-                        {{ $isClosed ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' }}">
-                        {{ $isClosed ? 'Cerrada' : 'En proceso' }}
+                        {{ $isClosed ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : ($isFunded ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400') }}">
+                        {{ $isClosed ? 'Cerrada' : ($isFunded ? 'Financiada' : 'En proceso') }}
                     </span>
                 </div>
                 <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{{ $opportunity->title }}</h1>
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    @if(!$isClosed)
+    @if(!$isClosed && !$isFunded)
         <div class="flex items-start gap-2.5 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10 mb-6 sm:mb-8">
             <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <p class="text-[11px] sm:text-xs text-amber-700 dark:text-amber-300 leading-relaxed">

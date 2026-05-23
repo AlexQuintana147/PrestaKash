@@ -36,8 +36,8 @@
             <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <svg class="w-7 h-7 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
-            <p class="text-sm font-medium text-gray-400">No hay inversiones cerradas con inversores</p>
-            <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Aparecerán cuando se cierre una oportunidad con inversores confirmados</p>
+            <p class="text-sm font-medium text-gray-400">No hay inversiones financiadas o cerradas con inversores</p>
+            <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Aparecerán cuando se financie o cierre una oportunidad con inversores confirmados</p>
         </div>
     @else
 
@@ -91,7 +91,7 @@
                                     <span class="flex-shrink-0 text-[8px] sm:text-[9px] font-mono text-white dark:text-black bg-black dark:bg-white px-1.5 py-0.5 rounded">{{ $opportunity->code }}</span>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 pl-4">
-                                    <span class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $opportunity->monthly_return_rate }}% · {{ $opportunity->term_months }}m · {{ $opportunity->closed_at->format('d/m/y') }}</span>
+                                    <span class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $opportunity->monthly_return_rate }}% · {{ $opportunity->term_months }}m · {{ $opportunity->closed_at ? $opportunity->closed_at->format('d/m/y') : 'N/A' }}</span>
                                     @if($oppData->overdue_count > 0)
                                         <span class="text-[8px] sm:text-[9px] text-red-500 font-black">{{ $oppData->overdue_count }} venc.</span>
                                     @endif

@@ -287,6 +287,7 @@ class InvestmentController extends Controller
         $monthlyRate = $opportunity->monthly_return_rate / 100;
         $termMonths = $opportunity->term_months;
         $isClosed = in_array($opportunity->status, ['closed', 'cancelled']);
+        $isFunded = $opportunity->status === 'funded';
         $startDate = $opportunity->closed_at ? \Carbon\Carbon::parse($opportunity->closed_at) : null;
 
         $payouts = \App\Models\InvestorPayout::where('investment_opportunity_id', $opportunity->id)
@@ -410,7 +411,7 @@ class InvestmentController extends Controller
 
         return view('client.invest.payment-detail', compact(
             'opportunity', 'investor', 'amount', 'amortizationType', 'schedule',
-            'payments', 'totalReceived', 'totalExpectedReturn', 'isClosed', 'startDate',
+            'payments', 'totalReceived', 'totalExpectedReturn', 'isClosed', 'isFunded', 'startDate',
             'payouts', 'totalPaidQuotas', 'pendingPayouts', 'nextPayoutDate',
             'totalInterestEarned'
         ));

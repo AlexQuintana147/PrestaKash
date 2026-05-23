@@ -31,8 +31,7 @@ class InvestmentPaymentController extends Controller
 
     public function payouts()
     {
-        $closedOpportunities = InvestmentOpportunity::where('status', 'closed')
-            ->whereNotNull('closed_at')
+        $closedOpportunities = InvestmentOpportunity::whereIn('status', ['funded', 'closed'])
             ->with(['investors' => function ($q) {
                 $q->wherePivot('status', 'approved')
                   ->wherePivot('payment_status', 'confirmed')
@@ -41,6 +40,13 @@ class InvestmentPaymentController extends Controller
             }])
             ->get()
             ->filter(fn($op) => $op->investors->count() > 0);
+
+        foreach ($closedOpportunities as $opp) {
+            if (!$opp->closed_at) {
+                $opp->update(['closed_at' => now()]);
+                $opp->refresh();
+            }
+        }
 
         $opportunitiesData = collect();
         $now = now();
