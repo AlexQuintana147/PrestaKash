@@ -267,6 +267,7 @@ class InvestmentPaymentController extends Controller
             $item['payout_status'] = $payout ? $payout->status : null;
             $item['payout_id'] = $payout ? $payout->id : null;
             $item['payout_type'] = $payout ? $payout->payment_type : null;
+            $item['paid_at'] = ($payout && $payout->paid_at) ? $payout->paid_at->format('d/m/Y') : null;
         }
         unset($item);
 
@@ -297,6 +298,7 @@ class InvestmentPaymentController extends Controller
             ],
             'amortization_type' => $amortizationType,
             'opportunity_id' => $opportunity->id,
+            'opportunity_code' => $opportunity->code,
             'next_payable_month' => $nextPayableMonth,
         ]);
     }

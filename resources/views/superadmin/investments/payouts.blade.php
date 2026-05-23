@@ -248,7 +248,10 @@
                     <img id="modal_photo" src="" alt="" class="w-full h-full object-cover">
                 </div>
                 <div>
-                    <h3 id="modal_name" class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight"></h3>
+                    <div class="flex items-center gap-2">
+                        <h3 id="modal_name" class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight"></h3>
+                        <span id="modal_opp_code" class="text-[8px] sm:text-[9px] font-mono text-white dark:text-black bg-black dark:bg-white px-1.5 py-0.5 rounded"></span>
+                    </div>
                     <p id="modal_email" class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest"></p>
                 </div>
             </div>
@@ -503,6 +506,7 @@ let _scheduleInvestor = null;
 let _scheduleAmortType = '';
 let _scheduleOppId = null;
 let _scheduleNextPayable = null;
+let _scheduleOppCode = '';
 
 function renderSchedulePage() {
     if (!_scheduleData) return;
@@ -525,6 +529,7 @@ function renderSchedulePage() {
     html += '<th class="px-3 py-2 text-right text-[9px] text-gray-400 uppercase font-black tracking-widest">Total</th>';
     html += '<th class="px-3 py-2 text-right text-[9px] text-gray-400 uppercase font-black tracking-widest">Saldo</th>';
     html += '<th class="px-3 py-2 text-center text-[9px] text-gray-400 uppercase font-black tracking-widest">Estado</th>';
+    html += '<th class="px-3 py-2 text-center text-[9px] text-gray-400 uppercase font-black tracking-widest">F. Pago</th>';
     html += '<th class="px-3 py-2 text-center text-[9px] text-gray-400 uppercase font-black tracking-widest">Acción</th>';
     html += '</tr></thead><tbody>';
 
@@ -552,6 +557,13 @@ function renderSchedulePage() {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
         } else {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+        }
+        html += '</td>';
+        html += '<td class="px-3 py-2.5 text-center">';
+        if (item.is_paid && item.paid_at) {
+            html += `<span class="text-[9px] font-bold ${isOverdue ? 'text-white/80' : 'text-emerald-600 dark:text-emerald-400'} tabular-nums">${item.paid_at}</span>`;
+        } else {
+            html += `<span class="text-[9px] ${isOverdue ? 'text-white/40' : 'text-gray-300 dark:text-gray-700'}">—</span>`;
         }
         html += '</td>';
         html += '<td class="px-3 py-2.5 text-center">';
@@ -600,6 +612,9 @@ function renderSchedulePage() {
         html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Total</span><span class="text-[10px] font-bold ${monoText} tabular-nums">${data.currency}${item.payment}</span></div>`;
         html += `<div class="flex justify-between"><span class="text-[8px] ${subTextColor}">Saldo</span><span class="text-[10px] font-bold ${subTextColor} tabular-nums">${data.currency}${item.balance}</span></div>`;
         html += `</div>`;
+        if (item.is_paid && item.paid_at) {
+            html += `<div class="mt-2 flex items-center gap-1.5"><span class="text-[8px] ${subTextColor}">Pagado el:</span><span class="text-[9px] font-bold ${isOverdue ? 'text-white/80' : 'text-emerald-600 dark:text-emerald-400'} tabular-nums">${item.paid_at}</span></div>`;
+        }
         if (isPayable) {
             html += `<button onclick="openPayModal(${item.month}, '${data.currency}${item.payment}', '${data.currency}${item.interest}')" class="mt-2 w-full py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">Pagar cuota</button>`;
         } else if (isPendingPayout) {
@@ -656,6 +671,8 @@ function buildScheduleTable(uid, data) {
             _scheduleAmortType = res.amortization_type;
             _scheduleOppId = res.opportunity_id;
             _scheduleNextPayable = res.next_payable_month;
+            _scheduleOppCode = res.opportunity_code || '';
+            document.getElementById('modal_opp_code').textContent = _scheduleOppCode;
             renderSchedulePage();
         })
         .catch(() => {
