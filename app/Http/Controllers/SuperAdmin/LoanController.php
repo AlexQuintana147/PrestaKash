@@ -324,7 +324,7 @@ class LoanController extends Controller
 
         if ($instId) {
             $query->where('id', $instId);
-            if (!$highlightInterest) {
+            if (!$highlightInterest && !in_array($filter, ['paid', 'overdue', 'pending_validation'])) {
                 $filter = 'all';
             }
         } elseif ($filter === 'all') {
