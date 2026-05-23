@@ -188,20 +188,18 @@
                             </div>
                             @php $pendingUsers = \App\Models\User::whereHas('documents', fn($q) => $q->where('status', 'pending'))->count(); @endphp
                             @php $pendingProfileChanges = \App\Models\ProfileChangeRequest::where('status', 'pending')->count(); @endphp
-                            @if($pendingUsers > 0 || $pendingProfileChanges > 0)
-                                <div class="flex items-center gap-1">
-                                    @if($pendingProfileChanges > 0)
-                                        <span class="text-[10px] font-bold bg-amber-500 text-white rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">{{ $pendingProfileChanges }}</span>
-                                    @endif
-                                    @if($pendingUsers > 0)
-                                        <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                        </svg>
-                                    @endif
-                                </div>
-                            @endif
+                            <div id="sidebar-badges" class="flex items-center gap-1" @if($pendingUsers == 0 && $pendingProfileChanges == 0) style="display:none" @endif>
+                                @if($pendingProfileChanges > 0)
+                                    <span class="text-[10px] font-bold bg-amber-500 text-white rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">{{ $pendingProfileChanges }}</span>
+                                @endif
+                                @if($pendingUsers > 0)
+                                    <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                @endif
+                            </div>
                         </a>
                         <a href="{{ route('superadmin.workers.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
@@ -222,6 +220,7 @@
                                 Inversores
                             </div>
                             @php $pendingInvestors = \App\Models\InvestorApplication::where('status', 'pending')->count(); @endphp
+                            <div id="badge-investors" class="flex items-center gap-1" @if($pendingInvestors == 0) style="display:none" @endif>
                             @if($pendingInvestors > 0)
                                 <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -229,6 +228,7 @@
                                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                             @endif
+                            </div>
                         </a>
                         <a href="{{ route('superadmin.settings') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
@@ -287,6 +287,7 @@
                                 Control de préstamos
                             </div>
                             @php $pendingLoans = \App\Models\Loan::where('status', 'pending')->count(); @endphp
+                            <div id="badge-loans" class="flex items-center gap-1" @if($pendingLoans == 0) style="display:none" @endif>
                             @if($pendingLoans > 0)
                                 <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -294,6 +295,7 @@
                                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                             @endif
+                            </div>
                         </a>
                         
                         <a href="{{ route('superadmin.investments.index') }}" onclick="closeSidebar()"
@@ -309,7 +311,7 @@
                                 $pendingInvestments = \DB::table('investor_opportunity')->where('status', 'pending')->count();
                                 $pendingVouchers = \DB::table('investor_opportunity')->where('payment_status', 'pending')->whereNotNull('voucher_path')->count();
                             @endphp
-                            <div class="flex items-center gap-1">
+                            <div id="badge-investments" class="flex items-center gap-1" @if($pendingInvestments == 0 && $pendingVouchers == 0) style="display:none" @endif>
                             @if($pendingInvestments > 0)
                                 <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -338,6 +340,7 @@
                                 Cobranzas
                             </div>
                             @php $pendingPayments = \App\Models\LoanInstallment::where('status', 'processing')->count(); @endphp
+                            <div id="badge-payments" class="flex items-center gap-1" @if($pendingPayments == 0) style="display:none" @endif>
                             @if($pendingPayments > 0)
                                 <svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -345,6 +348,7 @@
                                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                             @endif
+                            </div>
                         </a>
                         <a href="{{ route('superadmin.investments.payouts') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
@@ -449,9 +453,8 @@
 
     <script>
         async function refreshSidebar(btn) {
-            const svg = btn.querySelector('svg');
-            svg.classList.add('animate-spin');
-            btn.disabled = true;
+            const svg = btn ? btn.querySelector('svg') : null;
+            if (svg) { svg.classList.add('animate-spin'); btn.disabled = true; }
             try {
                 const res = await fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                 const html = await res.text();
@@ -461,17 +464,63 @@
                 if (newSidebar) {
                     document.getElementById('sidebar-content').innerHTML = newSidebar.innerHTML;
                 }
-                const newMain = doc.getElementById('main-content');
-                if (newMain) {
-                    document.getElementById('main-content').innerHTML = newMain.innerHTML;
+                if (btn) {
+                    const newMain = doc.getElementById('main-content');
+                    if (newMain) {
+                        document.getElementById('main-content').innerHTML = newMain.innerHTML;
+                    }
                 }
-            } catch (e) {
-                console.error('Error refrescando:', e);
-            } finally {
-                svg.classList.remove('animate-spin');
-                btn.disabled = false;
+            } catch (e) {} finally {
+                if (svg) { svg.classList.remove('animate-spin'); btn.disabled = false; }
             }
         }
+
+        const bellSvg = '<svg class="w-4 h-4 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>';
+        const bellGreenSvg = '<svg class="w-4 h-4 text-green-600 animate-swing origin-top flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>';
+
+        function updateBadge(id, html, show) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerHTML = html;
+            el.style.display = show ? 'flex' : 'none';
+        }
+
+        async function updateSidebarBadges() {
+            try {
+                const res = await fetch('{{ route("superadmin.sidebar-stats") }}');
+                const d = await res.json();
+
+                let h = '';
+                if (d.pending_profile_changes > 0) h += '<span class="text-[10px] font-bold bg-amber-500 text-white rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">' + d.pending_profile_changes + '</span>';
+                if (d.pending_users > 0) h += bellSvg;
+                updateBadge('sidebar-badges', h, d.pending_users > 0 || d.pending_profile_changes > 0);
+
+                updateBadge('badge-investors', d.pending_investors > 0 ? bellSvg : '', d.pending_investors > 0);
+                updateBadge('badge-loans', d.pending_loans > 0 ? bellSvg : '', d.pending_loans > 0);
+
+                let invH = '';
+                if (d.pending_investments > 0) invH += bellSvg;
+                if (d.pending_vouchers > 0) invH += bellGreenSvg;
+                updateBadge('badge-investments', invH, d.pending_investments > 0 || d.pending_vouchers > 0);
+
+                updateBadge('badge-payments', d.pending_payments > 0 ? bellSvg : '', d.pending_payments > 0);
+            } catch (e) {}
+        }
+
+        let _sidebarInterval;
+        function startSidebarAutoRefresh() {
+            if (_sidebarInterval) return;
+            _sidebarInterval = setInterval(() => {
+                if (document.visibilityState === 'visible') updateSidebarBadges();
+            }, 10000);
+        }
+        function stopSidebarAutoRefresh() {
+            if (_sidebarInterval) { clearInterval(_sidebarInterval); _sidebarInterval = null; }
+        }
+        document.addEventListener('DOMContentLoaded', startSidebarAutoRefresh);
+        document.addEventListener('visibilitychange', () => {
+            document.visibilityState === 'visible' ? startSidebarAutoRefresh() : stopSidebarAutoRefresh();
+        });
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
