@@ -49,6 +49,8 @@
                     $confirmedPayoutTotal = $confirmedPayoutsByOpportunity[$opp->id] ?? 0;
                     $totalReceived = max($cashboxReceived, $confirmedPayoutTotal);
                     $currencySymbol = $opp->currency === 'USD' ? '$' : 'S/';
+                    $extraMonths = $interestOnlyByOpportunity[$opp->id] ?? 0;
+                    $effectiveTermMonths = $opp->term_months + $extraMonths;
                     $totalExpected = $inv->pivot->amount * (1 + ($opp->monthly_return_rate * $effectiveTermMonths / 100));
                     $pendingAmount = max(0, $totalExpected - $totalReceived);
                     $progressPercent = $totalExpected > 0 ? min(100, round(($totalReceived / $totalExpected) * 100)) : 0;
@@ -61,8 +63,6 @@
                     }
                     $payoutPaidQuotas = $paidQuotasByOpportunity[$opp->id] ?? 0;
                     $totalPaidQuotas = max($paidQuotas, $payoutPaidQuotas);
-                    $extraMonths = $interestOnlyByOpportunity[$opp->id] ?? 0;
-                    $effectiveTermMonths = $opp->term_months + $extraMonths;
                 @endphp
 
                 <a href="{{ route('client.investments.payment-detail', $opp) }}" class="block group">

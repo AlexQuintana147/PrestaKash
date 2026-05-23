@@ -96,6 +96,7 @@
             animation: swing 2s infinite;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="h-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200"
@@ -248,17 +249,16 @@
                         class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-widest">
                         Análisis</p>
                     <div class="space-y-1">
-                        <a href="#"
-                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 cursor-not-allowed opacity-60">
+                        <a href="{{ route('superadmin.analytics') }}" onclick="closeSidebar()"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                              {{ request()->routeIs('superadmin.analytics') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
                             </svg>
-                            <span>Pendiente</span>
-                            <span
-                                class="ml-auto text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded">Pronto</span>
+                            Análisis
                         </a>
                     </div>
                 </div>
@@ -485,6 +485,7 @@
     </script>
 
     @include('partials.global-scripts')
+    @stack('scripts')
 
 </body>
 

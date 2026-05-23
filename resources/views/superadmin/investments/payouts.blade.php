@@ -750,16 +750,19 @@ function openPayModal(month, totalAmount, interestAmount) {
     const cashboxSelect = document.getElementById('pay_cashbox_id');
     cashboxSelect.value = '';
     document.getElementById('pay_cashbox_warning').classList.add('hidden');
-    cashboxSelect.onchange = function() {
-        const selected = cashboxSelect.options[cashboxSelect.selectedIndex];
-        const cashboxCurrency = selected ? selected.dataset.currency : '';
-        const warning = document.getElementById('pay_cashbox_warning');
-        if (cashboxCurrency && _scheduleCurrency && !cashboxCurrency.includes(_scheduleCurrency.replace('$','USD').replace('S/','PEN'))) {
-            warning.classList.remove('hidden');
+    const oppCurrency = (_scheduleCurrency || '').replace('$','USD').replace('S/','PEN');
+    Array.from(cashboxSelect.options).forEach(opt => {
+        if (!opt.value) { opt.classList.remove('hidden'); return; }
+        const cbCurrency = (opt.dataset.currency || '').replace('$','USD').replace('S/','PEN');
+        if (cbCurrency === oppCurrency) {
+            opt.classList.remove('hidden');
+            opt.disabled = false;
         } else {
-            warning.classList.add('hidden');
+            opt.classList.add('hidden');
+            opt.disabled = true;
         }
-    };
+    });
+    cashboxSelect.onchange = null;
 
     modal.classList.remove('hidden');
 }
