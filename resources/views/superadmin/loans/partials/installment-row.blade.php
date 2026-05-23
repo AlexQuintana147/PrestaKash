@@ -38,7 +38,9 @@
      data-interest-payment-id="{{ $inst->interest_payment->id }}"
      data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
      @endif
-     class="py-6 transition-colors relative @if($isDueOrOverdue) overdue-installment-row @else hover:bg-gray-50/50 dark:hover:bg-gray-900/20 @endif">
+     class="py-6 transition-colors relative cobranzas-row @if($isDueOrOverdue) overdue-installment-row @else hover:bg-gray-50/50 dark:hover:bg-gray-900/20 @endif"
+     data-search-name="{{ strtolower($user->name) }}"
+     data-search-dni="{{ $user->dni ?? '' }}">
     <div class="flex flex-col md:flex-row md:items-center gap-6">
 
         <!-- Usuario & Préstamo -->

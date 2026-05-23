@@ -34,6 +34,19 @@
 
         @php $pendingCount = \App\Models\LoanInstallment::where('status', 'processing')->count(); @endphp
 
+        <div class="mb-6 relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input type="text" id="cobranzas-search" placeholder="Buscar por nombre o DNI..."
+                   class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
+            <button type="button" id="cobranzas-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
         <!-- Filtros Mobile -->
         <div class="md:hidden mb-8">
             <div class="grid grid-cols-2 gap-2 mb-2">
@@ -125,7 +138,7 @@
                             'reason'            => $loan->reason,
                         ];
                     @endphp
-                    <div>
+                    <div class="cobranzas-row" data-search-name="{{ strtolower($user->name) }}" data-search-dni="{{ $user->dni ?? '' }}">
                         <div class="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-gray-900 mb-2">
                             <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800">
                                 <img src="{{ $photo }}" class="w-full h-full object-cover">
@@ -214,27 +227,11 @@
                 </div>
             @endif
         @elseif($filter === 'all')
-            <form method="GET" action="{{ route('superadmin.installments.index') }}" class="mb-6">
-                <input type="hidden" name="filter" value="all">
-                <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar por nombre o DNI..."
-                           class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
-                    @if($search)
-                        <a href="{{ route('superadmin.installments.index', ['filter' => 'all']) }}"
-                           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </a>
-                    @endif
-                </div>
-            </form>
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($borrowersWithLoans as $bw)
-                    <div class="flex items-center gap-4 px-2 py-4 hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors cursor-pointer group"
+                    <div class="flex items-center gap-4 px-2 py-4 hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors cursor-pointer group cobranzas-row"
+                         data-search-name="{{ strtolower($bw['user']->name) }}"
+                         data-search-dni="{{ $bw['user']->dni ?? '' }}"
                          onclick="openBorrowerLoansModal({{ $bw['user']->id }})">
                         <div class="w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800 flex-shrink-0">
                             <img src="{{ $bw['photo'] }}" class="w-full h-full object-cover" alt="">
@@ -290,7 +287,9 @@
                         $fullName = $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '') ?: $user->name);
                         $daysOverdue = now()->startOfDay()->diffInDays($debtor['first_due_date']);
                     @endphp
-                    <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100/70 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                    <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100/70 dark:hover:bg-red-950/40 transition-colors cursor-pointer cobranzas-row"
+                         data-search-name="{{ strtolower($fullName) }}"
+                         data-search-dni="{{ $user->dni ?? '' }}"
                          onclick="window.location.href='{{ route('superadmin.installments.debtor', $user) }}'">
                         <div class="flex items-center gap-3">
                             <img src="{{ $photo }}" class="w-11 h-11 rounded-xl object-cover flex-shrink-0 ring-2 ring-red-200 dark:ring-red-800" alt="{{ $fullName }}">
@@ -883,5 +882,39 @@
                 closeUnapproveModal();
             }
         });
+    </script>
+
+    <script>
+        (function() {
+            const searchInput = document.getElementById('cobranzas-search');
+            const clearBtn = document.getElementById('cobranzas-search-clear');
+            if (!searchInput) return;
+
+            function filterRows() {
+                const term = searchInput.value.trim().toLowerCase();
+                const rows = document.querySelectorAll('.cobranzas-row');
+
+                clearBtn.classList.toggle('hidden', !term);
+
+                rows.forEach(function(row) {
+                    if (!term) {
+                        row.style.display = '';
+                        return;
+                    }
+                    const name = (row.dataset.searchName || '').toLowerCase();
+                    const dni = (row.dataset.searchDni || '').toLowerCase();
+                    const match = name.includes(term) || dni.includes(term);
+                    row.style.display = match ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterRows);
+
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                filterRows();
+                searchInput.focus();
+            });
+        })();
     </script>
 @endsection
