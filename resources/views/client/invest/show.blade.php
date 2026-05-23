@@ -387,24 +387,24 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value.replace(/,/g,'')">
+                    <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value">
                         @csrf
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Monto a Invertir</label>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
-                                    <input type="text" name="amount" id="investAmount" required inputmode="decimal"
-                                           placeholder="{{ number_format($opportunity->min_investment, 2) }}"
-                                           oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
-                                           class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
-                                </div>
-                                <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
-                                <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
-                                <input type="hidden" id="monthlyRate" value="{{ $opportunity->monthly_return_rate }}">
-                                <input type="hidden" id="termMonths" value="{{ $opportunity->term_months }}">
-                                <input type="hidden" id="currencySymbol" value="{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}">
-                                <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Mínimo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->min_investment, 2) }} · Máximo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->remaining_amount, 2) }}</p>
+                                    <input type="text" name="amount" id="investAmount" required inputmode="numeric"
+                                   placeholder="{{ number_format($opportunity->min_investment, 2) }}"
+                                   oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
+                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                            </div>
+                            <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
+                            <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
+                            <input type="hidden" id="monthlyRate" value="{{ $opportunity->monthly_return_rate }}">
+                            <input type="hidden" id="termMonths" value="{{ $opportunity->term_months }}">
+                            <input type="hidden" id="currencySymbol" value="{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}">
+                            <p class="text-[10px] sm:text-xs text-gray-400 mt-2">Mínimo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->min_investment, 2) }} · Máximo: {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->remaining_amount, 2) }}</p>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tipo de Amortización</label>
@@ -467,14 +467,14 @@
                 </div>
             @endif
 
-            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value.replace(/,/g,'')">
+            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value">
                 @csrf
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Monto a Invertir</label>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}</span>
-                            <input type="text" name="amount" id="investAmount" required inputmode="decimal"
+                            <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
                                    oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
                                    class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
@@ -537,20 +537,15 @@
 
 <script>
 window.formatInvestAmount = function(raw) {
-    let cleaned = (raw || '').replace(/[^0-9.]/g, '');
-    if (!cleaned) return '';
-    let parts = cleaned.split('.');
-    let intPart = (parts[0] || '0').replace(/^0+(?=\d)/, '') || '0';
-    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    if (parts.length > 1) {
-        let dec = (parts[1] || '').slice(0, 2);
-        return intPart + '.' + dec;
-    }
-    return intPart;
+    let val = (raw || '').replace(/[^\d]/g, '');
+    if (!val) return '';
+    val = parseInt(val, 10).toString();
+    let numericValue = parseFloat(val) / 100;
+    return numericValue.toFixed(2);
 };
 
 window.unformatInvestAmount = function(formatted) {
-    return (formatted || '0').replace(/,/g, '');
+    return (formatted || '0');
 };
 
 function selectPaymentMethod(method) {
@@ -636,16 +631,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         investAmount.addEventListener('blur', function() {
-            let numericVal = parseFloat((this.value || '0').replace(/,/g, ''));
-            if (isNaN(numericVal) || numericVal <= 0) numericVal = minVal;
-            else if (numericVal < minVal) numericVal = minVal;
+            let val = (this.value || '').replace(/[^\d]/g, '');
+            if (!val) { this.value = ''; return; }
+            let numericVal = parseFloat(val) / 100;
+            if (numericVal < minVal) numericVal = minVal;
             else if (numericVal > maxVal) numericVal = maxVal;
-            this.value = numericVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            this.value = numericVal.toFixed(2);
             updateSchedule();
         });
 
         investAmount.closest('form')?.addEventListener('submit', function() {
-            investAmount.value = (investAmount.value || '0').replace(/,/g, '');
+            investAmount.value = (investAmount.value || '0');
         });
 
         updateSchedule();
@@ -686,7 +682,7 @@ function updateSchedule() {
 
     if (!amountInput || !rateInput || !termInput || !typeInput || !container || !tbody || !totalEl) return;
 
-    let rawVal = (amountInput.value || '0').replace(/,/g, '');
+    let rawVal = (amountInput.value || '0');
     const amount = parseFloat(rawVal);
     if (isNaN(amount) || amount <= 0) {
         container.classList.add('hidden');
