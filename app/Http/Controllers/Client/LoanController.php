@@ -325,13 +325,26 @@ class LoanController extends Controller
         return redirect()->route('client.loans')->with('success', 'Perfil completado. Ya puedes gestionar tus préstamos.');
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        $loans = Auth::user()->loans()
+        $query = Auth::user()->loans()
             ->where('status', 'approved')
-            ->with('installments')
-            ->latest()
-            ->get();
+            ->with('installments');
+
+        if ($request->filled('code')) {
+            $query->where('code', 'like', '%' . $request->code . '%');
+        }
+
+        if ($request->filled('filter')) {
+            match ($request->filter) {
+                'paid' => $query->where('status', 'paid'),
+                'active' => $query->where('status', 'approved'),
+                default => null,
+            };
+        }
+
+        $loans = $query->latest()->get();
+
         return view('client.loans.history', compact('loans'));
     }
 
