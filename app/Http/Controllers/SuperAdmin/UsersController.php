@@ -190,7 +190,7 @@ class UsersController extends Controller
         ]);
 
         $user = User::create([
-            'role_id' => \App\Models\Role::where('name', 'usuario')->value('id') ?? 2, // Default to usuario
+            'role_id' => \App\Models\Role::where('name', 'usuario')->value('id') ?? \App\Models\Role::first()->id,
             'name' => $request->first_name . ' ' . $request->last_name,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,

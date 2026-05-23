@@ -16,6 +16,8 @@
     },
     "dependencies": {
         "jspdf": "^4.2.1",
-        "jspdf-autotable": "^5.0.7"
+        "jspdf-autotable": "^5.0.7",
+        "laravel-echo": "^2.3.4",
+        "pusher-js": "^8.5.0"
     }
 }
