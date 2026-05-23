@@ -441,7 +441,7 @@
         </aside>
 
         <!-- Main content -->
-        <main class="flex-1 overflow-y-auto pt-14 md:pt-0 min-w-0">
+        <main id="main-content" class="flex-1 overflow-y-auto pt-14 md:pt-0 min-w-0">
             @yield('content')
         </main>
 
@@ -457,12 +457,16 @@
                 const html = await res.text();
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const newContent = doc.getElementById('sidebar-content');
-                if (newContent) {
-                    document.getElementById('sidebar-content').innerHTML = newContent.innerHTML;
+                const newSidebar = doc.getElementById('sidebar-content');
+                if (newSidebar) {
+                    document.getElementById('sidebar-content').innerHTML = newSidebar.innerHTML;
+                }
+                const newMain = doc.getElementById('main-content');
+                if (newMain) {
+                    document.getElementById('main-content').innerHTML = newMain.innerHTML;
                 }
             } catch (e) {
-                console.error('Error refrescando sidebar:', e);
+                console.error('Error refrescando:', e);
             } finally {
                 svg.classList.remove('animate-spin');
                 btn.disabled = false;
