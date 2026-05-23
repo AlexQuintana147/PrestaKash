@@ -116,7 +116,7 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-3 mb-1">
-                                <span class="text-[9px] font-mono text-gray-400">{{ $opp->code }}</span>
+                                <span class="px-2 py-1 rounded-md text-xs font-mono font-bold bg-gray-900 text-white dark:bg-white dark:text-gray-900">{{ $opp->code }}</span>
                                 <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest
                                     {{ $opp->status === 'open' ? 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' : '' }}
                                     {{ $opp->status === 'funded' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : '' }}
