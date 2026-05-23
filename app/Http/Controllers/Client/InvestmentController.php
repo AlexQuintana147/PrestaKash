@@ -61,7 +61,9 @@ class InvestmentController extends Controller
         $opportunity->load(['approvedInvestors']);
         $existingRequest = $opportunity->investors()->where('user_id', $user->id)->first();
 
-        return view('client.invest.show', compact('opportunity', 'existingRequest'));
+        $rejectionReason = $user->investment_rejection_reason;
+
+        return view('client.invest.show', compact('opportunity', 'existingRequest', 'rejectionReason'));
     }
 
     public function apply(Request $request, InvestmentOpportunity $opportunity)
@@ -81,8 +83,9 @@ class InvestmentController extends Controller
             return back()->with('error', 'Ya solicitaste participar en esta oportunidad.');
         }
 
-        if ($existing && $existing->pivot->status === 'rejected') {
-            $opportunity->investors()->detach($user->id);
+        if ($user->investment_rejection_reason) {
+            $user->investment_rejection_reason = null;
+            $user->save();
         }
 
         $validated = $request->validate([

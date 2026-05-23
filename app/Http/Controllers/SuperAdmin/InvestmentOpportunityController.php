@@ -212,6 +212,10 @@ class InvestmentOpportunityController extends Controller
         if (isset($validated['status']) && in_array($validated['status'], ['closed', 'cancelled'])) {
             $pendingIds = $investment->investors()->wherePivot('status', 'pending')->pluck('users.id');
             $investment->investors()->detach($pendingIds);
+
+            \App\Models\User::whereIn('id', $investment->investors()->pluck('users.id'))
+                ->whereNotNull('investment_rejection_reason')
+                ->update(['investment_rejection_reason' => null]);
         }
 
         return back()->with('success', 'Oportunidad actualizada.');
@@ -236,10 +240,13 @@ class InvestmentOpportunityController extends Controller
             'reason' => 'nullable|string|max:500',
         ]);
 
-        $investment->investors()->updateExistingPivot($userId, [
-            'status' => 'rejected',
-            'admin_notes' => $request->reason,
-        ]);
+        $user = \App\Models\User::find($userId);
+        if ($user) {
+            $user->investment_rejection_reason = $request->reason;
+            $user->save();
+        }
+
+        $investment->investors()->detach($userId);
 
         return back()->with('success', 'Inversor rechazado.');
     }
@@ -359,6 +366,10 @@ class InvestmentOpportunityController extends Controller
         if ($investment->approvedInvestors()->count() > 0) {
             return back()->with('error', 'No se puede eliminar una oportunidad con inversores aprobados.');
         }
+
+        \App\Models\User::whereIn('id', $investment->investors()->pluck('users.id'))
+            ->whereNotNull('investment_rejection_reason')
+            ->update(['investment_rejection_reason' => null]);
 
         $investment->delete();
 

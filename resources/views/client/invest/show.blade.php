@@ -29,6 +29,13 @@
         </div>
     @endif
 
+    @if(isset($rejectionReason) && $rejectionReason)
+        <div class="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-2xl border border-red-100 dark:border-red-500/20">
+            <p class="text-sm text-red-600 dark:text-red-400 font-bold">Tu solicitud de inversión fue rechazada</p>
+            <p class="text-xs text-red-500 dark:text-red-400 mt-1">Motivo: {{ $rejectionReason }}</p>
+        </div>
+    @endif
+
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-3 sm:p-4 shadow-sm">
             <span class="text-[9px] sm:text-[10px] text-gray-400 uppercase font-bold tracking-tight">Monto Objetivo</span>
