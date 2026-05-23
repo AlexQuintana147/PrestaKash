@@ -153,38 +153,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const hiddenInput = document.getElementById('intended_amount');
     const form = document.querySelector('form');
 
-    function formatAmount(oldVal) {
-        // Solo permitir números
-        let val = oldVal.replace(/\D/g, '');
-
-        if (val.length === 0) {
-            val = '0.00';
-        } else {
-            // Asegurar que tenga al menos 3 dígitos para el formato XX.XX
-            while (val.length < 3) {
-                val = '0' + val;
-            }
-            
-            // Insertar punto decimal antes de los últimos 2 dígitos
-            let integerPart = val.slice(0, -2);
-            let decimalPart = val.slice(-2);
-            
-            // Eliminar ceros a la izquierda del entero
-            integerPart = parseInt(integerPart, 10).toString();
-            
-            // Formatear miles con coma
-            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            
-            val = integerPart + '.' + decimalPart;
+    function formatAmount(raw) {
+        let cleaned = (raw || '').replace(/[^0-9.]/g, '');
+        if (!cleaned) return '';
+        let parts = cleaned.split('.');
+        let intPart = (parts[0] || '0').replace(/^0+(?=\d)/, '') || '0';
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        if (parts.length > 1) {
+            let dec = (parts[1] || '').slice(0, 2);
+            return intPart + '.' + dec;
         }
-        return val;
+        return intPart;
     }
 
     displayInput.addEventListener('input', function(e) {
         const formatted = formatAmount(e.target.value);
         displayInput.value = formatted;
-        
-        // Guardar valor real (sin comas) en el hidden
         hiddenInput.value = formatted.replace(/,/g, '');
     });
 
@@ -192,10 +176,10 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenInput.value = displayInput.value.replace(/,/g, '');
     });
 
-    // Formatear valor inicial si existe
     if (displayInput.value) {
-        displayInput.value = formatAmount(displayInput.value.replace(/[^0-9]/g, ''));
-        hiddenInput.value = displayInput.value.replace(/,/g, '');
+        const formatted = formatAmount(displayInput.value);
+        displayInput.value = formatted;
+        hiddenInput.value = formatted.replace(/,/g, '');
     }
 
     // Lógica para Origen de Fondos "Otros"

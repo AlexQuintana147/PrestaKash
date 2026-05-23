@@ -380,7 +380,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST">
+                    <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value.replace(/,/g,'')">
                         @csrf
                         <div class="space-y-4">
                             <div>
@@ -460,7 +460,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST">
+            <form action="{{ route('client.investments.apply', $opportunity) }}" method="POST" onsubmit="this.querySelector('[name=amount]').value=this.querySelector('[name=amount]').value.replace(/,/g,'')">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -530,12 +530,20 @@
 
 <script>
 window.formatInvestAmount = function(raw) {
-    let d = (raw || '').replace(/[^0-9]/g, '');
-    if (!d) return '';
-    d = d.padStart(3, '0');
-    let i = d.slice(0, -2).replace(/^0+/, '') || '0';
-    let dec = d.slice(-2);
-    return i.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + dec;
+    let cleaned = (raw || '').replace(/[^0-9.]/g, '');
+    if (!cleaned) return '';
+    let parts = cleaned.split('.');
+    let intPart = (parts[0] || '0').replace(/^0+(?=\d)/, '') || '0';
+    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    if (parts.length > 1) {
+        let dec = (parts[1] || '').slice(0, 2);
+        return intPart + '.' + dec;
+    }
+    return intPart;
+};
+
+window.unformatInvestAmount = function(formatted) {
+    return (formatted || '0').replace(/,/g, '');
 };
 
 function selectPaymentMethod(method) {
@@ -621,11 +629,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         investAmount.addEventListener('blur', function() {
-            let n = parseFloat((this.value || '0').replace(/,/g, ''));
-            if (isNaN(n) || n <= 0) this.value = window.formatInvestAmount(String(minVal));
-            else if (n < minVal) this.value = window.formatInvestAmount(String(minVal));
-            else if (n > maxVal) this.value = window.formatInvestAmount(String(maxVal));
-            else this.value = window.formatInvestAmount(this.value);
+            let numericVal = parseFloat((this.value || '0').replace(/,/g, ''));
+            if (isNaN(numericVal) || numericVal <= 0) numericVal = minVal;
+            else if (numericVal < minVal) numericVal = minVal;
+            else if (numericVal > maxVal) numericVal = maxVal;
+            this.value = numericVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             updateSchedule();
         });
 
