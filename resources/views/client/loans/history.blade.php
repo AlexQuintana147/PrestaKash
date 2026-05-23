@@ -119,13 +119,13 @@
                                     <span class="text-[10px] font-black text-blue-500 uppercase tracking-wider">Pagado</span>
                                 @elseif($daysLeft !== null)
                                     @if($daysLeft < 0)
-                                        <span class="text-[10px] font-black text-red-500 uppercase tracking-wider">{{ abs($daysLeft) }}d atrasado</span>
+                                        <span class="text-[10px] font-black text-red-500">Tienes {{ abs($daysLeft) }} día{{ abs($daysLeft) !== 1 ? 's' : '' }} de atraso</span>
                                     @elseif($daysLeft === 0)
-                                        <span class="text-[10px] font-black text-orange-500 uppercase tracking-wider">Vence hoy</span>
+                                        <span class="text-[10px] font-black text-orange-500">Tu próxima cuota vence hoy</span>
                                     @elseif($daysLeft <= 3)
-                                        <span class="text-[10px] font-black text-orange-500 uppercase tracking-wider">{{ $daysLeft }}d</span>
+                                        <span class="text-[10px] font-black text-orange-500">Te quedan {{ $daysLeft }} día{{ $daysLeft !== 1 ? 's' : '' }} para pagar</span>
                                     @else
-                                        <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $daysLeft }}d</span>
+                                        <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400">Te quedan {{ $daysLeft }} día{{ $daysLeft !== 1 ? 's' : '' }} para pagar</span>
                                     @endif
                                 @endif
                                 <svg class="w-4 h-4 text-gray-300 dark:text-gray-700 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

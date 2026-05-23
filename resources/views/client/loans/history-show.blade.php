@@ -267,15 +267,14 @@
 
         @if($daysToNext !== null)
         <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
-            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Próxima cuota en</p>
             @if($daysToNext < 0)
-                <p class="text-[11px] sm:text-xs font-black text-red-500">{{ abs($daysToNext) }} día{{ abs($daysToNext) !== 1 ? 's' : '' }} de atraso</p>
+                <p class="text-[11px] sm:text-xs font-black text-red-500">Tienes {{ abs($daysToNext) }} día{{ abs($daysToNext) !== 1 ? 's' : '' }} de atraso en tu próxima cuota</p>
             @elseif($daysToNext === 0)
-                <p class="text-[11px] sm:text-xs font-black text-orange-500">Vence hoy</p>
+                <p class="text-[11px] sm:text-xs font-black text-orange-500">Tu próxima cuota vence hoy</p>
             @elseif($daysToNext <= 3)
-                <p class="text-[11px] sm:text-xs font-black text-orange-500">{{ $daysToNext }} día{{ $daysToNext !== 1 ? 's' : '' }}</p>
+                <p class="text-[11px] sm:text-xs font-black text-orange-500">Te quedan {{ $daysToNext }} día{{ $daysToNext !== 1 ? 's' : '' }} para pagar la siguiente cuota</p>
             @else
-                <p class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $daysToNext }} día{{ $daysToNext !== 1 ? 's' : '' }}</p>
+                <p class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">Te quedan {{ $daysToNext }} día{{ $daysToNext !== 1 ? 's' : '' }} para pagar la siguiente cuota</p>
             @endif
         </div>
         @endif
