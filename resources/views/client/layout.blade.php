@@ -187,11 +187,7 @@
                 </a>
 
                 @php
-                    $hasInvestmentNotification = Auth::user() && Auth::user()->is_investor &&
-                        \DB::table('investor_opportunity')
-                            ->where('user_id', Auth::id())
-                            ->where('status', 'rejected')
-                            ->exists();
+                    $hasInvestmentNotification = Auth::user() && Auth::user()->is_investor && Auth::user()->investment_rejection_reason;
                     $isInvestActive = request()->routeIs('client.invertir*') || request()->routeIs('client.investments.*');
                     $hasPendingPayouts = Auth::user() && Auth::user()->is_investor &&
                         \App\Models\InvestorPayout::where('investor_user_id', Auth::id())
@@ -212,8 +208,8 @@
                         </div>
                         <div class="flex items-center gap-2">
                             @if($hasInvestmentNotification)
-                                <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                <svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                             @endif
                             <svg id="invest-chevron" class="w-3.5 h-3.5 transition-transform duration-200 {{ $isInvestActive ? 'rotate-90' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -221,10 +217,17 @@
                     </button>
                     <div id="invest-submenu" class="mt-1 ml-4 space-y-0.5 {{ $isInvestActive ? '' : 'hidden' }}">
                         <a href="{{ route('client.investments.index') }}" onclick="closeSidebar()"
-                            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
+                            class="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
                             {{ request()->routeIs('client.investments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
-                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                            Oportunidades
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                Oportunidades
+                            </div>
+                            @if($hasInvestmentNotification)
+                                <svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                            @endif
                         </a>
                         <a href="{{ route('client.investments.my-investments') }}" onclick="closeSidebar()"
                             class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors

@@ -37,6 +37,11 @@
                             <div class="flex items-center gap-3 mb-1">
                                 <span class="text-[9px] font-mono text-gray-400">{{ $opp->code }}</span>
                                 <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">Abierta</span>
+                                @if($rejectedOpportunityId && $rejectedOpportunityId == $opp->id)
+                                    <svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                @endif
                             </div>
                             <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
                             <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{{ $opp->description }}</p>

@@ -30,7 +30,9 @@ class InvestmentController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('client.invest.opportunities', compact('opportunities'));
+        $rejectedOpportunityId = $user->investment_rejection_opportunity_id;
+
+        return view('client.invest.opportunities', compact('opportunities', 'rejectedOpportunityId'));
     }
 
     public function myInvestments()
@@ -85,6 +87,7 @@ class InvestmentController extends Controller
 
         if ($user->investment_rejection_reason) {
             $user->investment_rejection_reason = null;
+            $user->investment_rejection_opportunity_id = null;
             $user->save();
         }
 

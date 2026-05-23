@@ -243,6 +243,7 @@ class InvestmentOpportunityController extends Controller
         $user = \App\Models\User::find($userId);
         if ($user) {
             $user->investment_rejection_reason = $request->reason;
+            $user->investment_rejection_opportunity_id = $investment->id;
             $user->save();
         }
 
