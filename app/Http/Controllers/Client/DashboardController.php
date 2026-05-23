@@ -69,13 +69,40 @@ class DashboardController extends Controller
             ];
         })->values();
 
+        $upcomingInstallments = LoanInstallment::with('loan')
+            ->whereHas('loan', function ($q) use ($user) {
+                $q->where('user_id', $user->id)->whereIn('status', ['approved', 'disbursed', 'active']);
+            })
+            ->where('status', '!=', 'approved')
+            ->whereBetween('due_date', [now()->startOfDay(), now()->addDays(5)->endOfDay()])
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        $hasUpcoming = $upcomingInstallments->isNotEmpty();
+        $upcomingCount = $upcomingInstallments->count();
+
+        $upcomingByLoan = $upcomingInstallments->groupBy('loan_id')->map(function ($items) {
+            $loan = $items->first()->loan;
+            return [
+                'loan_id' => $loan->id,
+                'loan_code' => $loan->code,
+                'currency' => $loan->currency,
+                'amount' => $loan->amount,
+                'upcoming_count' => $items->count(),
+                'next_due_date' => $items->first()->due_date,
+                'days_left' => (int) now()->startOfDay()->diffInDays($items->first()->due_date->startOfDay(), false),
+                'next_amount' => $items->first()->amount,
+            ];
+        })->values();
+
         return view('client.dashboard', compact(
             'user', 'department', 'province', 'district',
             'activeLoans', 'pendingLoans', 'totalDebt', 'monthlyPayment',
             'hasProfile', 'pendingChange', 'rejectedChange',
             'isInvestor', 'hasInvestorApp',
             'overdueInstallments', 'hasOverdue', 'overdueCount', 'overdueTotal', 'overdueLateFees', 'oldestOverdue',
-            'overdueByLoan'
+            'overdueByLoan',
+            'upcomingInstallments', 'hasUpcoming', 'upcomingCount', 'upcomingByLoan'
         ));
     }
 
