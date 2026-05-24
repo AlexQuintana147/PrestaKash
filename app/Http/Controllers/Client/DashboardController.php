@@ -95,6 +95,28 @@ class DashboardController extends Controller
             ];
         })->values();
 
+        $pendingInvestmentPayouts = \App\Models\InvestorPayout::where('investor_user_id', $user->id)
+            ->where('status', 'pending')
+            ->with(['opportunity:id,code,title,currency'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $hasPendingPayouts = $pendingInvestmentPayouts->isNotEmpty();
+        $pendingPayoutsCount = $pendingInvestmentPayouts->count();
+        $pendingPayoutsTotal = $pendingInvestmentPayouts->sum('amount');
+        $pendingPayoutsByOpportunity = $pendingInvestmentPayouts->groupBy('investment_opportunity_id')->map(function ($items) {
+            $opportunity = $items->first()->opportunity;
+            return [
+                'opportunity_id' => $opportunity->id,
+                'opportunity_code' => $opportunity->code,
+                'opportunity_title' => $opportunity->title,
+                'currency' => $opportunity->currency,
+                'payouts_count' => $items->count(),
+                'total_amount' => $items->sum('amount'),
+                'latest_created' => $items->first()->created_at,
+            ];
+        })->values();
+
         return view('client.dashboard', compact(
             'user', 'department', 'province', 'district',
             'activeLoans', 'pendingLoans', 'totalDebt', 'monthlyPayment',
@@ -102,7 +124,8 @@ class DashboardController extends Controller
             'isInvestor', 'hasInvestorApp',
             'overdueInstallments', 'hasOverdue', 'overdueCount', 'overdueTotal', 'overdueLateFees', 'oldestOverdue',
             'overdueByLoan',
-            'upcomingInstallments', 'hasUpcoming', 'upcomingCount', 'upcomingByLoan'
+            'upcomingInstallments', 'hasUpcoming', 'upcomingCount', 'upcomingByLoan',
+            'pendingInvestmentPayouts', 'hasPendingPayouts', 'pendingPayoutsCount', 'pendingPayoutsTotal', 'pendingPayoutsByOpportunity'
         ));
     }
 
