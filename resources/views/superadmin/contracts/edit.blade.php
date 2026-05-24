@@ -675,12 +675,12 @@ function closePreview() { document.getElementById('preview-overlay').classList.r
 function openBoxPicker() {
     const list = document.getElementById('box-options-list');
     let html = '';
+    const isDark = document.documentElement.classList.contains('dark');
     Object.keys(BOX_TYPES).forEach(function(key) {
         const b = BOX_TYPES[key];
         html += '<div class="box-option" onclick="addBox(\'' + key + '\')">';
-        html += '<div class="box-option-icon" style="background:' + b.bgLight + ';color:' + b.textLight + '">';
-        html += getBoxIcon(b.icon) + '</div>';
-        html += '<div><p style="font-size:12.5px;font-weight:700;color:#1f2937;dark:text-white">' + b.label + '</p>';
+        html += getBoxIcon(b.icon);
+        html += '<div><p style="font-size:12.5px;font-weight:700;color:' + (isDark ? '#f3f4f6' : '#1f2937') + '">' + b.label + '</p>';
         html += '<p style="font-size:10px;color:#9ca3af;margin-top:1px">' + b.description + '</p></div></div>';
     });
     list.innerHTML = html;
@@ -704,6 +704,7 @@ function addBox(typeKey) {
     if (!b) return;
     closeBoxPicker();
     const container = document.getElementById('clauses-container');
+    const isDark = document.documentElement.classList.contains('dark');
     const card = document.createElement('div');
     card.className = 'box-card';
     card.dataset.boxType = typeKey;
@@ -713,8 +714,8 @@ function addBox(typeKey) {
             '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
         '</button>' +
         '<div class="box-card-header">' +
-            '<div class="box-icon-wrap" style="background:' + b.bgLight + ';color:' + b.textLight + '">' + getBoxIcon(b.icon) + '</div>' +
-            '<div><p class="box-title">' + escapeHtml(b.label) + '</p>' +
+            getBoxIcon(b.icon) +
+            '<div><p class="box-title" style="color:' + (isDark ? '#f3f4f6' : '') + '">' + escapeHtml(b.label) + '</p>' +
             '<span class="box-badge" style="background:' + b.bgLight + ';color:' + b.textLight + ';border:1px solid ' + b.borderLight + '">Automático</span></div></div>' +
         '<input type="hidden" name="boxes[' + (boxIndex - 1) + '][type]" value="' + typeKey + '">' +
         '<div class="box-placeholder">' +
