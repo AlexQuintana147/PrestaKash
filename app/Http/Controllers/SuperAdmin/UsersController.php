@@ -277,13 +277,27 @@ class UsersController extends Controller
             default => 'GHX',
         };
 
-        $last = User::where('ghost_code', 'like', $prefix . '-%')
-            ->orderByDesc('id')
-            ->value('ghost_code');
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $last = User::where('ghost_code', 'like', $prefix . '-%')
+                ->orderByRaw('LENGTH(ghost_code) DESC, ghost_code DESC')
+                ->value('ghost_code');
 
-        $next = $last ? (int) substr($last, strlen($prefix) + 1) + 1 : 1;
+            $next = $last ? (int) substr($last, strlen($prefix) + 1) + 1 : 1;
+            $code = $prefix . '-' . str_pad($next, 5, '0', STR_PAD_LEFT);
 
-        return $prefix . '-' . str_pad($next, 5, '0', STR_PAD_LEFT);
+            if (!User::where('ghost_code', $code)->exists()) {
+                return $code;
+            }
+        }
+
+        return $prefix . '-' . str_pad(random_int(10000, 99999), 5, '0', STR_PAD_LEFT);
+    }
+
+    public function getNextGhostCode(Request $request)
+    {
+        $request->validate(['reason' => 'required|in:loan,investment,other']);
+        $code = $this->generateGhostCode($request->reason);
+        return response()->json(['code' => $code]);
     }
 
     public function show(User $user)

@@ -373,26 +373,6 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-800">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1">Código</p>
-                        <p class="text-sm font-mono font-bold text-gray-900 dark:text-white">{{ $user->ghost_code }}</p>
-                    </div>
-                    <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-800">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1">Tipo</p>
-                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-{{ $ghostTypeColor }}-100 dark:bg-{{ $ghostTypeColor }}-900/30 text-{{ $ghostTypeColor }}-700 dark:text-{{ $ghostTypeColor }}-400">
-                            @if($user->ghost_type === 'loan')
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                            @elseif($user->ghost_type === 'investment')
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                            @else
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5v14"/></svg>
-                            @endif
-                            {{ $ghostTypeLabel }}
-                        </span>
-                    </div>
-                </div>
-
                 <div class="mb-8">
                     <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Registrar movimiento</p>
                     <form action="{{ route('superadmin.users.ghost-movement', $user) }}" method="POST" class="p-5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
@@ -460,24 +440,32 @@
                             const codeValue = document.getElementById('ghost-code-value');
                             const existingCode = {{ $user->ghost_code ? 'true' : 'false' }};
 
-                            const prefixes = { loan: 'GHP', investment: 'GHI', other: 'GHX' };
-
                             function updateCodePreview() {
                                 if (existingCode) {
                                     codePreview.classList.add('hidden');
                                     return;
                                 }
                                 const reason = reasonEl.value;
-                                if (reason && prefixes[reason]) {
-                                    codeValue.textContent = prefixes[reason] + '-XXXXX';
-                                    codePreview.classList.remove('hidden');
-                                } else {
+                                if (!reason) {
                                     codePreview.classList.add('hidden');
+                                    return;
                                 }
+                                codeValue.textContent = '...';
+                                codePreview.classList.remove('hidden');
+
+                                fetch('{{ route('superadmin.users.ghost-next-code') }}?reason=' + encodeURIComponent(reason), {
+                                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                                })
+                                .then(r => r.json())
+                                .then(data => {
+                                    codeValue.textContent = data.code || '—';
+                                })
+                                .catch(() => {
+                                    codeValue.textContent = '—';
+                                });
                             }
 
                             reasonEl.addEventListener('change', updateCodePreview);
-                            updateCodePreview();
                         })();
                     </script>
                 </div>
