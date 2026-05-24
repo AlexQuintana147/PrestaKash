@@ -397,14 +397,39 @@
                     <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Registrar movimiento</p>
                     <form action="{{ route('superadmin.users.ghost-movement', $user) }}" method="POST" class="p-5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
                         @csrf
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Tipo</label>
-                                <select name="type" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Tipo de movimiento</label>
+                                <select name="type" id="ghost-type" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                    <option value="">Seleccionar</option>
                                     <option value="income">Ingreso</option>
                                     <option value="expense">Egreso</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Razón</label>
+                                <select name="reason" id="ghost-reason" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                    <option value="">Seleccionar</option>
+                                    <option value="loan">Préstamo</option>
+                                    <option value="investment">Inversión</option>
+                                    <option value="other">Otro</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Moneda</label>
+                                <select name="currency" id="ghost-currency" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                    <option value="PEN">PEN (Soles)</option>
+                                    <option value="USD">USD (Dólares)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="ghost-code-preview" class="hidden mb-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                                <p class="text-xs text-blue-700 dark:text-blue-300">Se asignará el código: <strong id="ghost-code-value" class="font-mono">—</strong></p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Monto</label>
                                 <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
@@ -428,6 +453,33 @@
                             </button>
                         </div>
                     </form>
+                    <script>
+                        (function() {
+                            const reasonEl = document.getElementById('ghost-reason');
+                            const codePreview = document.getElementById('ghost-code-preview');
+                            const codeValue = document.getElementById('ghost-code-value');
+                            const existingCode = {{ $user->ghost_code ? 'true' : 'false' }};
+
+                            const prefixes = { loan: 'GHP', investment: 'GHI', other: 'GHX' };
+
+                            function updateCodePreview() {
+                                if (existingCode) {
+                                    codePreview.classList.add('hidden');
+                                    return;
+                                }
+                                const reason = reasonEl.value;
+                                if (reason && prefixes[reason]) {
+                                    codeValue.textContent = prefixes[reason] + '-XXXXX';
+                                    codePreview.classList.remove('hidden');
+                                } else {
+                                    codePreview.classList.add('hidden');
+                                }
+                            }
+
+                            reasonEl.addEventListener('change', updateCodePreview);
+                            updateCodePreview();
+                        })();
+                    </script>
                 </div>
 
                 <div>

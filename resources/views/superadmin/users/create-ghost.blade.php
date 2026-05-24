@@ -146,61 +146,6 @@
                     </div>
                 </div>
 
-                <div class="mt-10 p-5 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10">
-                    <div class="flex items-start gap-3 mb-5">
-                        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <div>
-                            <p class="text-sm font-semibold text-amber-800 dark:text-amber-300">Configuración de usuario fantasma</p>
-                            <p class="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Este usuario <strong>no figurará</strong> en inversiones ni préstamos. Solo será visible en este panel.</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-6">
-                        <div class="relative">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Tipo</label>
-                            <div class="relative">
-                                <select name="ghost_type" required
-                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer">
-                                    <option value="" class="dark:bg-black">Seleccionar</option>
-                                    <option value="loan" {{ old('ghost_type') === 'loan' ? 'selected' : '' }} class="dark:bg-black">Préstamo</option>
-                                    <option value="investment" {{ old('ghost_type') === 'investment' ? 'selected' : '' }} class="dark:bg-black">Inversión</option>
-                                    <option value="other" {{ old('ghost_type') === 'other' ? 'selected' : '' }} class="dark:bg-black">Otro</option>
-                                </select>
-                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Caja asignada</label>
-                            <div class="relative">
-                                <select name="ghost_cashbox_id" required
-                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer">
-                                    <option value="" class="dark:bg-black">Seleccionar</option>
-                                    @foreach(\App\Models\Cashbox::where('is_active', true)->orderBy('name')->get() as $cb)
-                                        <option value="{{ $cb->id }}" {{ old('ghost_cashbox_id') == $cb->id ? 'selected' : '' }} class="dark:bg-black">{{ $cb->name }} ({{ $cb->currency }})</option>
-                                    @endforeach
-                                </select>
-                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Moneda</label>
-                            <div class="relative">
-                                <select name="ghost_currency" required
-                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer">
-                                    <option value="PEN" {{ old('ghost_currency') === 'PEN' ? 'selected' : '' }} class="dark:bg-black">PEN (Soles)</option>
-                                    <option value="USD" {{ old('ghost_currency') === 'USD' ? 'selected' : '' }} class="dark:bg-black">USD (Dólares)</option>
-                                </select>
-                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="flex justify-center md:justify-end pt-8">
                     <button type="submit"
                         class="text-blue-600 hover:text-blue-700 border-b border-blue-600 hover:border-blue-700 pb-0.5 text-sm font-bold transition-all active:scale-[0.98]">

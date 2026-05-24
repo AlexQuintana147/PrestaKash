@@ -189,13 +189,7 @@ class UsersController extends Controller
             'province' => 'required|string',
             'district' => 'required|string',
             'address' => 'required|string|max:255',
-            'ghost_type' => 'required|in:loan,investment,other',
-            'ghost_cashbox_id' => 'required|exists:cashboxes,id',
-            'ghost_currency' => 'required|in:PEN,USD',
         ]);
-
-        $ghostCode = $this->generateGhostCode($request->ghost_type);
-        $cashbox = Cashbox::findOrFail($request->ghost_cashbox_id);
 
         $user = User::create([
             'role_id' => \App\Models\Role::where('name', 'usuario')->value('id') ?? \App\Models\Role::first()->id,
@@ -212,10 +206,6 @@ class UsersController extends Controller
             'profile_completed' => true,
             'step1_completed' => true,
             'is_ghost' => true,
-            'ghost_code' => $ghostCode,
-            'ghost_type' => $request->ghost_type,
-            'ghost_cashbox_id' => $cashbox->id,
-            'ghost_currency' => $request->ghost_currency,
             'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
         ]);
 
@@ -235,9 +225,11 @@ class UsersController extends Controller
 
         $request->validate([
             'type' => 'required|in:income,expense',
+            'reason' => 'required|in:loan,investment,other',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'required|string|max:255',
             'cashbox_id' => 'required|exists:cashboxes,id',
+            'currency' => 'required|in:PEN,USD',
         ]);
 
         $cashbox = Cashbox::findOrFail($request->cashbox_id);
@@ -248,6 +240,14 @@ class UsersController extends Controller
         }
 
         \DB::transaction(function () use ($request, $user, $cashbox, $amount) {
+            if (!$user->ghost_code) {
+                $user->ghost_code = $this->generateGhostCode($request->reason);
+                $user->ghost_type = $request->reason;
+                $user->ghost_cashbox_id = $cashbox->id;
+                $user->ghost_currency = $request->currency;
+                $user->save();
+            }
+
             CashboxMovement::create([
                 'cashbox_id' => $cashbox->id,
                 'user_id' => $user->id,
