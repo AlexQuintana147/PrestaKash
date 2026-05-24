@@ -327,42 +327,177 @@
 
         </div>
 
-        <!-- Documentos -->
+        <!-- Contenido principal -->
         <div class="md:col-span-8">
-            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Documentos</p>
+            @if($user->is_ghost)
+                @php
+                    $cashboxes = \App\Models\Cashbox::where('is_active', true)->orderBy('name')->get();
+                    $ghostMovements = $user->ghostMovements()->with('cashbox')->latest()->paginate(10);
+                    $ghostTypeLabel = match($user->ghost_type) {
+                        'loan' => 'Préstamo',
+                        'investment' => 'Inversión',
+                        default => 'Otro',
+                    };
+                    $ghostTypeColor = match($user->ghost_type) {
+                        'loan' => 'blue',
+                        'investment' => 'emerald',
+                        default => 'gray',
+                    };
+                    $totalIncome = $user->ghostMovements()->where('type', 'income')->sum('amount');
+                    $totalExpense = $user->ghostMovements()->where('type', 'expense')->sum('amount');
+                    $balance = $totalIncome - $totalExpense;
+                @endphp
 
-            @if($user->documents)
-            <div class="grid grid-cols-2 gap-3 md:gap-5">
-                @foreach([
-                    'Selfie'              => $user->documents->selfie,
-                    'Recibo de servicios' => $user->documents->utility_bill,
-                    'DNI — Frontal'       => $user->documents->dni_front,
-                    'DNI — Posterior'     => $user->documents->dni_back,
-                ] as $label => $path)
-                <div>
-                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $label }}</p>
-                    @if($path)
-                        <button onclick="openLightbox('{{ Storage::url($path) }}', '{{ $label }}')" class="block w-full group text-left">
-                            <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900" style="aspect-ratio: 4/3;">
-                                <img src="{{ Storage::url($path) }}"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </button>
-                    @else
-                        <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 text-xs" style="aspect-ratio: 4/3;">
-                            Sin imagen
+                <div class="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div>
+                            <p class="text-sm font-semibold text-amber-800 dark:text-amber-300">Usuario fantasma — Solo panel interno</p>
+                            <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">Este usuario <strong>no figurará</strong> en las secciones de inversiones ni préstamos. Sus movimientos solo son visibles aquí y en la caja asignada.</p>
                         </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div class="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                        <p class="text-[10px] uppercase tracking-widest text-green-600 dark:text-green-400 mb-1">Ingresos</p>
+                        <p class="text-lg font-bold text-green-700 dark:text-green-300">{{ $user->ghost_currency }} {{ number_format($totalIncome, 2) }}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                        <p class="text-[10px] uppercase tracking-widest text-red-600 dark:text-red-400 mb-1">Egresos</p>
+                        <p class="text-lg font-bold text-red-700 dark:text-red-300">{{ $user->ghost_currency }} {{ number_format($totalExpense, 2) }}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-600 dark:text-gray-400 mb-1">Balance</p>
+                        <p class="text-lg font-bold {{ $balance >= 0 ? 'text-gray-900 dark:text-white' : 'text-red-600 dark:text-red-400' }}">{{ $user->ghost_currency }} {{ number_format($balance, 2) }}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-800">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1">Código</p>
+                        <p class="text-sm font-mono font-bold text-gray-900 dark:text-white">{{ $user->ghost_code }}</p>
+                    </div>
+                    <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-800">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1">Tipo</p>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-{{ $ghostTypeColor }}-100 dark:bg-{{ $ghostTypeColor }}-900/30 text-{{ $ghostTypeColor }}-700 dark:text-{{ $ghostTypeColor }}-400">
+                            @if($user->ghost_type === 'loan')
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            @elseif($user->ghost_type === 'investment')
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                            @else
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5v14"/></svg>
+                            @endif
+                            {{ $ghostTypeLabel }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Registrar movimiento</p>
+                    <form action="{{ route('superadmin.users.ghost-movement', $user) }}" method="POST" class="p-5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
+                        @csrf
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Tipo</label>
+                                <select name="type" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                    <option value="income">Ingreso</option>
+                                    <option value="expense">Egreso</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Monto</label>
+                                <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Caja</label>
+                                <select name="cashbox_id" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                    @foreach($cashboxes as $cb)
+                                        <option value="{{ $cb->id }}" {{ $cb->id === $user->ghost_cashbox_id ? 'selected' : '' }}>{{ $cb->name }} ({{ $cb->currency }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Descripción</label>
+                                <input type="text" name="description" required maxlength="255" placeholder="Descripción del movimiento" class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button type="submit" class="px-5 py-2.5 text-sm font-semibold rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors">
+                                Registrar movimiento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Historial de movimientos</p>
+                    @if($ghostMovements->count() > 0)
+                        <div class="space-y-2">
+                            @foreach($ghostMovements as $mov)
+                                <div class="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center {{ $mov->type === 'income' ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30' }}">
+                                            @if($mov->type === 'income')
+                                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                                            @else
+                                                <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $mov->description }}</p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-500">{{ $mov->created_at->format('d/m/Y H:i') }} · {{ $mov->cashbox->name ?? '—' }}</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm font-bold {{ $mov->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                        {{ $mov->type === 'income' ? '+' : '-' }}{{ $mov->cashbox->currency ?? 'PEN' }} {{ number_format($mov->amount, 2) }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="mt-4">
+                            {{ $ghostMovements->withQueryString()->links() }}
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-400 dark:text-gray-500">Sin movimientos registrados.</p>
                     @endif
                 </div>
-                @endforeach
-            </div>
             @else
-                <p class="text-sm text-gray-400 dark:text-gray-500">Este usuario no ha subido documentos.</p>
+                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Documentos</p>
+
+                @if($user->documents)
+                <div class="grid grid-cols-2 gap-3 md:gap-5">
+                    @foreach([
+                        'Selfie'              => $user->documents->selfie,
+                        'Recibo de servicios' => $user->documents->utility_bill,
+                        'DNI — Frontal'       => $user->documents->dni_front,
+                        'DNI — Posterior'     => $user->documents->dni_back,
+                    ] as $label => $path)
+                    <div>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $label }}</p>
+                        @if($path)
+                            <button onclick="openLightbox('{{ Storage::url($path) }}', '{{ $label }}')" class="block w-full group text-left">
+                                <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900" style="aspect-ratio: 4/3;">
+                                    <img src="{{ Storage::url($path) }}"
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </button>
+                        @else
+                            <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 text-xs" style="aspect-ratio: 4/3;">
+                                Sin imagen
+                            </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                    <p class="text-sm text-gray-400 dark:text-gray-500">Este usuario no ha subido documentos.</p>
+                @endif
             @endif
         </div>
 

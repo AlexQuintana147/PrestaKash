@@ -4,6 +4,8 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlockedUser;
+use App\Models\Cashbox;
+use App\Models\CashboxMovement;
 use App\Models\ProfileChangeRequest;
 use App\Models\User;
 use App\Models\UserDocument;
@@ -187,7 +189,13 @@ class UsersController extends Controller
             'province' => 'required|string',
             'district' => 'required|string',
             'address' => 'required|string|max:255',
+            'ghost_type' => 'required|in:loan,investment,other',
+            'ghost_cashbox_id' => 'required|exists:cashboxes,id',
+            'ghost_currency' => 'required|in:PEN,USD',
         ]);
+
+        $ghostCode = $this->generateGhostCode($request->ghost_type);
+        $cashbox = Cashbox::findOrFail($request->ghost_cashbox_id);
 
         $user = User::create([
             'role_id' => \App\Models\Role::where('name', 'usuario')->value('id') ?? \App\Models\Role::first()->id,
@@ -204,16 +212,78 @@ class UsersController extends Controller
             'profile_completed' => true,
             'step1_completed' => true,
             'is_ghost' => true,
+            'ghost_code' => $ghostCode,
+            'ghost_type' => $request->ghost_type,
+            'ghost_cashbox_id' => $cashbox->id,
+            'ghost_currency' => $request->ghost_currency,
             'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
         ]);
 
-        // Create empty documents as approved
         UserDocument::create([
             'user_id' => $user->id,
             'status' => 'approved',
         ]);
 
-        return redirect()->route('superadmin.users.index')->with('success', 'Usuario fantasma creado correctamente.');
+        return redirect()->route('superadmin.users.show', $user)->with('success', 'Usuario fantasma creado correctamente.');
+    }
+
+    public function storeGhostMovement(Request $request, User $user)
+    {
+        if (!$user->is_ghost) {
+            abort(404);
+        }
+
+        $request->validate([
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'required|string|max:255',
+            'cashbox_id' => 'required|exists:cashboxes,id',
+        ]);
+
+        $cashbox = Cashbox::findOrFail($request->cashbox_id);
+        $amount = (float) $request->amount;
+
+        if ($request->type === 'expense' && $cashbox->balance < $amount) {
+            return back()->withErrors(['amount' => 'Saldo insuficiente en la caja.']);
+        }
+
+        \DB::transaction(function () use ($request, $user, $cashbox, $amount) {
+            CashboxMovement::create([
+                'cashbox_id' => $cashbox->id,
+                'user_id' => $user->id,
+                'type' => $request->type,
+                'amount' => $amount,
+                'description' => $request->description,
+                'reference_type' => 'ghost',
+                'reference_id' => $user->id,
+                'date' => now(),
+            ]);
+
+            if ($request->type === 'income') {
+                $cashbox->increment('balance', $amount);
+            } else {
+                $cashbox->decrement('balance', $amount);
+            }
+        });
+
+        return back()->with('success', 'Movimiento registrado correctamente.');
+    }
+
+    private function generateGhostCode(string $type): string
+    {
+        $prefix = match($type) {
+            'loan' => 'GHP',
+            'investment' => 'GHI',
+            default => 'GHX',
+        };
+
+        $last = User::where('ghost_code', 'like', $prefix . '-%')
+            ->orderByDesc('id')
+            ->value('ghost_code');
+
+        $next = $last ? (int) substr($last, strlen($prefix) + 1) + 1 : 1;
+
+        return $prefix . '-' . str_pad($next, 5, '0', STR_PAD_LEFT);
     }
 
     public function show(User $user)

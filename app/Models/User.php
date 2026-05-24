@@ -36,6 +36,10 @@ class User extends Authenticatable
         'loan_interest_rate',
         'credit_line',
         'is_ghost',
+        'ghost_code',
+        'ghost_type',
+        'ghost_cashbox_id',
+        'ghost_currency',
         'investor_rejection_reason',
         'investment_rejection_reason',
     ];
@@ -184,5 +188,15 @@ class User extends Authenticatable
     public static function generateReferralCode(): string
     {
         return strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+    }
+
+    public function ghostCashbox()
+    {
+        return $this->belongsTo(Cashbox::class, 'ghost_cashbox_id');
+    }
+
+    public function ghostMovements()
+    {
+        return $this->hasMany(CashboxMovement::class, 'user_id')->where('reference_type', 'ghost');
     }
 }
