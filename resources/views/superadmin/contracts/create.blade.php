@@ -837,7 +837,10 @@ function renderPreview() {
 }
 
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { closePreview(); closeBoxPicker(); }
+    if (e.key === 'Escape') { closePreview(); closeBoxPicker(); closeMobileVars(); }
 });
+
+function openMobileVars() { document.getElementById('mobile-vars-modal').classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function closeMobileVars() { document.getElementById('mobile-vars-modal').classList.add('hidden'); document.body.style.overflow=''; }
 </script>
 @endpush
