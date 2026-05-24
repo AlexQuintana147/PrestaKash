@@ -95,10 +95,13 @@
     }
     .dark .box-card { background: #0a0a0a; border-color: #333; }
     .box-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
-    .box-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .box-icon-wrap { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .box-card-header {
+        display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .box-card-header svg { width: 28px; height: 28px; color: #6366f1; flex-shrink: 0; }
+    .dark .box-card-header svg { color: #818cf8; }
     .box-title { font-size: 13px; font-weight: 700; color: #1f2937; letter-spacing: 0.01em; }
-    .dark .box-title { color: #e5e7eb; }
+    .dark .box-title { color: #f3f4f6; }
     .box-subtitle { font-size: 10.5px; color: #9ca3af; margin-top: 1px; }
     .dark .box-subtitle { color: #6b7280; }
     .box-placeholder {
@@ -134,13 +137,14 @@
     }
     .dark .box-picker-modal { background: #111111; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.6); }
     .box-option {
-        display: flex; align-items: gap: 14px; padding: 14px 16px; border-radius: 12px;
+        display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px;
         cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; margin-bottom: 8px;
     }
     .box-option:last-child { margin-bottom: 0; }
     .box-option:hover { background: #f8fafc; border-color: #e2e8f0; transform: translateX(4px); }
     .dark .box-option:hover { background: #1a1a1a; border-color: #333; }
-    .box-option-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .box-option svg { width: 28px; height: 28px; flex-shrink: 0; color: #6366f1; }
+    .dark .box-option svg { color: #818cf8; }
     .preview-empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px; }
     .dark .preview-empty { color: #555; }
 

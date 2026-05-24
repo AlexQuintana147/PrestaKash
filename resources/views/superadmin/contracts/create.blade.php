@@ -166,12 +166,10 @@
     .box-card-header {
         display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
     }
-    .box-icon-wrap {
-        width: 36px; height: 36px; border-radius: 10px; display: flex;
-        align-items: center; justify-content: center; flex-shrink: 0;
-    }
+    .box-card-header svg { width: 28px; height: 28px; color: #6366f1; flex-shrink: 0; }
+    .dark .box-card-header svg { color: #818cf8; }
     .box-title { font-size: 13px; font-weight: 700; color: #1f2937; letter-spacing: 0.01em; }
-    .dark .box-title { color: #e5e7eb; }
+    .dark .box-title { color: #f3f4f6; }
     .box-subtitle { font-size: 10.5px; color: #9ca3af; margin-top: 1px; }
     .dark .box-subtitle { color: #6b7280; }
     .box-placeholder {
@@ -214,17 +212,15 @@
     }
     .dark .box-picker-modal { background: #111111; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.6); }
     .box-option {
-        display: flex; align-items: gap: 14px; padding: 14px 16px; border-radius: 12px;
+        display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px;
         cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent;
         margin-bottom: 8px;
     }
     .box-option:last-child { margin-bottom: 0; }
     .box-option:hover { background: #f8fafc; border-color: #e2e8f0; transform: translateX(4px); }
     .dark .box-option:hover { background: #1a1a1a; border-color: #333; }
-    .box-option-icon {
-        width: 40px; height: 40px; border-radius: 10px; display: flex;
-        align-items: center; justify-content: center; flex-shrink: 0;
-    }
+    .box-option svg { width: 28px; height: 28px; flex-shrink: 0; color: #6366f1; }
+    .dark .box-option svg { color: #818cf8; }
 
     .preview-empty {
         text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px;
@@ -727,13 +723,13 @@ function closePreview() {
 function openBoxPicker() {
     const list = document.getElementById('box-options-list');
     let html = '';
+    const isDark = document.documentElement.classList.contains('dark');
     Object.keys(BOX_TYPES).forEach(function(key) {
         const b = BOX_TYPES[key];
         html += '<div class="box-option" onclick="addBox(\'' + key + '\')">';
-        html += '<div class="box-option-icon" style="background:' + b.bgLight + ';color:' + b.textLight + '">';
-        html += getBoxIcon(b.icon) + '</div>';
-        html += '<div><p style="font-size:12.5px;font-weight:700;color:#1f2937;dark:text-white">' + b.label + '</p>';
-        html += '<p style="font-size:10px;color:#9ca3af;margin-top:1px">' + b.description + '</p></div></div>';
+        html += getBoxIcon(b.icon);
+        html += '<div><p style="font-size:12.5px;font-weight:700;color:' + (isDark ? '#f3f4f6' : '#1f2937') + '">' + b.label + '</p>';
+        html += '<p style="font-size:10px;color:' + (isDark ? '#9ca3af' : '#9ca3af') + ';margin-top:1px">' + b.description + '</p></div></div>';
     });
     list.innerHTML = html;
     document.getElementById('box-picker-overlay').classList.add('active');
@@ -758,6 +754,7 @@ function addBox(typeKey) {
     if (!b) return;
     closeBoxPicker();
     const container = document.getElementById('clauses-container');
+    const isDark = document.documentElement.classList.contains('dark');
     const card = document.createElement('div');
     card.className = 'box-card';
     card.dataset.boxType = typeKey;
@@ -767,11 +764,9 @@ function addBox(typeKey) {
             '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
         '</button>' +
         '<div class="box-card-header">' +
-            '<div class="box-icon-wrap" style="background:' + b.bgLight + ';color:' + b.textLight + '">' +
-                getBoxIcon(b.icon) +
-            '</div>' +
+            getBoxIcon(b.icon) +
             '<div>' +
-                '<p class="box-title">' + escapeHtml(b.label) + '</p>' +
+                '<p class="box-title" style="color:' + (isDark ? '#f3f4f6' : '') + '">' + escapeHtml(b.label) + '</p>' +
                 '<span class="box-badge" style="background:' + b.bgLight + ';color:' + b.textLight + ';border:1px solid ' + b.borderLight + '">Automático</span>' +
             '</div>' +
         '</div>' +
