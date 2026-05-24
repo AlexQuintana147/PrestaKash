@@ -333,16 +333,6 @@
                 @php
                     $cashboxes = \App\Models\Cashbox::where('is_active', true)->orderBy('name')->get();
                     $ghostMovements = $user->ghostMovements()->with('cashbox')->latest()->paginate(10);
-                    $ghostTypeLabel = match($user->ghost_type) {
-                        'loan' => 'Préstamo',
-                        'investment' => 'Inversión',
-                        default => 'Otro',
-                    };
-                    $ghostTypeColor = match($user->ghost_type) {
-                        'loan' => 'blue',
-                        'investment' => 'emerald',
-                        default => 'gray',
-                    };
                     $totalIncome = $user->ghostMovements()->where('type', 'income')->sum('amount');
                     $totalExpense = $user->ghostMovements()->where('type', 'expense')->sum('amount');
                     $balance = $totalIncome - $totalExpense;
