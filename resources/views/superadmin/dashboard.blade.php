@@ -104,16 +104,19 @@
                     <span class="text-xs font-medium text-white/70 uppercase tracking-wider">Cartera activa</span>
                 </div>
                 @if($cashboxes->count() > 1)
-                <div class="flex items-center gap-1.5">
-                    <span class="text-[10px] text-white/60 font-medium">{{ $cashboxes->count() }} cajas</span>
-                    <select id="cashbox-selector" onchange="switchCashbox()" class="text-[10px] font-bold bg-white/15 text-white border border-white/20 rounded-lg px-2 py-1 outline-none cursor-pointer appearance-none text-center" style="background-image: none;">
-                        @foreach($cashboxes as $cb)
-                        <option value="{{ $cb->id }}" data-balance="{{ $cb->balance }}" data-currency="{{ $cb->currency }}" data-name="{{ $cb->name }}" data-bank="{{ $cb->bank_name }}" {{ $loop->first ? 'selected' : '' }}>{{ $cb->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <span class="text-[10px] text-white/50 font-medium">{{ $cashboxes->count() }} cajas</span>
                 @endif
             </div>
+            @if($cashboxes->count() > 1)
+            <div id="cashbox-tabs" class="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1 scrollbar-hide">
+                @foreach($cashboxes as $cb)
+                <button type="button" onclick="switchCashboxTab({{ $cb->id }})" data-id="{{ $cb->id }}" data-balance="{{ $cb->balance }}" data-currency="{{ $cb->currency }}" data-name="{{ $cb->name }}" data-bank="{{ $cb->bank_name }}" class="cashbox-tab flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all duration-200 {{ $loop->first ? 'bg-white text-[#006BFF] shadow-lg shadow-white/20' : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ $loop->first ? 'bg-[#006BFF]' : 'bg-white/40' }}" data-dot></span>
+                    {{ $cb->name }}
+                </button>
+                @endforeach
+            </div>
+            @endif
             <p id="cashbox-balance" class="text-3xl md:text-4xl font-bold text-white tracking-tight">{{ $cashboxes->first()->currency === 'USD' ? '$' : 'S/' }}{{ number_format($cashboxes->first()->balance, 2) }}</p>
             <p id="cashbox-info" class="text-[10px] text-white/50 mt-1">{{ $cashboxes->first()->bank_name }} · {{ $cashboxes->first()->name }}</p>
             <div class="mt-3 flex items-center gap-3 flex-wrap">
@@ -510,14 +513,22 @@
 
 @push('scripts')
 <script>
-function switchCashbox(){
-    var sel = document.getElementById('cashbox-selector');
-    if(!sel) return;
-    var opt = sel.options[sel.selectedIndex];
-    var cur = opt.getAttribute('data-currency') === 'USD' ? '$' : 'S/';
-    var bal = parseFloat(opt.getAttribute('data-balance')).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-    document.getElementById('cashbox-balance').textContent = cur + bal;
-    document.getElementById('cashbox-info').textContent = opt.getAttribute('data-bank') + ' · ' + opt.getAttribute('data-name');
+function switchCashboxTab(id){
+    var tabs=document.querySelectorAll('.cashbox-tab');
+    tabs.forEach(function(t){
+        var isActive=t.getAttribute('data-id')==id;
+        if(isActive){
+            t.className='cashbox-tab flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all duration-200 bg-white text-[#006BFF] shadow-lg shadow-white/20';
+            t.querySelector('[data-dot]').className='w-1.5 h-1.5 rounded-full bg-[#006BFF]';
+            var cur=t.getAttribute('data-currency')==='USD'?'$':'S/';
+            var bal=parseFloat(t.getAttribute('data-balance')).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+            document.getElementById('cashbox-balance').textContent=cur+bal;
+            document.getElementById('cashbox-info').textContent=t.getAttribute('data-bank')+' · '+t.getAttribute('data-name');
+        }else{
+            t.className='cashbox-tab flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all duration-200 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white';
+            t.querySelector('[data-dot]').className='w-1.5 h-1.5 rounded-full bg-white/40';
+        }
+    });
 }
 (function(){
     function initPag(listId, pagId, itemClass, perPage){
