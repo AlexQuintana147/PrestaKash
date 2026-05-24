@@ -305,7 +305,7 @@
                         $totalDebt = $installment->total_with_mora;
                         $severityClass = $daysOverdue > 30 ? 'text-red-500' : ($daysOverdue > 7 ? 'text-orange-500' : 'text-amber-500');
                     @endphp
-                    <div class="pk-list-row flex items-center gap-3 px-5 py-3">
+                    <a href="{{ $loan ? route('superadmin.installments.group', $loan) : '#' }}" class="pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer">
                         <div class="w-8 h-8 rounded-full bg-red-500/10 dark:bg-red-500/20 flex items-center justify-center flex-shrink-0">
                             <span class="text-[8px] font-black {{ $severityClass }}">{{ $daysOverdue }}d</span>
                         </div>
@@ -313,13 +313,16 @@
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $user?->name ?? 'Sin cliente' }}</p>
                             <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan?->code ?? '' }} · Cuota {{ $installment->installment_number }}</p>
                         </div>
-                        <div class="text-right flex-shrink-0">
-                            <p class="text-xs font-black {{ $severityClass }} tabular-nums">S/{{ number_format($totalDebt, 0) }}</p>
-                            @if($installment->late_fee > 0)
-                                <p class="text-[8px] text-red-400 font-bold">+S/{{ number_format($installment->late_fee, 0) }} mora</p>
-                            @endif
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <div class="text-right">
+                                <p class="text-xs font-black {{ $severityClass }} tabular-nums">S/{{ number_format($totalDebt, 2) }}</p>
+                                @if($installment->late_fee > 0)
+                                    <p class="text-[8px] text-red-400 font-bold">+S/{{ number_format($installment->late_fee, 2) }} mora</p>
+                                @endif
+                            </div>
+                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div class="px-5 py-10 text-center">
                         <svg class="w-12 h-12 text-[#00D26A] mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -348,20 +351,23 @@
                         $investorCount = $opp->approvedInvestors->count();
                         $totalInvested = $opp->approvedInvestors->sum('pivot.amount');
                     @endphp
-                    <div class="pk-list-row px-5 py-3.5">
+                    <a href="{{ route('superadmin.investments.show', $opp) }}" class="pk-list-row px-5 py-3.5 cursor-pointer block">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2.5 min-w-0">
                                 <span class="flex-shrink-0 text-[8px] font-mono text-white dark:text-black bg-black dark:bg-white px-1.5 py-0.5 rounded">{{ $opp->code }}</span>
                                 <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $opp->title }}</p>
                             </div>
-                            <span class="flex-shrink-0 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded {{ $opp->status === 'funded' ? 'bg-[#006BFF]/10 dark:bg-[#006BFF]/20 text-[#006BFF]' : 'bg-[#00D26A]/10 dark:bg-[#00D26A]/20 text-[#00D26A]' }}">{{ $opp->status === 'funded' ? 'Financiada' : 'Cerrada' }}</span>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <span class="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded {{ $opp->status === 'funded' ? 'bg-[#006BFF]/10 dark:bg-[#006BFF]/20 text-[#006BFF]' : 'bg-[#00D26A]/10 dark:bg-[#00D26A]/20 text-[#00D26A]' }}">{{ $opp->status === 'funded' ? 'Financiada' : 'Cerrada' }}</span>
+                                <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </div>
                         </div>
                         <div class="flex items-center gap-4 mt-2 pl-7">
                             <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $opp->monthly_return_rate }}% · {{ $opp->term_months }}m</span>
                             <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $investorCount }} inversor{{ $investorCount !== 1 ? 'es' : '' }}</span>
-                            <span class="text-[10px] font-black {{ $opp->currency === 'USD' ? 'text-[#006BFF]' : 'text-[#00D26A]' }} tabular-nums ml-auto">{{ $curSymbol }}{{ number_format($totalInvested, 0) }}</span>
+                            <span class="text-[10px] font-black {{ $opp->currency === 'USD' ? 'text-[#006BFF]' : 'text-[#00D26A]' }} tabular-nums ml-auto">{{ $curSymbol }}{{ number_format($totalInvested, 2) }}</span>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div class="px-5 py-10 text-center">
                         <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
