@@ -104,6 +104,7 @@ class ContractController extends Controller
     public function preview(Contract $contract, Request $request)
     {
         $contract->load('clauses');
+        $allVars = Contract::getAllVariablesFlat();
 
         $sampleData = [
             'nombre_completo' => 'Pepe Luna Castillo',
@@ -111,61 +112,86 @@ class ContractController extends Controller
             'apellidos' => 'Luna Castillo',
             'dni' => '12345678',
             'ruc' => '20123456789',
+            'razon_social' => 'Luna Castillo E.I.R.L.',
             'email' => 'pepe@correo.com',
             'telefono' => '+51 999 888 777',
-            'direccion' => 'Av. Principal 123, Lima',
-            'fecha_nacimiento' => '15/03/1990',
+            'direccion' => 'Av. Principal 123, Urbanización San Isidro, Lima',
             'estado_civil' => 'Casado',
-            'ocupacion' => 'Ingeniero',
+            'ocupacion' => 'Ingeniero de Sistemas',
+            'lugar_trabajo' => 'Tecnologías del Perú S.A.C.',
             'monto_invertido' => 'S/ 10,000.00',
-            'tasa_interes' => '12%',
+            'monto_deseado' => 'S/ 15,000.00',
+            'tasa_retorno_mensual' => '3.5%',
             'plazo_meses' => '12',
-            'cuota_mensual' => 'S/ 933.33',
-            'fecha_inicio' => '01/06/2026',
-            'fecha_fin' => '01/06/2027',
-            'codigo_inversion' => 'INV-2026-001',
-            'oportunidad_titulo' => 'Oportunidad de Inversión A',
-            'total_pagado' => 'S/ 4,666.65',
-            'pagos_realizados' => '5',
-            'pagos_pendientes' => '7',
-            'proximo_pago_fecha' => '01/11/2026',
-            'proximo_pago_monto' => 'S/ 933.33',
-            'ultima_fecha_pago' => '01/10/2026',
-            'tasa_mora' => '5%',
-            'dias_mora' => '0',
+            'cuota_mensual' => 'S/ 350.00',
+            'fecha_inicio' => '01 de junio de 2026',
+            'fecha_fin' => '01 de junio de 2027',
+            'codigo_inversion' => 'OPP-2026-A001',
+            'oportunidad_titulo' => 'Fondo de Inversión Comercial Q3-2026',
+            'moneda' => 'Soles (PEN)',
+            'tipo_amortizacion' => 'Capital e intereses mensuales',
+            'prestamo_monto' => 'S/ 5,000.00',
+            'prestamo_codigo' => 'PRE-2026-0042',
+            'prestamo_plazo' => '6 meses',
+            'prestamo_tasa_interes' => '8.5% anual',
+            'prestamo_cuota' => 'S/ 867.20',
+            'prestamo_fecha_desembolso' => '15 de marzo de 2026',
+            'prestamo_motivo' => 'Capital de trabajo para expansión comercial',
+            'prestamo_total' => 'S/ 5,203.20',
+            'total_pagado' => 'S/ 4,336.80',
+            'pagos_realizados' => '5 pagos',
+            'pagos_pendientes' => '1 pago',
+            'proximo_pago_fecha' => '15 de septiembre de 2026',
+            'proximo_pago_monto' => 'S/ 867.20',
+            'ultimo_pago_fecha' => '15 de agosto de 2026',
+            'ultimo_pago_monto' => 'S/ 867.20',
+            'tasa_mora' => '5% mensual',
+            'dias_gracia' => '3 días',
+            'mora_diaria' => 'S/ 1.45',
+            'dias_mora' => '0 días',
             'interes_mora_acumulado' => 'S/ 0.00',
-            'penalidad_mora' => 'S/ 0.00',
-            'empresa_nombre' => 'PrestaKash S.A.C.',
+            'penalidad_actual' => 'S/ 0.00',
+            'empresa_nombre' => 'PrestaKash Soluciones Financieras S.A.C.',
             'empresa_ruc' => '20601234567',
-            'empresa_direccion' => 'Av. Central 456, Lima, Perú',
-            'empresa_telefono' => '+51 111 222 333',
+            'empresa_direccion' => 'Av. Central 456, Oficina 302, Cercado de Lima, Perú',
+            'empresa_telefono' => '+51 (01) 111 222 333',
             'empresa_email' => 'contacto@prestakash.com',
-            'empresa_representante' => 'Juan Pérez García',
-            'logo_empresa' => '[LOGO]',
-            'firma_empresa' => '[FIRMA]',
-            'sello_empresa' => '[SELLO]',
+            'empresa_representante' => 'Juan Carlos Pérez García',
+            'empresa_representante_dni' => '45678901',
+            'logo_empresa' => '[LOGO DE LA EMPRESA]',
+            'firma_representante' => '[FIRMA DEL REPRESENTANTE]',
+            'sello_empresa' => '[SELLO DE LA EMPRESA]',
             'contrato_nombre' => $contract->name,
-            'fecha_contrato' => now()->format('d/m/Y'),
-            'numero_contrato' => 'CT-' . str_pad($contract->id, 5, '0', STR_PAD_LEFT),
+            'contrato_numero' => 'CT-' . str_pad($contract->id, 5, '0', STR_PAD_LEFT),
+            'fecha_firma' => now()->format('d/m/Y'),
             'ciudad' => 'Lima',
-            'firma_cliente' => '[FIRMA CLIENTE]',
-            'huella_cliente' => '[HUELLA]',
+            'firma_cliente' => '[FIRMA DEL CLIENTE]',
+            'huella_cliente' => '[HUELLA DIGITAL]',
             'fecha_actual' => now()->format('d/m/Y'),
-            'dia_actual' => now()->format('d'),
-            'mes_actual' => now()->formatLocalized('%B'),
-            'anio_actual' => now()->format('Y'),
-            'dia_escrito' => $this->numberToWords(now()->format('d')),
-            'mes_escrito' => 'mayo',
-            'anio_escrito' => 'dos mil veintiséis',
-            'fecha_completa' => now()->format('d \\d\\e F \\d\\e Y'),
-            'fecha_letras' => 'veintitrés de mayo de dos mil veintiséis',
+            'dia_hoy' => now()->format('d'),
+            'mes_hoy' => 'mayo',
+            'anio_hoy' => now()->format('Y'),
+            'dia_letras' => $this->numberToWords(now()->format('d')),
+            'mes_letras' => 'mayo',
+            'anio_letras' => 'dos mil veintiséis',
+            'fecha_completa' => now()->format('d') . ' de ' . $this->monthToText((int)now()->format('m')) . ' de ' . now()->format('Y'),
+            'fecha_completa_letras' => $this->numberToWords(now()->format('d')) . ' de mayo de dos mil veintiséis',
         ];
 
         $renderedClauses = [];
         foreach ($contract->clauses as $clause) {
             $renderedContent = $clause->content;
             foreach ($sampleData as $key => $value) {
-                $renderedContent = str_replace('[' . $key . ']', '<strong class="text-blue-600 dark:text-blue-400">' . e($value) . '</strong>', $renderedContent);
+                if (isset($allVars[$key])) {
+                    $v = $allVars[$key];
+                    $colorStyle = "color:" . $v['color'] . ";background:" . ($v['bg_light']) . ";padding:1px 6px;border-radius:4px;font-size:inherit;";
+                    $darkColorStyle = "color:" . ($v['text_dark']) . ";background:" . ($v['bg_dark']) . ";padding:1px 6px;border-radius:4px;font-size:inherit;";
+                    $renderedContent = str_replace(
+                        '[' . $key . ']',
+                        '<span style="' . $colorStyle . '" class="dark:inline" data-dark-style="' . htmlspecialchars($darkColorStyle) . '">' . e($value) . '</span>',
+                        $renderedContent
+                    );
+                }
             }
             $renderedClauses[] = [
                 'title' => $clause->title,
@@ -188,5 +214,13 @@ class ContractController extends Controller
             28 => 'veintiocho', 29 => 'veintinueve', 30 => 'treinta', 31 => 'treinta y uno',
         ];
         return $words[(int)$num] ?? $num;
+    }
+
+    private function monthToText($month): string
+    {
+        return [
+            1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio',
+            7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre',
+        ][$month] ?? '';
     }
 }

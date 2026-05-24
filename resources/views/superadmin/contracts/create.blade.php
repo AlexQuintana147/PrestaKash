@@ -18,9 +18,9 @@
     }
     .variable-chip:hover {
         transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
-    .variable-chip.dark:hover { box-shadow: 0 2px 8px rgba(255,255,255,0.1); }
+    .dark .variable-chip:hover { box-shadow: 0 2px 8px rgba(255,255,255,0.15); }
     .clause-card {
         background: white;
         border: 1px solid #e5e7eb;
@@ -43,31 +43,75 @@
     .sidebar-category { cursor: pointer; transition: all 0.15s; }
     .sidebar-category.active { background: #f3f4f6; }
     .dark .sidebar-category.active { background: #1a1a1a; }
-    textarea.clause-content { min-height: 100px; line-height: 1.7; resize: vertical; }
-    .preview-panel { background: white; border: 1px solid #e5e7eb; }
-    .dark .preview-panel { background: #0a0a0a; border-color: #262626; }
+
+    .editor-wrapper {
+        position: relative;
+    }
+    .editor-textarea {
+        min-height: 100px;
+        line-height: 1.75;
+        resize: vertical;
+        caret-color: currentColor;
+        position: relative;
+        z-index: 2;
+        background: transparent !important;
+        color: transparent !important;
+    }
+    .editor-highlight {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: inherit;
+        pointer-events: none;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.75;
+        font-size: inherit;
+        font-family: inherit;
+        z-index: 1;
+    }
+    .editor-highlight .var-token {
+        border-radius: 3px;
+        padding: 0 2px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.9em;
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="flex h-[calc(100vh-60px)]">
     <!-- Sidebar Variables -->
-    <div class="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 overflow-y-auto hidden lg:block">
+    <div class="w-72 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 overflow-y-auto hidden lg:block">
         <div class="p-4">
             <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-                <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 <span class="text-xs font-bold uppercase tracking-widest text-gray-900 dark:text-white">Datos disponibles</span>
             </div>
 
             @foreach($variables as $categoryKey => $category)
+                @php
+                    $c = $category['color'];
+                    $bgL = $category['bgLight'];
+                    $bgD = $category['bgDark'];
+                    $tL = $category['textLight'];
+                    $tD = $category['textDark'];
+                    $bL = $category['borderLight'];
+                    $bD = $category['borderDark'];
+                @endphp
                 <div class="sidebar-category-group mb-1" data-category="{{ $categoryKey }}">
                     <button type="button"
                             onclick="toggleCategory('{{ $categoryKey }}')"
                             class="sidebar-category w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-left {{ $loop->first ? 'active' : '' }}">
+                        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:{{ $c }}"></span>
                         @php
                             $iconMap = [
                                 'user' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
                                 'wallet' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+                                'landmark' => 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
                                 'credit-card' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
                                 'alert-triangle' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
                                 'building-2' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
@@ -77,13 +121,21 @@
                         @endphp
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $iconMap[$category['icon']] ?? $iconMap['file-text'] }}"/></svg>
                         <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex-1">{{ $category['label'] }}</span>
+                        <span class="text-[9px] font-mono mr-1 opacity-40">{{ count($category['variables']) }}</span>
                         <svg class="w-3 h-3 text-gray-400 category-chevron transition-transform {{ $loop->first ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="variable-list pl-9 pr-2 py-1 space-y-1 {{ $loop->first ? '' : 'hidden' }}" id="vars-{{ $categoryKey }}">
-                        @foreach($category['variables'] as $varKey => $varLabel)
-                            <span class="variable-chip bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20"
-                                  onclick="insertVariable('[{{ $varKey }}]')"
-                                  title="{{ $varLabel }}">{{ $varKey }}</span>
+                        @foreach($category['variables'] as $varKey => $varData)
+                            <div class="group">
+                                <span class="variable-chip"
+                                      style="background:{{ $bgL }};color:{{ $tL }};border-color:{{ $bL }}"
+                                      data-dark-style="background:{{ $bgD }};color:{{ $tD }};border-color:{{ $bD }}"
+                                      onclick="insertVariable('[{{ $varKey }}]')"
+                                      title="{{ $varData['desc'] }}">
+                                    {{ str_replace('_', ' ', $varKey) }}
+                                </span>
+                                <p class="text-[9px] text-gray-400 dark:text-gray-600 mt-0.5 ml-0.5 hidden group-hover:block">{{ $varData['desc'] }}</p>
+                            </div>
                         @endforeach
                     </div>
                 </div>
@@ -153,10 +205,13 @@
                                 </button>
                             </div>
                         </div>
-                        <textarea name="clauses[0][content]"
-                                  class="clause-content w-full bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 leading-relaxed"
-                                  placeholder="Escribe el contenido de esta cláusula aquí... Usa [nombre_completo], [dni], etc. para insertar variables."
-                                  rows="4" onfocus="activeTextarea=this" oninput="updateStats(this)"></textarea>
+                        <div class="editor-wrapper">
+                            <textarea name="clauses[0][content]"
+                                      class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
+                                      placeholder="Escribe el contenido de esta cláusula aquí... Usa [nombre_completo], [dni], etc. para insertar variables."
+                                      rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
+                            <div class="editor-highlight text-sm text-gray-700 dark:text-gray-300"></div>
+                        </div>
                         <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 word-count">0 palabras</span>
                             <span class="text-[10px] text-gray-400 var-count">0 variables</span>
@@ -186,15 +241,31 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4 space-y-2" id="mobile-vars-content">
+        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="mobile-vars-content">
             @foreach($variables as $categoryKey => $category)
+                @php
+                    $c = $category['color'];
+                    $bgL = $category['bgLight'];
+                    $bgD = $category['bgDark'];
+                    $tL = $category['textLight'];
+                    $tD = $category['textDark'];
+                    $bL = $category['borderLight'];
+                    $bD = $category['borderDark'];
+                @endphp
                 <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">{{ $category['label'] }}</p>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2.5 h-2.5 rounded-full" style="background:{{ $c }}"></span>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">{{ $category['label'] }}</p>
+                    </div>
                     <div class="flex flex-wrap gap-1.5">
-                        @foreach($category['variables'] as $varKey => $varLabel)
-                            <span class="variable-chip bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20"
+                        @foreach($category['variables'] as $varKey => $varData)
+                            <span class="variable-chip"
+                                  style="background:{{ $bgL }};color:{{ $tL }};border-color:{{ $bL }}"
+                                  data-dark-style="background:{{ $bgD }};color:{{ $tD }};border-color:{{ $bD }}"
                                   onclick="insertVariable('[{{ $varKey }}]'); closeMobileVars();"
-                                  title="{{ $varLabel }}">{{ $varKey }}</span>
+                                  title="{{ $varData['desc'] }}">
+                                {{ str_replace('_', ' ', $varKey) }}
+                            </span>
                         @endforeach
                     </div>
                 </div>
@@ -206,13 +277,96 @@
 
 @push('scripts')
 <script>
+const VARIABLES_MAP = {!! json_encode(\App\Models\Contract::getAllVariablesFlat(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!};
+
 let clauseIndex = 1;
 let activeTextarea = null;
 
+function applyDarkModeStyles() {
+    const isDark = document.documentElement.classList.contains('dark');
+    document.querySelectorAll('.variable-chip').forEach(function(chip) {
+        if (isDark && chip.dataset.darkStyle) {
+            chip.setAttribute('style', chip.dataset.darkStyle);
+        } else if (!isDark && chip.dataset.lightStyle) {
+            chip.setAttribute('style', chip.dataset.lightStyle);
+        }
+    });
+}
+
+document.querySelectorAll('.variable-chip').forEach(function(chip) {
+    if (!chip.dataset.lightStyle) {
+        chip.dataset.lightStyle = chip.getAttribute('style');
+    }
+});
+
 document.querySelectorAll('.clause-content').forEach(function(ta) {
     ta.addEventListener('focus', function() { activeTextarea = this; });
-    ta.addEventListener('input', function() { updateStats(this); });
+    ta.addEventListener('input', function() { updateHighlight(this); updateStats(this); });
+    ta.addEventListener('scroll', function() { syncScroll(this); });
+    updateHighlight(ta);
 });
+
+function activeEditor(textarea) {
+    activeTextarea = textarea;
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updateHighlight(textarea) {
+    const wrapper = textarea.closest('.editor-wrapper');
+    if (!wrapper) return;
+    const highlight = wrapper.querySelector('.editor-highlight');
+    if (!highlight) return;
+
+    let html = escapeHtml(textarea.value);
+    const regex = /\[([a-z_]+)\]/gi;
+    html = html.replace(regex, function(match, key) {
+        const lowerKey = key.toLowerCase();
+        const v = VARIABLES_MAP[lowerKey];
+        if (v) {
+            const isDark = document.documentElement.classList.contains('dark');
+            const bgColor = isDark ? v.bg_dark : v.bg_light;
+            const textColor = isDark ? v.text_dark : v.text_light;
+            return '<span class="var-token" style="background:' + bgColor + ';color:' + textColor + '">' + match + '</span>';
+        }
+        return '<span class="var-token" style="background:#fef3c7;color:#92400e">' + match + '</span>';
+    });
+
+    highlight.innerHTML = html || '';
+    highlight.style.fontSize = getComputedStyle(textarea).fontSize;
+    highlight.style.fontFamily = getComputedStyle(textarea).fontFamily;
+    highlight.style.padding = getComputedStyle(textarea).padding;
+    highlight.style.lineHeight = getComputedStyle(textarea).lineHeight;
+
+    syncScroll(textarea);
+}
+
+function syncScroll(textarea) {
+    const wrapper = textarea.closest('.editor-wrapper');
+    if (!wrapper) return;
+    const highlight = wrapper.querySelector('.editor-highlight');
+    if (highlight) {
+        highlight.scrollTop = textarea.scrollTop;
+        highlight.scrollLeft = textarea.scrollLeft;
+    }
+}
+
+function updateStats(textarea) {
+    const card = textarea.closest('.clause-card');
+    if (!card) return;
+    const wordCountEl = card.querySelector('.word-count');
+    const varCountEl = card.querySelector('.var-count');
+    if (wordCountEl) {
+        const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+        wordCountEl.textContent = words + ' palabras';
+    }
+    if (varCountEl) {
+        const matches = textarea.value.match(/\[[a-z_]+\]/gi);
+        varCountEl.textContent = matches ? matches.length + ' variable' + (matches.length !== 1 ? 's' : '') : '0 variables';
+    }
+}
 
 function addClause() {
     const container = document.getElementById('clauses-container');
@@ -239,15 +393,21 @@ function addClause() {
                 </button>
             </div>
         </div>
-        <textarea name="clauses[${clauseIndex}][content]"
-                  class="clause-content w-full bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 leading-relaxed"
-                  placeholder="Escribe el contenido de esta cláusula aquí... Usa [nombre_completo], [dni], etc. para insertar variables."
-                  rows="4" onfocus="activeTextarea=this" oninput="updateStats(this)"></textarea>
+        <div class="editor-wrapper">
+            <textarea name="clauses[${clauseIndex}][content]"
+                      class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
+                      placeholder="Escribe el contenido de esta cláusula aquí... Usa [nombre_completo], [dni], etc. para insertar variables."
+                      rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
+            <div class="editor-highlight text-sm text-gray-700 dark:text-gray-300"></div>
+        </div>
         <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
             <span class="text-[10px] text-gray-400 word-count">0 palabras</span>
             <span class="text-[10px] text-gray-400 var-count">0 variables</span>
         </div>`;
     container.appendChild(div);
+
+    const newTa = div.querySelector('.clause-content');
+    newTa.addEventListener('scroll', function() { syncScroll(this); });
     renumberClauses();
     clauseIndex++;
 }
@@ -298,31 +458,39 @@ function insertVariable(variable) {
     const text = activeTextarea.value;
     activeTextarea.value = text.substring(0, start) + variable + text.substring(end);
     activeTextarea.selectionStart = activeTextarea.selectionEnd = start + variable.length;
-    activeTextarea.focus();
+    updateHighlight(activeTextarea);
     updateStats(activeTextarea);
+    activeTextarea.focus();
 }
 
-function updateStats(textarea) {
-    const card = textarea.closest('.clause-card');
-    if (!card) return;
-    const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
-    const vars = (textarea.value.match(/\[/g) || []).length;
-    card.querySelector('.word-count').textContent = words + ' palabras';
-    card.querySelector('.var-count').textContent = vars + ' variable' + (vars !== 1 ? 's' : '');
+function toggleCategory(catKey) {
+    const group = document.querySelector('[data-category="' + catKey + '"]');
+    if (!group) return;
+    const list = group.querySelector('.variable-list');
+    const chevron = group.querySelector('.category-chevron');
+    const btn = group.querySelector('.sidebar-category');
+
+    if (list.classList.contains('hidden')) {
+        document.querySelectorAll('.variable-list').forEach(function(el) { el.classList.add('hidden'); });
+        document.querySelectorAll('.category-chevron').forEach(function(el) { el.classList.remove('rotate-180'); });
+        document.querySelectorAll('.sidebar-category').forEach(function(el) { el.classList.remove('active'); });
+        list.classList.remove('hidden');
+        chevron.classList.add('rotate-180');
+        btn.classList.add('active');
+    } else {
+        list.classList.add('hidden');
+        chevron.classList.remove('rotate-180');
+        btn.classList.remove('active');
+    }
 }
 
-function toggleCategory(categoryKey) {
-    const list = document.getElementById('vars-' + categoryKey);
-    const btn = list.closest('.sidebar-category-group').querySelector('.sidebar-category');
-    const chevron = btn.querySelector('.category-chevron');
-    list.classList.toggle('hidden');
-    btn.classList.toggle('active');
-    chevron.classList.toggle('rotate-180');
+function openMobileVars() {
+    document.getElementById('mobile-vars-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
 }
-
-function openMobileVars() { document.getElementById('mobile-vars-modal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
-function closeMobileVars() { document.getElementById('mobile-vars-modal').classList.add('hidden'); document.body.style.overflow = ''; }
-
-function e(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function closeMobileVars() {
+    document.getElementById('mobile-vars-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
 </script>
 @endpush
