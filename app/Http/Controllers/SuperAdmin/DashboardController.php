@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cashbox;
 use App\Models\InvestorApplication;
 use App\Models\InvestmentOpportunity;
 use App\Models\InvestorPayout;
@@ -93,6 +94,8 @@ class DashboardController extends Controller
             'in_default' => Loan::where('status', 'active')->where('in_default', true)->count(),
         ];
 
+        $cashboxes = Cashbox::where('is_active', true)->orderBy('name')->get();
+
         return view('superadmin.dashboard', compact(
             'stats',
             'recentUsers',
@@ -103,7 +106,8 @@ class DashboardController extends Controller
             'fundedOpportunities',
             'collectionStats',
             'payoutStats',
-            'loanStats'
+            'loanStats',
+            'cashboxes'
         ));
     }
 

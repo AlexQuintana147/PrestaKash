@@ -93,15 +93,29 @@
     @endif
 
     {{-- HERO: CARTERA ACTIVA --}}
+    @if($cashboxes->count() > 0)
     <div class="pk-fade relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF] to-[#8247f5] p-5 md:p-6">
         <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
         <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-3">
-                <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="text-xs font-medium text-white/70 uppercase tracking-wider">Cartera activa</span>
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="text-xs font-medium text-white/70 uppercase tracking-wider">Cartera activa</span>
+                </div>
+                @if($cashboxes->count() > 1)
+                <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] text-white/60 font-medium">{{ $cashboxes->count() }} cajas</span>
+                    <select id="cashbox-selector" onchange="switchCashbox()" class="text-[10px] font-bold bg-white/15 text-white border border-white/20 rounded-lg px-2 py-1 outline-none cursor-pointer appearance-none text-center" style="background-image: none;">
+                        @foreach($cashboxes as $cb)
+                        <option value="{{ $cb->id }}" data-balance="{{ $cb->balance }}" data-currency="{{ $cb->currency }}" data-name="{{ $cb->name }}" data-bank="{{ $cb->bank_name }}" {{ $loop->first ? 'selected' : '' }}>{{ $cb->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
             </div>
-            <p class="text-3xl md:text-4xl font-bold text-white tracking-tight">S/{{ number_format($loanStats['active_amount'], 0) }}</p>
+            <p id="cashbox-balance" class="text-3xl md:text-4xl font-bold text-white tracking-tight">{{ $cashboxes->first()->currency === 'USD' ? '$' : 'S/' }}{{ number_format($cashboxes->first()->balance, 2) }}</p>
+            <p id="cashbox-info" class="text-[10px] text-white/50 mt-1">{{ $cashboxes->first()->bank_name }} · {{ $cashboxes->first()->name }}</p>
             <div class="mt-3 flex items-center gap-3 flex-wrap">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-medium text-white/90">
                     <span class="w-1.5 h-1.5 rounded-full bg-[#00D26A]"></span>
@@ -120,6 +134,20 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="pk-fade relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-400 to-gray-500 dark:from-gray-600 dark:to-gray-700 p-5 md:p-6">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <svg class="w-10 h-10 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div>
+                <p class="text-xs font-medium text-white/60 uppercase tracking-wider">Cartera activa</p>
+                <p class="text-lg font-bold text-white/80 mt-1">Aún no hay cajas activas</p>
+                <p class="text-[10px] text-white/40 mt-0.5">Crea una caja desde Configuración para ver el balance aquí</p>
+            </div>
+        </div>
+    </div>
+    @endif
 
     {{-- STATS ROW --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -482,6 +510,15 @@
 
 @push('scripts')
 <script>
+function switchCashbox(){
+    var sel = document.getElementById('cashbox-selector');
+    if(!sel) return;
+    var opt = sel.options[sel.selectedIndex];
+    var cur = opt.getAttribute('data-currency') === 'USD' ? '$' : 'S/';
+    var bal = parseFloat(opt.getAttribute('data-balance')).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('cashbox-balance').textContent = cur + bal;
+    document.getElementById('cashbox-info').textContent = opt.getAttribute('data-bank') + ' · ' + opt.getAttribute('data-name');
+}
 (function(){
     function initPag(listId, pagId, itemClass, perPage){
         const list = document.getElementById(listId);
