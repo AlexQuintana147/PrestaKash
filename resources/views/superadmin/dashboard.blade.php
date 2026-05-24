@@ -211,7 +211,7 @@
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <div class="text-right">
-                                <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">S/{{ number_format($installment->amount, 0) }}</p>
+                                <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">S/{{ number_format($installment->amount, 2) }}</p>
                                 <p class="text-[9px] text-gray-400 dark:text-gray-500">{{ $installment->due_date->format('d/m') }}</p>
                             </div>
                             <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -249,7 +249,7 @@
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <div class="text-right">
-                                <p class="text-xs font-black text-[#8247f5] tabular-nums">S/{{ number_format($payout->amount, 0) }}</p>
+                                <p class="text-xs font-black text-[#8247f5] tabular-nums">S/{{ number_format($payout->amount, 2) }}</p>
                                 <span class="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">Pend.</span>
                             </div>
                             <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
