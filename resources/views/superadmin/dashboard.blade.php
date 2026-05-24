@@ -57,16 +57,14 @@
         </a>
     </div>
 
-    {{-- ALERTAS CRÍTICAS (solidas como cliente) --}}
+    {{-- ALERTAS CRÍTICAS --}}
     @if($collectionStats['overdue'] > 0 || $collectionStats['processing'] > 0)
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         @if($collectionStats['overdue'] > 0)
         <a href="{{ route('superadmin.installments.index', ['filter' => 'overdue']) }}" class="pk-fade block relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500 to-red-600 p-4 md:p-5 shadow-lg shadow-red-500/20 transition-transform active:scale-[0.99]">
             <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full pointer-events-none"></div>
             <div class="relative z-10 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                </div>
+                <svg class="w-10 h-10 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-white/80 uppercase tracking-wider">Cuotas vencidas</p>
                     <p class="text-lg font-black text-white tabular-nums">{{ $collectionStats['overdue'] }} cuotas</p>
@@ -81,9 +79,7 @@
         <a href="{{ route('superadmin.installments.index', ['filter' => 'processing']) }}" class="pk-fade block relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 p-4 md:p-5 shadow-lg shadow-amber-500/20 transition-transform active:scale-[0.99]">
             <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full pointer-events-none"></div>
             <div class="relative z-10 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+                <svg class="w-10 h-10 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-white/80 uppercase tracking-wider">Comprobantes por aprobar</p>
                     <p class="text-lg font-black text-white tabular-nums">{{ $collectionStats['processing'] }} pagos</p>
@@ -96,7 +92,7 @@
     </div>
     @endif
 
-    {{-- HERO: CARTERA ACTIVA (solid gradient como cliente) --}}
+    {{-- HERO: CARTERA ACTIVA --}}
     <div class="pk-fade relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF] to-[#8247f5] p-5 md:p-6">
         <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
@@ -129,9 +125,7 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="pk-fade pk-card p-4">
             <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 rounded-xl bg-[#006BFF]/10 dark:bg-[#006BFF]/20 flex items-center justify-center">
-                    <svg class="w-4.5 h-4.5 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                </div>
+                <svg class="w-9 h-9 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span class="text-[9px] font-bold text-[#00D26A] uppercase">+{{ $stats['today'] }} hoy</span>
             </div>
             <p class="text-2xl font-black text-gray-900 dark:text-white tabular-nums">{{ $stats['total'] }}</p>
@@ -140,9 +134,7 @@
 
         <div class="pk-fade pk-card p-4">
             <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 rounded-xl {{ $collectionStats['due_today'] > 0 ? 'bg-orange-500/10 dark:bg-orange-500/20' : 'bg-gray-100 dark:bg-white/5' }} flex items-center justify-center">
-                    <svg class="w-4.5 h-4.5 {{ $collectionStats['due_today'] > 0 ? 'text-orange-500' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                </div>
+                <svg class="w-9 h-9 {{ $collectionStats['due_today'] > 0 ? 'text-orange-500' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 @if($collectionStats['due_today'] > 0)
                 <span class="text-[9px] font-bold text-orange-500 uppercase pk-pulse">HOY</span>
                 @endif
@@ -156,9 +148,7 @@
 
         <div class="pk-fade pk-card p-4">
             <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 rounded-xl {{ $payoutStats['pending_payouts'] > 0 ? 'bg-[#8247f5]/10 dark:bg-[#8247f5]/20' : 'bg-gray-100 dark:bg-white/5' }} flex items-center justify-center">
-                    <svg class="w-4.5 h-4.5 {{ $payoutStats['pending_payouts'] > 0 ? 'text-[#8247f5]' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                </div>
+                <svg class="w-9 h-9 {{ $payoutStats['pending_payouts'] > 0 ? 'text-[#8247f5]' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 @if($payoutStats['pending_payouts'] > 0)
                 <span class="text-[9px] font-bold text-[#8247f5] uppercase">Pend.</span>
                 @endif
@@ -172,9 +162,7 @@
 
         <div class="pk-fade pk-card p-4">
             <div class="flex items-center justify-between mb-3">
-                <div class="w-9 h-9 rounded-xl {{ $loanStats['in_default'] > 0 ? 'bg-red-500/10 dark:bg-red-500/20' : 'bg-gray-100 dark:bg-white/5' }} flex items-center justify-center">
-                    <svg class="w-4.5 h-4.5 {{ $loanStats['in_default'] > 0 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                </div>
+                <svg class="w-9 h-9 {{ $loanStats['in_default'] > 0 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                 @if($loanStats['in_default'] > 0)
                 <span class="text-[9px] font-bold text-red-500 uppercase pk-pulse">Mora</span>
                 @endif
@@ -191,9 +179,7 @@
         <div class="pk-fade pk-card overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
+                    <svg class="w-8 h-8 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Cobrar esta semana</h3>
                         <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold" id="coll-count">{{ $upcomingCollections->count() }} cuotas próximas</p>
@@ -233,9 +219,7 @@
                     </a>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Sin cobros esta semana</p>
                     </div>
                 @endforelse
@@ -247,9 +231,7 @@
         <div class="pk-fade pk-card overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-[#8247f5]/10 dark:bg-[#8247f5]/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#8247f5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    </div>
+                    <svg class="w-8 h-8 text-[#8247f5] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Pagar inversores</h3>
                         <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold" id="payout-count">{{ $payoutStats['pending_payouts'] }} pagos pendientes</p>
@@ -260,9 +242,7 @@
             <div id="payout-list" class="divide-y divide-gray-50 dark:divide-gray-800/50">
                 @forelse($upcomingPayouts as $i => $payout)
                     <a href="{{ route('superadmin.investments.payouts') }}" class="payout-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer" data-idx="{{ $i }}">
-                        <div class="w-8 h-8 rounded-full bg-[#8247f5]/10 dark:bg-[#8247f5]/20 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4 text-[#8247f5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                        </div>
+                        <svg class="w-8 h-8 text-[#8247f5] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $payout->investor?->name ?? 'Sin inversor' }}</p>
                             <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $payout->opportunity?->code ?? '' }} · Mes {{ $payout->month_number }}</p>
@@ -277,9 +257,7 @@
                     </a>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Sin pagos pendientes a inversores</p>
                     </div>
                 @endforelse
@@ -291,16 +269,14 @@
     {{-- DEUDORES + INVERSIONES --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-        {{-- DEUDORES (solid gradient header como cliente) --}}
+        {{-- DEUDORES --}}
         <div class="pk-fade pk-card overflow-hidden">
             @if($overdueInstallments->count() > 0)
             <div class="relative overflow-hidden bg-gradient-to-br from-red-500 to-red-600 px-5 py-4">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-bl-full pointer-events-none"></div>
                 <div class="relative z-10 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                        </div>
+                        <svg class="w-8 h-8 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                         <div>
                             <h3 class="text-xs font-black text-white uppercase tracking-tight">Deudores</h3>
                             <p class="text-[9px] text-white/70 font-bold">{{ $overdueInstallments->count() }} cuotas vencidas</p>
@@ -312,9 +288,7 @@
             @else
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-[#00D26A]/10 dark:bg-[#00D26A]/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
+                    <svg class="w-8 h-8 text-[#00D26A] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Deudores</h3>
                         <p class="text-[9px] text-[#00D26A] font-bold">Todo al día</p>
@@ -348,9 +322,7 @@
                     </div>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <div class="w-12 h-12 rounded-full bg-[#00D26A]/10 dark:bg-[#00D26A]/20 flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
+                        <svg class="w-12 h-12 text-[#00D26A] mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <p class="text-xs text-[#00D26A] font-medium">Sin deudores — todo al día</p>
                     </div>
                 @endforelse
@@ -361,9 +333,7 @@
         <div class="pk-fade pk-card overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-[#00D26A]/10 dark:bg-[#00D26A]/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                    </div>
+                    <svg class="w-8 h-8 text-[#00D26A] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Inversiones activas</h3>
                         <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $fundedOpportunities->count() }} oportunidades financiadas</p>
@@ -394,9 +364,7 @@
                     </div>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                        </div>
+                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Sin inversiones financiadas</p>
                     </div>
                 @endforelse
@@ -412,27 +380,19 @@
             <h3 class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Accesos rápidos</h3>
             <div class="grid grid-cols-2 gap-2">
                 <a href="{{ route('superadmin.loans.index', ['filter' => 'pending']) }}" class="pk-card flex flex-col items-center gap-2 p-4 hover:border-[#006BFF]/40 dark:hover:border-[#006BFF]/30 transition-colors">
-                    <div class="w-9 h-9 rounded-xl bg-[#006BFF]/10 dark:bg-[#006BFF]/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    </div>
+                    <svg class="w-9 h-9 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Préstamos</span>
                 </a>
                 <a href="{{ route('superadmin.installments.index') }}" class="pk-card flex flex-col items-center gap-2 p-4 hover:border-orange-500/40 dark:hover:border-orange-500/30 transition-colors">
-                    <div class="w-9 h-9 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                    </div>
+                    <svg class="w-9 h-9 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Cobranzas</span>
                 </a>
                 <a href="{{ route('superadmin.investments.index') }}" class="pk-card flex flex-col items-center gap-2 p-4 hover:border-[#8247f5]/40 dark:hover:border-[#8247f5]/30 transition-colors">
-                    <div class="w-9 h-9 rounded-xl bg-[#8247f5]/10 dark:bg-[#8247f5]/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#8247f5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    </div>
+                    <svg class="w-9 h-9 text-[#8247f5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Inversiones</span>
                 </a>
                 <a href="{{ route('superadmin.investments.payouts') }}" class="pk-card flex flex-col items-center gap-2 p-4 hover:border-[#00D26A]/40 dark:hover:border-[#00D26A]/30 transition-colors">
-                    <div class="w-9 h-9 rounded-xl bg-[#00D26A]/10 dark:bg-[#00D26A]/20 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    </div>
+                    <svg class="w-9 h-9 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Pagos Inv.</span>
                 </a>
             </div>
