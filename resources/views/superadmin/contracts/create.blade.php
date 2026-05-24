@@ -154,6 +154,78 @@
     }
     .dark .doc-signature-line { background: #444; }
 
+    /* === BOX CARD (Cuadro automático) === */
+    .box-card {
+        background: white; border: 2px dashed #d1d5db; border-radius: 16px;
+        padding: 24px; position: relative; overflow: hidden;
+    }
+    .dark .box-card { background: #0a0a0a; border-color: #333; }
+    .box-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    }
+    .box-card-header {
+        display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .box-icon-wrap {
+        width: 36px; height: 36px; border-radius: 10px; display: flex;
+        align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .box-title { font-size: 13px; font-weight: 700; color: #1f2937; letter-spacing: 0.01em; }
+    .dark .box-title { color: #e5e7eb; }
+    .box-subtitle { font-size: 10.5px; color: #9ca3af; margin-top: 1px; }
+    .dark .box-subtitle { color: #6b7280; }
+    .box-placeholder {
+        background: linear-gradient(135deg, rgba(156,163,175,0.06), rgba(156,163,175,0.02));
+        border: 1px solid rgba(156,163,175,0.15); border-radius: 10px;
+        padding: 18px 20px; text-align: center;
+    }
+    .dark .box-placeholder {
+        background: linear-gradient(135deg, rgba(75,85,99,0.12), rgba(75,85,99,0.04));
+        border-color: rgba(107,114,128,0.15);
+    }
+    .box-placeholder-text {
+        font-size: 12.5px; line-height: 1.65; color: #6b7280; max-width: 420px; margin: 0 auto;
+    }
+    .dark .box-placeholder-text { color: #9ca3af; }
+    .box-badge {
+        display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+        border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+    .box-remove-btn {
+        position: absolute; top: 14px; right: 14px; padding: 5px; border-radius: 8px;
+        border: none; background: transparent; cursor: pointer;
+        color: #9ca3af; transition: all 0.15s;
+    }
+    .box-remove-btn:hover { background: rgba(239,68,68,0.08); color: #ef4444; }
+    .dark .box-remove-btn:hover { background: rgba(239,68,68,0.15); }
+
+    /* === Box Type Picker === */
+    .box-picker-overlay {
+        position: fixed; inset: 0; z-index: 90; display: none;
+        background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
+        animation: fadeIn 0.2s ease-out;
+    }
+    .box-picker-overlay.active { display: flex; align-items: center; justify-content: center; }
+    .box-picker-modal {
+        width: min(92vw, 480px); background: white; border-radius: 20px;
+        padding: 24px; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.25);
+        animation: slideUp 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .dark .box-picker-modal { background: #111111; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.6); }
+    .box-option {
+        display: flex; align-items: gap: 14px; padding: 14px 16px; border-radius: 12px;
+        cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent;
+        margin-bottom: 8px;
+    }
+    .box-option:last-child { margin-bottom: 0; }
+    .box-option:hover { background: #f8fafc; border-color: #e2e8f0; transform: translateX(4px); }
+    .dark .box-option:hover { background: #1a1a1a; border-color: #333; }
+    .box-option-icon {
+        width: 40px; height: 40px; border-radius: 10px; display: flex;
+        align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
     .preview-empty {
         text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px;
     }
@@ -311,10 +383,16 @@
                         <h2 class="text-sm font-bold text-gray-900 dark:text-white">Cláusulas</h2>
                         <span id="clause-count" class="text-[10px] font-mono text-gray-400">1</span>
                     </div>
-                    <button type="button" onclick="addClause()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400 text-[10px] font-bold uppercase tracking-wider hover:bg-teal-100 dark:hover:bg-teal-500/20 transition-colors">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Agregar cláusula
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="addClause()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400 text-[10px] font-bold uppercase tracking-wider hover:bg-teal-100 dark:hover:bg-teal-500/20 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Cláusula
+                        </button>
+                        <button type="button" onclick="openBoxPicker()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400 text-[10px] font-bold uppercase tracking-wider hover:bg-violet-100 dark:hover:bg-violet-500/20 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+                            Cuadro
+                        </button>
+                    </div>
                 </div>
 
                 <div id="clauses-container" class="space-y-4">
@@ -361,6 +439,22 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- === BOX PICKER MODAL === -->
+<div id="box-picker-overlay" class="box-picker-overlay" onclick="if(event.target===this)closeBoxPicker()">
+    <div class="box-picker-modal">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+                <span class="text-sm font-bold text-gray-900 dark:text-white">Agregar Cuadro Automático</span>
+            </div>
+            <button onclick="closeBoxPicker()" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div id="box-options-list"></div>
     </div>
 </div>
 
@@ -486,12 +580,12 @@ const SAMPLE_DATA = {!! json_encode([
     'empresa_representante' => 'Juan Carlos Pérez García','empresa_representante_dni' => '45678901',
     'logo_empresa' => '[LOGO DE LA EMPRESA]','firma_representante' => '[FIRMA DEL REPRESENTANTE]',
     'sello_empresa' => '[SELLO DE LA EMPRESA]',
-    'contrato_nombre' => 'Nuevo Contrato','contrato_numero' => 'CT-00001','fecha_firma' => '23/05/2026',
-    'ciudad' => 'Lima','firma_cliente' => '[FIRMA DEL CLIENTE]','huella_cliente' => '[HUELLA DIGITAL]',
-    'fecha_actual' => '23/05/2026','dia_hoy' => '23','mes_hoy' => 'mayo','anio_hoy' => '2026',
+    'dia_hoy' => '23','mes_hoy' => 'mayo','anio_hoy' => '2026',
     'dia_letras' => 'veintitrés','mes_letras' => 'mayo','anio_letras' => 'dos mil veintiséis',
     'fecha_completa' => '23 de mayo de 2026','fecha_completa_letras' => 'veintitrés de mayo de dos mil veintiséis',
 ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!};
+
+const BOX_TYPES = {!! json_encode(\App\Models\Contract::getBoxTypes(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!};
 
 let clauseIndex = 1;
 let activeTextarea = null;
@@ -629,6 +723,67 @@ function closePreview() {
     document.body.style.overflow='';
 }
 
+/* === BOX PICKER === */
+function openBoxPicker() {
+    const list = document.getElementById('box-options-list');
+    let html = '';
+    Object.keys(BOX_TYPES).forEach(function(key) {
+        const b = BOX_TYPES[key];
+        html += '<div class="box-option" onclick="addBox(\'' + key + '\')">';
+        html += '<div class="box-option-icon" style="background:' + b.bgLight + ';color:' + b.textLight + '">';
+        html += getBoxIcon(b.icon) + '</div>';
+        html += '<div><p style="font-size:12.5px;font-weight:700;color:#1f2937;dark:text-white">' + b.label + '</p>';
+        html += '<p style="font-size:10px;color:#9ca3af;margin-top:1px">' + b.description + '</p></div></div>';
+    });
+    list.innerHTML = html;
+    document.getElementById('box-picker-overlay').classList.add('active');
+}
+function closeBoxPicker() {
+    document.getElementById('box-picker-overlay').classList.remove('active');
+}
+
+const BOX_ICONS = {
+    'calendar-days': '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
+    'banknote': '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-1m-2 4H7a2 2 0 01-2-2v-4a2 2 0 012-2h2m2 4h10a2 2 0 002-2v-1"/></svg>',
+    'trending-up': '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>',
+    'user-circle': '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>',
+    'clipboard-list': '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>',
+};
+function getBoxIcon(iconKey) { return BOX_ICONS[iconKey] || ''; }
+
+let boxIndex = 0;
+
+function addBox(typeKey) {
+    const b = BOX_TYPES[typeKey];
+    if (!b) return;
+    closeBoxPicker();
+    const container = document.getElementById('clauses-container');
+    const card = document.createElement('div');
+    card.className = 'box-card';
+    card.dataset.boxType = typeKey;
+    card.dataset.boxIndex = boxIndex++;
+    card.innerHTML =
+        '<button type="button" onclick="this.parentElement.remove()" class="box-remove-btn">' +
+            '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>' +
+        '<div class="box-card-header">' +
+            '<div class="box-icon-wrap" style="background:' + b.bgLight + ';color:' + b.textLight + '">' +
+                getBoxIcon(b.icon) +
+            '</div>' +
+            '<div>' +
+                '<p class="box-title">' + escapeHtml(b.label) + '</p>' +
+                '<span class="box-badge" style="background:' + b.bgLight + ';color:' + b.textLight + ';border:1px solid ' + b.borderLight + '">Automático</span>' +
+            '</div>' +
+        '</div>' +
+        '<input type="hidden" name="boxes[' + (boxIndex - 1) + '][type]" value="' + typeKey + '">' +
+        '<div class="box-placeholder">' +
+            '<svg class="w-10 h-10 mx-auto mb-2 opacity-40" style="color:' + b.color + '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+            '<p class="box-placeholder-text">' + b.placeholder_text + '</p>' +
+        '</div>';
+    container.appendChild(card);
+    updateClauseCount();
+}
+
 function renderPreview() {
     const nameInput = document.querySelector('input[name="name"]');
     const docTitle = document.getElementById('preview-doc-title');
@@ -639,42 +794,55 @@ function renderPreview() {
     docTitle.textContent = contractName;
     contractNameEl.textContent = contractName;
 
-    const clauseCards = document.querySelectorAll('#clauses-container .clause-card');
-    if (clauseCards.length === 0 || (clauseCards.length===1 && !clauseCards[0].querySelector('textarea')?.value.trim())) {
-        contentEl.innerHTML = '<div class="preview-empty"><svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0120 9V19a2 2 0 01-2 2z"/></svg>Agrega cláusulas para ver la vista previa del contrato.</div>';
+    const allCards = document.querySelectorAll('#clauses-container > *');
+    if (allCards.length === 0) {
+        contentEl.innerHTML = '<div class="preview-empty"><svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0120 9V19a2 2 0 01-2 2z"/></svg>Agrega cláusulas o cuadros para ver la vista previa del contrato.</div>';
         return;
     }
 
     let html = '';
-    clauseCards.forEach(card => {
-        const titleInput = card.querySelector('input[name*="[title]"]');
-        const textarea = card.querySelector('textarea[name*="[content]"]');
-        const title = titleInput?.value?.trim() || 'Sin título';
-        const rawContent = textarea?.value?.trim() || '';
+    allCards.forEach(card => {
+        if (card.classList.contains('box-card')) {
+            const typeKey = card.dataset.boxType;
+            const b = BOX_TYPES[typeKey];
+            if (!b) return;
+            html += '<div style="border:2px dashed '+b.borderLight+';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'+b.bgLight+'08,'+b.bgLight+'02);position:relative">';
+            html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">';
+            html += '<div style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:'+b.bgLight+';color:'+b.textLight+'">'+getBoxIcon(b.icon)+'</div>';
+            html += '<div><span style="font-size:11.5px;font-weight:700;color:#374151">' + escapeHtml(b.label) + '</span> ';
+            html += '<span style="display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;background:'+b.bgLight+';color:'+b.textLight+';border:1px solid '+b.borderLight+'">Automático</span></div></div>';
+            html += '<div style="background:rgba(156,163,175,0.05);border:1px solid rgba(156,163,175,0.15);border-radius:8px;padding:14px 16px;text-align:center">';
+            html += '<svg class="w-8 h-8 mx-auto mb-1.5 opacity-35" style="color:'+b.color+'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+            html += '<p style="font-size:11px;line-height:1.6;color:#6b7280;margin:0">' + b.placeholder_text + '</p></div></div>';
+        } else if (card.classList.contains('clause-card')) {
+            const titleInput = card.querySelector('input[name*="[title]"]');
+            const textarea = card.querySelector('textarea[name*="[content]"]');
+            const title = titleInput?.value?.trim() || 'Sin título';
+            const rawContent = textarea?.value?.trim() || '';
+            if (!rawContent) return;
 
-        if (!rawContent) return;
+            let renderedContent = escapeHtml(rawContent);
+            renderedContent = renderedContent.replace(/\[([a-z_]+)\]/gi, function(match, key) {
+                const val = SAMPLE_DATA[key.toLowerCase()];
+                const v = VARIABLES_MAP[key.toLowerCase()];
+                if (val && v.color) {
+                    return '<span class="doc-var-inline" style="background:'+v.bgLight+';color:'+v.textLight+';border:1px solid '+v.borderLight+'">'+escapeHtml(val||match)+'</span>';
+                }
+                return '<span class="doc-var-inline" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">'+escapeHtml(val||match)+'</span>';
+            });
 
-        let renderedContent = escapeHtml(rawContent);
-        renderedContent = renderedContent.replace(/\[([a-z_]+)\]/gi, function(match, key) {
-            const val = SAMPLE_DATA[key.toLowerCase()];
-            const v = VARIABLES_MAP[key.toLowerCase()];
-            if (val && v.color) {
-                return '<span class="doc-var-inline" style="background:'+v.bgLight+';color:'+v.textLight+';border:1px solid '+v.borderLight+'">'+escapeHtml(val||match)+'</span>';
-            }
-            return '<span class="doc-var-inline" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">'+escapeHtml(val||match)+'</span>';
-        });
-
-        html += '<div class="doc-clause">';
-        html += '<h4 class="doc-clause-title">' + escapeHtml(title) + '</h4>';
-        html += '<div class="doc-clause-content">' + renderedContent + '</div>';
-        html += '</div>';
+            html += '<div class="doc-clause">';
+            html += '<h4 class="doc-clause-title">' + escapeHtml(title) + '</h4>';
+            html += '<div class="doc-clause-content">' + renderedContent + '</div>';
+            html += '</div>';
+        }
     });
 
     contentEl.innerHTML = html || '<div class="preview-empty">No hay contenido en las cláusulas.</div>';
 }
 
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closePreview();
+    if (e.key === 'Escape') { closePreview(); closeBoxPicker(); }
 });
 </script>
 @endpush

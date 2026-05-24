@@ -87,6 +87,60 @@
     .dark .doc-signature-label { color: #666; }
     .doc-signature-line { width: 70%; height: 1px; background: #aaa; margin: 0 auto; }
     .dark .doc-signature-line { background: #444; }
+
+    /* === BOX CARD === */
+    .box-card {
+        background: white; border: 2px dashed #d1d5db; border-radius: 16px;
+        padding: 24px; position: relative; overflow: hidden;
+    }
+    .dark .box-card { background: #0a0a0a; border-color: #333; }
+    .box-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+    .box-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .box-icon-wrap { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .box-title { font-size: 13px; font-weight: 700; color: #1f2937; letter-spacing: 0.01em; }
+    .dark .box-title { color: #e5e7eb; }
+    .box-subtitle { font-size: 10.5px; color: #9ca3af; margin-top: 1px; }
+    .dark .box-subtitle { color: #6b7280; }
+    .box-placeholder {
+        background: linear-gradient(135deg, rgba(156,163,175,0.06), rgba(156,163,175,0.02));
+        border: 1px solid rgba(156,163,175,0.15); border-radius: 10px;
+        padding: 18px 20px; text-align: center;
+    }
+    .dark .box-placeholder {
+        background: linear-gradient(135deg, rgba(75,85,99,0.12), rgba(75,85,99,0.04));
+        border-color: rgba(107,114,128,0.15);
+    }
+    .box-placeholder-text { font-size: 12.5px; line-height: 1.65; color: #6b7280; max-width: 420px; margin: 0 auto; }
+    .dark .box-placeholder-text { color: #9ca3af; }
+    .box-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .box-remove-btn {
+        position: absolute; top: 14px; right: 14px; padding: 5px; border-radius: 8px;
+        border: none; background: transparent; cursor: pointer; color: #9ca3af; transition: all 0.15s;
+    }
+    .box-remove-btn:hover { background: rgba(239,68,68,0.08); color: #ef4444; }
+    .dark .box-remove-btn:hover { background: rgba(239,68,68,0.15); }
+
+    /* === Box Type Picker === */
+    .box-picker-overlay {
+        position: fixed; inset: 0; z-index: 90; display: none;
+        background: rgba(0,0,0,0.4); backdrop-filter: blur(3px);
+        animation: fadeIn 0.2s ease-out;
+    }
+    .box-picker-overlay.active { display: flex; align-items: center; justify-content: center; }
+    .box-picker-modal {
+        width: min(92vw, 480px); background: white; border-radius: 20px;
+        padding: 24px; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.25);
+        animation: slideUp 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .dark .box-picker-modal { background: #111111; box-shadow: 0 20px 60px -12px rgba(0,0,0,0.6); }
+    .box-option {
+        display: flex; align-items: gap: 14px; padding: 14px 16px; border-radius: 12px;
+        cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; margin-bottom: 8px;
+    }
+    .box-option:last-child { margin-bottom: 0; }
+    .box-option:hover { background: #f8fafc; border-color: #e2e8f0; transform: translateX(4px); }
+    .dark .box-option:hover { background: #1a1a1a; border-color: #333; }
+    .box-option-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .preview-empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 14px; }
     .dark .preview-empty { color: #555; }
 

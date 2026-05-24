@@ -156,26 +156,6 @@ class Contract extends Model
                     'sello_empresa' => ['desc' => 'Sello de la empresa (se insertará como imagen)', 'source' => 'Imagen'],
                 ],
             ],
-            'contrato' => [
-                'label' => 'Datos del Contrato',
-                'icon' => 'file-text',
-                'color' => '#4b5563',
-                'bgLight' => '#f9fafb',
-                'bgDark' => '#1f2937',
-                'textLight' => '#374151',
-                'textDark' => '#9ca3af',
-                'borderLight' => '#e5e7eb',
-                'borderDark' => '#374151',
-                'variables' => [
-                    'contrato_nombre' => ['desc' => 'Título o nombre de este contrato', 'source' => 'Contract.name'],
-                    'contrato_numero' => ['desc' => 'Número único de identificación del contrato', 'source' => 'Generado: CT-00001'],
-                    'fecha_firma' => ['desc' => 'Fecha en que se firma este contrato', 'source' => 'Fecha actual'],
-                    'ciudad' => ['desc' => 'Ciudad donde se firma el contrato', 'source' => 'Configuración'],
-                    'firma_cliente' => ['desc' => 'Firma del cliente/inversionista (se insertará como imagen)', 'source' => 'Imagen'],
-                    'huella_cliente' => ['desc' => 'Huella digital del cliente (se insertará como imagen)', 'source' => 'Imagen'],
-                    'fecha_actual' => ['desc' => 'Fecha de hoy (día/mes/año)', 'source' => 'now()'],
-                ],
-            ],
             'fechas' => [
                 'label' => 'Fechas en Letras',
                 'icon' => 'calendar',
@@ -243,5 +223,56 @@ class Contract extends Model
             }
         }
         return $flat;
+    }
+
+    public static function getBoxTypes(): array
+    {
+        return [
+            'cronograma' => [
+                'label' => 'Cronograma de Pagos',
+                'icon' => 'calendar-days',
+                'description' => 'Tabla con fechas y montos de cada cuota del préstamo o inversión',
+                'placeholder_text' => 'Este apartado se rellenará automáticamente con el cronograma de pagos correspondiente al cliente.',
+                'color' => '#0891b2', 'bgLight' => '#ecfeff', 'bgDark' => '#164e63',
+                'textLight' => '#0e7490', 'textDark' => '#67e8f9',
+                'borderLight' => '#a5f3fc', 'borderDark' => '#155e75',
+            ],
+            'monto_debe' => [
+                'label' => 'Monto a Pagar',
+                'icon' => 'banknote',
+                'description' => 'Resumen del monto total pendiente de pago, desglosado en capital e intereses',
+                'placeholder_text' => 'Este apartado se rellenará automáticamente con el monto total que el cliente debe pagar, incluyendo capital, intereses y moras si las hubiera.',
+                'color' => '#d97706', 'bgLight' => '#fffbeb', 'bgDark' => '#78350f',
+                'textLight' => '#b45309', 'textDark' => '#fcd34d',
+                'borderLight' => '#fde68a', 'borderDark' => '#92400e',
+            ],
+            'resumen_inversion' => [
+                'label' => 'Resumen de Inversión',
+                'icon' => 'trending-up',
+                'description' => 'Resumen completo de la inversión: monto, tasa, plazo y retorno esperado',
+                'placeholder_text' => 'Este apartado se rellenará automáticamente con los datos completos de la inversión del cliente: monto invertido, tasa de retorno, plazo y ganancias esperadas.',
+                'color' => '#059669', 'bgLight' => '#ecfdf5', 'bgDark' => '#064e3b',
+                'textLight' => '#047857', 'textDark' => '#6ee7b7',
+                'borderLight' => '#a7f3d0', 'borderDark' => '#065f46',
+            ],
+            'datos_cliente' => [
+                'label' => 'Ficha del Cliente',
+                'icon' => 'user-circle',
+                'description' => 'Tarjeta con los datos personales principales del cliente o inversionista',
+                'placeholder_text' => 'Este apartado se rellenará automáticamente con los datos personales del cliente: nombre completo, DNI, dirección, teléfono y correo electrónico.',
+                'color' => '#6366f1', 'bgLight' => '#eef2ff', 'bgDark' => '#312e81',
+                'textLight' => '#4338ca', 'textDark' => '#a5b4fc',
+                'borderLight' => '#c7d2fe', 'borderDark' => '#3730a3',
+            ],
+            'condiciones' => [
+                'label' => 'Condiciones Especiales',
+                'icon' => 'clipboard-list',
+                'description' => 'Apartado para condiciones particulares del contrato (mora, penalidades, garantías)',
+                'placeholder_text' => 'Este apartado se rellenará automáticamente con las condiciones especiales aplicables: tasa de mora, días de gracia, penalidades y cláusulas adicionales.',
+                'color' => '#dc2626', 'bgLight' => '#fef2f2', 'bgDark' => '#7f1d1d',
+                'textLight' => '#b91c1c', 'textDark' => '#fca5a5',
+                'borderLight' => '#fecaca', 'borderDark' => '#991b1b',
+            ],
+        ];
     }
 }
