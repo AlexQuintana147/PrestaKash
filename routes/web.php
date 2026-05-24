@@ -153,6 +153,14 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::delete('/cajas/movimiento/{movement}', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'deleteMovement'])->name('cashboxes.delete-movement');
     Route::resource('cajas-etiquetas', \App\Http\Controllers\SuperAdmin\CashboxTagController::class)->names('cashbox-tags')->except(['index', 'create', 'show', 'edit']);
 
+    // Gestión de Contratos
+    Route::get('/contratos', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'index'])->name('contracts.index');
+    Route::get('/contratos/crear', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'create'])->name('contracts.create');
+    Route::post('/contratos', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'store'])->name('contracts.store');
+    Route::get('/contratos/{contract}/editar', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'edit'])->name('contracts.edit');
+    Route::put('/contratos/{contract}', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'update'])->name('contracts.update');
+    Route::post('/contratos/{contract}/preview', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'preview'])->name('contracts.preview');
+
     // Configuración
     Route::get('/configuracion', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');
     Route::post('/configuracion/nombre', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'updateName'])->name('settings.name');
