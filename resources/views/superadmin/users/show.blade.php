@@ -402,7 +402,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Monto</label>
-                                <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                <input type="hidden" name="amount" id="ghost-amount-hidden" value="">
+                                <input type="text" id="ghost-amount-display" inputmode="numeric" required placeholder="0.00" autocomplete="off"
+                                    class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors text-right font-mono">
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Caja</label>
@@ -456,6 +458,47 @@
                             }
 
                             reasonEl.addEventListener('change', updateCodePreview);
+
+                            const amountDisplay = document.getElementById('ghost-amount-display');
+                            const amountHidden = document.getElementById('ghost-amount-hidden');
+                            let rawCents = '';
+
+                            function formatAmount(cents) {
+                                if (!cents || cents === '0') return '0.00';
+                                const num = parseInt(cents, 10) / 100;
+                                return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            }
+
+                            amountDisplay.addEventListener('input', function(e) {
+                                const digits = this.value.replace(/\D/g, '');
+                                rawCents = digits;
+                                const formatted = formatAmount(digits);
+                                this.value = formatted;
+                                const decimal = digits ? (parseInt(digits, 10) / 100).toFixed(2) : '';
+                                amountHidden.value = decimal;
+                            });
+
+                            amountDisplay.addEventListener('keydown', function(e) {
+                                if (e.key === 'Backspace') {
+                                    e.preventDefault();
+                                    rawCents = rawCents.slice(0, -1);
+                                    this.value = formatAmount(rawCents);
+                                    amountHidden.value = rawCents ? (parseInt(rawCents, 10) / 100).toFixed(2) : '';
+                                }
+                            });
+
+                            amountDisplay.addEventListener('focus', function() {
+                                if (!this.value) this.value = '0.00';
+                            });
+
+                            const form = amountDisplay.closest('form');
+                            if (form) {
+                                form.addEventListener('submit', function() {
+                                    if (!amountHidden.value) {
+                                        amountHidden.value = amountDisplay.value;
+                                    }
+                                }, true);
+                            }
                         })();
                     </script>
                 </div>
