@@ -47,8 +47,6 @@
             $totalReceived = $opportunitiesData->sum(fn($o) => $o->investors->sum('total_received'));
             $firstOpp = $opportunitiesData->first();
             $symbol = $firstOpp ? ($firstOpp->opportunity->currency === 'USD' ? '$' : 'S/') : 'S/';
-            $oppChunks = $opportunitiesData->chunk(6);
-            $totalOppPages = $oppChunks->count();
         @endphp
 
         <div class="flex flex-wrap items-center gap-4 sm:gap-6 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-100 dark:border-gray-900">
@@ -87,172 +85,139 @@
             </div>
         </div>
 
-        @foreach($oppChunks as $pageIndex => $pageOpportunities)
-            <div class="opp-page {{ $pageIndex === 0 ? '' : 'hidden' }}" data-opp-page="{{ $pageIndex }}">
-                <div class="space-y-6">
-                    @foreach($pageOpportunities as $oppData)
-                        @php
-                            $opportunity = $oppData->opportunity;
-                            $curSymbol = $opportunity->currency === 'USD' ? '$' : 'S/';
-                            $investorChunks = $oppData->investors->chunk(5);
-                            $totalInvPages = $investorChunks->count();
-                            $oppUid = 'opp_' . $opportunity->id;
-                        @endphp
+        <div id="investors-list">
+            @foreach($opportunitiesData as $oppData)
+                @php
+                    $opportunity = $oppData->opportunity;
+                    $curSymbol = $opportunity->currency === 'USD' ? '$' : 'S/';
+                    $oppUid = 'opp_' . $opportunity->id;
+                @endphp
 
-                        <div class="bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-900 overflow-hidden">
-                            <div class="px-4 sm:px-5 py-3 sm:py-4 bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-900">
-                                <div class="flex items-center gap-2 sm:gap-3">
-                                    <h2 class="text-[11px] sm:text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $opportunity->title }}</h2>
-                                    <span class="flex-shrink-0 text-[8px] sm:text-[9px] font-mono text-white dark:text-black bg-black dark:bg-white px-1.5 py-0.5 rounded">{{ $opportunity->code }}</span>
-                                </div>
-                                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 pl-4">
-                                    <span class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $opportunity->monthly_return_rate }}% · {{ $opportunity->term_months }}m · {{ $opportunity->closed_at ? $opportunity->closed_at->format('d/m/y') : 'N/A' }}</span>
-                                    @if($oppData->overdue_count > 0)
-                                        <span class="text-[8px] sm:text-[9px] text-red-500 font-black">{{ $oppData->overdue_count }} venc.</span>
-                                    @endif
-                                    <span class="ml-auto text-[9px] sm:text-[10px] font-bold text-gray-500 dark:text-gray-400">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
-                                    <span class="text-[10px] sm:text-[11px] font-black {{ $opportunity->currency === 'USD' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400' }} tabular-nums">
-                                        {{ $curSymbol }}{{ number_format($oppData->investors->sum(fn($i) => $i->amount), 2) }}
+                <div class="bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-900 overflow-hidden mb-6 opp-card" data-opp-id="{{ $opportunity->id }}">
+                    <div class="px-4 sm:px-5 py-3 sm:py-4 bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-900">
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <h2 class="text-[11px] sm:text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">{{ $opportunity->title }}</h2>
+                            <span class="flex-shrink-0 text-[8px] sm:text-[9px] font-mono text-white dark:text-black bg-black dark:bg-white px-1.5 py-0.5 rounded">{{ $opportunity->code }}</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 pl-4">
+                            <span class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $opportunity->monthly_return_rate }}% · {{ $opportunity->term_months }}m · {{ $opportunity->closed_at ? $opportunity->closed_at->format('d/m/y') : 'N/A' }}</span>
+                            @if($oppData->overdue_count > 0)
+                                <span class="text-[8px] sm:text-[9px] text-red-500 font-black">{{ $oppData->overdue_count }} venc.</span>
+                            @endif
+                            <span class="ml-auto text-[9px] sm:text-[10px] font-bold text-gray-500 dark:text-gray-400">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
+                            <span class="text-[10px] sm:text-[11px] font-black {{ $opportunity->currency === 'USD' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400' }} tabular-nums">
+                                {{ $curSymbol }}{{ number_format($oppData->investors->sum(fn($i) => $i->amount), 2) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="divide-y divide-gray-100 dark:divide-gray-900">
+                        @foreach($oppData->investors as $invData)
+                            @php
+                                $investor = $invData->investor;
+                                $selfie = $investor->documents?->selfie;
+                                $photo = $selfie ? Storage::url($selfie) : ($investor->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($investor->name) . '&background=e5e7eb&color=6b7280');
+                                $uid = 'inv_' . $opportunity->id . '_' . $investor->id;
+                                $progressPct = $invData->total_expected_return > 0 ? round($invData->total_received / $invData->total_expected_return * 100) : 0;
+                                $isFullyPaid = $progressPct >= 100;
+                            @endphp
+
+                            <div onclick="openInvestorModal('{{ $uid }}')" class="investor-row py-4 px-4 sm:px-5 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20 cursor-pointer group" data-search-name="{{ strtolower($investor->name) }}" data-search-dni="{{ $investor->dni ?? '' }}" data-search-code="{{ strtolower($opportunity->code) }}" data-search-paid="{{ $isFullyPaid ? '1' : '0' }}">
+                                <div class="flex items-center gap-3 sm:gap-4">
+                                    <div class="relative flex-shrink-0">
+                                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800">
+                                            <img src="{{ $photo }}" alt="{{ $investor->name }}" class="w-full h-full object-cover">
+                                        </div>
+                                        @if($invData->overdue_count > 0)
+                                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white dark:border-gray-950 rounded-full"></span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $investor->name }}</h3>
+                                            @if($invData->overdue_count > 0)
+                                                <span class="flex-shrink-0 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400">{{ $invData->overdue_count }}v</span>
+                                            @endif
+                                        </div>
+                                        <p class="text-[9px] sm:text-[10px] text-gray-400 truncate mt-0.5">{{ $investor->email }}</p>
+                                    </div>
+
+                                    <div class="hidden sm:flex items-center gap-4 lg:gap-6 flex-shrink-0">
+                                        <div class="text-right">
+                                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Invertido</p>
+                                            <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $curSymbol }}{{ number_format($invData->amount, 2) }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Pagado</p>
+                                            <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $curSymbol }}{{ number_format($invData->total_received, 2) }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Progreso</p>
+                                            <p class="text-sm font-black {{ $progressPct >= 100 ? 'text-emerald-600' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $progressPct }}%</p>
+                                        </div>
+                                        <span class="text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        </span>
+                                    </div>
+
+                                    <span class="sm:hidden text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 transition-colors flex-shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </span>
                                 </div>
-                            </div>
 
-                            <div class="divide-y divide-gray-100 dark:divide-gray-900">
-                                @foreach($investorChunks as $invPageIndex => $invPageInvestors)
-                                    <div class="inv-page {{ $invPageIndex === 0 ? '' : 'hidden' }}" data-opp-uid="{{ $oppUid }}" data-inv-page="{{ $invPageIndex }}">
-                                        @foreach($invPageInvestors as $invData)
-                                            @php
-                                                $investor = $invData->investor;
-                                                $selfie = $investor->documents?->selfie;
-                                                $photo = $selfie ? Storage::url($selfie) : ($investor->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($investor->name) . '&background=e5e7eb&color=6b7280');
-                                                $uid = 'inv_' . $opportunity->id . '_' . $investor->id;
-                                                $progressPct = $invData->total_expected_return > 0 ? round($invData->total_received / $invData->total_expected_return * 100) : 0;
-                                                $isFullyPaid = $progressPct >= 100;
-                                            @endphp
-
-                                            <div onclick="openInvestorModal('{{ $uid }}')" class="investor-row py-4 px-4 sm:px-5 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20 cursor-pointer group" data-search-name="{{ strtolower($investor->name) }}" data-search-dni="{{ $investor->dni ?? '' }}" data-search-code="{{ strtolower($opportunity->code) }}" data-search-paid="{{ $isFullyPaid ? '1' : '0' }}">
-                                                <div class="flex items-center gap-3 sm:gap-4">
-                                                    <div class="relative flex-shrink-0">
-                                                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800">
-                                                            <img src="{{ $photo }}" alt="{{ $investor->name }}" class="w-full h-full object-cover">
-                                                        </div>
-                                                        @if($invData->overdue_count > 0)
-                                                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white dark:border-gray-950 rounded-full"></span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center gap-2">
-                                                            <h3 class="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $investor->name }}</h3>
-                                                            @if($invData->overdue_count > 0)
-                                                                <span class="flex-shrink-0 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-400">{{ $invData->overdue_count }}v</span>
-                                                            @endif
-                                                        </div>
-                                                        <p class="text-[9px] sm:text-[10px] text-gray-400 truncate mt-0.5">{{ $investor->email }}</p>
-                                                    </div>
-
-                                                    <div class="hidden sm:flex items-center gap-4 lg:gap-6 flex-shrink-0">
-                                                        <div class="text-right">
-                                                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Invertido</p>
-                                                            <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $curSymbol }}{{ number_format($invData->amount, 2) }}</p>
-                                                        </div>
-                                                        <div class="text-right">
-                                                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Pagado</p>
-                                                            <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $curSymbol }}{{ number_format($invData->total_received, 2) }}</p>
-                                                        </div>
-                                                        <div class="text-right">
-                                                            <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Progreso</p>
-                                                            <p class="text-sm font-black {{ $progressPct >= 100 ? 'text-emerald-600' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $progressPct }}%</p>
-                                                        </div>
-                                                        <span class="text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 transition-colors">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                                        </span>
-                                                    </div>
-
-                                                    <span class="sm:hidden text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 transition-colors flex-shrink-0">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                                    </span>
-                                                </div>
-
-                                                <div class="sm:hidden grid grid-cols-3 gap-3 mt-3 pl-13">
-                                                    <div>
-                                                        <p class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Invertido</p>
-                                                        <p class="text-[11px] font-black text-gray-900 dark:text-white tabular-nums">{{ $curSymbol }}{{ number_format($invData->amount, 0) }}</p>
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Pagado</p>
-                                                        <p class="text-[11px] font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $curSymbol }}{{ number_format($invData->total_received, 0) }}</p>
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Progreso</p>
-                                                        <p class="text-[11px] font-black text-gray-900 dark:text-white tabular-nums">{{ $progressPct }}%</p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex flex-wrap gap-1.5 mt-3 pl-13" onclick="event.stopPropagation()">
-                                                    <a href="mailto:{{ $investor->email }}"
-                                                       class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 transition-colors px-2 py-1 text-white font-bold text-[8px] sm:text-[9px] rounded-md">
-                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
-                                                        Email
-                                                    </a>
-                                                    @if($investor->phone)
-                                                    <a href="https://wa.me/51{{ preg_replace('/\D/', '', $investor->phone) }}" target="_blank"
-                                                       class="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 transition-colors px-2 py-1 text-white font-bold text-[8px] sm:text-[9px] rounded-md">
-                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                                                        WhatsApp
-                                                    </a>
-                                                    @endif
-                                                </div>
-
-                                                <div id="modal_data_{{ $uid }}" class="hidden"
-                                                    data-name="{{ $investor->name }}"
-                                                    data-email="{{ $investor->email }}"
-                                                    data-photo="{{ $photo }}"
-                                                    data-amount="{{ $curSymbol . number_format($invData->amount, 2) }}"
-                                                    data-received="{{ $curSymbol . number_format($invData->total_received, 2) }}"
-                                                    data-expected="{{ $curSymbol . number_format($invData->total_expected_return, 2) }}"
-                                                    data-overdue="{{ $invData->overdue_count }}"
-                                                    data-pending="{{ $invData->pending_count }}"
-                                                    data-amort="{{ $invData->amortization_type === 'frances' ? 'Francés' : 'Americano' }}"
-                                                    data-rate="{{ $opportunity->monthly_return_rate }}%"
-                                                    data-term="{{ $opportunity->term_months }}"
-                                                    data-currency="{{ $curSymbol }}"
-                                                    data-code="{{ $opportunity->code }}"
-                                                ></div>
-                                            </div>
-                                        @endforeach
+                                <div class="sm:hidden grid grid-cols-3 gap-3 mt-3 pl-13">
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Invertido</p>
+                                        <p class="text-[11px] font-black text-gray-900 dark:text-white tabular-nums">{{ $curSymbol }}{{ number_format($invData->amount, 0) }}</p>
                                     </div>
-                                @endforeach
-                            </div>
-
-                            @if($totalInvPages > 1)
-                                <div class="px-4 sm:px-5 py-3 border-t border-gray-100 dark:border-gray-900 flex items-center justify-between bg-gray-50/30 dark:bg-gray-900/10">
-                                    <span class="text-[8px] sm:text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
-                                    <div class="flex items-center gap-1">
-                                        @for($p = 0; $p < $totalInvPages; $p++)
-                                            <button onclick="switchInvPage('{{ $oppUid }}', {{ $p }})" class="inv-page-btn w-6 h-6 rounded-md text-[9px] font-bold transition-colors {{ $p === 0 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600' }}" data-opp-uid="{{ $oppUid }}" data-inv-page-btn="{{ $p }}">{{ $p + 1 }}</button>
-                                        @endfor
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Pagado</p>
+                                        <p class="text-[11px] font-black text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $curSymbol }}{{ number_format($invData->total_received, 0) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Progreso</p>
+                                        <p class="text-[11px] font-black text-gray-900 dark:text-white tabular-nums">{{ $progressPct }}%</p>
                                     </div>
                                 </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endforeach
 
-        @if($totalOppPages > 1)
-            <div class="mt-6 sm:mt-8 flex items-center justify-center gap-1.5 sm:gap-2">
-                <button onclick="switchOppPage(0)" class="opp-page-btn-first shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg>
-                </button>
-                @for($p = 0; $p < $totalOppPages; $p++)
-                    <button onclick="switchOppPage({{ $p }})" class="opp-page-btn shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors {{ $p === 0 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600' }}" data-opp-page-btn="{{ $p }}">{{ $p + 1 }}</button>
-                @endfor
-                <button onclick="switchOppPage({{ $totalOppPages - 1 }})" class="opp-page-btn-last shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg>
-                </button>
-            </div>
-        @endif
+                                <div class="flex flex-wrap gap-1.5 mt-3 pl-13" onclick="event.stopPropagation()">
+                                    <a href="mailto:{{ $investor->email }}"
+                                       class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 transition-colors px-2 py-1 text-white font-bold text-[8px] sm:text-[9px] rounded-md">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                                        Email
+                                    </a>
+                                    @if($investor->phone)
+                                    <a href="https://wa.me/51{{ preg_replace('/\D/', '', $investor->phone) }}" target="_blank"
+                                       class="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 transition-colors px-2 py-1 text-white font-bold text-[8px] sm:text-[9px] rounded-md">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                        WhatsApp
+                                    </a>
+                                    @endif
+                                </div>
+
+                                <div id="modal_data_{{ $uid }}" class="hidden"
+                                    data-name="{{ $investor->name }}"
+                                    data-email="{{ $investor->email }}"
+                                    data-photo="{{ $photo }}"
+                                    data-amount="{{ $curSymbol . number_format($invData->amount, 2) }}"
+                                    data-received="{{ $curSymbol . number_format($invData->total_received, 2) }}"
+                                    data-expected="{{ $curSymbol . number_format($invData->total_expected_return, 2) }}"
+                                    data-overdue="{{ $invData->overdue_count }}"
+                                    data-pending="{{ $invData->pending_count }}"
+                                    data-amort="{{ $invData->amortization_type === 'frances' ? 'Francés' : 'Americano' }}"
+                                    data-rate="{{ $opportunity->monthly_return_rate }}%"
+                                    data-term="{{ $opportunity->term_months }}"
+                                    data-currency="{{ $curSymbol }}"
+                                    data-code="{{ $opportunity->code }}"
+                                ></div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div id="pagination-container" class="mt-6 sm:mt-8 flex items-center justify-center gap-1.5 sm:gap-2"></div>
     @endif
 </div>
 
@@ -444,38 +409,6 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-function switchOppPage(pageIndex) {
-    document.querySelectorAll('.opp-page').forEach(el => el.classList.add('hidden'));
-    const target = document.querySelector(`.opp-page[data-opp-page="${pageIndex}"]`);
-    if (target) target.classList.remove('hidden');
-
-    document.querySelectorAll('.opp-page-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white');
-        btn.classList.add('bg-gray-100', 'dark:bg-gray-800', 'text-gray-500');
-    });
-    const activeBtn = document.querySelector(`.opp-page-btn[data-opp-page-btn="${pageIndex}"]`);
-    if (activeBtn) {
-        activeBtn.classList.remove('bg-gray-100', 'dark:bg-gray-800', 'text-gray-500');
-        activeBtn.classList.add('bg-indigo-600', 'text-white');
-    }
-}
-
-function switchInvPage(oppUid, pageIndex) {
-    document.querySelectorAll(`.inv-page[data-opp-uid="${oppUid}"]`).forEach(el => el.classList.add('hidden'));
-    const target = document.querySelector(`.inv-page[data-opp-uid="${oppUid}"][data-inv-page="${pageIndex}"]`);
-    if (target) target.classList.remove('hidden');
-
-    document.querySelectorAll(`.inv-page-btn[data-opp-uid="${oppUid}"]`).forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white');
-        btn.classList.add('bg-gray-100', 'dark:bg-gray-800', 'text-gray-500');
-    });
-    const activeBtn = document.querySelector(`.inv-page-btn[data-opp-uid="${oppUid}"][data-inv-page-btn="${pageIndex}"]`);
-    if (activeBtn) {
-        activeBtn.classList.remove('bg-gray-100', 'dark:bg-gray-800', 'text-gray-500');
-        activeBtn.classList.add('bg-indigo-600', 'text-white');
-    }
-}
-
 function openInvestorModal(uid) {
     const el = document.getElementById('modal_data_' + uid);
     if (!el) return;
@@ -995,15 +928,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('investors-search');
     const clearBtn = document.getElementById('investors-search-clear');
     const filterBtns = document.querySelectorAll('.paid-filter-btn');
+    const paginationContainer = document.getElementById('pagination-container');
+    const PER_PAGE = 10;
     let currentPaidFilter = 'all';
+    let currentPage = 1;
+    let filteredRows = [];
 
-    function filterRows() {
+    function getAllRows() {
+        return Array.from(document.querySelectorAll('.investor-row'));
+    }
+
+    function applyFilters() {
         const term = searchInput.value.trim().toLowerCase();
-        const rows = document.querySelectorAll('.investor-row');
+        const allRows = getAllRows();
 
-        clearBtn.classList.toggle('hidden', !term);
-
-        rows.forEach(function(row) {
+        filteredRows = allRows.filter(function(row) {
             const name = (row.dataset.searchName || '').toLowerCase();
             const dni = (row.dataset.searchDni || '').toLowerCase();
             const code = (row.dataset.searchCode || '').toLowerCase();
@@ -1021,23 +960,84 @@ document.addEventListener('DOMContentLoaded', function() {
                 matchPaid = !isPaid;
             }
 
-            row.style.display = (matchSearch && matchPaid) ? '' : 'none';
+            return matchSearch && matchPaid;
         });
 
-        document.querySelectorAll('.opp-page').forEach(function(page) {
-            const visibleRows = page.querySelectorAll('.investor-row:not([style*="display: none"])');
-            const oppCard = page.querySelector('.space-y-6 > div');
-            if (oppCard) {
-                oppCard.style.display = visibleRows.length > 0 ? '' : 'none';
-            }
-        });
+        clearBtn.classList.toggle('hidden', !term);
+        currentPage = 1;
+        renderPage();
     }
 
-    searchInput.addEventListener('input', filterRows);
+    function renderPage() {
+        const allRows = getAllRows();
+        const totalPages = Math.max(1, Math.ceil(filteredRows.length / PER_PAGE));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * PER_PAGE;
+        const pageRows = filteredRows.slice(start, start + PER_PAGE);
+        const pageRowSet = new Set(pageRows);
+
+        allRows.forEach(function(row) {
+            if (pageRowSet.has(row)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.opp-card').forEach(function(card) {
+            const visibleInCard = card.querySelectorAll('.investor-row:not([style*="display: none"])');
+            card.style.display = visibleInCard.length > 0 ? '' : 'none';
+        });
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+
+        html += '<button onclick="window._invPag.goTo(1)" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg></button>';
+
+        html += '<button onclick="window._invPag.goTo(' + (currentPage - 1) + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>';
+
+        var startPage = Math.max(1, currentPage - 2);
+        var endPage = Math.min(totalPages, startPage + 4);
+        if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+        for (var p = startPage; p <= endPage; p++) {
+            var isActive = p === currentPage;
+            html += '<button onclick="window._invPag.goTo(' + p + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (isActive ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '">' + p + '</button>';
+        }
+
+        html += '<button onclick="window._invPag.goTo(' + (currentPage + 1) + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === totalPages ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
+
+        html += '<button onclick="window._invPag.goTo(' + totalPages + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === totalPages ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg></button>';
+
+        html += '<span class="text-[9px] sm:text-[10px] text-gray-400 font-bold ml-2">' + filteredRows.length + ' resultado' + (filteredRows.length !== 1 ? 's' : '') + '</span>';
+
+        paginationContainer.innerHTML = html;
+    }
+
+    window._invPag = {
+        goTo: function(page) {
+            var totalPages = Math.max(1, Math.ceil(filteredRows.length / PER_PAGE));
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderPage();
+            document.getElementById('investors-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    searchInput.addEventListener('input', applyFilters);
 
     clearBtn.addEventListener('click', function() {
         searchInput.value = '';
-        filterRows();
+        applyFilters();
         searchInput.focus();
     });
 
@@ -1048,9 +1048,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 b.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800';
             });
             this.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-gray-900 dark:bg-white text-white dark:text-black border-transparent';
-            filterRows();
+            applyFilters();
         });
     });
+
+    applyFilters();
 })();
 </script>
 @endsection
