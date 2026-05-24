@@ -51,10 +51,6 @@
             <h1 class="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
             <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ now()->translatedFormat('l, d \d\e F Y') }}</p>
         </div>
-        <a href="{{ route('superadmin.analytics') }}" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            Análisis
-        </a>
     </div>
 
     {{-- ALERTAS CRÍTICAS --}}

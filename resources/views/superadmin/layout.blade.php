@@ -251,25 +251,7 @@
                     </div>
                 </div>
 
-                <!-- Análisis -->
-                <div>
-                    <p
-                        class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-widest">
-                        Análisis</p>
-                    <div class="space-y-1">
-                        <a href="{{ route('superadmin.analytics') }}" onclick="closeSidebar()"
-                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.analytics') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
-                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                            </svg>
-                            Análisis
-                        </a>
-                    </div>
-                </div>
+
 
                 <!-- Finanzas -->
                 <div>

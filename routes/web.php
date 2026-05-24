@@ -69,7 +69,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->prefix('gestion-interna')->name('superadmin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/sidebar-stats', [DashboardController::class, 'sidebarStats'])->name('sidebar-stats');
-    Route::get('/analisis', [\App\Http\Controllers\SuperAdmin\AnalyticsController::class, 'index'])->name('analytics');
 
     // Gestión de usuarios
     Route::get('/usuarios', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'index'])->name('users.index');
