@@ -232,9 +232,7 @@
                                         @php
                                             $movement = $cashboxMovements[$investor->id] ?? null;
                                         @endphp
-                                        <button type="button" onclick="openVoucherViewModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}', '{{ $movement ? $movement->cashbox->name : '—' }}', '{{ $movement ? $movement->date?->format('d/m/Y H:i') : '—' }}')" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Ver Comprobante">
-                                            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                        </button>
+                                        <button type="button" onclick="openVoucherViewModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', '{{ $investor->name }}', '{{ $investor->pivot->operation_number ?? '' }}', '{{ $movement ? $movement->cashbox->name : '—' }}', '{{ $movement ? $movement->date?->format('d/m/Y H:i') : '—' }}')" class="px-3 py-1.5 rounded-lg bg-[#006BFF] text-white text-[11px] md:text-xs font-bold hover:bg-[#0058CC] transition-colors">Ver Comprobante</button>
                                     @else
                                         <button type="button" onclick="openVoucherModal('{{ asset('storage/' . $investor->pivot->voucher_path) }}', {{ $investment->id }}, {{ $investor->id }}, '{{ $investor->name }}')" class="text-[11px] md:text-xs font-bold text-indigo-600 border-b-2 border-indigo-600 pb-0.5 hover:opacity-70 transition-opacity">Ver Comprobante</button>
                                     @endif
