@@ -72,6 +72,21 @@
             </div>
         </div>
 
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+            <div class="relative flex-1">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="investors-search" placeholder="Buscar por nombre, DNI o código de inversión..." class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                <button type="button" id="investors-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" data-filter-paid="all" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-gray-900 dark:bg-white text-white dark:text-black border-transparent">Todos</button>
+                <button type="button" data-filter-paid="paid" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800 hover:border-emerald-300 dark:hover:border-emerald-700">Pagado</button>
+                <button type="button" data-filter-paid="pending" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800 hover:border-amber-300 dark:hover:border-amber-700">Con deuda</button>
+            </div>
+        </div>
+
         @foreach($oppChunks as $pageIndex => $pageOpportunities)
             <div class="opp-page {{ $pageIndex === 0 ? '' : 'hidden' }}" data-opp-page="{{ $pageIndex }}">
                 <div class="space-y-6">
@@ -112,9 +127,10 @@
                                                 $photo = $selfie ? Storage::url($selfie) : ($investor->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($investor->name) . '&background=e5e7eb&color=6b7280');
                                                 $uid = 'inv_' . $opportunity->id . '_' . $investor->id;
                                                 $progressPct = $invData->total_expected_return > 0 ? round($invData->total_received / $invData->total_expected_return * 100) : 0;
+                                                $isFullyPaid = $progressPct >= 100;
                                             @endphp
 
-                                            <div onclick="openInvestorModal('{{ $uid }}')" class="py-4 px-4 sm:px-5 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20 cursor-pointer group">
+                                            <div onclick="openInvestorModal('{{ $uid }}')" class="investor-row py-4 px-4 sm:px-5 transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-900/20 cursor-pointer group" data-search-name="{{ strtolower($investor->name) }}" data-search-dni="{{ $investor->dni ?? '' }}" data-search-code="{{ strtolower($opportunity->code) }}" data-search-paid="{{ $isFullyPaid ? '1' : '0' }}">
                                                 <div class="flex items-center gap-3 sm:gap-4">
                                                     <div class="relative flex-shrink-0">
                                                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -974,5 +990,67 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }
 });
+
+(function() {
+    const searchInput = document.getElementById('investors-search');
+    const clearBtn = document.getElementById('investors-search-clear');
+    const filterBtns = document.querySelectorAll('.paid-filter-btn');
+    let currentPaidFilter = 'all';
+
+    function filterRows() {
+        const term = searchInput.value.trim().toLowerCase();
+        const rows = document.querySelectorAll('.investor-row');
+
+        clearBtn.classList.toggle('hidden', !term);
+
+        rows.forEach(function(row) {
+            const name = (row.dataset.searchName || '').toLowerCase();
+            const dni = (row.dataset.searchDni || '').toLowerCase();
+            const code = (row.dataset.searchCode || '').toLowerCase();
+            const isPaid = row.dataset.searchPaid === '1';
+
+            let matchSearch = true;
+            if (term) {
+                matchSearch = name.includes(term) || dni.includes(term) || code.includes(term);
+            }
+
+            let matchPaid = true;
+            if (currentPaidFilter === 'paid') {
+                matchPaid = isPaid;
+            } else if (currentPaidFilter === 'pending') {
+                matchPaid = !isPaid;
+            }
+
+            row.style.display = (matchSearch && matchPaid) ? '' : 'none';
+        });
+
+        document.querySelectorAll('.opp-page').forEach(function(page) {
+            const visibleRows = page.querySelectorAll('.investor-row:not([style*="display: none"])');
+            const oppCard = page.querySelector('.space-y-6 > div');
+            if (oppCard) {
+                oppCard.style.display = visibleRows.length > 0 ? '' : 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterRows);
+
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        filterRows();
+        searchInput.focus();
+    });
+
+    filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            currentPaidFilter = this.dataset.filterPaid;
+            filterBtns.forEach(function(b) {
+                b.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800';
+            });
+            this.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-gray-900 dark:bg-white text-white dark:text-black border-transparent';
+            filterRows();
+        });
+    });
+})();
 </script>
 @endsection
