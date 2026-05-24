@@ -46,7 +46,7 @@ class DashboardController extends Controller
             ->get();
 
         $overdueLoans = Loan::with(['user', 'installments'])
-            ->where('status', 'active')
+            ->where('status', 'approved')
             ->where('in_default', true)
             ->take(10)
             ->get();
@@ -88,10 +88,10 @@ class DashboardController extends Controller
         ];
 
         $loanStats = [
-            'active' => Loan::where('status', 'active')->count(),
-            'active_amount' => Loan::where('status', 'active')->sum('total_amount'),
+            'active' => Loan::where('status', 'approved')->count(),
+            'active_amount' => Loan::where('status', 'approved')->sum('total_amount'),
             'pending' => Loan::where('status', 'pending')->count(),
-            'in_default' => Loan::where('status', 'active')->where('in_default', true)->count(),
+            'in_default' => Loan::where('status', 'approved')->where('in_default', true)->count(),
         ];
 
         $cashboxes = Cashbox::where('is_active', true)->orderBy('name')->get();
