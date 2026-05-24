@@ -14,7 +14,7 @@
         <div class="flex items-start justify-between gap-3">
             <div>
                 <div class="flex items-center gap-2 mb-1">
-                    <span class="text-[10px] font-mono text-gray-400">{{ $opportunity->code }}</span>
+                    <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-black text-white dark:bg-white dark:text-black">{{ $opportunity->code }}</span>
                     <span class="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider
                         {{ $isClosed ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : ($isFunded ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400') }}">
                         {{ $isClosed ? 'Cerrada' : ($isFunded ? 'Financiada' : 'En proceso') }}

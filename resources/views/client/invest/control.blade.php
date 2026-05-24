@@ -66,7 +66,7 @@
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-3 mb-1">
-                                    <span class="text-[9px] font-mono text-gray-400">{{ $opp->code }}</span>
+                                    <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black text-white dark:bg-white dark:text-black">{{ $opp->code }}</span>
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">Abierta</span>
                                     @if($rejectedOpportunityId && $rejectedOpportunityId == $opp->id)
                                         <svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-[9px] font-mono text-gray-400">{{ $inv->code }}</span>
+                                    <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black text-white dark:bg-white dark:text-black">{{ $inv->code }}</span>
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest
                                         {{ $inv->pivot->status === 'approved' ? 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' : '' }}
                                         {{ $inv->pivot->status === 'pending' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-400' : '' }}

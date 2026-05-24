@@ -12,7 +12,7 @@
         </a>
         <h1 class="mt-3 sm:mt-4 text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">{{ $opportunity->title }}</h1>
         <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] sm:text-xs font-mono text-gray-400">{{ $opportunity->code }}</span>
+            <span class="text-[10px] sm:text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-black text-white dark:bg-white dark:text-black">{{ $opportunity->code }}</span>
             <span class="px-2 py-0.5 text-[8px] sm:text-[9px] font-black uppercase tracking-widest bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400 rounded">Activa</span>
         </div>
     </div>

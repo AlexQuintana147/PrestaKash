@@ -78,7 +78,7 @@
                         <div class="flex items-center justify-between gap-4">
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-                                    <span class="text-[9px] font-mono text-gray-400">{{ $opp->code }}</span>
+                                    <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black text-white dark:bg-white dark:text-black">{{ $opp->code }}</span>
                                     <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider
                                         {{ $isClosed ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : ($isFunded ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400') }}">
                                         {{ $isClosed ? 'Cerrada' : ($isFunded ? 'Financiada' : 'Abierta') }}
