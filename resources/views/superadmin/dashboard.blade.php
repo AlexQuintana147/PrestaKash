@@ -195,7 +195,7 @@
                         $isToday = $installment->due_date->isToday();
                         $isTomorrow = $installment->due_date->isTomorrow();
                     @endphp
-                    <a href="{{ $user ? route('superadmin.installments.debtor', $user) : '#' }}" class="coll-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer" data-idx="{{ $i }}">
+                    <a href="{{ $loan ? route('superadmin.installments.group', $loan) . '?source=modal' : '#' }}" class="coll-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer" data-idx="{{ $i }}">
                         <div class="w-8 h-8 rounded-full {{ $isToday ? 'bg-orange-500/10 dark:bg-orange-500/20' : ($isTomorrow ? 'bg-amber-500/10 dark:bg-amber-500/20' : 'bg-gray-100 dark:bg-white/5') }} flex items-center justify-center flex-shrink-0">
                             @if($isToday)
                                 <span class="text-[8px] font-black text-orange-500">HOY</span>
