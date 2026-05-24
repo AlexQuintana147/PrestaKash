@@ -24,24 +24,35 @@ class ContractController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:contracts,slug',
             'description' => 'nullable|string',
+            'is_active' => 'sometimes|boolean',
             'clauses' => 'required|array|min:1',
-            'clauses.*.title' => 'required|string|max:255',
-            'clauses.*.content' => 'required|string',
+            'clauses.*.title' => 'nullable|string|max:255',
+            'clauses.*.content' => 'nullable|string',
+            'clauses.*.box_type' => 'nullable|string|max:50',
         ]);
+
+        $slug = \Str::slug($validated['name']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Contract::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
 
         $contract = Contract::create([
             'name' => $validated['name'],
-            'slug' => \Str::slug($validated['name']),
+            'slug' => $slug,
             'description' => $validated['description'] ?? null,
+            'is_active' => $request->boolean('is_active', true),
         ]);
 
         foreach ($validated['clauses'] as $index => $clause) {
             ContractClause::create([
                 'contract_id' => $contract->id,
-                'title' => $clause['title'],
-                'content' => $clause['content'],
+                'box_type' => $clause['box_type'] ?? null,
+                'title' => $clause['title'] ?? '',
+                'content' => $clause['content'] ?? '',
                 'order' => $index,
             ]);
         }
@@ -62,16 +73,24 @@ class ContractController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
+            'is_active' => 'sometimes|boolean',
             'clauses' => 'required|array|min:1',
-            'clauses.*.id' => 'nullable|exists:contract_clauses,id',
-            'clauses.*.title' => 'required|string|max:255',
-            'clauses.*.content' => 'required|string',
+            'clauses.*.id' => 'nullable|integer|exists:contract_clauses,id',
+            'clauses.*.title' => 'nullable|string|max:255',
+            'clauses.*.content' => 'nullable|string',
+            'clauses.*.box_type' => 'nullable|string|max:50',
         ]);
+
+        $slug = \Str::slug($validated['name']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Contract::where('slug', $slug)->where('id', '!=', $contract->id)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
 
         $contract->update([
             'name' => $validated['name'],
-            'slug' => \Str::slug($validated['name']),
+            'slug' => $slug,
             'description' => $validated['description'] ?? null,
             'is_active' => $request->boolean('is_active'),
         ]);
@@ -79,17 +98,23 @@ class ContractController extends Controller
         $existingIds = [];
         foreach ($validated['clauses'] as $index => $clause) {
             if (!empty($clause['id'])) {
-                ContractClause::where('id', $clause['id'])->update([
-                    'title' => $clause['title'],
-                    'content' => $clause['content'],
+                $clauseModel = $contract->clauses()->where('id', $clause['id'])->first();
+                if (!$clauseModel) {
+                    continue;
+                }
+                $clauseModel->update([
+                    'box_type' => $clause['box_type'] ?? null,
+                    'title' => $clause['title'] ?? '',
+                    'content' => $clause['content'] ?? '',
                     'order' => $index,
                 ]);
                 $existingIds[] = $clause['id'];
             } else {
                 $newClause = ContractClause::create([
                     'contract_id' => $contract->id,
-                    'title' => $clause['title'],
-                    'content' => $clause['content'],
+                    'box_type' => $clause['box_type'] ?? null,
+                    'title' => $clause['title'] ?? '',
+                    'content' => $clause['content'] ?? '',
                     'order' => $index,
                 ]);
                 $existingIds[] = $newClause->id;
@@ -169,13 +194,13 @@ class ContractController extends Controller
             'huella_cliente' => '[HUELLA DIGITAL]',
             'fecha_actual' => now()->format('d/m/Y'),
             'dia_hoy' => now()->format('d'),
-            'mes_hoy' => 'mayo',
+            'mes_hoy' => Contract::monthToText((int)now()->format('m')),
             'anio_hoy' => now()->format('Y'),
-            'dia_letras' => $this->numberToWords(now()->format('d')),
-            'mes_letras' => 'mayo',
-            'anio_letras' => 'dos mil veintiséis',
-            'fecha_completa' => now()->format('d') . ' de ' . $this->monthToText((int)now()->format('m')) . ' de ' . now()->format('Y'),
-            'fecha_completa_letras' => $this->numberToWords(now()->format('d')) . ' de mayo de dos mil veintiséis',
+            'dia_letras' => Contract::numberToWords((int)now()->format('d')),
+            'mes_letras' => Contract::monthToText((int)now()->format('m')),
+            'anio_letras' => Contract::numberToWords((int)now()->format('Y')),
+            'fecha_completa' => now()->format('d') . ' de ' . Contract::monthToText((int)now()->format('m')) . ' de ' . now()->format('Y'),
+            'fecha_completa_letras' => Contract::numberToWords((int)now()->format('d')) . ' de ' . Contract::monthToText((int)now()->format('m')) . ' de ' . Contract::numberToWords((int)now()->format('Y')),
         ];
 
         $renderedClauses = [];
@@ -200,27 +225,5 @@ class ContractController extends Controller
         }
 
         return response()->json(['clauses' => $renderedClauses]);
-    }
-
-    private function numberToWords($num): string
-    {
-        $words = [
-            1 => 'uno', 2 => 'dos', 3 => 'tres', 4 => 'cuatro', 5 => 'cinco',
-            6 => 'seis', 7 => 'siete', 8 => 'ocho', 9 => 'nueve', 10 => 'diez',
-            11 => 'once', 12 => 'doce', 13 => 'trece', 14 => 'catorce', 15 => 'quince',
-            16 => 'dieciséis', 17 => 'diecisiete', 18 => 'dieciocho', 19 => 'diecinueve',
-            20 => 'veinte', 21 => 'veintiuno', 22 => 'veintidós', 23 => 'veintitrés',
-            24 => 'veinticuatro', 25 => 'veinticinco', 26 => 'veintiséis', 27 => 'veintisiete',
-            28 => 'veintiocho', 29 => 'veintinueve', 30 => 'treinta', 31 => 'treinta y uno',
-        ];
-        return $words[(int)$num] ?? $num;
-    }
-
-    private function monthToText($month): string
-    {
-        return [
-            1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio',
-            7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre',
-        ][$month] ?? '';
     }
 }

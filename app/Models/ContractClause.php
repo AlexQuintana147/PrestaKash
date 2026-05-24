@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContractClause extends Model
 {
-    protected $fillable = ['contract_id', 'title', 'content', 'order'];
+    protected $fillable = ['contract_id', 'box_type', 'title', 'content', 'order'];
 
     public function contract(): BelongsTo
     {

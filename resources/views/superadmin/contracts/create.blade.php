@@ -401,10 +401,10 @@
                                        class="flex-1 text-sm font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 min-w-0">
                             </div>
                             <div class="flex items-center gap-1 ml-3">
-                                <button type="button" onclick="moveClause(0, -1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors opacity-30 pointer-events-none" title="Subir">
+                                <button type="button" onclick="moveClause(this, -1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors opacity-30 pointer-events-none" title="Subir">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
                                 </button>
-                                <button type="button" onclick="moveClause(0, 1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors opacity-30 pointer-events-none" title="Bajar">
+                                <button type="button" onclick="moveClause(this, 1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors opacity-30 pointer-events-none" title="Bajar">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7"/></svg>
                                 </button>
                                 <button type="button" onclick="removeClause(this)" class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-colors" title="Eliminar">
@@ -576,9 +576,14 @@ const SAMPLE_DATA = {!! json_encode([
     'empresa_representante' => 'Juan Carlos Pérez García','empresa_representante_dni' => '45678901',
     'logo_empresa' => '[LOGO DE LA EMPRESA]','firma_representante' => '[FIRMA DEL REPRESENTANTE]',
     'sello_empresa' => '[SELLO DE LA EMPRESA]',
-    'dia_hoy' => '23','mes_hoy' => 'mayo','anio_hoy' => '2026',
-    'dia_letras' => 'veintitrés','mes_letras' => 'mayo','anio_letras' => 'dos mil veintiséis',
-    'fecha_completa' => '23 de mayo de 2026','fecha_completa_letras' => 'veintitrés de mayo de dos mil veintiséis',
+    'contrato_nombre' => 'Contrato de Inversión','contrato_numero' => 'CT-00001',
+    'fecha_firma' => now()->format('d/m/Y'),'ciudad' => 'Lima',
+    'firma_cliente' => '[FIRMA DEL CLIENTE]','huella_cliente' => '[HUELLA DIGITAL]',
+    'fecha_actual' => now()->format('d/m/Y'),
+    'dia_hoy' => now()->format('d'),'mes_hoy' => \App\Models\Contract::monthToText((int)now()->format('m')),'anio_hoy' => now()->format('Y'),
+    'dia_letras' => \App\Models\Contract::numberToWords((int)now()->format('d')),'mes_letras' => \App\Models\Contract::monthToText((int)now()->format('m')),'anio_letras' => \App\Models\Contract::numberToWords((int)now()->format('Y')),
+    'fecha_completa' => now()->format('d') . ' de ' . \App\Models\Contract::monthToText((int)now()->format('m')) . ' de ' . now()->format('Y'),
+    'fecha_completa_letras' => \App\Models\Contract::numberToWords((int)now()->format('d')) . ' de ' . \App\Models\Contract::monthToText((int)now()->format('m')) . ' de ' . \App\Models\Contract::numberToWords((int)now()->format('Y')),
 ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!};
 
 const BOX_TYPES = {!! json_encode(\App\Models\Contract::getBoxTypes(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!};
@@ -648,8 +653,8 @@ function addClause() {
                 <input type="text" name="clauses[${clauseIndex}][title]" value="" placeholder="Título de la cláusula..." class="flex-1 text-sm font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 min-w-0">
             </div>
             <div class="flex items-center gap-1 ml-3">
-                <button type="button" onclick="moveClause(${clauseIndex},-1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Subir"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button>
-                <button type="button" onclick="moveClause(${clauseIndex},1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Bajar"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7"/></svg></button>
+                <button type="button" onclick="moveClause(this,-1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Subir"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button>
+                <button type="button" onclick="moveClause(this,1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Bajar"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7"/></svg></button>
                 <button type="button" onclick="removeClause(this)" class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-colors" title="Eliminar"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
             </div>
         </div>
@@ -671,22 +676,39 @@ function removeClause(btn) {
     btn.closest('.clause-card').remove(); renumberClauses();
 }
 
-function moveClause(index, direction) {
-    const cards = document.querySelectorAll('.clause-card'), card = cards[index];
-    if (!card) return; const ni = index+direction;
-    if (ni<0 || ni>=cards.length) return;
-    direction===1 ? card.parentNode.insertBefore(card.nextSibling,card) : card.parentNode.insertBefore(card,card.previousSibling);
+function moveClause(btn, direction) {
+    const card = btn.closest('.clause-card');
+    if (!card) return;
+    const container = card.parentNode;
+    if (direction === 1) {
+        const next = card.nextElementSibling;
+        if (next) container.insertBefore(next, card);
+    } else {
+        const prev = card.previousElementSibling;
+        if (prev) container.insertBefore(card, prev);
+    }
     renumberClauses();
 }
 
 function renumberClauses() {
-    document.querySelectorAll('.clause-card').forEach((card,i)=>{
-        card.querySelector('span[class*="rounded-full"]').textContent=i+1;
-        card.querySelectorAll('input,textarea').forEach(input=>{
-            if(input.name?.includes('clauses[')) input.name=input.name.replace(/clauses\[\d+\]/,'clauses['+i+']');
-        });
+    const container = document.getElementById('clauses-container');
+    let clauseIdx = 0;
+    container.querySelectorAll(':scope > .clause-card, :scope > .box-card').forEach((card, i) => {
+        if (card.classList.contains('clause-card')) {
+            const numSpan = card.querySelector('span[class*="rounded-full"]');
+            if (numSpan) numSpan.textContent = clauseIdx + 1;
+            card.querySelectorAll('input,textarea').forEach(input => {
+                if (input.name?.includes('clauses[')) input.name = input.name.replace(/clauses\[\d+\]/, 'clauses[' + clauseIdx + ']');
+            });
+            clauseIdx++;
+        } else if (card.classList.contains('box-card')) {
+            card.querySelectorAll('.box-clause-input').forEach(input => {
+                if (input.name?.includes('clauses[')) input.name = input.name.replace(/clauses\[\d+\]|clauses\[_NEW_\]/, 'clauses[' + clauseIdx + ']');
+            });
+            clauseIdx++;
+        }
     });
-    document.getElementById('clause-count').textContent=document.querySelectorAll('.clause-card').length;
+    document.getElementById('clause-count').textContent = clauseIdx;
 }
 
 function insertVariable(variable) {
@@ -760,7 +782,7 @@ function addBox(typeKey) {
     card.dataset.boxType = typeKey;
     card.dataset.boxIndex = boxIndex++;
     card.innerHTML =
-        '<button type="button" onclick="this.parentElement.remove()" class="box-remove-btn">' +
+        '<button type="button" onclick="this.parentElement.remove();renumberClauses()" class="box-remove-btn">' +
             '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
         '</button>' +
         '<div class="box-card-header">' +
@@ -770,13 +792,15 @@ function addBox(typeKey) {
                 '<span class="box-badge" style="background:' + b.bgLight + ';color:' + b.textLight + ';border:1px solid ' + b.borderLight + '">Automático</span>' +
             '</div>' +
         '</div>' +
-        '<input type="hidden" name="boxes[' + (boxIndex - 1) + '][type]" value="' + typeKey + '">' +
+        '<input type="hidden" class="box-clause-input" name="clauses[_NEW_][box_type]" value="' + typeKey + '">' +
+        '<input type="hidden" class="box-clause-input" name="clauses[_NEW_][title]" value="">' +
+        '<input type="hidden" class="box-clause-input" name="clauses[_NEW_][content]" value="">' +
         '<div class="box-placeholder">' +
             '<svg class="w-10 h-10 mx-auto mb-2 opacity-40" style="color:' + b.color + '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
             '<p class="box-placeholder-text">' + b.placeholder_text + '</p>' +
         '</div>';
     container.appendChild(card);
-    updateClauseCount();
+    renumberClauses();
 }
 
 function renderPreview() {

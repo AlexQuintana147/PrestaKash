@@ -177,6 +177,26 @@ class Contract extends Model
                     'fecha_completa_letras' => ['desc' => 'Fecha completa escrita en letras', 'source' => 'Conversión completa a texto'],
                 ],
             ],
+            'contrato' => [
+                'label' => 'Datos del Contrato',
+                'icon' => 'file-text',
+                'color' => '#0d9488',
+                'bgLight' => '#f0fdfa',
+                'bgDark' => '#134e4a',
+                'textLight' => '#0f766e',
+                'textDark' => '#5eead4',
+                'borderLight' => '#99f6e4',
+                'borderDark' => '#115e59',
+                'variables' => [
+                    'contrato_nombre' => ['desc' => 'Nombre del contrato', 'source' => 'Contract.name'],
+                    'contrato_numero' => ['desc' => 'Número de contrato generado (ej: CT-00001)', 'source' => 'Contract.id'],
+                    'fecha_firma' => ['desc' => 'Fecha de firma del contrato (dd/mm/aaaa)', 'source' => 'now()'],
+                    'ciudad' => ['desc' => 'Ciudad donde se firma el contrato', 'source' => 'Configuración'],
+                    'firma_cliente' => ['desc' => 'Espacio para firma del cliente', 'source' => 'Imagen'],
+                    'huella_cliente' => ['desc' => 'Espacio para huella digital del cliente', 'source' => 'Imagen'],
+                    'fecha_actual' => ['desc' => 'Fecha actual en formato dd/mm/aaaa', 'source' => 'now()'],
+                ],
+            ],
         ];
     }
 
@@ -274,5 +294,48 @@ class Contract extends Model
                 'borderLight' => '#fecaca', 'borderDark' => '#991b1b',
             ],
         ];
+    }
+
+    public static function numberToWords(int $num): string
+    {
+        if ($num < 1) return (string)$num;
+
+        $units = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+        $teens = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+        $twenties = ['veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'];
+
+        if ($num < 10) return $units[$num];
+        if ($num < 20) return $teens[$num - 10];
+        if ($num < 30) return $twenties[$num - 20];
+        if ($num < 40) return $num === 30 ? 'treinta' : 'treinta y ' . $units[$num - 30];
+        if ($num < 50) return $num === 40 ? 'cuarenta' : 'cuarenta y ' . $units[$num - 40];
+        if ($num < 60) return $num === 50 ? 'cincuenta' : 'cincuenta y ' . $units[$num - 50];
+        if ($num < 70) return $num === 60 ? 'sesenta' : 'sesenta y ' . $units[$num - 60];
+        if ($num < 80) return $num === 70 ? 'setenta' : 'setenta y ' . $units[$num - 70];
+        if ($num < 90) return $num === 80 ? 'ochenta' : 'ochenta y ' . $units[$num - 80];
+        if ($num < 100) return $num === 90 ? 'noventa' : 'noventa y ' . $units[$num - 90];
+        if ($num === 100) return 'cien';
+        if ($num < 200) return 'ciento ' . self::numberToWords($num - 100);
+        if ($num < 1000) {
+            $hundreds = (int)($num / 100);
+            $remainder = $num % 100;
+            $hundredWords = ['doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+            return $hundredWords[$hundreds - 2] . ($remainder > 0 ? ' ' . self::numberToWords($remainder) : '');
+        }
+        if ($num < 1000000) {
+            $thousands = (int)($num / 1000);
+            $remainder = $num % 1000;
+            $thousandWord = $thousands === 1 ? 'mil' : self::numberToWords($thousands) . ' mil';
+            return $thousandWord . ($remainder > 0 ? ' ' . self::numberToWords($remainder) : '');
+        }
+        return (string)$num;
+    }
+
+    public static function monthToText(int $month): string
+    {
+        return [
+            1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio',
+            7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre',
+        ][$month] ?? '';
     }
 }
