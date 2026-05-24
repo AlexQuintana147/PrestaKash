@@ -23,87 +23,60 @@
         </div>
     @endif
 
-    <!-- Filtros -->
-    <div class="mb-6">
-        <!-- Mobile: grid -->
-        <div class="md:hidden">
-            <div class="grid grid-cols-2 gap-2">
-                @foreach([
-                    'all'      => ['label' => 'Todos',       'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
-                    'pending'  => ['label' => 'Solicitudes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
-                    'approved' => ['label' => 'Interesados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
-                ] as $key => $cfg)
+    <!-- Búsqueda -->
+    <div class="mb-6 relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="investors-search" placeholder="Buscar por nombre, DNI u ocupación..."
+               class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
+        <button type="button" id="investors-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Filtros Mobile -->
+    <div class="md:hidden mb-6">
+        <div class="grid grid-cols-3 gap-2">
+            @foreach([
+                'all'      => ['label' => 'Todos',       'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                'pending'  => ['label' => 'Solicitudes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                'approved' => ['label' => 'Interesados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+            ] as $key => $cfg)
+                <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
+                   class="flex items-center justify-center gap-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
+                          {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
+                    @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3 h-3 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif
+                    {{ $cfg['label'] }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Filtros Desktop -->
+    <div class="hidden md:flex flex-col border-b border-gray-200 dark:border-gray-800 mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
+                @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados'] as $key => $label)
                     <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
-                       class="flex items-center justify-center gap-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
-                              {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
-                        @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3 h-3 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif
-                        {{ $cfg['label'] }}
+                       class="relative flex items-center gap-2 flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
+                              {{ $filter === $key
+                                  ? 'text-gray-900 dark:text-white'
+                                  : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                        <span class="flex items-center gap-1">
+                            @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top flex-shrink-0 relative top-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif{{ $label }}
+                        </span>
+                        @if($counts[$key] > 0)
+                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                        @endif
+                        @if($filter === $key)
+                            <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
+                        @endif
                     </a>
                 @endforeach
             </div>
-        </div>
-
-        <!-- Desktop: tabs horizontales -->
-        <div class="hidden md:flex flex-col border-b border-gray-200 dark:border-gray-800 mb-8">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-0">
-                    @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados'] as $key => $label)
-                        <a href="{{ route('superadmin.investors.index', ['filter' => $key, 'search' => request('search'), 'from_date' => request('from_date'), 'to_date' => request('to_date')]) }}"
-                           class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
-                                  {{ $filter === $key
-                                      ? 'text-gray-900 dark:text-white'
-                                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
-                            @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top inline -mt-0.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif{{ $label }}
-                            @if($counts[$key] > 0)
-                                <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
-                            @endif
-                            @if($filter === $key)
-                                <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
-                            @endif
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-
-            <form id="filterForm" action="{{ route('superadmin.investors.index') }}" method="GET" class="flex flex-wrap items-center gap-4 px-4 py-4 bg-gray-50/50 dark:bg-white/5 rounded-2xl mt-2">
-                <input type="hidden" name="filter" value="{{ $filter }}">
-                
-                <!-- Búsqueda -->
-                <div class="relative group">
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Nombre, DNI o RUC..." 
-                           oninput="this.value = this.value.replace(/[^a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s]/g, ''); debounceSubmit()"
-                           class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white w-64 transition-all placeholder:text-gray-400">
-                    @if(request('search'))
-                        <a href="{{ route('superadmin.investors.index', ['filter' => $filter, 'from_date' => request('from_date'), 'to_date' => request('to_date')]) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </a>
-                    @endif
-                </div>
-
-                <!-- Fechas -->
-                <div class="flex items-center gap-2">
-                    <div onclick="this.querySelector('input').showPicker()" class="relative cursor-pointer group">
-                        <input type="date" name="from_date" value="{{ request('from_date') }}" onchange="this.form.submit()"
-                               class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-1.5 text-[10px] font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all calendar-picker-indicator-none"
-                               style="color-scheme: {{ request()->cookie('theme') === 'dark' ? 'dark' : 'light' }};">
-                        <span class="absolute -top-2 left-3 px-1 bg-gray-50 dark:bg-gray-950 text-[7px] font-black text-gray-400 uppercase tracking-widest">Desde</span>
-                    </div>
-                    <div onclick="this.querySelector('input').showPicker()" class="relative cursor-pointer group">
-                        <input type="date" name="to_date" value="{{ request('to_date') }}" onchange="this.form.submit()"
-                               class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-1.5 text-[10px] font-bold uppercase text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all calendar-picker-indicator-none"
-                               style="color-scheme: {{ request()->cookie('theme') === 'dark' ? 'dark' : 'light' }};">
-                        <span class="absolute -top-2 left-3 px-1 bg-gray-50 dark:bg-gray-950 text-[7px] font-black text-gray-400 uppercase tracking-widest">Hasta</span>
-                    </div>
-                </div>
-
-                @if(request('from_date') || request('to_date') || request('search'))
-                    <a href="{{ route('superadmin.investors.index', ['filter' => $filter]) }}" 
-                       class="text-[9px] font-black text-red-500 uppercase tracking-widest hover:opacity-70 transition-opacity ml-auto">
-                        Limpiar Filtros
-                    </a>
-                @endif
-            </form>
         </div>
     </div>
 
@@ -146,7 +119,8 @@
             'referred_by' => $app->user->referred_by ?? null,
             'profile_completed' => $app->user->profile_completed ?? false,
         ]) }})"
-       class="flex flex-col md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group cursor-pointer"
+       class="investor-row flex flex-col md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group cursor-pointer"
+       data-search-name="{{ strtolower($app->user->name) }}" data-search-dni="{{ strtolower($app->user->dni ?? '') }}" data-search-occupation="{{ strtolower($app->occupation ?? '') }}"
        style="grid-template-columns: 1fr 150px 130px 120px 100px 80px;">
 
         <!-- Inversor Info -->
@@ -433,13 +407,38 @@
 </div>
 
 <script>
-let debounceTimer;
-function debounceSubmit() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-        document.getElementById('filterForm').submit();
-    }, 500);
-}
+(function() {
+    const searchInput = document.getElementById('investors-search');
+    const clearBtn = document.getElementById('investors-search-clear');
+    if (!searchInput) return;
+
+    function filterRows() {
+        const term = searchInput.value.trim().toLowerCase();
+        const rows = document.querySelectorAll('.investor-row');
+
+        clearBtn.classList.toggle('hidden', !term);
+
+        rows.forEach(function(row) {
+            if (!term) {
+                row.style.display = '';
+                return;
+            }
+            const name = (row.dataset.searchName || '').toLowerCase();
+            const dni = (row.dataset.searchDni || '').toLowerCase();
+            const occupation = (row.dataset.searchOccupation || '').toLowerCase();
+            const match = name.includes(term) || dni.includes(term) || occupation.includes(term);
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterRows);
+
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        filterRows();
+        searchInput.focus();
+    });
+})();
 
 function openConfirmModal(type, appId) {
     const modal = document.getElementById('actionModal');
