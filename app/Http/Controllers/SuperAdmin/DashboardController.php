@@ -24,7 +24,8 @@ class DashboardController extends Controller
             'today'     => User::whereDate('created_at', today())->count(),
         ];
 
-        $recentUsers = User::with(['role', 'documents'])
+        $recentUsers = User::with(['documents'])
+            ->whereHas('role', fn($q) => $q->where('name', 'usuario'))
             ->latest()
             ->take(5)
             ->get();

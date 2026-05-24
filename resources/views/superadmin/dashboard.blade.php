@@ -196,20 +196,20 @@
                     </div>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Cobrar esta semana</h3>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $upcomingCollections->count() }} cuotas próximas</p>
+                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold" id="coll-count">{{ $upcomingCollections->count() }} cuotas próximas</p>
                     </div>
                 </div>
                 <a href="{{ route('superadmin.installments.index') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todo</a>
             </div>
-            <div class="divide-y divide-gray-50 dark:divide-gray-800/50 max-h-[380px] overflow-y-auto">
-                @forelse($upcomingCollections as $installment)
+            <div id="coll-list" class="divide-y divide-gray-50 dark:divide-gray-800/50">
+                @forelse($upcomingCollections as $i => $installment)
                     @php
                         $loan = $installment->loan;
                         $user = $loan?->user;
                         $isToday = $installment->due_date->isToday();
                         $isTomorrow = $installment->due_date->isTomorrow();
                     @endphp
-                    <div class="pk-list-row flex items-center gap-3 px-5 py-3">
+                    <a href="{{ $user ? route('superadmin.installments.debtor', $user) : '#' }}" class="coll-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer" data-idx="{{ $i }}">
                         <div class="w-8 h-8 rounded-full {{ $isToday ? 'bg-orange-500/10 dark:bg-orange-500/20' : ($isTomorrow ? 'bg-amber-500/10 dark:bg-amber-500/20' : 'bg-gray-100 dark:bg-white/5') }} flex items-center justify-center flex-shrink-0">
                             @if($isToday)
                                 <span class="text-[8px] font-black text-orange-500">HOY</span>
@@ -223,11 +223,14 @@
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $user?->name ?? 'Sin cliente' }}</p>
                             <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan?->code ?? '' }} · Cuota {{ $installment->installment_number }}</p>
                         </div>
-                        <div class="text-right flex-shrink-0">
-                            <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">S/{{ number_format($installment->amount, 0) }}</p>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500">{{ $installment->due_date->format('d/m') }}</p>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <div class="text-right">
+                                <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">S/{{ number_format($installment->amount, 0) }}</p>
+                                <p class="text-[9px] text-gray-400 dark:text-gray-500">{{ $installment->due_date->format('d/m') }}</p>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div class="px-5 py-10 text-center">
                         <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
@@ -237,6 +240,7 @@
                     </div>
                 @endforelse
             </div>
+            <div id="coll-pag" class="hidden px-5 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-center gap-1.5"></div>
         </div>
 
         {{-- PAGOS A INVERSORES --}}
@@ -248,14 +252,14 @@
                     </div>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Pagar inversores</h3>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $payoutStats['pending_payouts'] }} pagos pendientes</p>
+                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold" id="payout-count">{{ $payoutStats['pending_payouts'] }} pagos pendientes</p>
                     </div>
                 </div>
                 <a href="{{ route('superadmin.investments.payouts') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todo</a>
             </div>
-            <div class="divide-y divide-gray-50 dark:divide-gray-800/50 max-h-[380px] overflow-y-auto">
-                @forelse($upcomingPayouts as $payout)
-                    <div class="pk-list-row flex items-center gap-3 px-5 py-3">
+            <div id="payout-list" class="divide-y divide-gray-50 dark:divide-gray-800/50">
+                @forelse($upcomingPayouts as $i => $payout)
+                    <a href="{{ route('superadmin.investments.payouts') }}" class="payout-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer" data-idx="{{ $i }}">
                         <div class="w-8 h-8 rounded-full bg-[#8247f5]/10 dark:bg-[#8247f5]/20 flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4 text-[#8247f5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
@@ -263,11 +267,14 @@
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $payout->investor?->name ?? 'Sin inversor' }}</p>
                             <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $payout->opportunity?->code ?? '' }} · Mes {{ $payout->month_number }}</p>
                         </div>
-                        <div class="text-right flex-shrink-0">
-                            <p class="text-xs font-black text-[#8247f5] tabular-nums">S/{{ number_format($payout->amount, 0) }}</p>
-                            <span class="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">Pend.</span>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <div class="text-right">
+                                <p class="text-xs font-black text-[#8247f5] tabular-nums">S/{{ number_format($payout->amount, 0) }}</p>
+                                <span class="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">Pend.</span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div class="px-5 py-10 text-center">
                         <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
@@ -277,6 +284,7 @@
                     </div>
                 @endforelse
             </div>
+            <div id="payout-pag" class="hidden px-5 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-center gap-1.5"></div>
         </div>
     </div>
 
@@ -464,61 +472,90 @@
             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
                 <div>
                     <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Usuarios recientes</h3>
-                    <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">Últimos registros</p>
+                    <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">Últimos 5 registros</p>
                 </div>
                 <a href="{{ route('superadmin.users.index') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todos</a>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-xs">
-                    <thead>
-                        <tr class="border-b border-gray-100 dark:border-gray-800">
-                            <th class="text-left py-2.5 px-5 font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[9px]">Usuario</th>
-                            <th class="text-left py-2.5 px-5 font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[9px] hidden sm:table-cell">Rol</th>
-                            <th class="text-left py-2.5 px-5 font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[9px]">Estado</th>
-                            <th class="text-left py-2.5 px-5 font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[9px] hidden md:table-cell">Registro</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($recentUsers as $user)
-                            <tr class="border-b border-gray-50 dark:border-gray-800/50 pk-list-row">
-                                <td class="py-2.5 px-5">
-                                    <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-2.5 hover:underline">
-                                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-[#006BFF]/20 to-[#8247f5]/20 flex items-center justify-center flex-shrink-0">
-                                            <span class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2]">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
-                                        </div>
-                                        <div class="min-w-0">
-                                            <p class="font-bold text-gray-900 dark:text-white truncate max-w-[140px]">{{ $user->name }}</p>
-                                            <p class="text-gray-400 dark:text-gray-500 truncate max-w-[140px]">{{ $user->email }}</p>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td class="py-2.5 px-5 hidden sm:table-cell">
-                                    <span class="text-gray-500 dark:text-gray-400">{{ $user->role->name ?? '—' }}</span>
-                                </td>
-                                <td class="py-2.5 px-5">
-                                    @if($user->profile_completed)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#00D26A]/10 dark:bg-[#00D26A]/20 text-[#00D26A]">
-                                            <span class="w-1 h-1 rounded-full bg-[#00D26A]"></span>Completo
-                                        </span>
-                                    @elseif($user->documents && $user->documents->where('status', 'pending')->count() > 0)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 dark:bg-amber-500/20 text-amber-500">
-                                            <span class="w-1 h-1 rounded-full bg-amber-500"></span>Pendiente
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400">
-                                            <span class="w-1 h-1 rounded-full bg-gray-400"></span>Incompleto
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="py-2.5 px-5 text-gray-400 dark:text-gray-500 hidden md:table-cell">{{ $user->created_at->diffForHumans() }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="divide-y divide-gray-50 dark:divide-gray-800/50">
+                @foreach($recentUsers as $user)
+                    @php
+                        $userSelfie = $user->documents?->selfie;
+                        $userPhoto = $userSelfie ? Storage::url($userSelfie) : ($user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=E7EDF6&color=476788');
+                    @endphp
+                    <a href="{{ route('superadmin.users.show', $user) }}" class="pk-list-row flex items-center gap-3 px-5 py-3">
+                        <img src="{{ $userPhoto }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover border-2 border-gray-100 dark:border-gray-800 flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $user->name }}</p>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $user->email }}</p>
+                        </div>
+                        <div class="flex items-center gap-3 flex-shrink-0">
+                            @if($user->profile_completed)
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#00D26A]/10 dark:bg-[#00D26A]/20 text-[#00D26A]">
+                                    <span class="w-1 h-1 rounded-full bg-[#00D26A]"></span>Completo
+                                </span>
+                            @elseif($user->documents && $user->documents->status === 'pending')
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 dark:bg-amber-500/20 text-amber-500">
+                                    <span class="w-1 h-1 rounded-full bg-amber-500"></span>Pendiente
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400">
+                                    <span class="w-1 h-1 rounded-full bg-gray-400"></span>Incompleto
+                                </span>
+                            @endif
+                            <span class="text-[9px] text-gray-400 dark:text-gray-500 hidden sm:inline">{{ $user->created_at->diffForHumans() }}</span>
+                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </a>
+                @endforeach
             </div>
         </div>
     </div>
 
 </div>
 </div>
+
+@push('scripts')
+<script>
+(function(){
+    function initPag(listId, pagId, itemClass, perPage){
+        const list = document.getElementById(listId);
+        const pag = document.getElementById(pagId);
+        if(!list || !pag) return;
+        const items = Array.from(list.querySelectorAll('.'+itemClass));
+        if(items.length <= perPage) return;
+        const totalPages = Math.ceil(items.length / perPage);
+        let current = 1;
+        function render(){
+            items.forEach((el,i) => {
+                el.style.display = (i >= (current-1)*perPage && i < current*perPage) ? '' : 'none';
+            });
+            pag.classList.remove('hidden');
+            pag.innerHTML = '';
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ' + (current === 1 ? 'text-gray-300 dark:text-gray-600 cursor-default' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
+            prevBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>';
+            prevBtn.disabled = current === 1;
+            prevBtn.addEventListener('click', () => { if(current > 1){ current--; render(); }});
+            pag.appendChild(prevBtn);
+            for(let p = 1; p <= totalPages; p++){
+                const btn = document.createElement('button');
+                btn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition-colors ' + (p === current ? 'bg-[#006BFF] text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
+                btn.textContent = p;
+                btn.addEventListener('click', () => { current = p; render(); });
+                pag.appendChild(btn);
+            }
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ' + (current === totalPages ? 'text-gray-300 dark:text-gray-600 cursor-default' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
+            nextBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+            nextBtn.disabled = current === totalPages;
+            nextBtn.addEventListener('click', () => { if(current < totalPages){ current++; render(); }});
+            pag.appendChild(nextBtn);
+        }
+        render();
+    }
+    initPag('coll-list','coll-pag','coll-item',5);
+    initPag('payout-list','payout-pag','payout-item',5);
+})();
+</script>
+@endpush
 @endsection
