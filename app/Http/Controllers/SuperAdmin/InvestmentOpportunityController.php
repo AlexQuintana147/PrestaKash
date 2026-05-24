@@ -262,6 +262,10 @@ class InvestmentOpportunityController extends Controller
 
     public function disapproveInvestor(Request $request, InvestmentOpportunity $investment, $userId)
     {
+        if (in_array($investment->status, ['closed', 'funded'])) {
+            return back()->with('error', 'No se puede desaprobar un inversor de una oportunidad cerrada o financiada.');
+        }
+
         \DB::transaction(function () use ($investment, $userId) {
             $movement = \App\Models\CashboxMovement::where('reference_type', 'investment')
                 ->where('reference_id', $investment->id)
@@ -352,8 +356,8 @@ class InvestmentOpportunityController extends Controller
 
     public function disapprovePayment(InvestmentOpportunity $investment, $userId)
     {
-        if ($investment->status === 'closed') {
-            return back()->with('error', 'No se puede desaprobar el pago de una oportunidad cerrada.');
+        if (in_array($investment->status, ['closed', 'funded'])) {
+            return back()->with('error', 'No se puede desaprobar el pago de una oportunidad cerrada o financiada.');
         }
 
         $pivot = $investment->investors()->where('users.id', $userId)->first()?->pivot;
