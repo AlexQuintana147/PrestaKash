@@ -186,7 +186,7 @@
                 @php
                     $isOverdue = false;
                     $isPaid = false;
-                    if ($isClosed && $item->date) {
+                    if (($isClosed || $isFunded) && $item->date) {
                         $isOverdue = $item->date->lt(now());
                         $isPaid = in_array($item->date->format('Y-m'), $paidMonths);
                     }
@@ -199,7 +199,7 @@
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-900 dark:text-white' }}">Cuota {{ $item->month }}</span>
-                            @if(!$isClosed)
+                            @if(!($isClosed || $isFunded))
                                 <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pend.</span>
                             @elseif($isPaid)
                                 <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>
@@ -299,7 +299,7 @@
                             @php
                                 $isOverdue = false;
                                 $isPaid = false;
-                                if ($isClosed && $item->date) {
+                                if (($isClosed || $isFunded) && $item->date) {
                                     $isOverdue = $item->date->lt(now());
                                     $isPaid = in_array($item->date->format('Y-m'), $paidMonths);
                                 }
@@ -344,7 +344,7 @@
                                                 <button type="button" onclick="openRejectModal({{ $payoutItem->id }})" class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white transition-colors">Rechazar</button>
                                             </div>
                                         </div>
-                                    @elseif(!$isClosed)
+                                    @elseif(!($isClosed || $isFunded))
                                         <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>
                                     @elseif($isPaid)
                                         <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>
