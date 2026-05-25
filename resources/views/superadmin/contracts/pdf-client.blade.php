@@ -5,98 +5,135 @@
     <style>
         @page { margin: 0; }
         body {
-            font-family: 'DejaVu Serif', Georgia, serif;
-            font-size: 11pt;
-            line-height: 1.6;
-            color: #000;
+            font-family: Georgia, 'Times New Roman', 'DejaVu Serif', serif;
+            font-size: 13px;
+            line-height: 1.85;
+            color: #333;
             background: #fff;
             margin: 0;
-            padding: 20mm;
+            padding: 0;
         }
         .doc-page {
-            width: 100%;
+            position: relative;
+            max-width: 650px;
+            margin: 0 auto;
             background: white;
-            padding: 0;
-            margin: 0;
+            padding: 48px 44px 40px;
+            border: 1px solid #eee;
+        }
+        .doc-page::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            width: 36px;
+            height: 48px;
+            border: 1.5px solid #ddd;
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .doc-page.has-logo::before {
+            display: none;
         }
         .doc-logo {
+            position: absolute;
+            top: 12px;
+            right: 20px;
             max-width: 90px;
             max-height: 56px;
             object-fit: contain;
-            display: block;
-            margin: 0 auto 10px;
         }
         .doc-title {
-            font-size: 22pt;
             text-align: center;
-            font-weight: bold;
-            margin-bottom: 10pt;
-            color: #000;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.02em;
+            margin-bottom: 6px;
+            line-height: 1.35;
         }
         .doc-subtitle {
-            font-size: 12pt;
             text-align: center;
-            color: #666;
-            margin-bottom: 20pt;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #888;
+            margin-bottom: 32px;
+            font-weight: 500;
         }
         .doc-divider {
+            height: 1px;
+            background: #ccc;
+            margin: 28px 0;
             border: none;
-            border-top: 1pt solid #ccc;
-            margin: 20pt 0;
         }
         .doc-clause {
-            margin-bottom: 18pt;
+            margin-bottom: 22px;
         }
         .doc-clause-title {
-            font-size: 14pt;
-            font-weight: bold;
-            margin-top: 15pt;
-            margin-bottom: 5pt;
-            color: #000;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            letter-spacing: 0.01em;
         }
         .doc-clause-content {
-            font-size: 11pt;
-            line-height: 1.6;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 13px;
+            line-height: 1.85;
+            color: #333;
             text-align: justify;
-            white-space: pre-wrap;
             word-wrap: break-word;
         }
+        .doc-clause-content p {
+            margin: 0 0 10px 0;
+        }
         .doc-footer {
-            margin-top: 40pt;
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid #e8e8e8;
             width: 100%;
         }
-        .doc-signature-block {
-            width: 45%;
-            display: inline-block;
-            vertical-align: top;
+        .doc-footer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .doc-footer-table td {
+            width: 50%;
+            vertical-align: bottom;
             text-align: center;
+            padding: 0 10px;
         }
         .doc-signature-line {
-            border-top: 1pt solid black;
             width: 70%;
-            margin: 40pt auto 5pt;
-            height: 0;
-        }
-        .doc-signature-img {
-            max-width: 150px;
-            display: block;
+            height: 1px;
+            background: #aaa;
             margin: 0 auto;
         }
+        .doc-signature-img {
+            max-height: 50px;
+            margin-bottom: 4px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .sig-name {
-            font-size: 9pt;
+            font-size: 9px;
             color: #666;
-            margin-top: 5pt;
+            margin-top: 5px;
             text-align: center;
         }
         .sig-label {
-            font-size: 8pt;
+            font-size: 8px;
             color: #888;
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="doc-page">
+    <div class="doc-page {{ \App\Models\CompanySetting::get('company_logo') ? 'has-logo' : '' }}">
         @if($companyLogo = \App\Models\CompanySetting::get('company_logo'))
             <img src="{{ storage_path('app/public/' . ltrim($companyLogo, '/')) }}" alt="Logo" class="doc-logo">
         @endif
@@ -112,7 +149,7 @@
                     <h4 class="doc-clause-title">{{ $clause['title'] }}</h4>
                 @endif
                 <div class="doc-clause-content">
-                    {!! $clause['content'] !!}
+                    {!! nl2br($clause['content']) !!}
                 </div>
             </div>
         @endforeach
@@ -120,19 +157,23 @@
         <hr class="doc-divider">
 
         <div class="doc-footer">
-            <div class="doc-signature-block">
-                <div class="doc-signature-line"></div>
-                <p class="sig-name">{{ $user->name }}</p>
-                <p class="sig-label">DNI: {{ $user->dni }}</p>
-            </div>
-            <div class="doc-signature-block">
-                @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
-                    <img src="{{ storage_path('app/public/' . ltrim($companySignature, '/')) }}" alt="Firma" class="doc-signature-img">
-                @endif
-                <div class="doc-signature-line"></div>
-                <p class="sig-name">Juan Carlos Pérez García</p>
-                <p class="sig-label">Representante Legal</p>
-            </div>
+            <table class="doc-footer-table">
+                <tr>
+                    <td>
+                        <div class="doc-signature-line"></div>
+                        <p class="sig-name">{{ $user->name }}</p>
+                        <p class="sig-label">DNI: {{ $user->dni }}</p>
+                    </td>
+                    <td>
+                        @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
+                            <img src="{{ storage_path('app/public/' . ltrim($companySignature, '/')) }}" alt="Firma" class="doc-signature-img">
+                        @endif
+                        <div class="doc-signature-line"></div>
+                        <p class="sig-name">Juan Carlos Pérez García</p>
+                        <p class="sig-label">Representante Legal</p>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>
