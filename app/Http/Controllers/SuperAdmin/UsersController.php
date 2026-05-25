@@ -497,7 +497,7 @@ class UsersController extends Controller
         if ($type === 'loan') {
             $loans = Loan::where('user_id', $user->id)
                 ->where('status', 'approved')
-                ->get(['code', 'amount', 'months', 'interest_rate']);
+                ->get(['id', 'code', 'amount', 'months', 'interest_rate']);
             foreach ($loans as $loan) {
                 $codes[] = [
                     'code' => $loan->code,
@@ -507,14 +507,18 @@ class UsersController extends Controller
         } elseif ($type === 'investment') {
             $investments = InvestmentOpportunity::whereHas('investors', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
-            })->get(['code', 'title', 'monthly_return_rate', 'term_months']);
+            })->with(['investors' => function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }])->get(['id', 'code', 'title', 'monthly_return_rate', 'term_months']);
             
             foreach ($investments as $investment) {
-                $pivot = $investment->investors()->where('user_id', $user->id)->first()->pivot;
-                $codes[] = [
-                    'code' => $investment->code,
-                    'description' => $investment->title . ' - Monto: S/ ' . number_format($pivot->amount, 2, ',', '.'),
-                ];
+                $investor = $investment->investors->first();
+                if ($investor && $investor->pivot) {
+                    $codes[] = [
+                        'code' => $investment->code,
+                        'description' => $investment->title . ' - Monto: S/ ' . number_format($investor->pivot->amount, 2, ',', '.'),
+                    ];
+                }
             }
         }
 

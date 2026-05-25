@@ -1348,6 +1348,8 @@ function openEmitContractModal(userId) {
     
     // Mostrar modal con transición
     modal.classList.remove('hidden');
+    // Forzar reflow para que la transición funcione
+    modal.offsetHeight;
     modal.classList.add('modal-visible');
     document.body.style.overflow = 'hidden';
     
@@ -1377,18 +1379,26 @@ function handleContractTypeChange() {
     const contractSelectGroup = document.getElementById('contractSelectGroup');
     const relatedCodeGroup = document.getElementById('relatedCodeGroup');
     const label = document.getElementById('relatedCodeLabel');
+    const previewButtons = document.getElementById('previewButtons');
     
-    // Actualizar etiqueta según tipo
-    label.textContent = type === 'investment' ? 'Inversión Asociada' : 'Préstamo Asociado';
+    // Reset following steps
+    document.getElementById('contractId').value = '';
+    document.getElementById('relatedCode').value = '';
+    document.getElementById('codesContainer').innerHTML = '';
     
     if (type) {
+        // Actualizar etiqueta según tipo
+        label.textContent = type === 'investment' ? 'INVERSIÓN ASOCIADA' : 'PRÉSTAMO ASOCIADO';
+        
         contractSelectGroup.classList.remove('hidden');
+        relatedCodeGroup.classList.add('hidden');
+        previewButtons.classList.add('hidden');
         updateStepper(2);
         loadContracts(type);
     } else {
         contractSelectGroup.classList.add('hidden');
         relatedCodeGroup.classList.add('hidden');
-        document.getElementById('previewButtons').classList.add('hidden');
+        previewButtons.classList.add('hidden');
         updateStepper(1);
     }
 }
@@ -1714,132 +1724,163 @@ function closeRejectChangeModal() {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    margin-bottom: 24px;
+    margin-bottom: 35px;
+    padding: 0 5px;
 }
 
 .step-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    position: relative;
 }
 
 .step-number {
-    width: 28px;
-    height: 28px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    background: #e5e7eb;
-    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 800;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: #f1f5f9;
+    color: #94a3b8;
+    border: none;
 }
 
 .step-number.active {
-    background: linear-gradient(135deg, #f97316, #ea580c);
+    background: #f97316;
     color: white;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    transform: scale(1.15);
 }
 
 .step-number.completed {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: #22c55e;
     color: white;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
 }
 
 .step-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #9ca3af;
-    transition: color 0.3s ease;
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    transition: all 0.3s ease;
 }
 
 .step-label.active {
     color: #f97316;
-    font-weight: 600;
 }
 
 .step-label.completed {
-    color: #22c55e;
+    color: #475569;
 }
 
 .step-connector {
-    width: 40px;
-    height: 2px;
-    background: #e5e7eb;
-    margin: 0 8px;
-    transition: background 0.3s ease;
+    width: 45px;
+    height: 3px;
+    background: #e2e8f0;
+    margin: 0 12px;
+    transition: all 0.6s ease;
+    border-radius: 10px;
 }
 
 .step-connector.active {
-    background: linear-gradient(90deg, #22c55e, #f97316);
+    background: #22c55e;
 }
 
 /* Form fields styling */
 .contract-field-group {
     position: relative;
+    animation: fadeInSlide 0.4s ease-out;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .contract-field-label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 800;
     color: #374151;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .contract-select {
     width: 100%;
-    padding: 14px 16px;
-    font-size: 14px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    background: white;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    border: 2px solid #f3f4f6;
+    border-radius: 16px;
+    background: #f9fafb;
     color: #1f2937;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-    background-position: right 12px center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-position: right 20px center;
     background-repeat: no-repeat;
-    background-size: 20px;
+    background-size: 18px;
 }
 
 .contract-select:hover {
     border-color: #f97316;
+    background: white;
 }
 
 .contract-select:focus {
     outline: none;
     border-color: #f97316;
+    background: white;
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
 }
 
 /* Code card styling */
 .code-option {
-    padding: 14px 16px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    padding: 16px 20px;
+    border: 2px solid #f3f4f6;
+    border-radius: 16px;
     background: white;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-bottom: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
 }
 
 .code-option:hover {
     border-color: #f97316;
-    background: #fff7ed;
-    transform: translateX(4px);
+    background: #fffaf5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .code-option.selected {
     border-color: #f97316;
-    background: linear-gradient(135deg, #fff7ed, #ffedd5);
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+    background: #fff7ed;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+}
+
+.code-option.selected::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    background-color: #f97316;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
 }
 
 .code-main {
@@ -1873,46 +1914,48 @@ function closeRejectChangeModal() {
 .contract-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
+    gap: 16px;
+    margin-top: 32px;
+    padding-top: 24px;
     border-top: 1px solid #f3f4f6;
 }
 
 .btn-contract-primary {
-    padding: 14px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 12px;
+    padding: 16px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 16px;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .btn-preview {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: #3b82f6;
     color: white;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
 }
 
 .btn-preview:hover {
+    background: #2563eb;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.45);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
 
 .btn-download {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: #10b981;
     color: white;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
 }
 
 .btn-download:hover {
+    background: #059669;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 /* Error message */
@@ -2065,7 +2108,7 @@ function closeRejectChangeModal() {
         </div>
         
         <!-- Stepper -->
-        <div class="px-6 pt-5">
+        <div class="px-8 pt-8">
             <div class="contract-stepper">
                 <div class="step-item">
                     <span id="step1Num" class="step-number active">1</span>
@@ -2096,7 +2139,7 @@ function closeRejectChangeModal() {
             
             <!-- Paso 1: Tipo de contrato -->
             <div id="contractTypeGroup" class="contract-field-group">
-                <label class="contract-field-label">Tipo de Contrato</label>
+                <label class="contract-field-label">TIPO DE CONTRATO</label>
                 <select id="contractType" onchange="handleContractTypeChange()"
                         class="contract-select">
                     <option value="">Seleccione el tipo de operación...</option>
@@ -2107,7 +2150,7 @@ function closeRejectChangeModal() {
             
             <!-- Paso 2: Selección de contrato -->
             <div id="contractSelectGroup" class="hidden contract-field-group">
-                <label class="contract-field-label">Plantilla de Contrato</label>
+                <label class="contract-field-label">PLANTILLA DE CONTRATO</label>
                 <select id="contractId" onchange="handleContractSelect()"
                         class="contract-select">
                     <option value="">Seleccione una plantilla...</option>
@@ -2116,7 +2159,7 @@ function closeRejectChangeModal() {
             
             <!-- Paso 3: Selección de código relacionado -->
             <div id="relatedCodeGroup" class="hidden contract-field-group">
-                <label id="relatedCodeLabel" class="contract-field-label">Operación Asociada</label>
+                <label id="relatedCodeLabel" class="contract-field-label">OPERACIÓN ASOCIADA</label>
                 
                 <!-- Loading state -->
                 <div id="codesLoading" class="loading-codes hidden">
