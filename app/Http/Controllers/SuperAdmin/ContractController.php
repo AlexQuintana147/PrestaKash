@@ -418,11 +418,7 @@ class ContractController extends Controller
         $txt = $boxDef['textLight'];
         $border = $boxDef['borderLight'];
 
-        $badge = '<span style="display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;background:'.$bg.';color:'.$txt.';border:1px solid '.$border.'">Automático</span>';
-
-        $header = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'.
-            '<div style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:'.$bg.';color:'.$c.';font-size:16px;font-weight:700;">&#9632;</div>'.
-            '<div><span style="font-size:11.5px;font-weight:700;color:#374151">'.e($label).'</span> '.$badge.'</div></div>';
+        $header = '<div style="margin-bottom:12px"><span style="font-size:13px;font-weight:700;color:#374151">'.e($label).'</span></div>';
 
         if ($boxType === 'datos_cliente') {
             $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
@@ -453,6 +449,7 @@ class ContractController extends Controller
 
                 $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
                 $html .= '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px">';
+                $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:16px;font-weight:700;color:#374151">S/ '.number_format($loan->amount, 2).'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Monto préstamo</div></div>';
                 $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:'.$c.'">'.$totalCuotas.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Cuotas totales</div></div>';
                 $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:#059669">'.$paidCount.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Pagadas</div></div>';
                 $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:#d97706">'.$pendingCount.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Pendientes</div></div>';
@@ -477,6 +474,7 @@ class ContractController extends Controller
                 $totalLateFee = $loan->installments->where('status', '!=', 'approved')->sum(fn($i) => $i->late_fee);
                 $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Monto del préstamo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($loan->amount, 2).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Total pendiente:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($totalPending + $totalLateFee, 2).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Capital:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalCapital, 2).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Intereses:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalInterest, 2).'</td></tr>';
