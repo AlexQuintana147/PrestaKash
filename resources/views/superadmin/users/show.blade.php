@@ -1610,11 +1610,11 @@ function closeRejectChangeModal() {
 @endif
 
 <style>
-/* Estilos para modal de emitir contrato */
+/* Estilos mejorados para modal de emitir contrato */
 #emitContractModal, #contractPreviewModal {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 50;
 }
 
@@ -1625,169 +1625,464 @@ function closeRejectChangeModal() {
 
 #emitContractModal .modal-content, #contractPreviewModal .modal-content {
     transform: scale(0.95) translateY(20px);
-    transition: transform 0.25s ease;
+    transition: transform 0.3s ease;
 }
 
 #emitContractModal.modal-visible .modal-content, #contractPreviewModal.modal-visible .modal-content {
     transform: scale(1) translateY(0);
 }
 
+/* Stepper/Progress indicator */
+.contract-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 24px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: #e5e7eb;
+    color: #9ca3af;
+}
+
+.step-number.active {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}
+
+.step-number.completed {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+}
+
+.step-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #9ca3af;
+    transition: color 0.3s ease;
+}
+
+.step-label.active {
+    color: #f97316;
+    font-weight: 600;
+}
+
+.step-label.completed {
+    color: #22c55e;
+}
+
+.step-connector {
+    width: 40px;
+    height: 2px;
+    background: #e5e7eb;
+    margin: 0 8px;
+    transition: background 0.3s ease;
+}
+
+.step-connector.active {
+    background: linear-gradient(90deg, #22c55e, #f97316);
+}
+
+/* Form fields styling */
+.contract-field-group {
+    position: relative;
+}
+
+.contract-field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.contract-select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    background: white;
+    color: #1f2937;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+}
+
+.contract-select:hover {
+    border-color: #f97316;
+}
+
+.contract-select:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+}
+
+/* Code card styling */
+.code-option {
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 10px;
+}
+
+.code-option:hover {
+    border-color: #f97316;
+    background: #fff7ed;
+    transform: translateX(4px);
+}
+
+.code-option.selected {
+    border-color: #f97316;
+    background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+}
+
+.code-main {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.code-details {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.code-detail-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.code-detail-icon {
+    width: 14px;
+    height: 14px;
+    color: #f97316;
+}
+
+/* Action buttons */
+.contract-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-contract-primary {
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-preview {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.btn-preview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.45);
+}
+
+.btn-download {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.btn-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+}
+
+/* Error message */
 #contractError {
-    animation: slideDown 0.2s ease;
+    animation: slideDown 0.3s ease;
 }
 
 @keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.loading-spinner {
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* Estilos para el contrato en preview */
-.contract-preview-content {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    line-height: 1.8;
-    font-size: 14px;
-    text-align: justify;
-}
-
-.contract-preview-content h1 {
-    font-size: 18px;
-    font-weight: bold;
+/* Loading state */
+.loading-codes {
     text-align: center;
-    margin-bottom: 16px;
-    text-transform: uppercase;
+    padding: 30px;
+    color: #9ca3af;
 }
 
-.contract-preview-content h2 {
-    font-size: 14px;
-    font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 8px;
+.loading-spinner-small {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #f97316;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
 }
 
-.contract-preview-content p {
-    margin-bottom: 12px;
-    text-indent: 2em;
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-.contract-preview-signature {
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.empty-state-icon {
+    width: 48px;
+    height: 48px;
+    background: #fef3c7;
+    border-radius: 50%;
     display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
 }
 
-.contract-preview-signature-box {
-    text-align: center;
-    width: 45%;
+.empty-state-text {
+    color: #6b7280;
+    font-size: 14px;
 }
 
-.contract-preview-signature-line {
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+/* === DOCUMENT STYLES (Vista previa contrato - igual que create/edit) === */
+#contractPreviewContent {
+    background: #f8f9fa;
+    padding: 24px;
+    border-radius: 12px;
 }
+
+.doc-page {
+    max-width: 650px; margin: 0 auto;
+    background: white; padding: 48px 44px 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04);
+    border: 1px solid #eee; position: relative;
+}
+
+.doc-page::before {
+    content: ''; position: absolute; top: 16px; right: 20px;
+    width: 36px; height: 48px; border: 1.5px solid #ddd; border-radius: 2px;
+    opacity: 0.5;
+}
+.doc-page.has-logo::before { display: none; }
+.doc-logo { position: absolute; top: 12px; right: 20px; max-width: 90px; max-height: 56px; object-fit: contain; }
+
+.doc-title {
+    text-align: center; font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.02em;
+    margin-bottom: 6px; line-height: 1.35;
+}
+
+.doc-subtitle {
+    text-align: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: #888; margin-bottom: 32px; font-weight: 500;
+}
+
+.doc-divider {
+    height: 1px; background: linear-gradient(to right, transparent, #ccc 20%, #ccc 80%, transparent);
+    margin: 28px 0; border: none;
+}
+
+.doc-clause-title {
+    font-family: Georgia, 'Times New Roman', serif; font-size: 14px;
+    font-weight: 700; color: #1a1a1a; margin-bottom: 10px; letter-spacing: 0.01em;
+}
+
+.doc-clause-content {
+    font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
+    line-height: 1.85; color: #333; text-align: justify;
+    hyphens: auto; white-space: pre-wrap; word-wrap: break-word;
+}
+
+.doc-clause { margin-bottom: 22px; }
+
+.doc-footer {
+    margin-top: 36px; padding-top: 20px;
+    border-top: 1px solid #e8e8e8;
+    display: flex; justify-content: space-between; gap: 20px;
+}
+
+.doc-signature-block {
+    text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+}
+
+.doc-signature-line {
+    width: 70%; height: 1px; background: #aaa; margin: 0 auto;
+}
+
+.doc-signature-img { max-height: 50px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
 </style>
 
 <!-- Modal emitir contrato -->
-<div id="emitContractModal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 min-h-screen">
-    <div class="modal-content bg-white dark:bg-gray-900 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+<div id="emitContractModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 min-h-screen">
+    <div class="modal-content bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-orange-500 to-orange-600">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
+        <div class="relative px-6 py-5 bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30"></div>
+            <div class="relative flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-white/25 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Emitir Contrato</h3>
+                        <p class="text-xs text-white/80">Complete los datos para generar</p>
+                    </div>
                 </div>
-                <h3 class="text-base font-bold text-white">Emitir contrato</h3>
+                <button type="button" onclick="closeEmitContractModal()" 
+                        class="w-9 h-9 rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all"
+                        aria-label="Cerrar modal">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
-            <button type="button" onclick="closeEmitContractModal()" 
-                    class="w-8 h-8 rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all"
-                    aria-label="Cerrar modal">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
+        </div>
+        
+        <!-- Stepper -->
+        <div class="px-6 pt-5">
+            <div class="contract-stepper">
+                <div class="step-item">
+                    <span id="step1Num" class="step-number active">1</span>
+                    <span id="step1Label" class="step-label active">Tipo</span>
+                </div>
+                <div id="connector1" class="step-connector"></div>
+                <div class="step-item">
+                    <span id="step2Num" class="step-number">2</span>
+                    <span id="step2Label" class="step-label">Contrato</span>
+                </div>
+                <div id="connector2" class="step-connector"></div>
+                <div class="step-item">
+                    <span id="step3Num" class="step-number">3</span>
+                    <span id="step3Label" class="step-label">Código</span>
+                </div>
+            </div>
         </div>
         
         <!-- Body -->
         <div class="p-6 space-y-5">
             <!-- Mensaje de error -->
-            <div id="contractError" class="hidden p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-start gap-2">
-                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="contractError" class="hidden p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start gap-3">
+                <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span id="contractErrorMessage"></span>
             </div>
             
-            <!-- Tipo de contrato -->
-            <div id="contractTypeGroup" class="space-y-2">
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Tipo de contrato</label>
+            <!-- Paso 1: Tipo de contrato -->
+            <div id="contractTypeGroup" class="contract-field-group">
+                <label class="contract-field-label">Tipo de Contrato</label>
                 <select id="contractType" onchange="handleContractTypeChange()"
-                        class="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
-                    <option value="">Seleccione tipo</option>
-                    <option value="loan">Préstamo</option>
-                    <option value="investment">Inversión</option>
+                        class="contract-select">
+                    <option value="">Seleccione el tipo de operación...</option>
+                    <option value="loan">🏦 Préstamo / Crédito</option>
+                    <option value="investment">📈 Inversión / Depósito</option>
                 </select>
             </div>
             
-            <!-- Selección de contrato -->
-            <div id="contractSelectGroup" class="hidden space-y-2">
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Contrato a emitir</label>
+            <!-- Paso 2: Selección de contrato -->
+            <div id="contractSelectGroup" class="hidden contract-field-group">
+                <label class="contract-field-label">Plantilla de Contrato</label>
                 <select id="contractId" onchange="handleContractSelect()"
-                        class="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
-                    <option value="">Seleccione un contrato</option>
+                        class="contract-select">
+                    <option value="">Seleccione una plantilla...</option>
                 </select>
             </div>
             
-            <!-- Selección de código relacionado -->
-            <div id="relatedCodeGroup" class="hidden space-y-2">
-                <label id="relatedCodeLabel" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Código de préstamo</label>
-                <select id="relatedCode" onchange="handleRelatedCodeSelect()"
-                        class="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
-                    <option value="">Seleccione un código</option>
-                </select>
+            <!-- Paso 3: Selección de código relacionado -->
+            <div id="relatedCodeGroup" class="hidden contract-field-group">
+                <label id="relatedCodeLabel" class="contract-field-label">Operación Asociada</label>
+                
+                <!-- Loading state -->
+                <div id="codesLoading" class="loading-codes hidden">
+                    <div class="loading-spinner-small"></div>
+                    <p class="text-sm">Buscando operaciones...</p>
+                </div>
+                
+                <!-- Codes container -->
+                <div id="codesContainer" class="space-y-2 max-h-52 overflow-y-auto pr-1">
+                    <select id="relatedCode" onchange="handleRelatedCodeSelect()"
+                            class="contract-select hidden">
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+                
+                <!-- Empty state -->
+                <div id="codesEmpty" class="empty-state hidden">
+                    <div class="empty-state-icon">
+                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <p class="empty-state-text" id="codesEmptyText">No se encontraron operaciones</p>
+                </div>
             </div>
             
             <!-- Botones de preview y descarga -->
-            <div id="previewButtons" class="hidden pt-4 border-t border-gray-100 dark:border-gray-800">
-                <div class="flex gap-3">
-                    <button type="button" onclick="openContractPreview()"
-                            class="flex-1 py-3 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-500/25">
-                        <span class="flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            Ver vista previa
-                        </span>
-                    </button>
-                    <button type="button" onclick="downloadContractPDF()"
-                            class="flex-1 py-3 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
-                        <span class="flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                            </svg>
-                            Descargar PDF
-                        </span>
-                    </button>
-                </div>
+            <div id="previewButtons" class="hidden contract-actions">
+                <button type="button" onclick="openContractPreview()"
+                        class="btn-contract-primary btn-preview">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Vista Previa
+                </button>
+                <button type="button" onclick="downloadContractPDF()"
+                        class="btn-contract-primary btn-download">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Descargar PDF
+                </button>
             </div>
         </div>
     </div>
