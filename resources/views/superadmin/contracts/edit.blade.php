@@ -78,7 +78,7 @@
     .doc-clause-content { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; line-height: 1.85; color: #333; text-align: justify; hyphens: auto; }
     .dark .doc-clause-content { color: #bbb; }
     .doc-clause { margin-bottom: 22px; }
-    .doc-var-inline { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.88em; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+    .doc-var-inline { font-family: Georgia, 'Times New Roman', serif; font-size: 1em; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
 
     .doc-footer { margin-top: 36px; padding-top: 20px; border-top: 1px solid #e8e8e8; display: flex; justify-content: space-between; gap: 20px; }
     .dark .doc-footer { border-top-color: #2a2a2a; }

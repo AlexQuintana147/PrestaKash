@@ -130,8 +130,8 @@
     .doc-clause { margin-bottom: 22px; }
 
     .doc-var-inline {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.88em; padding: 1px 5px; border-radius: 3px; font-weight: 600;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 1em; padding: 1px 5px; border-radius: 3px; font-weight: 600;
     }
 
     .doc-footer {
