@@ -425,7 +425,7 @@ class ContractController extends Controller
             '<div><span style="font-size:11.5px;font-weight:700;color:#374151">'.e($label).'</span> '.$badge.'</div></div>';
 
         if ($boxType === 'datos_cliente') {
-            $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+            $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
             $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
             $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:35%">Nombre completo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($user->name).'</td></tr>';
             $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">DNI:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($user->dni).'</td></tr>';
@@ -441,15 +441,32 @@ class ContractController extends Controller
             if (!$loan) return '';
 
             if ($boxType === 'cronograma') {
-                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
-                $html .= '<table style="width:100%;border-collapse:collapse;font-size:11px">';
-                $html .= '<thead><tr style="background:#f9fafb"><th style="padding:8px;border:1px solid #e5e7eb;text-align:left">N°</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:left">Fecha vencimiento</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:right">Capital</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:right">Interés</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:right">Total</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:center">Estado</th></tr></thead><tbody>';
-                foreach ($loan->installments as $inst) {
-                    $statusLabel = $inst->status === 'approved' ? 'Pagada' : 'Pendiente';
-                    $statusColor = $inst->status === 'approved' ? '#059669' : '#d97706';
-                    $html .= '<tr><td style="padding:8px;border:1px solid #e5e7eb">'.$inst->installment_number.'</td><td style="padding:8px;border:1px solid #e5e7eb">'.$inst->due_date->format('d/m/Y').'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">S/ '.number_format($inst->capital, 2).'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">S/ '.number_format($inst->interest, 2).'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right;font-weight:600">S/ '.number_format($inst->amount, 2).'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:center;color:'.$statusColor.'">'.$statusLabel.'</td></tr>';
-                }
-                $html .= '</tbody></table></div>';
+                $installments = $loan->installments;
+                $totalCuotas = $installments->count();
+                $paidCount = $installments->where('status', 'approved')->count();
+                $pendingCount = $totalCuotas - $paidCount;
+                $first = $installments->first();
+                $last = $installments->last();
+                $totalCapital = $installments->sum('capital');
+                $totalInterest = $installments->sum('interest');
+                $totalAmount = $installments->sum('amount');
+
+                $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
+                $html .= '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px">';
+                $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:'.$c.'">'.$totalCuotas.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Cuotas totales</div></div>';
+                $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:#059669">'.$paidCount.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Pagadas</div></div>';
+                $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:#d97706">'.$pendingCount.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Pendientes</div></div>';
+                $html .= '</div>';
+                $html .= '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">';
+                $html .= '<thead><tr style="background:#f9fafb"><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Cuota</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha inicio</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha fin</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Monto c/u</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Total</th></tr></thead><tbody>';
+                $html .= '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;font-weight:600">'.$totalCuotas.'</td><td style="padding:6px 8px;border:1px solid #e5e7eb">'.($first ? $first->due_date->format('d/m/Y') : '-').'</td><td style="padding:6px 8px;border:1px solid #e5e7eb">'.($last ? $last->due_date->format('d/m/Y') : '-').'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right">S/ '.number_format($loan->monthly_payment, 2).'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-weight:600">S/ '.number_format($totalAmount, 2).'</td></tr>';
+                $html .= '</tbody></table>';
+                $html .= '<div style="display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:#374151">';
+                $html .= '<span style="background:#f9fafb;border-radius:6px;padding:4px 10px">Capital: <b>S/ '.number_format($totalCapital, 2).'</b></span>';
+                $html .= '<span style="background:#f9fafb;border-radius:6px;padding:4px 10px">Interés: <b>S/ '.number_format($totalInterest, 2).'</b></span>';
+                $html .= '<span style="background:#f9fafb;border-radius:6px;padding:4px 10px">Cuota mensual: <b>S/ '.number_format($loan->monthly_payment, 2).'</b></span>';
+                $html .= '</div>';
+                $html .= '</div>';
                 return $html;
             }
 
@@ -458,7 +475,7 @@ class ContractController extends Controller
                 $totalCapital = $loan->installments->where('status', '!=', 'approved')->sum('capital');
                 $totalInterest = $loan->installments->where('status', '!=', 'approved')->sum('interest');
                 $totalLateFee = $loan->installments->where('status', '!=', 'approved')->sum(fn($i) => $i->late_fee);
-                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Total pendiente:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($totalPending + $totalLateFee, 2).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Capital:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalCapital, 2).'</td></tr>';
@@ -472,7 +489,7 @@ class ContractController extends Controller
             }
 
             if ($boxType === 'condiciones') {
-                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Tasa de interés anual:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->interest_rate).'%</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Plazo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->months).' meses</td></tr>';
@@ -497,7 +514,7 @@ class ContractController extends Controller
             if ($boxType === 'resumen_inversion') {
                 $monthlyReturn = $pivot->amount * ($investment->monthly_return_rate / 100);
                 $totalReturn = $monthlyReturn * $investment->term_months;
-                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Oportunidad:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($investment->title).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Monto invertido:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:700">S/ '.number_format($pivot->amount, 2).'</td></tr>';
