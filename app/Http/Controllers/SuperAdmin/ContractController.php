@@ -445,12 +445,21 @@ class ContractController extends Controller
                 $totalInterest = $installments->sum('interest');
                 $totalAmount = $installments->sum('amount');
 
+                $startDate = ($first && $first->due_date) ? $first->due_date->format('d/m/Y') : '—';
+                $endDate   = ($last  && $last->due_date)  ? $last->due_date->format('d/m/Y')  : '—';
+
                 $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
                 $html .= '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Código: <b>'.e($loan->code).'</b></div>';
-                $html .= '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">';
-                $html .= '<thead><tr style="background:#f9fafb"><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Cuotas</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha inicio</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha fin</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Monto c/u</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Total</th></tr></thead><tbody>';
-                $html .= '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;font-weight:600">'.$totalCuotas.'</td><td style="padding:6px 8px;border:1px solid #e5e7eb">'.($first ? $first->due_date->format('d/m/Y') : '-').'</td><td style="padding:6px 8px;border:1px solid #e5e7eb">'.($last ? $last->due_date->format('d/m/Y') : '-').'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right">S/ '.number_format($loan->monthly_payment, 2).'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-weight:600">S/ '.number_format($totalAmount, 2).'</td></tr>';
-                $html .= '</tbody></table>';
+
+                if ($totalCuotas === 0) {
+                    $html .= '<div style="padding:14px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;text-align:center;font-size:12px;color:#6b7280;margin-bottom:10px">No se encontraron cuotas generadas para este préstamo.</div>';
+                } else {
+                    $html .= '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">';
+                    $html .= '<thead><tr style="background:#f9fafb"><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Cuotas</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha inicio</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha fin</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Monto c/u</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Total</th></tr></thead><tbody>';
+                    $html .= '<tr><td style="padding:6px 8px;border:1px solid #e5e7eb;font-weight:600;color:#374151">'.$totalCuotas.'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;color:#374151">'.$startDate.'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;color:#374151">'.$endDate.'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;color:#374151">S/ '.number_format($loan->monthly_payment, 2).'</td><td style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-weight:600;color:#374151">S/ '.number_format($totalAmount, 2).'</td></tr>';
+                    $html .= '</tbody></table>';
+                }
+
                 $html .= '<div style="display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:#374151">';
                 $html .= '<span style="background:#f9fafb;border-radius:6px;padding:4px 10px">Capital: <b>S/ '.number_format($totalCapital, 2).'</b></span>';
                 $html .= '<span style="background:#f9fafb;border-radius:6px;padding:4px 10px">Interés: <b>S/ '.number_format($totalInterest, 2).'</b></span>';
