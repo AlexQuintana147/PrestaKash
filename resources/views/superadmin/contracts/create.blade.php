@@ -601,9 +601,10 @@ document.querySelectorAll('.variable-chip').forEach(function(chip) {
 
 document.querySelectorAll('.clause-content').forEach(function(ta) {
     ta.addEventListener('focus', function() { activeTextarea = this; });
-    ta.addEventListener('input', function() { updateHighlight(this); updateStats(this); });
+    ta.addEventListener('input', function() { updateHighlight(this); updateStats(this); autoResize(this); });
     ta.addEventListener('scroll', function() { syncScroll(this); });
     updateHighlight(ta);
+    autoResize(ta);
 });
 
 function activeEditor(textarea) { activeTextarea = textarea; }
@@ -637,6 +638,17 @@ function updateHighlight(textarea) {
 function syncScroll(textarea) {
     const hl = textarea.closest('.editor-wrapper')?.querySelector('.editor-highlight');
     if (hl) { hl.scrollTop = textarea.scrollTop; hl.scrollLeft = textarea.scrollLeft; }
+}
+
+function autoResize(textarea) {
+    const wrapper = textarea.closest('.editor-wrapper');
+    if (!wrapper) return;
+    textarea.style.height = 'auto';
+    const minHeight = parseInt(getComputedStyle(textarea).minHeight) || 100;
+    const scrollHeight = textarea.scrollHeight;
+    const newHeight = Math.max(minHeight, scrollHeight);
+    textarea.style.height = newHeight + 'px';
+    wrapper.style.minHeight = newHeight + 'px';
 }
 
 function updateStats(textarea) {
