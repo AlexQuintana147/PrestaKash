@@ -525,12 +525,13 @@
                     </script>
                 </div>
 
-                <div>
+                <div id="ghost-movements-section">
                     <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Historial de movimientos</p>
                     @if($ghostMovements->count() > 0)
                         <div class="space-y-2">
                             @foreach($ghostMovements as $mov)
-                                <div class="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
+                                @php $isHighlighted = request('highlight_movement') == $mov->id; @endphp
+                                <div id="ghost-mov-{{ $mov->id }}" class="flex items-center justify-between p-3 rounded-lg border {{ $isHighlighted ? 'border-amber-400 dark:border-amber-500 bg-amber-50 dark:bg-amber-900/20 ring-2 ring-amber-400/30' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-black' }} transition-all duration-500">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full flex items-center justify-center {{ $mov->type === 'income' ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30' }}">
                                             @if($mov->type === 'income')
@@ -553,6 +554,22 @@
                         <div class="mt-4">
                             {{ $ghostMovements->withQueryString()->links() }}
                         </div>
+                        @if(request('highlight_movement'))
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const el = document.getElementById('ghost-mov-{{ request('highlight_movement') }}');
+                                    if (el) {
+                                        setTimeout(function() {
+                                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        }, 300);
+                                        setTimeout(function() {
+                                            el.classList.remove('ring-2', 'ring-amber-400/30');
+                                            el.classList.add('ring-0');
+                                        }, 5000);
+                                    }
+                                });
+                            </script>
+                        @endif
                     @else
                         <p class="text-sm text-gray-400 dark:text-gray-500">Sin movimientos registrados.</p>
                     @endif

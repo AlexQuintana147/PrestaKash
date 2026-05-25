@@ -1204,11 +1204,13 @@
                     'investment': 'INVERSIÓN',
                     'investment_payout': 'PAGO INVERSOR',
                     'manual': 'MANUAL',
-                    'transfer': 'DESPLAZAMIENTO'
+                    'transfer': 'DESPLAZAMIENTO',
+                    'ghost': 'FANTASMA'
                 };
                 const displayType = typeLabels[m.reference_type] || 'OPERACIÓN';
                 const isLoanRelated = m.reference_type === 'loan' || m.reference_type === 'loan_installment';
                 const isInvestmentRelated = m.reference_type === 'investment' || m.reference_type === 'investment_payout';
+                const isGhostRelated = m.reference_type === 'ghost';
                 let redirectUrl = '';
                 if (m.reference_type === 'loan') {
                     redirectUrl = `{{ route('superadmin.loans.index') }}?filter=all&loan_id=${m.reference_id}`;
@@ -1228,17 +1230,20 @@
                     const invId = m.investor_user_id || (m.investor_payout ? m.investor_payout.investor_user_id : '');
                     const monthNum = m.investor_payout ? m.investor_payout.month_number : '';
                     redirectUrl = `/gestion-interna/pagos-inversores?highlight_payout=${payoutId}&opp_id=${oppId}&inv_id=${invId}&month=${monthNum}`;
+                } else if (m.reference_type === 'ghost') {
+                    const ghostUserId = m.user_id || m.reference_id;
+                    redirectUrl = `/gestion-interna/usuarios/${ghostUserId}?highlight_movement=${m.id}`;
                 }
 
                 const tagBorderColor = m.tag ? `border-color:${m.tag.color}` : '';
-                const tagBorderClass = m.tag ? '' : (isLoanRelated || isInvestmentRelated ? '' : 'border-transparent');
+                const tagBorderClass = m.tag ? '' : (isLoanRelated || isInvestmentRelated || isGhostRelated ? '' : 'border-transparent');
                 const isDeletable = m.reference_type === 'manual' || m.reference_type === 'transfer';
-                const clickAction = isLoanRelated || isInvestmentRelated
+                const clickAction = isLoanRelated || isInvestmentRelated || isGhostRelated
                     ? `onclick="window.location.href='${redirectUrl}'"`
                     : (isDeletable ? `onclick="openDeleteMovementModal(${m.id}, '${m.description.replace(/'/g, "\\'")}', '${currentSymbol} ${parseFloat(m.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}', '${m.type}')"` : '');
 
                 const html = `
-                                            <div class="movement-item px-3 md:px-12 py-4 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-xl md:rounded-3xl border-l-4 ${isLoanRelated || isInvestmentRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
+                                            <div class="movement-item px-3 md:px-12 py-4 md:py-8 flex items-center justify-between group transition-all duration-500 rounded-xl md:rounded-3xl border-l-4 ${isLoanRelated || isInvestmentRelated || isGhostRelated ? 'loan-related cursor-pointer' : (isDeletable ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/5' : (m.tag ? '' : 'hover:bg-gray-50 dark:hover:bg-white/5'))} ${tagBorderClass}"
                                                  style="animation-delay: ${i * 0.05}s; ${tagBorderColor}"
                                                  ${clickAction}>
                                                     <div class="flex items-center gap-2 md:gap-8 min-w-0 flex-1">
