@@ -84,7 +84,7 @@
 
     .doc-footer { margin-top: 36px; padding-top: 20px; border-top: 1px solid #e8e8e8; display: flex; justify-content: space-between; gap: 20px; }
     .dark .doc-footer { border-top-color: #2a2a2a; }
-    .doc-signature-block { text-align: center; flex: 1; }
+    .doc-signature-block { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
     .doc-signature-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em; color: #999; margin-bottom: 28px; font-weight: 600; }
     .dark .doc-signature-label { color: #666; }
     .doc-signature-line { width: 70%; height: 1px; background: #aaa; margin: 0 auto; }
@@ -481,7 +481,6 @@
                 <hr class="doc-divider">
                 <div class="doc-footer">
                     <div class="doc-signature-block">
-                        <p class="doc-signature-label">La Empresa</p>
                         @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
                             <img src="{{ Storage::url($companySignature) }}" alt="Firma" class="doc-signature-img">
                         @endif
@@ -489,7 +488,6 @@
                         <p class="mt-2 text-[9px] text-gray-400 text-center">Representante Legal</p>
                     </div>
                     <div class="doc-signature-block">
-                        <p class="doc-signature-label">El Cliente / Inversionista</p>
                         <div class="doc-signature-line"></div>
                         <p class="mt-2 text-[9px] text-gray-400 text-center">DNI / Identificación</p>
                     </div>

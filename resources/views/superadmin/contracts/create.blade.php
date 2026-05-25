@@ -144,7 +144,7 @@
     .dark .doc-footer { border-top-color: #2a2a2a; }
 
     .doc-signature-block {
-        text-align: center; flex: 1;
+        text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
     }
     .doc-signature-label {
         font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em;
@@ -499,7 +499,6 @@
                 <hr class="doc-divider">
                 <div class="doc-footer">
                     <div class="doc-signature-block">
-                        <p class="doc-signature-label">La Empresa</p>
                         @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
                             <img src="{{ Storage::url($companySignature) }}" alt="Firma" class="doc-signature-img">
                         @endif
@@ -507,7 +506,6 @@
                         <p class="mt-2 text-[9px] text-gray-400 text-center">Representante Legal</p>
                     </div>
                     <div class="doc-signature-block">
-                        <p class="doc-signature-label">El Cliente / Inversionista</p>
                         <div class="doc-signature-line"></div>
                         <p class="mt-2 text-[9px] text-gray-400 text-center">DNI / Identificación</p>
                     </div>
