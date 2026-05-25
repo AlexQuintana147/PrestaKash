@@ -826,6 +826,7 @@ function renderPreview() {
                 }
                 return '<span class="doc-var-inline" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">'+escapeHtml(val||match)+'</span>';
             });
+            renderedContent = renderedContent.replace(/\n/g, '<br>');
 
             html += '<div class="doc-clause">';
             html += '<h4 class="doc-clause-title">' + escapeHtml(title) + '</h4>';
