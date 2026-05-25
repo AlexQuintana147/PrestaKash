@@ -1617,7 +1617,7 @@ function closeContractPreviewModal() {
     }, 250);
 }
 
-function downloadContractPDF() {
+async function downloadContractPDF() {
     const type = document.getElementById('contractType').value;
     const contractId = document.getElementById('contractId').value;
     const relatedCodeInput = document.getElementById('relatedCode');
@@ -1627,9 +1627,47 @@ function downloadContractPDF() {
         alert('Por favor complete todos los pasos: tipo de contrato, plantilla y operación asociada.');
         return;
     }
-    
-    const url = `/gestion-interna/contratos/${contractId}/download-pdf?user_id=${emitContractUserId}&type=${type}&related_code=${relatedCode}`;
-    window.open(url, '_blank');
+
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `
+        <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Generando...</span>
+    `;
+
+    try {
+        const url = `/gestion-interna/contratos/${contractId}/download-pdf?user_id=${emitContractUserId}&type=${type}&related_code=${relatedCode}`;
+        
+        const response = await fetch(url, {
+            headers: { 'Accept': 'application/pdf' }
+        });
+        
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.message || 'Error del servidor al generar PDF');
+        }
+        
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `contrato_${emitContractUserId}_${relatedCode}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+
+    } catch (error) {
+        console.error('Error al descargar PDF:', error);
+        alert('Error: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
 }
 
 document.getElementById('emitContractModal').addEventListener('click', e => {
@@ -2256,4 +2294,5 @@ function closeRejectChangeModal() {
 </div>
 
 @include('partials.global-scripts')
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 @endsection

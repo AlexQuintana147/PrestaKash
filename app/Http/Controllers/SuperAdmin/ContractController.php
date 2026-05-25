@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Loan;
 use App\Models\InvestmentOpportunity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ContractController extends Controller
 {
@@ -36,7 +37,7 @@ class ContractController extends Controller
             'clauses.*.box_type' => 'nullable|string|max:50',
         ]);
 
-        $slug = \Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
         $originalSlug = $slug;
         $count = 1;
         while (Contract::where('slug', $slug)->exists()) {
@@ -84,7 +85,7 @@ class ContractController extends Controller
             'clauses.*.box_type' => 'nullable|string|max:50',
         ]);
 
-        $slug = \Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
         $originalSlug = $slug;
         $count = 1;
         while (Contract::where('slug', $slug)->where('id', '!=', $contract->id)->exists()) {
@@ -317,12 +318,14 @@ class ContractController extends Controller
             ];
         }
 
-        $html = view('superadmin.contracts.pdf', compact('contract', 'renderedClauses', 'user'))->render();
-        
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHtml($html);
-        $pdf->setPaper('A4', 'portrait');
-        
-        return $pdf->download('contrato-' . $contract->slug . '-' . $user->dni . '.pdf');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('superadmin.contracts.pdf-client', [
+            'contract' => $contract,
+            'renderedClauses' => $renderedClauses,
+            'user' => $user,
+        ]);
+
+        $filename = 'contrato_' . Str::slug($user->name) . '_' . $relatedCode . '.pdf';
+        return $pdf->download($filename);
     }
 
     private function buildContractData(User $user, $type, $relatedCode)
