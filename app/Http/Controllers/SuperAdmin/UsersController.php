@@ -9,6 +9,8 @@ use App\Models\CashboxMovement;
 use App\Models\ProfileChangeRequest;
 use App\Models\User;
 use App\Models\UserDocument;
+use App\Models\Loan;
+use App\Models\InvestmentOpportunity;
 use App\Models\UbigeoDepartment;
 use App\Models\UbigeoProvince;
 use App\Models\UbigeoDistrict;
@@ -485,5 +487,37 @@ class UsersController extends Controller
         ]);
 
         return back()->with('success', 'Solicitud de cambio rechazada.');
+    }
+
+    public function relatedCodes(User $user, Request $request)
+    {
+        $type = $request->query('type');
+        $codes = [];
+
+        if ($type === 'loan') {
+            $loans = Loan::where('user_id', $user->id)
+                ->where('status', 'approved')
+                ->get(['code', 'amount', 'months', 'status']);
+            foreach ($loans as $loan) {
+                $codes[] = [
+                    'code' => $loan->code,
+                    'description' => 'Monto: S/ ' . number_format($loan->amount, 2, ',', '.') . ' - ' . $loan->months . ' meses - ' . $loan->status,
+                ];
+            }
+        } elseif ($type === 'investment') {
+            $investments = InvestmentOpportunity::whereHas('investors', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->get(['code', 'title', 'monthly_return_rate', 'term_months']);
+            
+            foreach ($investments as $investment) {
+                $pivot = $investment->investors()->where('user_id', $user->id)->first()->pivot;
+                $codes[] = [
+                    'code' => $investment->code,
+                    'description' => $investment->title . ' - Monto: S/ ' . number_format($pivot->amount, 2, ',', '.') . ' - ' . $investment->monthly_return_rate . '% mensual - ' . $investment->term_months . ' meses',
+                ];
+            }
+        }
+
+        return response()->json($codes);
     }
 }

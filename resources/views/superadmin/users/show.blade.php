@@ -20,8 +20,16 @@
                  class="w-9 h-9 rounded-full object-cover bg-gray-200 dark:bg-gray-900 flex-shrink-0">
         @endif
         <div class="min-w-0 flex-1">
-            <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $user->name }}</h1>
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-3">
+                <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $user->name }}</h1>
+                @if($user->documents && $user->documents->status === 'approved')
+                <button type="button" onclick="openEmitContractModal({{ $user->id }})"
+                        class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold rounded-lg bg-orange-500 hover:bg-orange-600 text-white transition-colors shadow-sm">
+                    Emitir contrato
+                </button>
+                @endif
+            </div>
+            <div class="flex items-center gap-1.5 mt-1">
                 <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
                 <a href="mailto:{{ $user->email }}" class="hover:opacity-80 transition-opacity">
                     <svg class="w-4 h-4" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
@@ -1310,6 +1318,237 @@ document.addEventListener('keydown', e => {
     if (e.key === '-') zoom(-0.25);
 });
 
+// Variables para emitir contrato
+let emitContractUserId = null;
+let isModalClosing = false;
+
+function openEmitContractModal(userId) {
+    if (isModalClosing) return;
+    
+    emitContractUserId = userId;
+    const modal = document.getElementById('emitContractModal');
+    
+    // Reset form
+    document.getElementById('contractType').value = '';
+    document.getElementById('contractId').value = '';
+    document.getElementById('relatedCode').value = '';
+    document.getElementById('contractTypeGroup').classList.remove('hidden');
+    document.getElementById('contractSelectGroup').classList.add('hidden');
+    document.getElementById('relatedCodeGroup').classList.add('hidden');
+    document.getElementById('previewButtons').classList.add('hidden');
+    document.getElementById('contractError').textContent = '';
+    
+    // Mostrar modal con transición
+    modal.classList.remove('hidden');
+    modal.classList.add('modal-visible');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus en el primer campo
+    setTimeout(() => {
+        document.getElementById('contractType').focus();
+    }, 150);
+}
+
+function closeEmitContractModal() {
+    if (isModalClosing) return;
+    
+    isModalClosing = true;
+    const modal = document.getElementById('emitContractModal');
+    
+    modal.classList.remove('modal-visible');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        isModalClosing = false;
+    }, 200);
+}
+
+function handleContractTypeChange() {
+    const type = document.getElementById('contractType').value;
+    const contractSelectGroup = document.getElementById('contractSelectGroup');
+    const relatedCodeGroup = document.getElementById('relatedCodeGroup');
+    const label = document.getElementById('relatedCodeLabel');
+    
+    // Actualizar etiqueta según tipo
+    label.textContent = type === 'investment' ? 'Código de inversión' : 'Código de préstamo';
+    
+    if (type) {
+        contractSelectGroup.classList.remove('hidden');
+        loadContracts(type);
+    } else {
+        contractSelectGroup.classList.add('hidden');
+        relatedCodeGroup.classList.add('hidden');
+        document.getElementById('previewButtons').classList.add('hidden');
+    }
+}
+
+function loadContracts(type) {
+    const url = `/gestion-interna/contratos/available?type=${type}`;
+    const select = document.getElementById('contractId');
+    
+    // Mostrar loading
+    select.innerHTML = '<option value="">Cargando...</option>';
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al cargar contratos');
+            return response.json();
+        })
+        .then(data => {
+            select.innerHTML = '<option value="">Seleccione un contrato</option>';
+            
+            if (data.length === 0) {
+                select.innerHTML = '<option value="">No hay contratos disponibles</option>';
+                document.getElementById('contractError').textContent = 'No hay contratos aprobados para este tipo';
+                document.getElementById('contractError').classList.remove('hidden');
+            } else {
+                document.getElementById('contractError').textContent = '';
+                document.getElementById('contractError').classList.add('hidden');
+                
+                data.forEach(contract => {
+                    const option = document.createElement('option');
+                    option.value = contract.id;
+                    option.textContent = contract.name;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            select.innerHTML = '<option value="">Error al cargar</option>';
+            document.getElementById('contractError').textContent = 'Error al cargar contratos. Intente nuevamente.';
+            document.getElementById('contractError').classList.remove('hidden');
+        });
+}
+
+function handleContractSelect() {
+    const contractId = document.getElementById('contractId').value;
+    const type = document.getElementById('contractType').value;
+    const relatedCodeGroup = document.getElementById('relatedCodeGroup');
+    const previewButtons = document.getElementById('previewButtons');
+    
+    if (contractId) {
+        relatedCodeGroup.classList.remove('hidden');
+        loadRelatedCodes(type);
+    } else {
+        relatedCodeGroup.classList.add('hidden');
+        previewButtons.classList.add('hidden');
+    }
+}
+
+function loadRelatedCodes(type) {
+    const url = `/gestion-interna/users/${emitContractUserId}/related-codes?type=${type}`;
+    const select = document.getElementById('relatedCode');
+    
+    // Mostrar loading
+    select.innerHTML = '<option value="">Cargando...</option>';
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al cargar códigos');
+            return response.json();
+        })
+        .then(data => {
+            select.innerHTML = '<option value="">Seleccione un código</option>';
+            
+            if (data.length === 0) {
+                const label = type === 'investment' ? 'inversiones' : 'préstamos';
+                select.innerHTML = `<option value="">No hay ${label} asociados</option>`;
+                document.getElementById('contractError').textContent = `No hay ${label} aprobados asociados a este usuario`;
+                document.getElementById('contractError').classList.remove('hidden');
+            } else {
+                document.getElementById('contractError').textContent = '';
+                document.getElementById('contractError').classList.add('hidden');
+                
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.code;
+                    option.textContent = `${item.code} - ${item.description}`;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            select.innerHTML = '<option value="">Error al cargar</option>';
+            document.getElementById('contractError').textContent = 'Error al cargar códigos. Intente nuevamente.';
+            document.getElementById('contractError').classList.remove('hidden');
+        });
+}
+
+function handleRelatedCodeSelect() {
+    const relatedCode = document.getElementById('relatedCode').value;
+    const previewButtons = document.getElementById('previewButtons');
+    
+    if (relatedCode) {
+        previewButtons.classList.remove('hidden');
+    } else {
+        previewButtons.classList.add('hidden');
+    }
+}
+
+function openContractPreview() {
+    const type = document.getElementById('contractType').value;
+    const contractId = document.getElementById('contractId').value;
+    const relatedCode = document.getElementById('relatedCode').value;
+    
+    // Mostrar modal de preview
+    const modal = document.getElementById('contractPreviewModal');
+    const loading = document.getElementById('previewLoading');
+    const content = document.getElementById('previewContent');
+    
+    // Reset modal
+    loading.classList.remove('hidden');
+    content.classList.add('hidden');
+    content.innerHTML = '';
+    
+    modal.classList.add('modal-visible');
+    document.body.style.overflow = 'hidden';
+    
+    // Cargar contenido del contrato
+    const url = `/gestion-interna/contratos/${contractId}/preview-client?user_id=${emitContractUserId}&type=${type}&related_code=${relatedCode}`;
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al cargar el contrato');
+            return response.text();
+        })
+        .then(htmlContent => {
+            loading.classList.add('hidden');
+            content.innerHTML = htmlContent;
+            content.classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loading.classList.add('hidden');
+            content.innerHTML = '<p class="text-red-500 text-center py-8">Error al cargar el contrato. Intente nuevamente.</p>';
+            content.classList.remove('hidden');
+        });
+}
+
+function closeContractPreviewModal() {
+    const modal = document.getElementById('contractPreviewModal');
+    modal.classList.remove('modal-visible');
+    
+    setTimeout(() => {
+        document.body.style.overflow = '';
+    }, 250);
+}
+
+function downloadContractPDF() {
+    const type = document.getElementById('contractType').value;
+    const contractId = document.getElementById('contractId').value;
+    const relatedCode = document.getElementById('relatedCode').value;
+    
+    const url = `/gestion-interna/contratos/${contractId}/download-pdf?user_id=${emitContractUserId}&type=${type}&related_code=${relatedCode}`;
+    window.open(url, '_blank');
+}
+
+document.getElementById('emitContractModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('emitContractModal')) closeEmitContractModal();
+});
+
 // Zoom con rueda del mouse (en todo el modal)
 document.getElementById('lightbox').addEventListener('wheel', e => {
     if (document.getElementById('lightbox').classList.contains('hidden')) return;
@@ -1369,6 +1608,238 @@ function closeRejectChangeModal() {
         </div>
     </div>
 @endif
+
+<style>
+/* Estilos para modal de emitir contrato */
+#emitContractModal, #contractPreviewModal {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 50;
+}
+
+#emitContractModal.modal-visible, #contractPreviewModal.modal-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+#emitContractModal .modal-content, #contractPreviewModal .modal-content {
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.25s ease;
+}
+
+#emitContractModal.modal-visible .modal-content, #contractPreviewModal.modal-visible .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+#contractError {
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.loading-spinner {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Estilos para el contrato en preview */
+.contract-preview-content {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.8;
+    font-size: 14px;
+    text-align: justify;
+}
+
+.contract-preview-content h1 {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.contract-preview-content h2 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.contract-preview-content p {
+    margin-bottom: 12px;
+    text-indent: 2em;
+}
+
+.contract-preview-signature {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.contract-preview-signature-box {
+    text-align: center;
+    width: 45%;
+}
+
+.contract-preview-signature-line {
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+</style>
+
+<!-- Modal emitir contrato -->
+<div id="emitContractModal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 min-h-screen">
+    <div class="modal-content bg-white dark:bg-gray-900 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-orange-500 to-orange-600">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-bold text-white">Emitir contrato</h3>
+            </div>
+            <button type="button" onclick="closeEmitContractModal()" 
+                    class="w-8 h-8 rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all"
+                    aria-label="Cerrar modal">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Body -->
+        <div class="p-6 space-y-5">
+            <!-- Mensaje de error -->
+            <div id="contractError" class="hidden p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span id="contractErrorMessage"></span>
+            </div>
+            
+            <!-- Tipo de contrato -->
+            <div id="contractTypeGroup" class="space-y-2">
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Tipo de contrato</label>
+                <select id="contractType" onchange="handleContractTypeChange()"
+                        class="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
+                    <option value="">Seleccione tipo</option>
+                    <option value="loan">Préstamo</option>
+                    <option value="investment">Inversión</option>
+                </select>
+            </div>
+            
+            <!-- Selección de contrato -->
+            <div id="contractSelectGroup" class="hidden space-y-2">
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Contrato a emitir</label>
+                <select id="contractId" onchange="handleContractSelect()"
+                        class="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
+                    <option value="">Seleccione un contrato</option>
+                </select>
+            </div>
+            
+            <!-- Selección de código relacionado -->
+            <div id="relatedCodeGroup" class="hidden space-y-2">
+                <label id="relatedCodeLabel" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">Código de préstamo</label>
+                <select id="relatedCode" onchange="handleRelatedCodeSelect()"
+                        class="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all">
+                    <option value="">Seleccione un código</option>
+                </select>
+            </div>
+            
+            <!-- Botones de preview y descarga -->
+            <div id="previewButtons" class="hidden pt-4 border-t border-gray-100 dark:border-gray-800">
+                <div class="flex gap-3">
+                    <button type="button" onclick="openContractPreview()"
+                            class="flex-1 py-3 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-blue-500/25">
+                        <span class="flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            Ver vista previa
+                        </span>
+                    </button>
+                    <button type="button" onclick="downloadContractPDF()"
+                            class="flex-1 py-3 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/25">
+                        <span class="flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            Descargar PDF
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal vista previa del contrato -->
+<div id="contractPreviewModal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 min-h-screen z-[60]">
+    <div class="modal-content bg-white dark:bg-gray-900 rounded-2xl w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-bold text-white">Vista previa del contrato</h3>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="downloadContractPDF()"
+                        class="px-4 py-2 text-sm font-medium rounded-lg bg-white/20 hover:bg-white/30 text-white transition-all"
+                        aria-label="Descargar PDF">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        Descargar PDF
+                    </span>
+                </button>
+                <button type="button" onclick="closeContractPreviewModal()" 
+                        class="w-8 h-8 rounded-xl flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all"
+                        aria-label="Cerrar modal">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Body -->
+        <div id="contractPreviewContent" class="p-6 overflow-y-auto max-h-[calc(90vh-80px)] bg-white">
+            <!-- Loading state -->
+            <div id="previewLoading" class="flex flex-col items-center justify-center py-20">
+                <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p class="text-gray-500 text-sm">Cargando contrato...</p>
+            </div>
+            
+            <!-- Contract content will be loaded here -->
+            <div id="previewContent" class="hidden contract-preview-content"></div>
+        </div>
+    </div>
+</div>
 
 @include('partials.global-scripts')
 @endsection

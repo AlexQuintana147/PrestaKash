@@ -162,6 +162,10 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::get('/contratos/{contract}/editar', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'edit'])->name('contracts.edit');
     Route::put('/contratos/{contract}', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'update'])->name('contracts.update');
     Route::post('/contratos/{contract}/preview', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'preview'])->name('contracts.preview');
+    Route::get('/contratos/available', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'availableContracts'])->name('contracts.available');
+    Route::get('/contratos/{contract}/preview-client', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'previewClient'])->name('contracts.preview-client');
+    Route::get('/contratos/{contract}/download-pdf', [\App\Http\Controllers\SuperAdmin\ContractController::class, 'downloadPDF'])->name('contracts.download-pdf');
+    Route::get('/users/{user}/related-codes', [\App\Http\Controllers\SuperAdmin\UsersController::class, 'relatedCodes'])->name('users.related-codes');
 
     // Configuración
     Route::get('/configuracion', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings');

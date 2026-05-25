@@ -5,6 +5,9 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
 use App\Models\ContractClause;
+use App\Models\User;
+use App\Models\Loan;
+use App\Models\InvestmentOpportunity;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller
@@ -225,5 +228,155 @@ class ContractController extends Controller
         }
 
         return response()->json(['clauses' => $renderedClauses]);
+    }
+
+    public function availableContracts(Request $request)
+    {
+        $contracts = Contract::where('is_active', true)->get(['id', 'name']);
+        return response()->json($contracts);
+    }
+
+    public function previewClient(Contract $contract, Request $request)
+    {
+        $userId = $request->query('user_id');
+        $type = $request->query('type');
+        $relatedCode = $request->query('related_code');
+
+        $user = User::findOrFail($userId);
+        $contract->load('clauses');
+        $allVars = Contract::getAllVariablesFlat();
+
+        $data = $this->buildContractData($user, $type, $relatedCode);
+        $data['contrato_nombre'] = $contract->name;
+        $data['contrato_numero'] = 'CT-' . str_pad($contract->id, 5, '0', STR_PAD_LEFT);
+        $data['fecha_firma'] = now()->format('d/m/Y');
+        $data['ciudad'] = 'Lima';
+        $data['fecha_actual'] = now()->format('d/m/Y');
+        $data['dia_hoy'] = now()->format('d');
+        $data['mes_hoy'] = Contract::monthToText((int)now()->format('m'));
+        $data['anio_hoy'] = now()->format('Y');
+        $data['dia_letras'] = Contract::numberToWords((int)now()->format('d'));
+        $data['mes_letras'] = Contract::monthToText((int)now()->format('m'));
+        $data['anio_letras'] = Contract::numberToWords((int)now()->format('Y'));
+        $data['fecha_completa'] = now()->format('d') . ' de ' . Contract::monthToText((int)now()->format('m')) . ' de ' . now()->format('Y');
+        $data['fecha_completa_letras'] = Contract::numberToWords((int)now()->format('d')) . ' de ' . Contract::monthToText((int)now()->format('m')) . ' de ' . Contract::numberToWords((int)now()->format('Y'));
+
+        $renderedClauses = [];
+        foreach ($contract->clauses as $clause) {
+            $renderedContent = $clause->content;
+            foreach ($data as $key => $value) {
+                if (isset($allVars[$key])) {
+                    $renderedContent = str_replace('[' . $key . ']', e($value), $renderedContent);
+                }
+            }
+            $renderedClauses[] = [
+                'title' => $clause->title,
+                'content' => $renderedContent,
+            ];
+        }
+
+        return view('superadmin.contracts.preview-client', compact('contract', 'renderedClauses', 'user'));
+    }
+
+    public function downloadPDF(Contract $contract, Request $request)
+    {
+        $userId = $request->query('user_id');
+        $type = $request->query('type');
+        $relatedCode = $request->query('related_code');
+
+        $user = User::findOrFail($userId);
+        $contract->load('clauses');
+        $allVars = Contract::getAllVariablesFlat();
+
+        $data = $this->buildContractData($user, $type, $relatedCode);
+        $data['contrato_nombre'] = $contract->name;
+        $data['contrato_numero'] = 'CT-' . str_pad($contract->id, 5, '0', STR_PAD_LEFT);
+        $data['fecha_firma'] = now()->format('d/m/Y');
+        $data['ciudad'] = 'Lima';
+        $data['fecha_actual'] = now()->format('d/m/Y');
+        $data['dia_hoy'] = now()->format('d');
+        $data['mes_hoy'] = Contract::monthToText((int)now()->format('m'));
+        $data['anio_hoy'] = now()->format('Y');
+        $data['dia_letras'] = Contract::numberToWords((int)now()->format('d'));
+        $data['mes_letras'] = Contract::monthToText((int)now()->format('m'));
+        $data['anio_letras'] = Contract::numberToWords((int)now()->format('Y'));
+        $data['fecha_completa'] = now()->format('d') . ' de ' . Contract::monthToText((int)now()->format('m')) . ' de ' . now()->format('Y');
+        $data['fecha_completa_letras'] = Contract::numberToWords((int)now()->format('d')) . ' de ' . Contract::monthToText((int)now()->format('m')) . ' de ' . Contract::numberToWords((int)now()->format('Y'));
+
+        $renderedClauses = [];
+        foreach ($contract->clauses as $clause) {
+            $renderedContent = $clause->content;
+            foreach ($data as $key => $value) {
+                if (isset($allVars[$key])) {
+                    $renderedContent = str_replace('[' . $key . ']', e($value), $renderedContent);
+                }
+            }
+            $renderedClauses[] = [
+                'title' => $clause->title,
+                'content' => $renderedContent,
+            ];
+        }
+
+        $html = view('superadmin.contracts.pdf', compact('contract', 'renderedClauses', 'user'))->render();
+        
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHtml($html);
+        $pdf->setPaper('A4', 'portrait');
+        
+        return $pdf->download('contrato-' . $contract->slug . '-' . $user->dni . '.pdf');
+    }
+
+    private function buildContractData(User $user, $type, $relatedCode)
+    {
+        $data = [
+            'nombre_completo' => $user->name,
+            'nombres' => $user->first_name,
+            'apellidos' => $user->last_name,
+            'dni' => $user->dni,
+            'email' => $user->email,
+            'telefono' => $user->phone,
+            'direccion' => $user->address,
+            'empresa_nombre' => 'PrestaKash Soluciones Financieras S.A.C.',
+            'empresa_ruc' => '20601234567',
+            'empresa_direccion' => 'Av. Central 456, Oficina 302, Cercado de Lima, Perú',
+            'empresa_telefono' => '+51 (01) 111 222 333',
+            'empresa_email' => 'contacto@prestakash.com',
+            'empresa_representante' => 'Juan Carlos Pérez García',
+            'empresa_representante_dni' => '45678901',
+            'logo_empresa' => '',
+            'firma_representante' => '[FIRMA DEL REPRESENTANTE]',
+            'sello_empresa' => '[SELLO DE LA EMPRESA]',
+            'firma_cliente' => '[FIRMA DEL CLIENTE]',
+            'huella_cliente' => '[HUELLA DIGITAL]',
+        ];
+
+        if ($type === 'loan') {
+            $loan = Loan::where('user_id', $user->id)->where('code', $relatedCode)->first();
+            if ($loan) {
+                $data['prestamo_monto'] = 'S/ ' . number_format($loan->amount, 2, ',', '.');
+                $data['prestamo_codigo'] = $loan->code;
+                $data['prestamo_plazo'] = $loan->months . ' meses';
+                $data['prestamo_tasa_interes'] = $loan->interest_rate . '% anual';
+                $data['prestamo_cuota'] = 'S/ ' . number_format($loan->monthly_payment, 2, ',', '.');
+                $data['prestamo_fecha_desembolso'] = $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '';
+                $data['prestamo_motivo'] = $loan->reason;
+                $data['prestamo_total'] = 'S/ ' . number_format($loan->total_amount, 2, ',', '.');
+                $data['moneda'] = 'Soles (PEN)';
+            }
+        } elseif ($type === 'investment') {
+            $investment = InvestmentOpportunity::where('code', $relatedCode)->first();
+            if ($investment) {
+                $pivot = $investment->investors()->where('user_id', $user->id)->first()->pivot;
+                $data['monto_invertido'] = 'S/ ' . number_format($pivot->amount, 2, ',', '.');
+                $data['tasa_retorno_mensual'] = $investment->monthly_return_rate . '%';
+                $data['plazo_meses'] = $investment->term_months . ' meses';
+                $data['codigo_inversion'] = $investment->code;
+                $data['oportunidad_titulo'] = $investment->title;
+                $data['moneda'] = $investment->currency;
+                $data['tipo_amortizacion'] = $pivot->amortization_type;
+                $data['cuota_mensual'] = 'S/ ' . number_format($pivot->amount * ($investment->monthly_return_rate / 100), 2, ',', '.');
+            }
+        }
+
+        return $data;
     }
 }
