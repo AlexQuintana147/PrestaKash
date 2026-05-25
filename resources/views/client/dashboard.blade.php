@@ -222,9 +222,6 @@
                     <button type="button" onclick="openProfileModal()" title="Ver perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/10 dark:hover:bg-[#4A90E2]/10 transition-colors duration-200">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </button>
-                    <a href="{{ route('client.loans.profile.edit') }}" title="Editar perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-[#8247f5] dark:hover:text-[#9B59B6] hover:bg-[#8247f5]/10 dark:hover:bg-[#9B59B6]/10 transition-colors duration-200">
-                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                    </a>
                 </div>
             </div>
             <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#006BFF]/8 to-transparent dark:from-[#006BFF]/5 dark:to-transparent rounded-bl-full pointer-events-none"></div>
