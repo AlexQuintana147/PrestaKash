@@ -1336,7 +1336,15 @@ function openEmitContractModal(userId) {
     document.getElementById('contractSelectGroup').classList.add('hidden');
     document.getElementById('relatedCodeGroup').classList.add('hidden');
     document.getElementById('previewButtons').classList.add('hidden');
-    document.getElementById('contractError').textContent = '';
+    document.getElementById('contractError').classList.add('hidden');
+    
+    // Reset stepper
+    updateStepper(1);
+    
+    // Reset codes container
+    document.getElementById('codesContainer').innerHTML = '';
+    document.getElementById('codesLoading').classList.add('hidden');
+    document.getElementById('codesEmpty').classList.add('hidden');
     
     // Mostrar modal con transición
     modal.classList.remove('hidden');
@@ -1371,15 +1379,17 @@ function handleContractTypeChange() {
     const label = document.getElementById('relatedCodeLabel');
     
     // Actualizar etiqueta según tipo
-    label.textContent = type === 'investment' ? 'Código de inversión' : 'Código de préstamo';
+    label.textContent = type === 'investment' ? 'Inversión Asociada' : 'Préstamo Asociado';
     
     if (type) {
         contractSelectGroup.classList.remove('hidden');
+        updateStepper(2);
         loadContracts(type);
     } else {
         contractSelectGroup.classList.add('hidden');
         relatedCodeGroup.classList.add('hidden');
         document.getElementById('previewButtons').classList.add('hidden');
+        updateStepper(1);
     }
 }
 
@@ -1387,7 +1397,6 @@ function loadContracts(type) {
     const url = `/gestion-interna/contratos/available?type=${type}`;
     const select = document.getElementById('contractId');
     
-    // Mostrar loading
     select.innerHTML = '<option value="">Cargando...</option>';
     
     fetch(url)
@@ -1396,14 +1405,13 @@ function loadContracts(type) {
             return response.json();
         })
         .then(data => {
-            select.innerHTML = '<option value="">Seleccione un contrato</option>';
+            select.innerHTML = '<option value="">Seleccione una plantilla...</option>';
             
             if (data.length === 0) {
-                select.innerHTML = '<option value="">No hay contratos disponibles</option>';
-                document.getElementById('contractError').textContent = 'No hay contratos aprobados para este tipo';
+                select.innerHTML = '<option value="">No hay plantillas disponibles</option>';
+                document.getElementById('contractErrorMessage').textContent = 'No hay contratos aprobados para este tipo';
                 document.getElementById('contractError').classList.remove('hidden');
             } else {
-                document.getElementById('contractError').textContent = '';
                 document.getElementById('contractError').classList.add('hidden');
                 
                 data.forEach(contract => {
@@ -1417,7 +1425,7 @@ function loadContracts(type) {
         .catch(error => {
             console.error('Error:', error);
             select.innerHTML = '<option value="">Error al cargar</option>';
-            document.getElementById('contractError').textContent = 'Error al cargar contratos. Intente nuevamente.';
+            document.getElementById('contractErrorMessage').textContent = 'Error al cargar. Intente nuevamente.';
             document.getElementById('contractError').classList.remove('hidden');
         });
 }
@@ -1430,6 +1438,7 @@ function handleContractSelect() {
     
     if (contractId) {
         relatedCodeGroup.classList.remove('hidden');
+        previewButtons.classList.add('hidden');
         loadRelatedCodes(type);
     } else {
         relatedCodeGroup.classList.add('hidden');
@@ -1439,10 +1448,14 @@ function handleContractSelect() {
 
 function loadRelatedCodes(type) {
     const url = `/gestion-interna/users/${emitContractUserId}/related-codes?type=${type}`;
-    const select = document.getElementById('relatedCode');
     
-    // Mostrar loading
-    select.innerHTML = '<option value="">Cargando...</option>';
+    // Mostrar estados
+    document.getElementById('codesLoading').classList.remove('hidden');
+    document.getElementById('codesContainer').classList.add('hidden');
+    document.getElementById('codesEmpty').classList.add('hidden');
+    
+    // Actualizar stepper - paso 3 activo
+    updateStepper(3);
     
     fetch(url)
         .then(response => {
@@ -1450,48 +1463,106 @@ function loadRelatedCodes(type) {
             return response.json();
         })
         .then(data => {
-            select.innerHTML = '<option value="">Seleccione un código</option>';
+            document.getElementById('codesLoading').classList.add('hidden');
             
             if (data.length === 0) {
                 const label = type === 'investment' ? 'inversiones' : 'préstamos';
-                select.innerHTML = `<option value="">No hay ${label} asociados</option>`;
-                document.getElementById('contractError').textContent = `No hay ${label} aprobados asociados a este usuario`;
-                document.getElementById('contractError').classList.remove('hidden');
-            } else {
-                document.getElementById('contractError').textContent = '';
+                document.getElementById('codesEmptyText').textContent = `Este usuario no tiene ${label} asociadas`;
+                document.getElementById('codesEmpty').classList.remove('hidden');
                 document.getElementById('contractError').classList.add('hidden');
-                
-                data.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.code;
-                    option.textContent = `${item.code} - ${item.description}`;
-                    select.appendChild(option);
-                });
+                return;
             }
+            
+            document.getElementById('codesContainer').classList.remove('hidden');
+            const container = document.getElementById('codesContainer');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                // Parsear la descripción para extraer datos
+                const descParts = item.description.split(' - ');
+                let monto = '', plazo = '';
+                
+                descParts.forEach(part => {
+                    if (part.includes('Monto:')) monto = part.replace('Monto:', '').trim();
+                    if (part.includes('meses')) plazo = part.trim();
+                    if (part.includes('%')) plazo += ' · ' + part;
+                });
+                
+                const card = document.createElement('div');
+                card.className = 'code-option';
+                card.dataset.code = item.code;
+                card.onclick = function() { selectCodeCard(this); };
+                
+                card.innerHTML = `
+                    <div class="code-main">${item.code}</div>
+                    <div class="code-details">
+                        ${monto ? `<span class="code-detail-item">
+                            <svg class="code-detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2m0 0c0 1.105-.895 2-2 2s-2-.895-2-2m2-4h.01M17 21h-8a2 2 0 01-2-2V5a2 2 0 012-2h8a2 2 0 012 2v14a2 2 0 01-2 2z"/>
+                            </svg>
+                            ${monto}
+                        </span>` : ''}
+                        ${plazo ? `<span class="code-detail-item">
+                            <svg class="code-detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            ${plazo}
+                        </span>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
         })
         .catch(error => {
             console.error('Error:', error);
-            select.innerHTML = '<option value="">Error al cargar</option>';
-            document.getElementById('contractError').textContent = 'Error al cargar códigos. Intente nuevamente.';
-            document.getElementById('contractError').classList.remove('hidden');
+            document.getElementById('codesLoading').classList.add('hidden');
+            document.getElementById('codesEmptyText').textContent = 'Error al cargar. Intente nuevamente.';
+            document.getElementById('codesEmpty').classList.remove('hidden');
         });
 }
 
-function handleRelatedCodeSelect() {
-    const relatedCode = document.getElementById('relatedCode').value;
-    const previewButtons = document.getElementById('previewButtons');
-    
-    if (relatedCode) {
-        previewButtons.classList.remove('hidden');
-    } else {
-        previewButtons.classList.add('hidden');
+function selectCodeCard(card) {
+    // Deseleccionar todos
+    document.querySelectorAll('.code-option').forEach(c => c.classList.remove('selected'));
+    // Seleccionar este
+    card.classList.add('selected');
+    // Actualizar valor del select oculto
+    document.getElementById('relatedCode').value = card.dataset.code;
+    // Mostrar botones
+    document.getElementById('previewButtons').classList.remove('hidden');
+}
+
+function updateStepper(currentStep) {
+    for (let i = 1; i <= 3; i++) {
+        const numEl = document.getElementById(`step${i}Num`);
+        const labelEl = document.getElementById(`step${i}Label`);
+        const connEl = document.getElementById(`connector${i}`);
+        
+        numEl.classList.remove('active', 'completed');
+        labelEl.classList.remove('active', 'completed');
+        
+        if (i < currentStep) {
+            numEl.classList.add('completed');
+            labelEl.classList.add('completed');
+            if (connEl) connEl.classList.add('active');
+        } else if (i === currentStep) {
+            numEl.classList.add('active');
+            labelEl.classList.add('active');
+        }
     }
 }
 
 function openContractPreview() {
     const type = document.getElementById('contractType').value;
     const contractId = document.getElementById('contractId').value;
-    const relatedCode = document.getElementById('relatedCode').value;
+    const relatedCodeInput = document.getElementById('relatedCode');
+    const relatedCode = relatedCodeInput ? relatedCodeInput.value : null;
+    
+    if (!type || !contractId || !relatedCode) {
+        alert('Por favor complete todos los pasos: tipo de contrato, plantilla y operación asociada.');
+        return;
+    }
     
     // Mostrar modal de preview
     const modal = document.getElementById('contractPreviewModal');
@@ -1539,7 +1610,13 @@ function closeContractPreviewModal() {
 function downloadContractPDF() {
     const type = document.getElementById('contractType').value;
     const contractId = document.getElementById('contractId').value;
-    const relatedCode = document.getElementById('relatedCode').value;
+    const relatedCodeInput = document.getElementById('relatedCode');
+    const relatedCode = relatedCodeInput ? relatedCodeInput.value : null;
+    
+    if (!type || !contractId || !relatedCode) {
+        alert('Por favor complete todos los pasos: tipo de contrato, plantilla y operación asociada.');
+        return;
+    }
     
     const url = `/gestion-interna/contratos/${contractId}/download-pdf?user_id=${emitContractUserId}&type=${type}&related_code=${relatedCode}`;
     window.open(url, '_blank');
@@ -2049,11 +2126,10 @@ function closeRejectChangeModal() {
                 
                 <!-- Codes container -->
                 <div id="codesContainer" class="space-y-2 max-h-52 overflow-y-auto pr-1">
-                    <select id="relatedCode" onchange="handleRelatedCodeSelect()"
-                            class="contract-select hidden">
-                        <option value="">Seleccione...</option>
-                    </select>
                 </div>
+                
+                <!-- Input oculto para almacenar el código seleccionado -->
+                <input type="hidden" id="relatedCode" name="relatedCode" value="">
                 
                 <!-- Empty state -->
                 <div id="codesEmpty" class="empty-state hidden">

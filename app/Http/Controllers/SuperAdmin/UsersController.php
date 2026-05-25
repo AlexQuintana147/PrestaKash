@@ -497,11 +497,11 @@ class UsersController extends Controller
         if ($type === 'loan') {
             $loans = Loan::where('user_id', $user->id)
                 ->where('status', 'approved')
-                ->get(['code', 'amount', 'months', 'status']);
+                ->get(['code', 'amount', 'months', 'interest_rate']);
             foreach ($loans as $loan) {
                 $codes[] = [
                     'code' => $loan->code,
-                    'description' => 'Monto: S/ ' . number_format($loan->amount, 2, ',', '.') . ' - ' . $loan->months . ' meses - ' . $loan->status,
+                    'description' => 'Monto: S/ ' . number_format($loan->amount, 2, ',', '.') . ' - ' . $loan->months . ' meses',
                 ];
             }
         } elseif ($type === 'investment') {
@@ -513,7 +513,7 @@ class UsersController extends Controller
                 $pivot = $investment->investors()->where('user_id', $user->id)->first()->pivot;
                 $codes[] = [
                     'code' => $investment->code,
-                    'description' => $investment->title . ' - Monto: S/ ' . number_format($pivot->amount, 2, ',', '.') . ' - ' . $investment->monthly_return_rate . '% mensual - ' . $investment->term_months . ' meses',
+                    'description' => $investment->title . ' - Monto: S/ ' . number_format($pivot->amount, 2, ',', '.'),
                 ];
             }
         }
