@@ -193,12 +193,17 @@
 
     @if($hasPendingLoans)
     <div class="px-4 md:px-8 {{ $rejectedChange || $pendingChange ? 'pt-2' : 'pt-4' }}">
-        <div class="max-w-4xl mx-auto pk-card px-4 py-3 flex items-center gap-3">
+        <button type="button" onclick="openPendingLoansModal()"
+                class="w-full max-w-4xl mx-auto pk-card px-4 py-3 flex items-center gap-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
             <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
                 <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <p class="text-sm text-gray-900 dark:text-white">{{ $pendingLoans->count() }} solicitud(es) en revisión</p>
-        </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900 dark:text-white">{{ $pendingLoans->count() }} solicitud(es) en revisión</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Toca para ver detalles</p>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
     </div>
     @endif
 
@@ -658,8 +663,7 @@
             </div>
         </div>
         <div class="px-5 py-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
-            <a href="{{ route('client.loans.profile.edit') }}" class="w-full py-3 rounded-xl bg-[#006BFF] dark:bg-[#4A90E2] text-white text-sm font-semibold hover:bg-[#0052CC] dark:hover:bg-[#3A7BC8] transition-colors flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            <a href="{{ route('client.loans.profile.edit') }}" class="w-full py-3 rounded-xl bg-[#006BFF] dark:bg-[#4A90E2] text-white text-sm font-semibold hover:bg-[#0052CC] dark:hover:bg-[#3A7BC8] transition-colors flex items-center justify-center">
                 Editar perfil
             </a>
         </div>
@@ -1081,6 +1085,67 @@ function closeUpcomingModal() {
 }
 document.getElementById('upcomingModal').addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeUpcomingModal();
+});
+</script>
+@endif
+
+@if($hasPendingLoans)
+<div id="pendingLoansModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <div onclick="closePendingLoansModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 max-h-[85vh] sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md sm:w-full bg-white dark:bg-gray-950 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Solicitudes en revisión</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500">{{ $pendingLoans->count() }} solicitud{{ $pendingLoans->count() > 1 ? 'es' : '' }} pendiente{{ $pendingLoans->count() > 1 ? 's' : '' }}</p>
+                </div>
+            </div>
+            <button type="button" onclick="closePendingLoansModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3">
+            @foreach($pendingLoans as $loan)
+                <div class="bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/20 rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-amber-600 dark:text-amber-400">{{ $loan->code }}</span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-bold">
+                            En revisión
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Monto</p>
+                            <p class="text-sm font-black text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2, '.', ',') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Plazo</p>
+                            <p class="text-sm font-black text-gray-900 dark:text-white">{{ $loan->months }} meses</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500">Solicitado el {{ $loan->created_at->format('d/m/Y') }}</p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+<script>
+function openPendingLoansModal() {
+    document.getElementById('pendingLoansModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closePendingLoansModal() {
+    document.getElementById('pendingLoansModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+document.getElementById('pendingLoansModal').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePendingLoansModal();
 });
 </script>
 @endif
