@@ -408,9 +408,9 @@
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Caja</label>
-                                <select name="cashbox_id" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
+                                <select name="cashbox_id" id="ghost-cashbox" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
                                     @foreach($cashboxes as $cb)
-                                        <option value="{{ $cb->id }}" {{ $cb->id === $user->ghost_cashbox_id ? 'selected' : '' }}>{{ $cb->name }} ({{ $cb->currency }})</option>
+                                        <option value="{{ $cb->id }}" data-currency="{{ $cb->currency }}" {{ $cb->id === $user->ghost_cashbox_id ? 'selected' : '' }}>{{ $cb->name }} ({{ $cb->currency }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -499,6 +499,28 @@
                                     }
                                 }, true);
                             }
+
+                            const currencyEl = document.getElementById('ghost-currency');
+                            const cashboxEl = document.getElementById('ghost-cashbox');
+
+                            function filterCashboxes() {
+                                const cur = currencyEl.value;
+                                const opts = cashboxEl.querySelectorAll('option');
+                                let firstVisible = null;
+                                opts.forEach(function(opt) {
+                                    const match = opt.dataset.currency === cur;
+                                    opt.hidden = !match;
+                                    opt.disabled = !match;
+                                    if (match && !firstVisible) firstVisible = opt;
+                                });
+                                const selected = cashboxEl.options[cashboxEl.selectedIndex];
+                                if (!selected || selected.dataset.currency !== cur) {
+                                    cashboxEl.value = firstVisible ? firstVisible.value : '';
+                                }
+                            }
+
+                            currencyEl.addEventListener('change', filterCashboxes);
+                            filterCashboxes();
                         })();
                     </script>
                 </div>
