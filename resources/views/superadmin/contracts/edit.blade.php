@@ -77,7 +77,7 @@
     .dark .doc-divider { background: linear-gradient(to right, transparent, #333 20%, #333 80%, transparent); }
     .doc-clause-title { font-family: Georgia, 'Times New Roman', serif; font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px; letter-spacing: 0.01em; }
     .dark .doc-clause-title { color: #e8e8e8; }
-    .doc-clause-content { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; line-height: 1.85; color: #333; text-align: justify; hyphens: auto; }
+    .doc-clause-content { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; line-height: 1.85; color: #333; text-align: justify; hyphens: auto; white-space: pre-wrap; word-wrap: break-word; }
     .dark .doc-clause-content { color: #bbb; }
     .doc-clause { margin-bottom: 22px; }
     .doc-var-inline { font-family: Georgia, 'Times New Roman', serif; font-size: 1em; padding: 1px 5px; border-radius: 3px; font-weight: 600; }

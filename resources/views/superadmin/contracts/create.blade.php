@@ -125,7 +125,7 @@
     .doc-clause-content {
         font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
         line-height: 1.85; color: #333; text-align: justify;
-        hyphens: auto;
+        hyphens: auto; white-space: pre-wrap; word-wrap: break-word;
     }
     .dark .doc-clause-content { color: #bbb; }
 
