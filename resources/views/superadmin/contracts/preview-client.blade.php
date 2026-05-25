@@ -4,8 +4,6 @@
     @endif
     
     <h1 class="doc-title">{{ $contract->name }}</h1>
-    <p class="doc-subtitle">Contrato entre {{ $user->name }} y PrestaKash Soluciones Financieras S.A.C.</p>
-    
     <hr class="doc-divider">
     
     @foreach($renderedClauses as $clause)
