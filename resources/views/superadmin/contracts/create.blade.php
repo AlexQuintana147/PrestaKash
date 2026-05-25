@@ -30,17 +30,18 @@
 
     .editor-wrapper { position: relative; }
     .editor-textarea {
-        min-height: 100px; line-height: 1.75; resize: vertical; caret-color: currentColor;
+        min-height: 100px; line-height: 1.75; resize: vertical; caret-color: #111827; caret-shape: block;
         position: relative; z-index: 2; background: transparent !important; color: transparent !important;
+        font-family: inherit; font-size: inherit;
     }
+    .dark .editor-textarea { caret-color: #f3f4f6; }
     .editor-highlight {
         position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: inherit;
         pointer-events: none; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;
         line-height: 1.75; font-size: inherit; font-family: inherit; z-index: 1;
     }
     .editor-highlight .var-token {
-        border-radius: 3px; padding: 0 2px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9em;
+        border-radius: 3px;
     }
 
     /* === PREVIEW MODAL === */
@@ -398,10 +399,10 @@
                         </div>
                         <div class="editor-wrapper">
                             <textarea name="clauses[0][content]"
-                                      class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
+                                      class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
                                       placeholder="Escribe el contenido de esta cláusula aquí... Usa [nombre_completo], [dni], etc."
                                       rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
-                            <div class="editor-highlight text-sm text-gray-700 dark:text-gray-300"></div>
+                            <div class="editor-highlight text-base text-gray-700 dark:text-gray-300"></div>
                         </div>
                         <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 word-count">0 palabras</span>
@@ -656,8 +657,8 @@ function addClause() {
             </div>
         </div>
         <div class="editor-wrapper">
-            <textarea name="clauses[${clauseIndex}][content]" class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0" placeholder="Escribe el contenido..." rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
-            <div class="editor-highlight text-sm text-gray-700 dark:text-gray-300"></div>
+            <textarea name="clauses[${clauseIndex}][content]" class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0" placeholder="Escribe el contenido..." rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
+            <div class="editor-highlight text-base text-gray-700 dark:text-gray-300"></div>
         </div>
         <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
             <span class="text-[10px] text-gray-400 word-count">0 palabras</span>
