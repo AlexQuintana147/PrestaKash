@@ -94,6 +94,8 @@
         opacity: 0.5;
     }
     .dark .doc-page::before { border-color: #444; }
+    .doc-page.has-logo::before { display: none; }
+    .doc-logo { position: absolute; top: 12px; right: 20px; max-width: 90px; max-height: 56px; object-fit: contain; }
 
     .doc-title {
         text-align: center; font-family: Georgia, 'Times New Roman', serif;
@@ -480,7 +482,10 @@
 
         <!-- Modal Body - Document Preview -->
         <div class="preview-body" id="preview-document">
-            <div class="doc-page" id="doc-page-inner">
+            <div class="doc-page {{ \App\Models\CompanySetting::get('company_logo') ? 'has-logo' : '' }}" id="doc-page-inner">
+                @if($companyLogo = \App\Models\CompanySetting::get('company_logo'))
+                    <img src="{{ Storage::url($companyLogo) }}" alt="Logo" class="doc-logo">
+                @endif
                 <h1 class="doc-title" id="preview-doc-title">Contrato sin título</h1>
                 <p class="doc-subtitle">Documento de referencia · Vista previa con datos de ejemplo</p>
                 <hr class="doc-divider">

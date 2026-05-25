@@ -66,6 +66,8 @@
     .dark .doc-page { background: #181818; border-color: #282828; box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 8px 30px rgba(0,0,0,0.15); }
     .doc-page::before { content: ''; position: absolute; top: 16px; right: 20px; width: 36px; height: 48px; border: 1.5px solid #ddd; border-radius: 2px; opacity: 0.5; }
     .dark .doc-page::before { border-color: #444; }
+    .doc-page.has-logo::before { display: none; }
+    .doc-logo { position: absolute; top: 12px; right: 20px; max-width: 90px; max-height: 56px; object-fit: contain; }
 
     .doc-title { text-align: center; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.02em; margin-bottom: 6px; line-height: 1.35; }
     .dark .doc-title { color: #f0f0f0; }
@@ -462,7 +464,10 @@
         </div>
 
         <div class="preview-body" id="preview-document">
-            <div class="doc-page" id="doc-page-inner">
+            <div class="doc-page {{ \App\Models\CompanySetting::get('company_logo') ? 'has-logo' : '' }}" id="doc-page-inner">
+                @if($companyLogo = \App\Models\CompanySetting::get('company_logo'))
+                    <img src="{{ Storage::url($companyLogo) }}" alt="Logo" class="doc-logo">
+                @endif
                 <h1 class="doc-title" id="preview-doc-title">{{ $contract?->name ?: 'Contrato sin título' }}</h1>
                 <p class="doc-subtitle">Documento de referencia · Vista previa con datos de ejemplo</p>
                 <hr class="doc-divider">
