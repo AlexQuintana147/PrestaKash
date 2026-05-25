@@ -506,6 +506,7 @@ class ContractController extends Controller
                 $monthlyReturn = $pivot->amount * ($investment->monthly_return_rate / 100);
                 $totalReturn = $monthlyReturn * $investment->term_months;
                 $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
+                $html .= '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Código: <b>'.e($investment->code).'</b></div>';
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Oportunidad:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($investment->title).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Monto invertido:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:700">S/ '.number_format($pivot->amount, 2).'</td></tr>';
