@@ -20,7 +20,7 @@
     .dark .sidebar-category.active { background: #1a1a1a; }
 
     .editor-wrapper { position: relative; }
-    .editor-textarea { min-height: 100px; line-height: 1.75; resize: vertical; caret-color: #111827; caret-shape: block; position: relative; z-index: 2; background: transparent !important; color: transparent !important; font-family: inherit; font-size: inherit; }
+    .editor-textarea { min-height: 100px; line-height: 1.75; resize: vertical; caret-color: #111827; position: relative; z-index: 2; background: transparent !important; color: transparent !important; font-family: inherit; font-size: inherit; }
     .dark .editor-textarea { caret-color: #f3f4f6; }
     .editor-highlight { position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: inherit; pointer-events: none; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.75; font-size: inherit; font-family: inherit; z-index: 1; }
     .editor-highlight .var-token { border-radius: 3px; }

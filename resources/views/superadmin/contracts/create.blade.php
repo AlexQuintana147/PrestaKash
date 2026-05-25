@@ -30,7 +30,7 @@
 
     .editor-wrapper { position: relative; }
     .editor-textarea {
-        min-height: 100px; line-height: 1.75; resize: vertical; caret-color: #111827; caret-shape: block;
+        min-height: 100px; line-height: 1.75; resize: vertical; caret-color: #111827;
         position: relative; z-index: 2; background: transparent !important; color: transparent !important;
         font-family: inherit; font-size: inherit;
     }
