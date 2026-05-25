@@ -89,6 +89,7 @@
     .dark .doc-signature-label { color: #666; }
     .doc-signature-line { width: 70%; height: 1px; background: #aaa; margin: 0 auto; }
     .dark .doc-signature-line { background: #444; }
+    .doc-signature-img { max-height: 50px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
 
     /* === BOX CARD === */
     .box-card {
@@ -481,6 +482,9 @@
                 <div class="doc-footer">
                     <div class="doc-signature-block">
                         <p class="doc-signature-label">La Empresa</p>
+                        @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
+                            <img src="{{ Storage::url($companySignature) }}" alt="Firma" class="doc-signature-img">
+                        @endif
                         <div class="doc-signature-line"></div>
                         <p class="mt-2 text-[9px] text-gray-400 text-center">Representante Legal</p>
                     </div>
