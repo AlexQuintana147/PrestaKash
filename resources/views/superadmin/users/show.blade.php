@@ -2115,6 +2115,135 @@ function closeRejectChangeModal() {
 }
 
 .doc-signature-img { max-height: 50px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
+
+/* ===== RESPONSIVE: Modal emitir contrato ===== */
+@media (max-width: 640px) {
+    #emitContractModal > div.modal-content {
+        border-radius: 20px !important;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+    #emitContractModal .relative.px-6.py-5 {
+        padding: 16px 18px !important;
+    }
+    #emitContractModal .relative.px-6.py-5 h3 {
+        font-size: 15px !important;
+    }
+    #emitContractModal .relative.px-6.py-5 p {
+        font-size: 11px !important;
+    }
+    #emitContractModal .px-8.pt-8 {
+        padding: 16px 12px 0 !important;
+    }
+    .contract-stepper {
+        margin-bottom: 20px !important;
+    }
+    .step-item {
+        gap: 6px !important;
+    }
+    .step-number {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 12px !important;
+    }
+    .step-label {
+        font-size: 10px !important;
+    }
+    .step-connector {
+        width: 20px !important;
+        margin: 0 6px !important;
+    }
+    #emitContractModal .p-6 {
+        padding: 16px !important;
+    }
+    .contract-field-label {
+        font-size: 10px !important;
+        margin-bottom: 8px !important;
+    }
+    .contract-select {
+        padding: 12px 14px !important;
+        font-size: 14px !important;
+        border-radius: 12px !important;
+    }
+    .code-option {
+        padding: 12px 14px !important;
+        border-radius: 12px !important;
+    }
+    .code-main {
+        font-size: 13px !important;
+    }
+    .code-details {
+        font-size: 11px !important;
+        gap: 8px !important;
+    }
+    .contract-actions {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        margin-top: 20px !important;
+        padding-top: 16px !important;
+    }
+    .btn-contract-primary {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        border-radius: 12px !important;
+    }
+}
+
+/* ===== RESPONSIVE: Vista previa del contrato ===== */
+@media (max-width: 640px) {
+    #contractPreviewModal > div.modal-content {
+        border-radius: 16px !important;
+        max-height: 95vh;
+    }
+    #contractPreviewModal .px-6.py-4 {
+        padding: 12px 14px !important;
+    }
+    #contractPreviewModal .px-6.py-4 h3 {
+        font-size: 14px !important;
+    }
+    #contractPreviewModal .p-6 {
+        padding: 10px !important;
+    }
+    #contractPreviewContent {
+        padding: 8px !important;
+        border-radius: 8px !important;
+    }
+    .doc-page {
+        padding: 24px 16px 20px !important;
+        max-width: 100% !important;
+    }
+    .doc-title {
+        font-size: 17px !important;
+    }
+    .doc-subtitle {
+        font-size: 9px !important;
+        margin-bottom: 20px !important;
+    }
+    .doc-clause-title {
+        font-size: 12px !important;
+    }
+    .doc-clause-content {
+        font-size: 12px !important;
+        line-height: 1.7 !important;
+    }
+    .doc-clause {
+        margin-bottom: 16px !important;
+    }
+    .doc-footer {
+        flex-direction: column !important;
+        gap: 16px !important;
+        margin-top: 24px !important;
+    }
+    .doc-signature-line {
+        width: 60% !important;
+    }
+    .doc-logo {
+        max-width: 60px !important;
+        max-height: 40px !important;
+        top: 8px !important;
+        right: 10px !important;
+    }
+}
 </style>
 
 <!-- Modal emitir contrato -->
