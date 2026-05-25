@@ -22,7 +22,7 @@
         <div class="min-w-0 flex-1">
             <div class="flex items-center gap-3">
                 <h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $user->name }}</h1>
-                @if($user->documents && $user->documents->status === 'approved')
+                @if(!$user->is_ghost && $user->documents && $user->documents->status === 'approved')
                 <button type="button" onclick="openEmitContractModal({{ $user->id }})"
                         class="flex-shrink-0 px-3 py-1.5 text-xs font-semibold rounded-lg bg-orange-500 hover:bg-orange-600 text-white transition-colors shadow-sm">
                     Emitir contrato
