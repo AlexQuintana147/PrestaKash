@@ -165,28 +165,19 @@
     /* === RESPONSIVE === */
     @media (max-width: 1024px) {
         .preview-modal { width: min(96vw, 800px); height: min(92vh, 850px); }
-        .preview-body { padding: 28px 32px; } .doc-page { padding: 40px 32px 36px; }
+        .preview-body { padding: 28px 32px; }
     }
     @media (max-width: 768px) {
         .preview-modal { width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
         .preview-header { padding: 12px 16px; }
         .preview-header h3 { font-size: 13px !important; }
         .preview-body { padding: 20px 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .doc-page { padding: 28px 20px 24px; box-shadow: none; border: none; }
-        .doc-page::before { display: none; }
-        .doc-title { font-size: 17px; } .doc-subtitle { font-size: 9px; margin-bottom: 22px; letter-spacing: 0.14em; }
-        .doc-clause-title { font-size: 13px; } .doc-clause-content { font-size: 12px; line-height: 1.75; white-space: pre-wrap; word-wrap: break-word; }
-        .doc-clause { margin-bottom: 18px; } .doc-footer { flex-direction: column; gap: 28px; margin-top: 28px; }
         .btn-preview { padding: 7px 12px; font-size: 10px; }
     }
     @media (max-width: 480px) {
-        .preview-body { padding: 16px 12px; } .doc-page { padding: 24px 16px 20px; }
-        .doc-title { font-size: 16px; } .doc-clause-content { font-size: 11.5px; line-height: 1.72; white-space: pre-wrap; word-wrap: break-word; }
-        .doc-signature-line { width: 85%; }
+        .preview-body { padding: 16px 12px; }
     }
     @media (max-width: 360px) {
-        .doc-page { padding: 20px 14px 18px; } .doc-title { font-size: 15px; }
-        .doc-clause-title { font-size: 12px; } .doc-clause-content { font-size: 11px; white-space: pre-wrap; word-wrap: break-word; }
         .preview-header { padding: 10px 12px; }
     }
 </style>
