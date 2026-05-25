@@ -439,8 +439,6 @@ class ContractController extends Controller
             if ($boxType === 'cronograma') {
                 $installments = $loan->installments;
                 $totalCuotas = $installments->count();
-                $paidCount = $installments->where('status', 'approved')->count();
-                $pendingCount = $totalCuotas - $paidCount;
                 $first = $installments->first();
                 $last = $installments->last();
                 $totalCapital = $installments->sum('capital');
@@ -448,11 +446,10 @@ class ContractController extends Controller
                 $totalAmount = $installments->sum('amount');
 
                 $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
+                $html .= '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Código: <b>'.e($loan->code).'</b></div>';
                 $html .= '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px">';
                 $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:16px;font-weight:700;color:#374151">S/ '.number_format($loan->amount, 2).'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Monto préstamo</div></div>';
                 $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:'.$c.'">'.$totalCuotas.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Cuotas totales</div></div>';
-                $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:#059669">'.$paidCount.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Pagadas</div></div>';
-                $html .= '<div style="flex:1;min-width:100px;background:#fff;border-radius:8px;padding:10px 12px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,0.04)"><div style="font-size:18px;font-weight:700;color:#d97706">'.$pendingCount.'</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.04em">Pendientes</div></div>';
                 $html .= '</div>';
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">';
                 $html .= '<thead><tr style="background:#f9fafb"><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Cuota</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha inicio</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:left;font-size:10px">Fecha fin</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Monto c/u</th><th style="padding:6px 8px;border:1px solid #e5e7eb;text-align:right;font-size:10px">Total</th></tr></thead><tbody>';
@@ -468,19 +465,15 @@ class ContractController extends Controller
             }
 
             if ($boxType === 'monto_debe') {
-                $totalPending = $loan->installments->where('status', '!=', 'approved')->sum('amount');
-                $totalCapital = $loan->installments->where('status', '!=', 'approved')->sum('capital');
-                $totalInterest = $loan->installments->where('status', '!=', 'approved')->sum('interest');
-                $totalLateFee = $loan->installments->where('status', '!=', 'approved')->sum(fn($i) => $i->late_fee);
+                $allCapital = $loan->installments->sum('capital');
+                $allInterest = $loan->installments->sum('interest');
                 $html = '<div style="border-radius:10px;padding:18px 20px;margin-bottom:22px;background:'.$bg.'10;box-shadow:0 1px 3px rgba(0,0,0,0.05);">'.$header;
+                $html .= '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Código: <b>'.e($loan->code).'</b></div>';
                 $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
                 $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Monto del préstamo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($loan->amount, 2).'</td></tr>';
-                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Total pendiente:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($totalPending + $totalLateFee, 2).'</td></tr>';
-                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Capital:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalCapital, 2).'</td></tr>';
-                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Intereses:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalInterest, 2).'</td></tr>';
-                if ($totalLateFee > 0) {
-                    $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Mora:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;color:#dc2626">S/ '.number_format($totalLateFee, 2).'</td></tr>';
-                }
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Total a pagar:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($loan->total_amount, 2).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Capital:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($allCapital, 2).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Intereses:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($allInterest, 2).'</td></tr>';
                 $html .= '<tr><td style="padding:6px 0;font-weight:600">Cuota mensual:</td><td style="padding:6px 0;text-align:right">S/ '.number_format($loan->monthly_payment, 2).'</td></tr>';
                 $html .= '</table></div>';
                 return $html;
