@@ -264,6 +264,17 @@ class ContractController extends Controller
 
         $renderedClauses = [];
         foreach ($contract->clauses as $clause) {
+            if ($clause->box_type) {
+                $boxHtml = $this->buildBoxContent($clause->box_type, $type, $relatedCode, $user);
+                if ($boxHtml) {
+                    $renderedClauses[] = [
+                        'title' => null,
+                        'content' => $boxHtml,
+                        'is_box' => true,
+                    ];
+                }
+                continue;
+            }
             $renderedContent = $clause->content;
             foreach ($data as $key => $value) {
                 if (isset($allVars[$key])) {
@@ -273,6 +284,7 @@ class ContractController extends Controller
             $renderedClauses[] = [
                 'title' => $clause->title,
                 'content' => $renderedContent,
+                'is_box' => false,
             ];
         }
 
@@ -306,6 +318,17 @@ class ContractController extends Controller
 
         $renderedClauses = [];
         foreach ($contract->clauses as $clause) {
+            if ($clause->box_type) {
+                $boxHtml = $this->buildBoxContent($clause->box_type, $type, $relatedCode, $user);
+                if ($boxHtml) {
+                    $renderedClauses[] = [
+                        'title' => null,
+                        'content' => $boxHtml,
+                        'is_box' => true,
+                    ];
+                }
+                continue;
+            }
             $renderedContent = $clause->content;
             foreach ($data as $key => $value) {
                 if (isset($allVars[$key])) {
@@ -315,6 +338,7 @@ class ContractController extends Controller
             $renderedClauses[] = [
                 'title' => $clause->title,
                 'content' => $renderedContent,
+                'is_box' => false,
             ];
         }
 
@@ -381,5 +405,111 @@ class ContractController extends Controller
         }
 
         return $data;
+    }
+
+    private function buildBoxContent(string $boxType, string $type, ?string $relatedCode, User $user): string
+    {
+        $boxDef = Contract::getBoxTypes()[$boxType] ?? null;
+        if (!$boxDef) return '';
+
+        $label = $boxDef['label'];
+        $c = $boxDef['color'];
+        $bg = $boxDef['bgLight'];
+        $txt = $boxDef['textLight'];
+        $border = $boxDef['borderLight'];
+
+        $badge = '<span style="display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;background:'.$bg.';color:'.$txt.';border:1px solid '.$border.'">Automático</span>';
+
+        $header = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'.
+            '<div style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:'.$bg.';color:'.$c.';font-size:16px;font-weight:700;">&#9632;</div>'.
+            '<div><span style="font-size:11.5px;font-weight:700;color:#374151">'.e($label).'</span> '.$badge.'</div></div>';
+
+        if ($boxType === 'datos_cliente') {
+            $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+            $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
+            $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:35%">Nombre completo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($user->name).'</td></tr>';
+            $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">DNI:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($user->dni).'</td></tr>';
+            $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Correo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($user->email).'</td></tr>';
+            $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Teléfono:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($user->phone).'</td></tr>';
+            $html .= '<tr><td style="padding:6px 0;font-weight:600">Dirección:</td><td style="padding:6px 0">'.e($user->address).'</td></tr>';
+            $html .= '</table></div>';
+            return $html;
+        }
+
+        if ($type === 'loan' && $relatedCode) {
+            $loan = Loan::with('installments')->where('user_id', $user->id)->where('code', $relatedCode)->first();
+            if (!$loan) return '';
+
+            if ($boxType === 'cronograma') {
+                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html .= '<table style="width:100%;border-collapse:collapse;font-size:11px">';
+                $html .= '<thead><tr style="background:#f9fafb"><th style="padding:8px;border:1px solid #e5e7eb;text-align:left">N°</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:left">Fecha vencimiento</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:right">Capital</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:right">Interés</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:right">Total</th><th style="padding:8px;border:1px solid #e5e7eb;text-align:center">Estado</th></tr></thead><tbody>';
+                foreach ($loan->installments as $inst) {
+                    $statusLabel = $inst->status === 'approved' ? 'Pagada' : 'Pendiente';
+                    $statusColor = $inst->status === 'approved' ? '#059669' : '#d97706';
+                    $html .= '<tr><td style="padding:8px;border:1px solid #e5e7eb">'.$inst->installment_number.'</td><td style="padding:8px;border:1px solid #e5e7eb">'.$inst->due_date->format('d/m/Y').'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">S/ '.number_format($inst->capital, 2).'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right">S/ '.number_format($inst->interest, 2).'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:right;font-weight:600">S/ '.number_format($inst->amount, 2).'</td><td style="padding:8px;border:1px solid #e5e7eb;text-align:center;color:'.$statusColor.'">'.$statusLabel.'</td></tr>';
+                }
+                $html .= '</tbody></table></div>';
+                return $html;
+            }
+
+            if ($boxType === 'monto_debe') {
+                $totalPending = $loan->installments->where('status', '!=', 'approved')->sum('amount');
+                $totalCapital = $loan->installments->where('status', '!=', 'approved')->sum('capital');
+                $totalInterest = $loan->installments->where('status', '!=', 'approved')->sum('interest');
+                $totalLateFee = $loan->installments->where('status', '!=', 'approved')->sum(fn($i) => $i->late_fee);
+                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Total pendiente:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700">S/ '.number_format($totalPending + $totalLateFee, 2).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Capital:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalCapital, 2).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Intereses:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right">S/ '.number_format($totalInterest, 2).'</td></tr>';
+                if ($totalLateFee > 0) {
+                    $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Mora:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;text-align:right;color:#dc2626">S/ '.number_format($totalLateFee, 2).'</td></tr>';
+                }
+                $html .= '<tr><td style="padding:6px 0;font-weight:600">Cuota mensual:</td><td style="padding:6px 0;text-align:right">S/ '.number_format($loan->monthly_payment, 2).'</td></tr>';
+                $html .= '</table></div>';
+                return $html;
+            }
+
+            if ($boxType === 'condiciones') {
+                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Tasa de interés anual:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->interest_rate).'%</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Plazo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->months).' meses</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Frecuencia de pago:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->payment_frequency ?? 'Mensual').'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Sistema de amortización:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->amortization_system ?? 'Francés').'</td></tr>';
+                if ($loan->late_fee_enabled) {
+                    $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Tasa de mora:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->late_fee_rate).'%</td></tr>';
+                    $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Días de gracia:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($loan->grace_days).' días</td></tr>';
+                }
+                $html .= '<tr><td style="padding:6px 0;font-weight:600">Moneda:</td><td style="padding:6px 0">'.e($loan->currency ?? 'PEN').'</td></tr>';
+                $html .= '</table></div>';
+                return $html;
+            }
+        }
+
+        if ($type === 'investment' && $relatedCode) {
+            $investment = InvestmentOpportunity::where('code', $relatedCode)->first();
+            if (!$investment) return '';
+            $pivot = $investment->investors()->where('user_id', $user->id)->first()->pivot ?? null;
+            if (!$pivot) return '';
+
+            if ($boxType === 'resumen_inversion') {
+                $monthlyReturn = $pivot->amount * ($investment->monthly_return_rate / 100);
+                $totalReturn = $monthlyReturn * $investment->term_months;
+                $html = '<div style="border:2px dashed '.$border.';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'.$bg.'08,'.$bg.'02);">'.$header;
+                $html .= '<table style="width:100%;border-collapse:collapse;font-size:12px;color:#374151">';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600;width:45%">Oportunidad:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($investment->title).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Monto invertido:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:700">S/ '.number_format($pivot->amount, 2).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Tasa retorno mensual:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($investment->monthly_return_rate).'%</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Plazo:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">'.e($investment->term_months).' meses</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;border-bottom:1px solid #f3f4f6;font-weight:600">Retorno mensual:</td><td style="padding:6px 0;border-bottom:1px solid #f3f4f6">S/ '.number_format($monthlyReturn, 2).'</td></tr>';
+                $html .= '<tr><td style="padding:6px 0;font-weight:600">Retorno total estimado:</td><td style="padding:6px 0;font-weight:700;color:#059669">S/ '.number_format($totalReturn, 2).'</td></tr>';
+                $html .= '</table></div>';
+                return $html;
+            }
+        }
+
+        return '';
     }
 }

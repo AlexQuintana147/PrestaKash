@@ -9,14 +9,18 @@
     <hr class="doc-divider">
     
     @foreach($renderedClauses as $clause)
-        <div class="doc-clause">
-            @if($clause['title'])
-                <h4 class="doc-clause-title">{{ $clause['title'] }}</h4>
-            @endif
-            <div class="doc-clause-content">
-                {!! $clause['content'] !!}
+        @if(!empty($clause['is_box']))
+            {!! $clause['content'] !!}
+        @else
+            <div class="doc-clause">
+                @if($clause['title'])
+                    <h4 class="doc-clause-title">{{ $clause['title'] }}</h4>
+                @endif
+                <div class="doc-clause-content">
+                    {!! nl2br($clause['content']) !!}
+                </div>
             </div>
-        </div>
+        @endif
     @endforeach
     
     <hr class="doc-divider">
