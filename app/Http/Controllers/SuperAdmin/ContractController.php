@@ -441,6 +441,12 @@ class ContractController extends Controller
                 $data['prestamo_total'] = 'S/ ' . number_format($loan->total_amount, 2, ',', '.');
                 $data['moneda'] = 'Soles (PEN)';
 
+                $data['banco'] = $loan->bank_name ?? '—';
+                $data['numero_cuenta'] = $loan->account_number ?? '—';
+                $data['cci'] = $loan->cci ?? '—';
+                $data['tipo_cuenta'] = $loan->account_type ?? '—';
+                $data['tipo_moneda'] = $loan->currency === 'USD' ? 'Dólares (USD)' : 'Soles (PEN)';
+
                 $installments = $loan->installments;
                 $approvedInsts = $installments->where('status', 'approved');
                 $pendingInsts = $installments->where('status', '!=', 'approved');
