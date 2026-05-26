@@ -2340,12 +2340,62 @@ function closeRejectChangeModal() {
     font-weight: 600;
 }
 
+.emit-contract-shell {
+    width: min(720px, 100%);
+    max-height: min(92vh, 880px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.emit-contract-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+}
+
+.emit-contract-stepper-wrap {
+    flex-shrink: 0;
+    padding: 28px 28px 0;
+}
+
+.emit-contract-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 20px 24px 24px;
+}
+
+#contractsContainer,
+#codesContainer {
+    max-height: min(26vh, 220px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+#previewButtons.emit-contract-footer {
+    position: sticky;
+    bottom: 0;
+    margin-top: 20px;
+    padding-top: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 18%, #ffffff 42%);
+}
+
 /* ===== RESPONSIVE: Modal emitir contrato ===== */
 @media (max-width: 640px) {
     #emitContractModal > div.modal-content {
-        border-radius: 20px !important;
-        max-height: 95vh;
-        overflow-y: auto;
+        width: 100% !important;
+        max-height: calc(100vh - 10px) !important;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    #emitContractModal {
+        align-items: flex-end !important;
+        padding: 8px 8px 0 !important;
+    }
+    .emit-contract-shell {
+        max-height: calc(100vh - 8px) !important;
     }
     #emitContractModal .relative.px-6.py-5 {
         padding: 16px 18px !important;
@@ -2356,14 +2406,22 @@ function closeRejectChangeModal() {
     #emitContractModal .relative.px-6.py-5 p {
         font-size: 11px !important;
     }
-    #emitContractModal .px-8.pt-8 {
+    .emit-contract-stepper-wrap {
         padding: 16px 12px 0 !important;
     }
     .contract-stepper {
         margin-bottom: 20px !important;
+        justify-content: flex-start !important;
+        overflow-x: auto;
+        padding-bottom: 2px !important;
+        scrollbar-width: none;
+    }
+    .contract-stepper::-webkit-scrollbar {
+        display: none;
     }
     .step-item {
         gap: 6px !important;
+        flex: 0 0 auto;
     }
     .step-number {
         width: 28px !important;
@@ -2376,13 +2434,18 @@ function closeRejectChangeModal() {
     .step-connector {
         width: 20px !important;
         margin: 0 6px !important;
+        flex: 0 0 20px;
     }
-    #emitContractModal .p-6 {
-        padding: 16px !important;
+    .emit-contract-scroll {
+        padding: 14px 14px 16px !important;
     }
     .contract-field-label {
         font-size: 10px !important;
         margin-bottom: 8px !important;
+    }
+    #contractsContainer,
+    #codesContainer {
+        max-height: min(30vh, 250px) !important;
     }
     .contract-select {
         padding: 12px 14px !important;
@@ -2403,8 +2466,11 @@ function closeRejectChangeModal() {
     .contract-actions {
         grid-template-columns: 1fr !important;
         gap: 10px !important;
-        margin-top: 20px !important;
-        padding-top: 16px !important;
+    }
+    #previewButtons.emit-contract-footer {
+        margin-top: 16px !important;
+        padding-top: 14px !important;
+        padding-bottom: 2px !important;
     }
     .btn-contract-primary {
         padding: 12px 16px !important;
@@ -2507,7 +2573,7 @@ function closeRejectChangeModal() {
 
 <!-- Modal emitir contrato -->
 <div id="emitContractModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 min-h-screen">
-    <div class="modal-content bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+    <div class="modal-content emit-contract-shell bg-white rounded-3xl shadow-2xl overflow-hidden">
         <!-- Header -->
         <div class="relative px-6 py-5 bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30"></div>
@@ -2527,138 +2593,131 @@ function closeRejectChangeModal() {
                 </button>
             </div>
         </div>
-        
-        <!-- Stepper -->
-        <div class="px-8 pt-8">
-            <div class="contract-stepper">
-                <div class="step-item">
-                    <span id="step1Num" class="step-number active">1</span>
-                    <span id="step1Label" class="step-label active">Tipo</span>
-                </div>
-                <div id="connector1" class="step-connector"></div>
-                <div class="step-item">
-                    <span id="step2Num" class="step-number">2</span>
-                    <span id="step2Label" class="step-label">Contrato</span>
-                </div>
-                <div id="connector2" class="step-connector"></div>
-                <div class="step-item">
-                    <span id="step3Num" class="step-number">3</span>
-                    <span id="step3Label" class="step-label">Código</span>
+        <div class="emit-contract-main">
+            <!-- Stepper -->
+            <div class="emit-contract-stepper-wrap">
+                <div class="contract-stepper">
+                    <div class="step-item">
+                        <span id="step1Num" class="step-number active">1</span>
+                        <span id="step1Label" class="step-label active">Tipo</span>
+                    </div>
+                    <div id="connector1" class="step-connector"></div>
+                    <div class="step-item">
+                        <span id="step2Num" class="step-number">2</span>
+                        <span id="step2Label" class="step-label">Contrato</span>
+                    </div>
+                    <div id="connector2" class="step-connector"></div>
+                    <div class="step-item">
+                        <span id="step3Num" class="step-number">3</span>
+                        <span id="step3Label" class="step-label">Código</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Body -->
-        <div class="p-6 space-y-5">
-            <!-- Mensaje de error -->
-            <div id="contractError" class="hidden p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start gap-3">
-                <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span id="contractErrorMessage"></span>
-            </div>
-            
-            <!-- Paso 1: Tipo de contrato -->
-            <div id="contractTypeGroup" class="contract-field-group">
-                <label class="contract-field-label">TIPO DE CONTRATO</label>
-                <input type="hidden" id="contractType" value="">
-                <div class="grid grid-cols-2 gap-3">
-                    <button type="button" onclick="selectContractType('loan')"
-                            class="contract-type-card" data-type="loan">
-                        <div class="w-10 h-10 flex items-center justify-center mb-2">
-                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+
+            <!-- Body -->
+            <div class="emit-contract-scroll space-y-5">
+                <!-- Mensaje de error -->
+                <div id="contractError" class="hidden p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start gap-3">
+                    <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="contractErrorMessage"></span>
+                </div>
+
+                <!-- Paso 1: Tipo de contrato -->
+                <div id="contractTypeGroup" class="contract-field-group">
+                    <label class="contract-field-label">TIPO DE CONTRATO</label>
+                    <input type="hidden" id="contractType" value="">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="selectContractType('loan')"
+                                class="contract-type-card" data-type="loan">
+                            <div class="w-10 h-10 flex items-center justify-center mb-2">
+                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Préstamo</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Crédito personal</span>
+                        </button>
+                        <button type="button" onclick="selectContractType('investment')"
+                                class="contract-type-card" data-type="investment">
+                            <div class="w-10 h-10 flex items-center justify-center mb-2">
+                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Inversión</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Depósito a plazo</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Selección de contrato -->
+                <div id="contractSelectGroup" class="hidden contract-field-group">
+                    <label class="contract-field-label">PLANTILLA DE CONTRATO</label>
+
+                    <div id="contractsLoading" class="loading-codes hidden">
+                        <div class="loading-spinner-small"></div>
+                        <p class="text-sm">Cargando plantillas...</p>
+                    </div>
+
+                    <div id="contractsContainer" class="space-y-2">
+                    </div>
+
+                    <input type="hidden" id="contractId" name="contractId" value="">
+
+                    <div id="contractsEmpty" class="empty-state hidden">
+                        <div class="empty-state-icon">
+                            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Préstamo</span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">Crédito personal</span>
-                    </button>
-                    <button type="button" onclick="selectContractType('investment')"
-                            class="contract-type-card" data-type="investment">
-                        <div class="w-10 h-10 flex items-center justify-center mb-2">
-                            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        <p class="empty-state-text">No se encontraron plantillas</p>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Selección de código relacionado -->
+                <div id="relatedCodeGroup" class="hidden contract-field-group">
+                    <label id="relatedCodeLabel" class="contract-field-label">OPERACIÓN ASOCIADA</label>
+
+                    <div id="codesLoading" class="loading-codes hidden">
+                        <div class="loading-spinner-small"></div>
+                        <p class="text-sm">Buscando operaciones...</p>
+                    </div>
+
+                    <div id="codesContainer" class="space-y-2">
+                    </div>
+
+                    <input type="hidden" id="relatedCode" name="relatedCode" value="">
+
+                    <div id="codesEmpty" class="empty-state hidden">
+                        <div class="empty-state-icon">
+                            <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Inversión</span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">Depósito a plazo</span>
+                        <p class="empty-state-text" id="codesEmptyText">No se encontraron operaciones</p>
+                    </div>
+                </div>
+
+                <!-- Botones de preview y descarga -->
+                <div id="previewButtons" class="hidden contract-actions emit-contract-footer">
+                    <button type="button" onclick="openContractPreview()"
+                            class="btn-contract-primary btn-preview">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Vista Previa
+                    </button>
+                    <button type="button" onclick="downloadContractPDF()"
+                            class="btn-contract-primary btn-download">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        Descargar PDF
                     </button>
                 </div>
-            </div>
-            
-            <!-- Paso 2: Selección de contrato -->
-            <div id="contractSelectGroup" class="hidden contract-field-group">
-                <label class="contract-field-label">PLANTILLA DE CONTRATO</label>
-
-                <!-- Loading state -->
-                <div id="contractsLoading" class="loading-codes hidden">
-                    <div class="loading-spinner-small"></div>
-                    <p class="text-sm">Cargando plantillas...</p>
-                </div>
-
-                <!-- Contracts container -->
-                <div id="contractsContainer" class="space-y-2 max-h-52 overflow-y-auto pr-1">
-                </div>
-
-                <!-- Input oculto para almacenar el contrato seleccionado -->
-                <input type="hidden" id="contractId" name="contractId" value="">
-
-                <!-- Empty state -->
-                <div id="contractsEmpty" class="empty-state hidden">
-                    <div class="empty-state-icon">
-                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <p class="empty-state-text">No se encontraron plantillas</p>
-                </div>
-            </div>
-            
-            <!-- Paso 3: Selección de código relacionado -->
-            <div id="relatedCodeGroup" class="hidden contract-field-group">
-                <label id="relatedCodeLabel" class="contract-field-label">OPERACIÓN ASOCIADA</label>
-                
-                <!-- Loading state -->
-                <div id="codesLoading" class="loading-codes hidden">
-                    <div class="loading-spinner-small"></div>
-                    <p class="text-sm">Buscando operaciones...</p>
-                </div>
-                
-                <!-- Codes container -->
-                <div id="codesContainer" class="space-y-2 max-h-52 overflow-y-auto pr-1">
-                </div>
-                
-                <!-- Input oculto para almacenar el código seleccionado -->
-                <input type="hidden" id="relatedCode" name="relatedCode" value="">
-                
-                <!-- Empty state -->
-                <div id="codesEmpty" class="empty-state hidden">
-                    <div class="empty-state-icon">
-                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <p class="empty-state-text" id="codesEmptyText">No se encontraron operaciones</p>
-                </div>
-            </div>
-            
-            <!-- Botones de preview y descarga -->
-            <div id="previewButtons" class="hidden contract-actions">
-                <button type="button" onclick="openContractPreview()"
-                        class="btn-contract-primary btn-preview">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                    </svg>
-                    Vista Previa
-                </button>
-                <button type="button" onclick="downloadContractPDF()"
-                        class="btn-contract-primary btn-download">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                    </svg>
-                    Descargar PDF
-                </button>
             </div>
         </div>
     </div>
