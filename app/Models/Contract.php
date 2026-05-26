@@ -47,6 +47,10 @@ class Contract extends Model
                     'estado_civil' => ['desc' => 'Estado civil (soltero, casado, etc.)', 'source' => 'ClientProfile.marital_status'],
                     'ocupacion' => ['desc' => 'Profesión u ocupación laboral', 'source' => 'InvestorApplication.occupation / ClientProfile.job_title'],
                     'lugar_trabajo' => ['desc' => 'Nombre de la empresa donde trabaja', 'source' => 'ClientProfile.workplace'],
+                    'numero_cuenta' => ['desc' => 'Número de cuenta bancaria del cliente', 'source' => 'UserDocument.account_number'],
+                    'tipo_moneda' => ['desc' => 'Tipo de moneda (soles/dólares)', 'source' => 'UserDocument.currency'],
+                    'tipo_cuenta' => ['desc' => 'Tipo de cuenta bancaria (ahorro/corriente)', 'source' => 'UserDocument.account_type'],
+                    'cci' => ['desc' => 'CCI (Código de Cuenta Interbancaria)', 'source' => 'UserDocument.cci'],
                 ],
             ],
             'inversionista' => [
