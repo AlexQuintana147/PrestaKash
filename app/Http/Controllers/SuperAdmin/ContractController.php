@@ -233,7 +233,7 @@ class ContractController extends Controller
 
     public function availableContracts(Request $request)
     {
-        $contracts = Contract::where('is_active', true)->get(['id', 'name']);
+        $contracts = Contract::where('is_active', true)->withCount('clauses')->get(['id', 'name']);
         return response()->json($contracts);
     }
 
