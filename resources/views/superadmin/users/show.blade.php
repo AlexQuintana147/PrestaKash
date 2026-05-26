@@ -2200,58 +2200,59 @@ function closeRejectChangeModal() {
 /* === DOCUMENT STYLES (Vista previa contrato - igual que create/edit) === */
 #contractPreviewContent {
     background: #f8f9fa;
-    padding: 24px;
+    padding: 16px;
     border-radius: 12px;
 }
 
 .doc-page {
-    max-width: 650px; margin: 0 auto;
-    background: white; padding: 48px 44px 40px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04);
-    border: 1px solid #eee; position: relative;
+    max-width: 700px; margin: 0 auto;
+    background: white; padding: 32px 36px 28px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03);
+    border: 1px solid #e5e7eb; position: relative;
+    border-radius: 4px;
 }
 
 .doc-page::before {
-    content: ''; position: absolute; top: 16px; right: 20px;
-    width: 36px; height: 48px; border: 1.5px solid #ddd; border-radius: 2px;
-    opacity: 0.5;
+    content: ''; position: absolute; top: 12px; right: 16px;
+    width: 32px; height: 42px; border: 1.5px solid #d1d5db; border-radius: 2px;
+    opacity: 0.4;
 }
 .doc-page.has-logo::before { display: none; }
-.doc-logo { position: absolute; top: 12px; right: 20px; max-width: 90px; max-height: 56px; object-fit: contain; }
+.doc-logo { position: absolute; top: 10px; right: 16px; max-width: 85px; max-height: 52px; object-fit: contain; }
 
 .doc-title {
     text-align: center; font-family: Georgia, 'Times New Roman', serif;
-    font-size: 22px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.02em;
-    margin-bottom: 6px; line-height: 1.35;
+    font-size: 19px; font-weight: 700; color: #111827; letter-spacing: 0.015em;
+    margin-bottom: 4px; line-height: 1.3;
 }
 
 .doc-subtitle {
-    text-align: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.18em;
-    color: #888; margin-bottom: 32px; font-weight: 500;
+    text-align: center; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: #9ca3af; margin-bottom: 20px; font-weight: 500;
 }
 
 .doc-divider {
-    height: 1px; background: linear-gradient(to right, transparent, #ccc 20%, #ccc 80%, transparent);
-    margin: 28px 0; border: none;
+    height: 1px; background: linear-gradient(to right, transparent, #d1d5db 20%, #d1d5db 80%, transparent);
+    margin: 18px 0; border: none;
 }
 
 .doc-clause-title {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 14px;
-    font-weight: 700; color: #1a1a1a; margin-bottom: 10px; letter-spacing: 0.01em;
+    font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
+    font-weight: 700; color: #111827; margin-bottom: 8px; letter-spacing: 0.005em;
 }
 
 .doc-clause-content {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
-    line-height: 1.85; color: #333; text-align: justify;
+    font-family: Georgia, 'Times New Roman', serif; font-size: 12.5px;
+    line-height: 1.7; color: #374151; text-align: justify;
     hyphens: auto; white-space: pre-wrap; word-wrap: break-word;
 }
 
-.doc-clause { margin-bottom: 22px; }
+.doc-clause { margin-bottom: 16px; }
 
 .doc-footer {
-    margin-top: 36px; padding-top: 20px;
-    border-top: 1px solid #e8e8e8;
-    display: flex; justify-content: space-between; gap: 20px;
+    margin-top: 28px; padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    display: flex; justify-content: space-between; gap: 16px;
 }
 
 .doc-signature-block {
@@ -2259,10 +2260,10 @@ function closeRejectChangeModal() {
 }
 
 .doc-signature-line {
-    width: 70%; height: 1px; background: #aaa; margin: 0 auto;
+    width: 70%; height: 1px; background: #9ca3af; margin: 0 auto;
 }
 
-.doc-signature-img { max-height: 50px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
+.doc-signature-img { max-height: 45px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
 
 /* ===== RESPONSIVE: Modal emitir contrato ===== */
 @media (max-width: 640px) {
@@ -2376,40 +2377,45 @@ function closeRejectChangeModal() {
         padding: 12px 14px !important;
     }
     #contractPreviewModal .px-6.py-4 h3 {
-        font-size: 14px !important;
+        font-size: 13.5px !important;
     }
     #contractPreviewModal .p-6 {
         padding: 10px !important;
     }
     #contractPreviewContent {
-        padding: 8px !important;
+        padding: 12px !important;
         border-radius: 8px !important;
     }
     .doc-page {
-        padding: 24px 16px 20px !important;
+        padding: 20px 14px 16px !important;
         max-width: 100% !important;
     }
     .doc-title {
-        font-size: 17px !important;
+        font-size: 16px !important;
     }
     .doc-subtitle {
-        font-size: 9px !important;
-        margin-bottom: 20px !important;
+        font-size: 8.5px !important;
+        margin-bottom: 14px !important;
+    }
+    .doc-divider {
+        margin: 14px 0 !important;
     }
     .doc-clause-title {
-        font-size: 12px !important;
+        font-size: 11.5px !important;
+        margin-bottom: 6px !important;
     }
     .doc-clause-content {
-        font-size: 12px !important;
-        line-height: 1.7 !important;
+        font-size: 11px !important;
+        line-height: 1.65 !important;
     }
     .doc-clause {
-        margin-bottom: 16px !important;
+        margin-bottom: 12px !important;
     }
     .doc-footer {
         flex-direction: column !important;
         gap: 16px !important;
-        margin-top: 24px !important;
+        margin-top: 20px !important;
+        padding-top: 14px !important;
     }
     .doc-signature-line {
         width: 60% !important;
@@ -2617,7 +2623,7 @@ function closeRejectChangeModal() {
         </div>
         
         <!-- Body -->
-        <div id="contractPreviewContent" class="p-6 overflow-y-auto max-h-[calc(90vh-80px)] bg-white">
+        <div id="contractPreviewContent" class="p-4 overflow-y-auto max-h-[calc(90vh-80px)] bg-gray-50 dark:bg-gray-950">
             <!-- Loading state -->
             <div id="previewLoading" class="flex flex-col items-center justify-center py-20">
                 <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
