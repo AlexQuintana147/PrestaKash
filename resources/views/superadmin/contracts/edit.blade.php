@@ -19,6 +19,14 @@
     .sidebar-category.active { background: #f3f4f6; }
     .dark .sidebar-category.active { background: #1a1a1a; }
 
+    /* === Sidebar scrollbar === */
+    .sidebar-scroll::-webkit-scrollbar { width: 5px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+    .dark .sidebar-scroll::-webkit-scrollbar-thumb { background: #374151; }
+    .sidebar-scroll { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+    .dark .sidebar-scroll { scrollbar-color: #374151 transparent; }
+
     .editor-wrapper { position: relative; }
     .editor-textarea { min-height: 100px; line-height: 1.75; resize: vertical; caret-color: #111827; position: relative; z-index: 2; background: transparent !important; color: transparent !important; font-family: inherit; font-size: inherit; }
     .dark .editor-textarea { caret-color: #f3f4f6; }
@@ -212,7 +220,7 @@
 @section('content')
 <div class="flex h-[calc(100vh-60px)]">
     <!-- Sidebar Variables -->
-    <div class="w-64 lg:w-72 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 overflow-y-auto hidden lg:block">
+    <div class="w-64 lg:w-72 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/50 overflow-y-auto sidebar-scroll hidden lg:block">
         <div class="p-4">
             <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200 dark:border-gray-800">
                 <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
@@ -545,7 +553,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="mobile-vars-content">
+        <div class="flex-1 overflow-y-auto sidebar-scroll p-4 space-y-3" id="mobile-vars-content">
             @foreach($variables as $categoryKey => $category)
                 @php
                     $c = $category['color']; $bgL = $category['bgLight']; $bgD = $category['bgDark'];
