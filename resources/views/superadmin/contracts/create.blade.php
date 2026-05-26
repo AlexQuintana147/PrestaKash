@@ -160,55 +160,61 @@
 
     /* === BOX CARD (Cuadro automático) === */
     .box-card {
-        display: flex; align-items: center; gap: 12px;
-        background: white; border: 2px dashed #d1d5db; border-radius: 12px;
-        padding: 12px 16px; position: relative; overflow: hidden;
+        display: flex; align-items: center; gap: 14px;
+        border-radius: 14px;
+        padding: 14px 18px; position: relative; overflow: hidden;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
     }
-    .dark .box-card { background: #0a0a0a; border-color: #333; }
+    .box-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    }
     .box-card::before {
-        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+        border-radius: 14px 0 0 14px;
     }
     .box-card-header {
-        display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+        display: flex; align-items: center; gap: 12px; flex-shrink: 0;
     }
-    .box-card-header svg { width: 22px; height: 22px; color: #6366f1; flex-shrink: 0; }
-    .dark .box-card-header svg { color: #818cf8; }
-    .box-title { font-size: 13px; font-weight: 700; color: #1f2937; letter-spacing: 0.01em; }
-    .dark .box-title { color: #f3f4f6; }
-    .box-subtitle { font-size: 10.5px; color: #9ca3af; margin-top: 1px; }
-    .dark .box-subtitle { color: #6b7280; }
+    .box-icon-wrap {
+        width: 36px; height: 36px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .box-icon-wrap svg { width: 18px; height: 18px; }
+    .box-title { font-size: 13px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.3; }
+    .box-badge {
+        display: inline-flex; align-items: center; gap: 3px;
+        padding: 2px 8px; border-radius: 20px;
+        font-size: 8.5px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.07em;
+    }
     .box-placeholder {
         flex: 1;
-        background: linear-gradient(135deg, rgba(156,163,175,0.06), rgba(156,163,175,0.02));
-        border: 1px solid rgba(156,163,175,0.15); border-radius: 8px;
-        padding: 8px 12px; text-align: right;
+        padding-left: 14px;
+        border-left: 1px solid rgba(0,0,0,0.06);
+        text-align: right;
     }
-    .dark .box-placeholder {
-        background: linear-gradient(135deg, rgba(75,85,99,0.12), rgba(75,85,99,0.04));
-        border-color: rgba(107,114,128,0.15);
-    }
+    .dark .box-placeholder { border-left-color: rgba(255,255,255,0.06); }
     .box-placeholder-text {
-        font-size: 11.5px; line-height: 1.4; color: #6b7280; margin: 0; text-align: right;
+        font-size: 12px; line-height: 1.45; color: #6b7280; margin: 0;
     }
     .dark .box-placeholder-text { color: #9ca3af; }
-    .box-badge {
-        display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
-        border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
     .box-remove-btn {
-        position: absolute; top: 14px; right: 14px; padding: 5px; border-radius: 8px;
+        position: absolute; top: 10px; right: 10px; padding: 4px; border-radius: 6px;
         border: none; background: transparent; cursor: pointer;
-        color: #9ca3af; transition: all 0.15s;
+        color: #9ca3af; transition: all 0.15s; opacity: 0;
     }
+    .box-card:hover .box-remove-btn { opacity: 1; }
     .box-remove-btn:hover { background: rgba(239,68,68,0.08); color: #ef4444; }
     .dark .box-remove-btn:hover { background: rgba(239,68,68,0.15); }
 
-    /* === Box Group (fila compacta) === */
+    /* === Box Group === */
     .box-group {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
     }
 
     /* === Box Type Picker === */
@@ -818,6 +824,8 @@ function addBox(typeKey) {
 
     const card = document.createElement('div');
     card.className = 'box-card';
+    card.style.background = 'linear-gradient(135deg, ' + b.bgLight + ' 0%, ' + (isDark ? '#0a0a0a' : '#ffffff') + ' 60%)';
+    card.style.border = '1px solid ' + b.borderLight;
     card.dataset.boxType = typeKey;
     card.dataset.boxIndex = boxIndex++;
     card.innerHTML =
@@ -825,9 +833,9 @@ function addBox(typeKey) {
             '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
         '</button>' +
         '<div class="box-card-header">' +
-            getBoxIcon(b.icon) +
+            '<div class="box-icon-wrap" style="background:' + b.color + ';color:#fff">' + getBoxIcon(b.icon) + '</div>' +
             '<div>' +
-                '<p class="box-title" style="color:' + (isDark ? '#f3f4f6' : '') + '">' + escapeHtml(b.label) + '</p>' +
+                '<p class="box-title" style="color:' + (isDark ? '#f3f4f6' : '#1f2937') + '">' + escapeHtml(b.label) + '</p>' +
                 '<span class="box-badge" style="background:' + b.bgLight + ';color:' + b.textLight + ';border:1px solid ' + b.borderLight + '">Automático</span>' +
             '</div>' +
         '</div>' +
@@ -861,13 +869,14 @@ function renderPreview() {
         const typeKey = card.dataset.boxType;
         const b = BOX_TYPES[typeKey];
         if (!b) return '';
-        let h = '<div style="display:flex;align-items:center;gap:12px;border:2px dashed '+b.borderLight+';border-radius:10px;padding:12px 16px;background:linear-gradient(135deg,'+b.bgLight+'08,'+b.bgLight+'02);position:relative">';
-        h += '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
-        h += '<div style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:'+b.bgLight+';color:'+b.textLight+'">'+getBoxIcon(b.icon)+'</div>';
-        h += '<div><span style="font-size:11.5px;font-weight:700;color:#374151">' + escapeHtml(b.label) + '</span> ';
-        h += '<span style="display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;background:'+b.bgLight+';color:'+b.textLight+';border:1px solid '+b.borderLight+'">Automático</span></div></div>';
-        h += '<div style="flex:1;background:rgba(156,163,175,0.05);border:1px solid rgba(156,163,175,0.15);border-radius:8px;padding:8px 12px;text-align:right">';
-        h += '<p style="font-size:11px;line-height:1.4;color:#6b7280;margin:0">' + b.placeholder_text + '</p></div></div>';
+        let h = '<div style="display:flex;align-items:center;gap:14px;border-radius:14px;padding:14px 18px;background:linear-gradient(135deg,'+b.bgLight+' 0%,#ffffff 60%);border:1px solid '+b.borderLight+';box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative">';
+        h += '<div style="position:absolute;top:0;left:0;bottom:0;width:4px;background:'+b.color+';border-radius:14px 0 0 14px"></div>';
+        h += '<div style="display:flex;align-items:center;gap:12px;flex-shrink:0">';
+        h += '<div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:'+b.color+';color:#fff">'+getBoxIcon(b.icon)+'</div>';
+        h += '<div><span style="font-size:13px;font-weight:700;color:#1f2937;line-height:1.3">' + escapeHtml(b.label) + '</span> ';
+        h += '<span style="display:inline-flex;align-items:center;gap:3px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;padding:2px 8px;border-radius:20px;background:'+b.bgLight+';color:'+b.textLight+';border:1px solid '+b.borderLight+'">Automático</span></div></div>';
+        h += '<div style="flex:1;padding-left:14px;border-left:1px solid rgba(0,0,0,0.06);text-align:right">';
+        h += '<p style="font-size:12px;line-height:1.45;color:#6b7280;margin:0">' + b.placeholder_text + '</p></div></div>';
         return h;
     }
 
