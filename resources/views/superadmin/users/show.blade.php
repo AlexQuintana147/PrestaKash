@@ -2488,7 +2488,7 @@ function closeRejectChangeModal() {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">Préstamo</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Préstamo</span>
                         <span class="text-xs text-gray-500 dark:text-gray-400">Crédito personal</span>
                     </button>
                     <button type="button" onclick="selectContractType('investment')"
@@ -2498,7 +2498,7 @@ function closeRejectChangeModal() {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                             </svg>
                         </div>
-                        <span class="text-sm font-bold text-gray-900 dark:text-white">Inversión</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Inversión</span>
                         <span class="text-xs text-gray-500 dark:text-gray-400">Depósito a plazo</span>
                     </button>
                 </div>
