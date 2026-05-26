@@ -1341,6 +1341,14 @@ function openEmitContractModal(userId) {
     // Reset stepper
     updateStepper(1);
     
+    // Reset contract type cards
+    document.querySelectorAll('.contract-type-card').forEach(c => c.classList.remove('selected'));
+
+    // Reset contracts container
+    document.getElementById('contractsContainer').innerHTML = '';
+    document.getElementById('contractsLoading').classList.add('hidden');
+    document.getElementById('contractsEmpty').classList.add('hidden');
+
     // Reset codes container
     document.getElementById('codesContainer').innerHTML = '';
     document.getElementById('codesLoading').classList.add('hidden');
@@ -1374,86 +1382,113 @@ function closeEmitContractModal() {
     }, 200);
 }
 
-function handleContractTypeChange() {
-    const type = document.getElementById('contractType').value;
+function selectContractType(type) {
+    const hiddenInput = document.getElementById('contractType');
     const contractSelectGroup = document.getElementById('contractSelectGroup');
     const relatedCodeGroup = document.getElementById('relatedCodeGroup');
     const label = document.getElementById('relatedCodeLabel');
     const previewButtons = document.getElementById('previewButtons');
-    
+
+    // Marcar la card seleccionada
+    document.querySelectorAll('.contract-type-card').forEach(card => {
+        card.classList.toggle('selected', card.dataset.type === type);
+    });
+
+    hiddenInput.value = type;
+
     // Reset following steps
     document.getElementById('contractId').value = '';
+    document.getElementById('contractsContainer').innerHTML = '';
     document.getElementById('relatedCode').value = '';
     document.getElementById('codesContainer').innerHTML = '';
-    
-    if (type) {
-        // Actualizar etiqueta según tipo
-        label.textContent = type === 'investment' ? 'INVERSIÓN ASOCIADA' : 'PRÉSTAMO ASOCIADO';
-        
-        contractSelectGroup.classList.remove('hidden');
-        relatedCodeGroup.classList.add('hidden');
-        previewButtons.classList.add('hidden');
-        updateStepper(2);
-        loadContracts(type);
-    } else {
-        contractSelectGroup.classList.add('hidden');
-        relatedCodeGroup.classList.add('hidden');
-        previewButtons.classList.add('hidden');
-        updateStepper(1);
-    }
+
+    // Actualizar etiqueta según tipo
+    label.textContent = type === 'investment' ? 'INVERSIÓN ASOCIADA' : 'PRÉSTAMO ASOCIADO';
+
+    contractSelectGroup.classList.remove('hidden');
+    relatedCodeGroup.classList.add('hidden');
+    previewButtons.classList.add('hidden');
+    updateStepper(2);
+    loadContracts(type);
 }
 
 function loadContracts(type) {
     const url = `/gestion-interna/contratos/available?type=${type}`;
-    const select = document.getElementById('contractId');
-    
-    select.innerHTML = '<option value="">Cargando...</option>';
-    
+    const container = document.getElementById('contractsContainer');
+    const loading = document.getElementById('contractsLoading');
+    const empty = document.getElementById('contractsEmpty');
+    const hiddenInput = document.getElementById('contractId');
+
+    container.innerHTML = '';
+    hiddenInput.value = '';
+    loading.classList.remove('hidden');
+    empty.classList.add('hidden');
+
     fetch(url)
         .then(response => {
             if (!response.ok) throw new Error('Error al cargar contratos');
             return response.json();
         })
         .then(data => {
-            select.innerHTML = '<option value="">Seleccione una plantilla...</option>';
-            
+            loading.classList.add('hidden');
+
             if (data.length === 0) {
-                select.innerHTML = '<option value="">No hay plantillas disponibles</option>';
+                empty.classList.remove('hidden');
                 document.getElementById('contractErrorMessage').textContent = 'No hay contratos aprobados para este tipo';
                 document.getElementById('contractError').classList.remove('hidden');
             } else {
                 document.getElementById('contractError').classList.add('hidden');
-                
+
                 data.forEach(contract => {
-                    const option = document.createElement('option');
-                    option.value = contract.id;
-                    option.textContent = contract.name;
-                    select.appendChild(option);
+                    const card = document.createElement('div');
+                    card.className = 'contract-option';
+                    card.dataset.contractId = contract.id;
+                    card.innerHTML = `
+                        <div class="contract-main">${contract.name}</div>
+                        <div class="contract-details">
+                            <span class="contract-detail-item">
+                                <svg class="contract-detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                ${contract.clauses_count || 0} cláusulas
+                            </span>
+                        </div>
+                    `;
+                    card.onclick = () => selectContract(contract.id, card);
+                    container.appendChild(card);
                 });
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            select.innerHTML = '<option value="">Error al cargar</option>';
+            loading.classList.add('hidden');
+            empty.classList.remove('hidden');
             document.getElementById('contractErrorMessage').textContent = 'Error al cargar. Intente nuevamente.';
             document.getElementById('contractError').classList.remove('hidden');
         });
 }
 
-function handleContractSelect() {
-    const contractId = document.getElementById('contractId').value;
+function selectContract(contractId, cardElement) {
+    const container = document.getElementById('contractsContainer');
+    const hiddenInput = document.getElementById('contractId');
+
+    // Remove selected class from all cards
+    container.querySelectorAll('.contract-option').forEach(c => c.classList.remove('selected'));
+
+    // Add selected class to clicked card
+    cardElement.classList.add('selected');
+
+    // Update hidden input
+    hiddenInput.value = contractId;
+
+    // Trigger step 3
     const type = document.getElementById('contractType').value;
     const relatedCodeGroup = document.getElementById('relatedCodeGroup');
     const previewButtons = document.getElementById('previewButtons');
-    
-    if (contractId) {
-        relatedCodeGroup.classList.remove('hidden');
-        previewButtons.classList.add('hidden');
-        loadRelatedCodes(type);
-    } else {
-        relatedCodeGroup.classList.add('hidden');
-        previewButtons.classList.add('hidden');
-    }
+
+    relatedCodeGroup.classList.remove('hidden');
+    previewButtons.classList.add('hidden');
+    loadRelatedCodes(type);
 }
 
 function loadRelatedCodes(type) {
@@ -1928,6 +1963,119 @@ function closeRejectChangeModal() {
     margin-bottom: 4px;
 }
 
+/* Contract type card styling */
+.contract-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    border: 2px solid #f3f4f6;
+    border-radius: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+    gap: 2px;
+}
+
+.contract-type-card:hover {
+    border-color: #f97316;
+    background: #fffaf5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.contract-type-card.selected {
+    border-color: #f97316;
+    background: #fff7ed;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+    position: relative;
+}
+
+.contract-type-card.selected::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    background-color: #f97316;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+    background-size: 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+}
+
+/* Contract option (template) card styling */
+.contract-option {
+    padding: 14px 18px;
+    border: 2px solid #f3f4f6;
+    border-radius: 14px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.contract-option:hover {
+    border-color: #f97316;
+    background: #fffaf5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.contract-option.selected {
+    border-color: #f97316;
+    background: #fff7ed;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+}
+
+.contract-option.selected::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    background-color: #f97316;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+}
+
+.contract-main {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 4px;
+    padding-right: 28px;
+}
+
+.contract-details {
+    font-size: 12px;
+    color: #6b7280;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.contract-detail-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.contract-detail-icon {
+    width: 14px;
+    height: 14px;
+    color: #f97316;
+}
+
 .code-details {
     font-size: 13px;
     color: #6b7280;
@@ -2187,6 +2335,35 @@ function closeRejectChangeModal() {
         font-size: 14px !important;
         border-radius: 12px !important;
     }
+    .contract-type-card {
+        padding: 12px 8px !important;
+        border-radius: 12px !important;
+    }
+    .contract-type-card .w-10 {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    .contract-type-card .w-10 svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+    .contract-type-card span.text-sm {
+        font-size: 12px !important;
+    }
+    .contract-type-card span.text-xs {
+        font-size: 10px !important;
+    }
+    .contract-option {
+        padding: 12px 14px !important;
+        border-radius: 12px !important;
+    }
+    .contract-main {
+        font-size: 13px !important;
+    }
+    .contract-details {
+        font-size: 11px !important;
+        gap: 8px !important;
+    }
 }
 
 /* ===== RESPONSIVE: Vista previa del contrato ===== */
@@ -2307,21 +2484,57 @@ function closeRejectChangeModal() {
             <!-- Paso 1: Tipo de contrato -->
             <div id="contractTypeGroup" class="contract-field-group">
                 <label class="contract-field-label">TIPO DE CONTRATO</label>
-                <select id="contractType" onchange="handleContractTypeChange()"
-                        class="contract-select">
-                    <option value="">Seleccione el tipo de operación...</option>
-                    <option value="loan">🏦 Préstamo / Crédito</option>
-                    <option value="investment">📈 Inversión / Depósito</option>
-                </select>
+                <input type="hidden" id="contractType" value="">
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" onclick="selectContractType('loan')"
+                            class="contract-type-card" data-type="loan">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">Préstamo</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Crédito personal</span>
+                    </button>
+                    <button type="button" onclick="selectContractType('investment')"
+                            class="contract-type-card" data-type="investment">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center mb-2">
+                            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-bold text-gray-900 dark:text-white">Inversión</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">Depósito a plazo</span>
+                    </button>
+                </div>
             </div>
             
             <!-- Paso 2: Selección de contrato -->
             <div id="contractSelectGroup" class="hidden contract-field-group">
                 <label class="contract-field-label">PLANTILLA DE CONTRATO</label>
-                <select id="contractId" onchange="handleContractSelect()"
-                        class="contract-select">
-                    <option value="">Seleccione una plantilla...</option>
-                </select>
+
+                <!-- Loading state -->
+                <div id="contractsLoading" class="loading-codes hidden">
+                    <div class="loading-spinner-small"></div>
+                    <p class="text-sm">Cargando plantillas...</p>
+                </div>
+
+                <!-- Contracts container -->
+                <div id="contractsContainer" class="space-y-2 max-h-52 overflow-y-auto pr-1">
+                </div>
+
+                <!-- Input oculto para almacenar el contrato seleccionado -->
+                <input type="hidden" id="contractId" name="contractId" value="">
+
+                <!-- Empty state -->
+                <div id="contractsEmpty" class="empty-state hidden">
+                    <div class="empty-state-icon">
+                        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <p class="empty-state-text">No se encontraron plantillas</p>
+                </div>
             </div>
             
             <!-- Paso 3: Selección de código relacionado -->
