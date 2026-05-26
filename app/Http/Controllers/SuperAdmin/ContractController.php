@@ -275,20 +275,60 @@ class ContractController extends Controller
                 }
                 continue;
             }
-            $renderedContent = $clause->content;
-            foreach ($data as $key => $value) {
-                if (isset($allVars[$key])) {
-                    $renderedContent = str_replace('[' . $key . ']', e($value), $renderedContent);
-                }
-            }
             $renderedClauses[] = [
                 'title' => $clause->title,
-                'content' => $renderedContent,
+                'content' => $this->renderPreviewClauseContent($clause->content, $data, $allVars),
                 'is_box' => false,
             ];
         }
 
         return view('superadmin.contracts.preview-client', compact('contract', 'renderedClauses', 'user'));
+    }
+
+    private function renderPreviewClauseContent(string $content, array $data, array $allVars): string
+    {
+        $renderedContent = $content;
+
+        foreach ($allVars as $key => $definition) {
+            $placeholder = '[' . $key . ']';
+
+            if (!str_contains($renderedContent, $placeholder)) {
+                continue;
+            }
+
+            $value = $data[$key] ?? null;
+
+            if ($this->hasPreviewValue($value)) {
+                $renderedContent = str_replace($placeholder, e((string) $value), $renderedContent);
+                continue;
+            }
+
+            $renderedContent = str_replace($placeholder, $this->formatMissingPreviewPlaceholder($placeholder), $renderedContent);
+        }
+
+        return preg_replace_callback(
+            '/\[[^\[\]]+\]/',
+            fn (array $matches): string => $this->formatMissingPreviewPlaceholder($matches[0]),
+            $renderedContent
+        ) ?? $renderedContent;
+    }
+
+    private function hasPreviewValue(mixed $value): bool
+    {
+        if (is_null($value)) {
+            return false;
+        }
+
+        if (is_string($value)) {
+            return trim($value) !== '';
+        }
+
+        return true;
+    }
+
+    private function formatMissingPreviewPlaceholder(string $placeholder): string
+    {
+        return '<span class="inline-block px-1.5 py-0.5 rounded bg-red-50 text-red-600 border border-red-200 font-semibold">' . e($placeholder) . '</span>';
     }
 
     public function downloadPDF(Contract $contract, Request $request)
