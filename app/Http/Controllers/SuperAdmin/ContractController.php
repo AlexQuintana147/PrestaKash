@@ -243,7 +243,7 @@ class ContractController extends Controller
         $type = $request->query('type');
         $relatedCode = $request->query('related_code');
 
-        $user = User::findOrFail($userId);
+        $user = User::with('clientProfile')->findOrFail($userId);
         $contract->load('clauses');
         $allVars = Contract::getAllVariablesFlat();
 
@@ -337,7 +337,7 @@ class ContractController extends Controller
         $type = $request->query('type');
         $relatedCode = $request->query('related_code');
 
-        $user = User::findOrFail($userId);
+        $user = User::with('clientProfile')->findOrFail($userId);
         $contract->load('clauses');
         $allVars = Contract::getAllVariablesFlat();
 
@@ -394,6 +394,8 @@ class ContractController extends Controller
 
     private function buildContractData(User $user, $type, $relatedCode)
     {
+        $profile = $user->clientProfile;
+
         $data = [
             'nombre_completo' => $user->name,
             'nombres' => $user->first_name,
@@ -402,6 +404,16 @@ class ContractController extends Controller
             'email' => $user->email,
             'telefono' => $user->phone,
             'direccion' => $user->address,
+            'estado_civil' => $profile ? match ($profile->marital_status) {
+                'soltero' => 'Soltero(a)',
+                'casado_separado' => 'Casado(a) - Bienes separados',
+                'casado_compartido' => 'Casado(a) - Sociedad de gananciales',
+                'divorciado' => 'Divorciado(a)',
+                'viudo' => 'Viudo(a)',
+                default => $profile->marital_status,
+            } : null,
+            'ocupacion' => $profile?->job_title,
+            'lugar_trabajo' => $profile?->workplace,
             'empresa_nombre' => 'PrestaKash Soluciones Financieras S.A.C.',
             'empresa_ruc' => '20601234567',
             'empresa_direccion' => 'Av. Central 456, Oficina 302, Cercado de Lima, Perú',
