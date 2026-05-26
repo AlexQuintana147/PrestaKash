@@ -429,7 +429,7 @@ class ContractController extends Controller
         ];
 
         if ($type === 'loan') {
-            $loan = Loan::where('user_id', $user->id)->where('code', $relatedCode)->first();
+            $loan = Loan::with('installments')->where('user_id', $user->id)->where('code', $relatedCode)->first();
             if ($loan) {
                 $data['prestamo_monto'] = 'S/ ' . number_format($loan->amount, 2, ',', '.');
                 $data['prestamo_codigo'] = $loan->code;
@@ -440,6 +440,37 @@ class ContractController extends Controller
                 $data['prestamo_motivo'] = $loan->reason;
                 $data['prestamo_total'] = 'S/ ' . number_format($loan->total_amount, 2, ',', '.');
                 $data['moneda'] = 'Soles (PEN)';
+
+                $installments = $loan->installments;
+                $approvedInsts = $installments->where('status', 'approved');
+                $pendingInsts = $installments->where('status', '!=', 'approved');
+
+                $data['total_pagado'] = 'S/ ' . number_format($approvedInsts->sum('amount'), 2);
+                $data['pagos_realizados'] = $approvedInsts->count() . ' pagos';
+                $data['pagos_pendientes'] = $pendingInsts->count() . ' pagos';
+
+                $nextPending = $pendingInsts->sortBy('installment_number')->first();
+                $data['proximo_pago_fecha'] = $nextPending ? $nextPending->due_date->format('d/m/Y') : '—';
+                $data['proximo_pago_monto'] = $nextPending ? ('S/ ' . number_format($nextPending->amount, 2)) : 'S/ 0.00';
+
+                $lastPaid = $approvedInsts->sortByDesc('installment_number')->first();
+                $data['ultimo_pago_fecha'] = ($lastPaid && $lastPaid->paid_at) ? $lastPaid->paid_at->format('d/m/Y') : '—';
+                $data['ultimo_pago_monto'] = $lastPaid ? ('S/ ' . number_format($lastPaid->amount, 2)) : 'S/ 0.00';
+
+                $data['tasa_mora'] = $loan->late_fee_enabled ? ($loan->late_fee_rate . '% diaria') : 'No aplica';
+                $data['dias_gracia'] = $loan->late_fee_enabled ? ($loan->grace_days . ' días') : 'No aplica';
+
+                $firstInst = $installments->first();
+                $baseAmount = $firstInst ? $firstInst->amount : ($loan->monthly_payment ?? $loan->amount);
+                $data['mora_diaria'] = $loan->late_fee_enabled ? ('S/ ' . number_format($baseAmount * ($loan->late_fee_rate / 100), 2)) : 'S/ 0.00';
+
+                $overdue = $loan->overdue_installments;
+                $firstOverdue = $overdue->first();
+                $data['dias_mora'] = $firstOverdue ? ((int) $firstOverdue->due_date->startOfDay()->diffInDays(now()->startOfDay()) . ' días') : '0 días';
+
+                $totalLateFees = $overdue->sum('late_fee');
+                $data['interes_mora_acumulado'] = 'S/ ' . number_format($totalLateFees, 2);
+                $data['penalidad_actual'] = 'S/ ' . number_format($totalLateFees, 2);
             }
         } elseif ($type === 'investment') {
             $investment = InvestmentOpportunity::where('code', $relatedCode)->first();
