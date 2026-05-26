@@ -24,14 +24,14 @@
     <hr class="doc-divider">
     
     <div class="doc-footer">
-        <table style="width:100%;border-collapse:collapse">
+        <table class="doc-footer-table">
             <tr>
-                <td style="width:50%;vertical-align:bottom;text-align:center;padding:0 10px">
+                <td>
                     <div class="doc-signature-line"></div>
                     <p class="sig-name">{{ $user->name }}</p>
                     <p class="sig-label">DNI: {{ $user->dni }}</p>
                 </td>
-                <td style="width:50%;vertical-align:bottom;text-align:center;padding:0 10px">
+                <td>
                     @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
                         <img src="{{ Storage::url($companySignature) }}" alt="Firma" class="doc-signature-img">
                     @endif

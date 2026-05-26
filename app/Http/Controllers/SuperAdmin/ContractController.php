@@ -328,7 +328,7 @@ class ContractController extends Controller
 
     private function formatMissingPreviewPlaceholder(string $placeholder): string
     {
-        return '<span class="inline-block px-1.5 py-0.5 rounded bg-red-50 text-red-600 border border-red-200 font-semibold">' . e($placeholder) . '</span>';
+        return '<span class="doc-missing-placeholder">' . e($placeholder) . '</span>';
     }
 
     public function downloadPDF(Contract $contract, Request $request)

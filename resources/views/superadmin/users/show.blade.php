@@ -2205,67 +2205,140 @@ function closeRejectChangeModal() {
 }
 
 .doc-page {
-    max-width: 650px; margin: 0 auto;
-    background: white; padding: 48px 44px 40px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04);
-    border: 1px solid #eee; position: relative;
+    position: relative;
+    max-width: 650px;
+    margin: 0 auto;
+    background: white;
+    padding: 48px 44px 40px;
+    border: 1px solid #eee;
 }
 
 .doc-page::before {
-    content: ''; position: absolute; top: 16px; right: 20px;
-    width: 36px; height: 48px; border: 1.5px solid #ddd; border-radius: 2px;
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 36px;
+    height: 48px;
+    border: 1.5px solid #ddd;
+    border-radius: 2px;
     opacity: 0.5;
 }
 .doc-page.has-logo::before { display: none; }
-.doc-logo { position: absolute; top: 12px; right: 20px; max-width: 90px; max-height: 56px; object-fit: contain; }
+.doc-logo {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    max-width: 90px;
+    max-height: 56px;
+    object-fit: contain;
+}
 
 .doc-title {
-    text-align: center; font-family: Georgia, 'Times New Roman', serif;
-    font-size: 22px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.02em;
-    margin-bottom: 6px; line-height: 1.35;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+    line-height: 1.35;
 }
 
 .doc-subtitle {
-    text-align: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.18em;
-    color: #888; margin-bottom: 32px; font-weight: 500;
+    text-align: center;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #888;
+    margin-bottom: 32px;
+    font-weight: 500;
 }
 
 .doc-divider {
-    height: 1px; background: #ccc;
-    margin: 28px 0; border: none;
+    height: 1px;
+    background: #ccc;
+    margin: 28px 0;
+    border: none;
 }
 
 .doc-clause-title {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 14px;
-    font-weight: 700; color: #1a1a1a; margin-bottom: 10px; letter-spacing: 0.01em;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
 }
 
 .doc-clause-content {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
-    line-height: 1.85; color: #333; text-align: justify;
-    hyphens: auto; white-space: pre-wrap; word-wrap: break-word;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #333;
+    text-align: justify;
+    word-wrap: break-word;
 }
 
-.doc-clause { margin-bottom: 22px; }
+.doc-clause-content p {
+    margin: 0 0 10px 0;
+}
+
+.doc-clause {
+    margin-bottom: 22px;
+}
 
 .doc-footer {
-    margin-top: 36px; padding-top: 20px;
+    margin-top: 36px;
+    padding-top: 20px;
     border-top: 1px solid #e8e8e8;
-    display: flex; justify-content: space-between; gap: 20px;
+    width: 100%;
 }
 
-.doc-signature-block {
-    text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+.doc-footer-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.doc-footer-table td {
+    width: 50%;
+    vertical-align: bottom;
+    text-align: center;
+    padding: 0 10px;
 }
 
 .doc-signature-line {
-    width: 70%; height: 1px; background: #aaa; margin: 0 auto;
+    width: 70%;
+    height: 1px;
+    background: #aaa;
+    margin: 0 auto;
 }
 
-.doc-signature-img { max-height: 50px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
+.doc-signature-img {
+    max-height: 50px;
+    margin-bottom: 4px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-.sig-name { font-size: 9px; color: #666; margin-top: 5px; text-align: center; }
-.sig-label { font-size: 8px; color: #888; text-align: center; }
+.sig-name {
+    font-size: 9px;
+    color: #666;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.sig-label {
+    font-size: 8px;
+    color: #888;
+    text-align: center;
+}
+
+.doc-missing-placeholder {
+    color: #dc2626;
+    font-weight: 600;
+}
 
 /* ===== RESPONSIVE: Modal emitir contrato ===== */
 @media (max-width: 640px) {
@@ -2414,10 +2487,11 @@ function closeRejectChangeModal() {
         margin-bottom: 12px !important;
     }
     .doc-footer {
-        flex-direction: column !important;
-        gap: 16px !important;
         margin-top: 20px !important;
         padding-top: 14px !important;
+    }
+    .doc-footer-table td {
+        padding: 0 6px !important;
     }
     .doc-signature-line {
         width: 60% !important;
