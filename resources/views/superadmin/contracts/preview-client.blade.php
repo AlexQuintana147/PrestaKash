@@ -24,18 +24,22 @@
     <hr class="doc-divider">
     
     <div class="doc-footer">
-        <div class="doc-signature-block">
-            <div class="doc-signature-line"></div>
-            <p class="mt-2 text-[9px] text-gray-400 text-center">{{ $user->name }}</p>
-            <p class="text-[8px] text-gray-400">DNI: {{ $user->dni }}</p>
-        </div>
-        <div class="doc-signature-block">
-            @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
-                <img src="{{ Storage::url($companySignature) }}" alt="Firma" class="doc-signature-img">
-            @endif
-            <div class="doc-signature-line"></div>
-            <p class="mt-2 text-[9px] text-gray-400 text-center">Juan Carlos Pérez García</p>
-            <p class="text-[8px] text-gray-400">Representante Legal</p>
-        </div>
+        <table style="width:100%;border-collapse:collapse">
+            <tr>
+                <td style="width:50%;vertical-align:bottom;text-align:center;padding:0 10px">
+                    <div class="doc-signature-line"></div>
+                    <p class="sig-name">{{ $user->name }}</p>
+                    <p class="sig-label">DNI: {{ $user->dni }}</p>
+                </td>
+                <td style="width:50%;vertical-align:bottom;text-align:center;padding:0 10px">
+                    @if($companySignature = \App\Models\CompanySetting::get('company_signature'))
+                        <img src="{{ Storage::url($companySignature) }}" alt="Firma" class="doc-signature-img">
+                    @endif
+                    <div class="doc-signature-line"></div>
+                    <p class="sig-name">Juan Carlos Pérez García</p>
+                    <p class="sig-label">Representante Legal</p>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>

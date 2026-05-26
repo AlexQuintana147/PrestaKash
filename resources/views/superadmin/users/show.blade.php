@@ -2197,62 +2197,61 @@ function closeRejectChangeModal() {
     font-size: 14px;
 }
 
-/* === DOCUMENT STYLES (Vista previa contrato - igual que create/edit) === */
+/* === DOCUMENT STYLES (Vista previa contrato - match PDF exact) === */
 #contractPreviewContent {
     background: #f8f9fa;
-    padding: 16px;
+    padding: 24px;
     border-radius: 12px;
 }
 
 .doc-page {
-    max-width: 700px; margin: 0 auto;
-    background: white; padding: 32px 36px 28px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03);
-    border: 1px solid #e5e7eb; position: relative;
-    border-radius: 4px;
+    max-width: 650px; margin: 0 auto;
+    background: white; padding: 48px 44px 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04);
+    border: 1px solid #eee; position: relative;
 }
 
 .doc-page::before {
-    content: ''; position: absolute; top: 12px; right: 16px;
-    width: 32px; height: 42px; border: 1.5px solid #d1d5db; border-radius: 2px;
-    opacity: 0.4;
+    content: ''; position: absolute; top: 16px; right: 20px;
+    width: 36px; height: 48px; border: 1.5px solid #ddd; border-radius: 2px;
+    opacity: 0.5;
 }
 .doc-page.has-logo::before { display: none; }
-.doc-logo { position: absolute; top: 10px; right: 16px; max-width: 85px; max-height: 52px; object-fit: contain; }
+.doc-logo { position: absolute; top: 12px; right: 20px; max-width: 90px; max-height: 56px; object-fit: contain; }
 
 .doc-title {
     text-align: center; font-family: Georgia, 'Times New Roman', serif;
-    font-size: 19px; font-weight: 700; color: #111827; letter-spacing: 0.015em;
-    margin-bottom: 4px; line-height: 1.3;
+    font-size: 22px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.02em;
+    margin-bottom: 6px; line-height: 1.35;
 }
 
 .doc-subtitle {
-    text-align: center; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.15em;
-    color: #9ca3af; margin-bottom: 20px; font-weight: 500;
+    text-align: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: #888; margin-bottom: 32px; font-weight: 500;
 }
 
 .doc-divider {
-    height: 1px; background: linear-gradient(to right, transparent, #d1d5db 20%, #d1d5db 80%, transparent);
-    margin: 18px 0; border: none;
+    height: 1px; background: #ccc;
+    margin: 28px 0; border: none;
 }
 
 .doc-clause-title {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
-    font-weight: 700; color: #111827; margin-bottom: 8px; letter-spacing: 0.005em;
+    font-family: Georgia, 'Times New Roman', serif; font-size: 14px;
+    font-weight: 700; color: #1a1a1a; margin-bottom: 10px; letter-spacing: 0.01em;
 }
 
 .doc-clause-content {
-    font-family: Georgia, 'Times New Roman', serif; font-size: 12.5px;
-    line-height: 1.7; color: #374151; text-align: justify;
+    font-family: Georgia, 'Times New Roman', serif; font-size: 13px;
+    line-height: 1.85; color: #333; text-align: justify;
     hyphens: auto; white-space: pre-wrap; word-wrap: break-word;
 }
 
-.doc-clause { margin-bottom: 16px; }
+.doc-clause { margin-bottom: 22px; }
 
 .doc-footer {
-    margin-top: 28px; padding-top: 16px;
-    border-top: 1px solid #e5e7eb;
-    display: flex; justify-content: space-between; gap: 16px;
+    margin-top: 36px; padding-top: 20px;
+    border-top: 1px solid #e8e8e8;
+    display: flex; justify-content: space-between; gap: 20px;
 }
 
 .doc-signature-block {
@@ -2260,10 +2259,13 @@ function closeRejectChangeModal() {
 }
 
 .doc-signature-line {
-    width: 70%; height: 1px; background: #9ca3af; margin: 0 auto;
+    width: 70%; height: 1px; background: #aaa; margin: 0 auto;
 }
 
-.doc-signature-img { max-height: 45px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
+.doc-signature-img { max-height: 50px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
+
+.sig-name { font-size: 9px; color: #666; margin-top: 5px; text-align: center; }
+.sig-label { font-size: 8px; color: #888; text-align: center; }
 
 /* ===== RESPONSIVE: Modal emitir contrato ===== */
 @media (max-width: 640px) {
@@ -2623,7 +2625,7 @@ function closeRejectChangeModal() {
         </div>
         
         <!-- Body -->
-        <div id="contractPreviewContent" class="p-4 overflow-y-auto max-h-[calc(90vh-80px)] bg-gray-50 dark:bg-gray-950">
+        <div id="contractPreviewContent" class="p-6 overflow-y-auto max-h-[calc(90vh-80px)] bg-white">
             <!-- Loading state -->
             <div id="previewLoading" class="flex flex-col items-center justify-center py-20">
                 <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
