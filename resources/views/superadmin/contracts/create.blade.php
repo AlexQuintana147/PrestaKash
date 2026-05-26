@@ -886,11 +886,12 @@ function renderPreview() {
         const textBadge = isDark ? b.textDark : b.textLight;
         const divider = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
         const textColor = isDark ? '#9ca3af' : '#6b7280';
+        const titleColor = isDark ? '#f3f4f6' : '#1f2937';
         let h = '<div style="display:flex;align-items:center;gap:14px;border-radius:14px;padding:14px 18px;background:linear-gradient(135deg,'+bgFrom+' 0%,'+bgTo+' 60%);border:1px solid '+border+';box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative">';
         h += '<div style="position:absolute;top:0;left:0;bottom:0;width:4px;background:'+b.color+';border-radius:14px 0 0 14px"></div>';
         h += '<div style="display:flex;align-items:center;gap:12px;flex-shrink:0">';
         h += '<div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:'+b.color+';color:#fff">'+getBoxIcon(b.icon)+'</div>';
-        h += '<div><span style="font-size:13px;font-weight:700;color:#1f2937;line-height:1.3">' + escapeHtml(b.label) + '</span> ';
+        h += '<div><span style="font-size:13px;font-weight:700;color:'+titleColor+';line-height:1.3">' + escapeHtml(b.label) + '</span> ';
         h += '<span style="display:inline-flex;align-items:center;gap:3px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;padding:2px 8px;border-radius:20px;background:'+bgFrom+';color:'+textBadge+';border:1px solid '+border+'">Automático</span></div></div>';
         h += '<div style="flex:1;padding-left:14px;border-left:1px solid '+divider+';text-align:right">';
         h += '<p style="font-size:12px;line-height:1.45;color:'+textColor+';margin:0">' + b.placeholder_text + '</p></div></div>';
