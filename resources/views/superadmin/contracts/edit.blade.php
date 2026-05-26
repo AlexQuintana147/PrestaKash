@@ -94,30 +94,32 @@
 
     /* === BOX CARD === */
     .box-card {
-        background: white; border: 2px dashed #d1d5db; border-radius: 16px;
-        padding: 24px; position: relative; overflow: hidden;
+        display: flex; align-items: center; gap: 12px;
+        background: white; border: 2px dashed #d1d5db; border-radius: 12px;
+        padding: 12px 16px; position: relative; overflow: hidden;
     }
     .dark .box-card { background: #0a0a0a; border-color: #333; }
     .box-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
     .box-card-header {
-        display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+        display: flex; align-items: center; gap: 8px; margin-bottom: 0;
     }
-    .box-card-header svg { width: 28px; height: 28px; color: #6366f1; flex-shrink: 0; }
+    .box-card-header svg { width: 22px; height: 22px; color: #6366f1; flex-shrink: 0; }
     .dark .box-card-header svg { color: #818cf8; }
     .box-title { font-size: 13px; font-weight: 700; color: #1f2937; letter-spacing: 0.01em; }
     .dark .box-title { color: #f3f4f6; }
     .box-subtitle { font-size: 10.5px; color: #9ca3af; margin-top: 1px; }
     .dark .box-subtitle { color: #6b7280; }
     .box-placeholder {
+        flex: 1;
         background: linear-gradient(135deg, rgba(156,163,175,0.06), rgba(156,163,175,0.02));
-        border: 1px solid rgba(156,163,175,0.15); border-radius: 10px;
-        padding: 18px 20px; text-align: center;
+        border: 1px solid rgba(156,163,175,0.15); border-radius: 8px;
+        padding: 8px 12px; text-align: right;
     }
     .dark .box-placeholder {
         background: linear-gradient(135deg, rgba(75,85,99,0.12), rgba(75,85,99,0.04));
         border-color: rgba(107,114,128,0.15);
     }
-    .box-placeholder-text { font-size: 12.5px; line-height: 1.65; color: #6b7280; max-width: 420px; margin: 0 auto; }
+    .box-placeholder-text { font-size: 11.5px; line-height: 1.4; color: #6b7280; margin: 0; text-align: right; }
     .dark .box-placeholder-text { color: #9ca3af; }
     .box-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
     .box-remove-btn {
@@ -126,6 +128,13 @@
     }
     .box-remove-btn:hover { background: rgba(239,68,68,0.08); color: #ef4444; }
     .dark .box-remove-btn:hover { background: rgba(239,68,68,0.15); }
+
+    /* === Box Group (fila compacta) === */
+    .box-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
 
     /* === Box Type Picker === */
     .box-picker-overlay {
@@ -307,6 +316,7 @@
 
                 <div id="clauses-container" class="space-y-4">
                     @if($contract && $contract->clauses && $contract->clauses->count() > 0)
+                        @php $inBoxGroup = false; @endphp
                         @foreach($contract->clauses as $index => $clause)
                             @if($clause->box_type)
                                 @php
@@ -314,12 +324,16 @@
                                     $boxDef = $boxTypes[$clause->box_type] ?? null;
                                 @endphp
                                 @if($boxDef)
+                                    @if(!$inBoxGroup)
+                                        <div class="box-group">
+                                        @php $inBoxGroup = true; @endphp
+                                    @endif
                                     <div class="box-card" data-box-type="{{ $clause->box_type }}" data-box-index="{{ $index }}">
                                         <input type="hidden" name="clauses[{{ $index }}][id]" value="{{ $clause->id }}">
                                         <input type="hidden" class="box-clause-input" name="clauses[{{ $index }}][box_type]" value="{{ $clause->box_type }}">
                                         <input type="hidden" class="box-clause-input" name="clauses[{{ $index }}][title]" value="{{ $clause->title }}">
                                         <input type="hidden" class="box-clause-input" name="clauses[{{ $index }}][content]" value="{{ $clause->content }}">
-                                        <button type="button" onclick="this.parentElement.remove();renumberClauses()" class="box-remove-btn">
+                                        <button type="button" onclick="removeBox(this)" class="box-remove-btn">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                         </button>
                                         <div class="box-card-header">
@@ -334,41 +348,46 @@
                                     </div>
                                 @endif
                             @else
-                            <div class="clause-card" data-index="{{ $index }}">
-                                <input type="hidden" name="clauses[{{ $index }}][id]" value="{{ $clause->id }}">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center gap-2 flex-1 min-w-0">
-                                        <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400">{{ $index + 1 }}</span>
-                                        <input type="text" name="clauses[{{ $index }}][title]" value="{{ $clause->title }}"
-                                               placeholder="Título de la cláusula..."
-                                               class="flex-1 text-sm font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 min-w-0">
+                                @if($inBoxGroup)
                                     </div>
-                                    <div class="flex items-center gap-1 ml-3">
-                                        <button type="button" onclick="moveClause(this, -1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ $index === 0 ? 'opacity-30 pointer-events-none' : '' }}" title="Subir">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
-                                        </button>
-                                        <button type="button" onclick="moveClause(this, 1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ $index === ($contract->clauses->count()-1) ? 'opacity-30 pointer-events-none' : '' }}" title="Bajar">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7"/></svg>
-                                        </button>
-                                        <button type="button" onclick="removeClause(this)" class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-colors" title="Eliminar">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        </button>
+                                    @php $inBoxGroup = false; @endphp
+                                @endif
+                                <div class="clause-card" data-index="{{ $index }}">
+                                    <input type="hidden" name="clauses[{{ $index }}][id]" value="{{ $clause->id }}">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400">{{ $index + 1 }}</span>
+                                            <input type="text" name="clauses[{{ $index }}][title]" value="{{ $clause->title }}"
+                                                   placeholder="Título de la cláusula..."
+                                                   class="flex-1 text-sm font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 min-w-0">
+                                        </div>
+                                        <div class="flex items-center gap-1 ml-3">
+                                            <button type="button" onclick="moveClause(this, -1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ $index === 0 ? 'opacity-30 pointer-events-none' : '' }}" title="Subir">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                                            </button>
+                                            <button type="button" onclick="moveClause(this, 1)" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ $index === ($contract->clauses->count()-1) ? 'opacity-30 pointer-events-none' : '' }}" title="Bajar">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7"/></svg>
+                                            </button>
+                                            <button type="button" onclick="removeClause(this)" class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-colors" title="Eliminar">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="editor-wrapper">
+                                        <textarea name="clauses[{{ $index }}][content]"
+                                                  class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
+                                                  placeholder="Escribe el contenido..."
+                                                  rows="4">{{ $clause->content }}</textarea>
+                                        <div class="editor-highlight text-base text-gray-700 dark:text-gray-300"></div>
+                                    </div>
+                                    <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
+                                        <span class="text-[10px] text-gray-400 word-count">{{ Str::wordCount($clause->content) }} palabras</span>
+                                        <span class="text-[10px] text-gray-400 var-count">{{ preg_match_all('/\[[a-z_]+\]/i', $clause->content) }} variable{{ preg_match_all('/\[[a-z_]+\]/i', $clause->content) !== 1 ? 's' : '' }}</span>
                                     </div>
                                 </div>
-                                <div class="editor-wrapper">
-                                    <textarea name="clauses[{{ $index }}][content]"
-                                              class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
-                                              placeholder="Escribe el contenido..."
-                                              rows="4">{{ $clause->content }}</textarea>
-                                    <div class="editor-highlight text-base text-gray-700 dark:text-gray-300"></div>
-                                </div>
-                                <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
-                                    <span class="text-[10px] text-gray-400 word-count">{{ Str::wordCount($clause->content) }} palabras</span>
-                                    <span class="text-[10px] text-gray-400 var-count">{{ preg_match_all('/\[[a-z_]+\]/i', $clause->content) }} variable{{ preg_match_all('/\[[a-z_]+\]/i', $clause->content) !== 1 ? 's' : '' }}</span>
-                                </div>
-                            </div>
                             @endif
                         @endforeach
+                        @if($inBoxGroup)</div>@endif
                     @else
                         <div class="clause-card" data-index="0">
                             <div class="flex items-center justify-between mb-3">
@@ -680,11 +699,31 @@ function moveClause(btn, direction) {
     renumberClauses();
 }
 
-function renumberClauses() {
+function removeBox(btn) {
+    const card = btn.closest('.box-card');
+    const group = card.closest('.box-group');
+    card.remove();
+    if (group && !group.querySelector('.box-card')) { group.remove(); }
+    renumberClauses();
+}
+
+function getOrderedClauseCards() {
     const container = document.getElementById('clauses-container');
+    const result = [];
+    Array.from(container.children).forEach(child => {
+        if (child.classList.contains('clause-card')) result.push(child);
+        else if (child.classList.contains('box-card')) result.push(child);
+        else if (child.classList.contains('box-group')) {
+            child.querySelectorAll(':scope > .box-card').forEach(b => result.push(b));
+        }
+    });
+    return result;
+}
+
+function renumberClauses() {
     let clauseIdx = 0;
-    const clauseCards = container.querySelectorAll(':scope > .clause-card');
-    container.querySelectorAll(':scope > .clause-card, :scope > .box-card').forEach((card, i) => {
+    const clauseCards = document.querySelectorAll('#clauses-container > .clause-card');
+    getOrderedClauseCards().forEach((card) => {
         if (card.classList.contains('clause-card')) {
             const numSpan = card.querySelector('span[class*="rounded-full"]');
             if (numSpan) numSpan.textContent = clauseIdx + 1;
@@ -762,12 +801,23 @@ function addBox(typeKey) {
     closeBoxPicker();
     const container = document.getElementById('clauses-container');
     const isDark = document.documentElement.classList.contains('dark');
+
+    let group = null;
+    const lastChild = container.lastElementChild;
+    if (lastChild && lastChild.classList.contains('box-group')) {
+        group = lastChild;
+    } else {
+        group = document.createElement('div');
+        group.className = 'box-group';
+        container.appendChild(group);
+    }
+
     const card = document.createElement('div');
     card.className = 'box-card';
     card.dataset.boxType = typeKey;
     card.dataset.boxIndex = boxIndex++;
     card.innerHTML =
-        '<button type="button" onclick="this.parentElement.remove();renumberClauses()" class="box-remove-btn">' +
+        '<button type="button" onclick="removeBox(this)" class="box-remove-btn">' +
             '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
         '</button>' +
         '<div class="box-card-header">' +
@@ -778,9 +828,8 @@ function addBox(typeKey) {
         '<input type="hidden" class="box-clause-input" name="clauses[_NEW_][title]" value="">' +
         '<input type="hidden" class="box-clause-input" name="clauses[_NEW_][content]" value="">' +
         '<div class="box-placeholder">' +
-            '<svg class="w-10 h-10 mx-auto mb-2 opacity-40" style="color:' + b.color + '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
             '<p class="box-placeholder-text">' + b.placeholder_text + '</p></div>';
-    container.appendChild(card);
+    group.appendChild(card);
     renumberClauses();
 }
 
@@ -800,20 +849,31 @@ function renderPreview() {
         return;
     }
 
+    function renderBoxCard(card) {
+        const typeKey = card.dataset.boxType;
+        const b = BOX_TYPES[typeKey];
+        if (!b) return '';
+        let h = '<div style="display:flex;align-items:center;gap:12px;border:2px dashed '+b.borderLight+';border-radius:10px;padding:12px 16px;background:linear-gradient(135deg,'+b.bgLight+'08,'+b.bgLight+'02);position:relative">';
+        h += '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
+        h += '<div style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:'+b.bgLight+';color:'+b.textLight+'">'+getBoxIcon(b.icon)+'</div>';
+        h += '<div><span style="font-size:11.5px;font-weight:700;color:#374151">' + escapeHtml(b.label) + '</span> ';
+        h += '<span style="display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;background:'+b.bgLight+';color:'+b.textLight+';border:1px solid '+b.borderLight+'">Automático</span></div></div>';
+        h += '<div style="flex:1;background:rgba(156,163,175,0.05);border:1px solid rgba(156,163,175,0.15);border-radius:8px;padding:8px 12px;text-align:right">';
+        h += '<p style="font-size:11px;line-height:1.4;color:#6b7280;margin:0">' + b.placeholder_text + '</p></div></div>';
+        return h;
+    }
+
     let html = '';
     allCards.forEach(card => {
         if (card.classList.contains('box-card')) {
-            const typeKey = card.dataset.boxType;
-            const b = BOX_TYPES[typeKey];
-            if (!b) return;
-            html += '<div style="border:2px dashed '+b.borderLight+';border-radius:10px;padding:18px 20px;margin-bottom:22px;background:linear-gradient(135deg,'+b.bgLight+'08,'+b.bgLight+'02);position:relative">';
-            html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">';
-            html += '<div style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:'+b.bgLight+';color:'+b.textLight+'">'+getBoxIcon(b.icon)+'</div>';
-            html += '<div><span style="font-size:11.5px;font-weight:700;color:#374151">' + escapeHtml(b.label) + '</span> ';
-            html += '<span style="display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:12px;background:'+b.bgLight+';color:'+b.textLight+';border:1px solid '+b.borderLight+'">Automático</span></div></div>';
-            html += '<div style="background:rgba(156,163,175,0.05);border:1px solid rgba(156,163,175,0.15);border-radius:8px;padding:14px 16px;text-align:center">';
-            html += '<svg class="w-8 h-8 mx-auto mb-1.5 opacity-35" style="color:'+b.color+'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-            html += '<p style="font-size:11px;line-height:1.6;color:#6b7280;margin:0">' + b.placeholder_text + '</p></div></div>';
+            html += renderBoxCard(card);
+        } else if (card.classList.contains('box-group')) {
+            const boxes = card.querySelectorAll(':scope > .box-card');
+            if (boxes.length) {
+                html += '<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:22px">';
+                boxes.forEach(box => { html += renderBoxCard(box); });
+                html += '</div>';
+            }
         } else if (card.classList.contains('clause-card')) {
             const titleInput = card.querySelector('input[name*="[title]"]');
             const textarea = card.querySelector('textarea[name*="[content]"]');
