@@ -183,7 +183,8 @@
         flex-shrink: 0;
     }
     .box-icon-wrap svg { width: 18px; height: 18px; }
-    .box-title { font-size: 13px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.3; }
+    .box-title { font-size: 13px; font-weight: 700; letter-spacing: 0.01em; line-height: 1.3; color: #1f2937; }
+    .dark .box-title { color: #1f2937; }
     .box-badge {
         display: inline-flex; align-items: center; gap: 3px;
         padding: 2px 8px; border-radius: 20px;
@@ -835,7 +836,7 @@ function addBox(typeKey) {
         '<div class="box-card-header">' +
             '<div class="box-icon-wrap" style="background:' + b.color + ';color:#fff">' + getBoxIcon(b.icon) + '</div>' +
             '<div>' +
-                '<p class="box-title" style="color:' + (isDark ? '#f3f4f6' : '#1f2937') + '">' + escapeHtml(b.label) + '</p>' +
+                '<p class="box-title">' + escapeHtml(b.label) + '</p>' +
                 '<span class="box-badge" style="background:' + b.bgLight + ';color:' + b.textLight + ';border:1px solid ' + b.borderLight + '">Automático</span>' +
             '</div>' +
         '</div>' +
@@ -869,14 +870,18 @@ function renderPreview() {
         const typeKey = card.dataset.boxType;
         const b = BOX_TYPES[typeKey];
         if (!b) return '';
-        let h = '<div style="display:flex;align-items:center;gap:14px;border-radius:14px;padding:14px 18px;background:linear-gradient(135deg,'+b.bgLight+' 0%,#ffffff 60%);border:1px solid '+b.borderLight+';box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative">';
+        const isDark = document.documentElement.classList.contains('dark');
+        const bgTo = isDark ? '#0a0a0a' : '#ffffff';
+        const divider = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+        const textColor = isDark ? '#9ca3af' : '#6b7280';
+        let h = '<div style="display:flex;align-items:center;gap:14px;border-radius:14px;padding:14px 18px;background:linear-gradient(135deg,'+b.bgLight+' 0%,'+bgTo+' 60%);border:1px solid '+b.borderLight+';box-shadow:0 1px 3px rgba(0,0,0,0.04);position:relative">';
         h += '<div style="position:absolute;top:0;left:0;bottom:0;width:4px;background:'+b.color+';border-radius:14px 0 0 14px"></div>';
         h += '<div style="display:flex;align-items:center;gap:12px;flex-shrink:0">';
         h += '<div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:'+b.color+';color:#fff">'+getBoxIcon(b.icon)+'</div>';
         h += '<div><span style="font-size:13px;font-weight:700;color:#1f2937;line-height:1.3">' + escapeHtml(b.label) + '</span> ';
         h += '<span style="display:inline-flex;align-items:center;gap:3px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;padding:2px 8px;border-radius:20px;background:'+b.bgLight+';color:'+b.textLight+';border:1px solid '+b.borderLight+'">Automático</span></div></div>';
-        h += '<div style="flex:1;padding-left:14px;border-left:1px solid rgba(0,0,0,0.06);text-align:right">';
-        h += '<p style="font-size:12px;line-height:1.45;color:#6b7280;margin:0">' + b.placeholder_text + '</p></div></div>';
+        h += '<div style="flex:1;padding-left:14px;border-left:1px solid '+divider+';text-align:right">';
+        h += '<p style="font-size:12px;line-height:1.45;color:'+textColor+';margin:0">' + b.placeholder_text + '</p></div></div>';
         return h;
     }
 
