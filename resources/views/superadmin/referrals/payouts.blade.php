@@ -254,15 +254,17 @@
                 </div>
             </div>
         @empty
-            <div class="text-center py-20">
-                <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                    <svg class="w-7 h-7 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
+            @if(!($filter === 'paid' && $paidWithdrawals && $paidWithdrawals->count() > 0))
+                <div class="text-center py-20">
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                        <svg class="w-7 h-7 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium text-gray-400">No hay referidos en este estado</p>
+                    <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Los usuarios con préstamos pagados aparecerán aquí.</p>
                 </div>
-                <p class="text-sm font-medium text-gray-400">No hay referidos en este estado</p>
-                <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Los usuarios con préstamos pagados aparecerán aquí.</p>
-            </div>
+            @endif
         @endforelse
 
         <!-- Pagination -->

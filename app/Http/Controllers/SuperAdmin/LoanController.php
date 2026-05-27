@@ -1328,11 +1328,11 @@ class LoanController extends Controller
             'pending' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
                 $q->where('status', 'paid');
             })->whereDoesntHave('payouts', function ($q) {
-                $q->where('status', 'paid');
+                $q->whereIn('status', ['paid', 'withdrawn']);
             })->count(),
             'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
-                $q->where('status', 'paid');
-            })->count(),
+                $q->whereIn('status', ['paid', 'withdrawn']);
+            })->count() + \App\Models\ReferralWithdrawal::whereIn('status', ['paid', 'confirmed'])->count(),
             'withdrawals' => \App\Models\ReferralWithdrawal::where('status', 'pending')->count(),
         ];
 
