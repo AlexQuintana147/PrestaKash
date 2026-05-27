@@ -35,12 +35,29 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input type="text" id="users-search" placeholder="Buscar por nombre, DNI o RUC..."
+                   value="{{ request('search') }}"
                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
-            <button type="button" id="users-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+            <button type="button" id="users-search-clear"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ request('search') ? '' : 'hidden' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
+            <div id="users-search-spinner"
+                 class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
+                <svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <div id="users-search-badge" class="{{ request('search') ? '' : 'hidden' }} mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            Mostrando resultados para "<span id="users-search-term" class="font-medium text-gray-700 dark:text-gray-300">{{ request('search') }}</span>"
+            — <span id="users-search-count">{{ $filter === 'blocked' ? $blockedUsers->total() : $users->total() }}</span> encontrado(s)
         </div>
 
         <!-- Filtros Mobile -->
@@ -55,7 +72,7 @@
                     'ghosts'   => ['label' => 'Fantasmas',  'active' => 'bg-purple-600 text-white', 'inactive' => 'bg-transparent text-purple-500/50 border-purple-200 dark:border-purple-900/30'],
                     'blocked'  => ['label' => 'Bloqueados', 'active' => 'bg-red-600 text-white',    'inactive' => 'bg-transparent text-red-500/50 border-red-200 dark:border-red-900/30'],
                 ] as $key => $cfg)
-                    <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}"
+                    <a href="{{ route('superadmin.users.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                        class="flex items-center justify-center gap-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                               {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
                         {{ $cfg['label'] }}
@@ -100,7 +117,7 @@
                                 default   => 'bg-gray-900 dark:bg-white',
                             };
                         @endphp
-                        <a href="{{ route('superadmin.users.index', ['filter' => $key]) }}" 
+                        <a href="{{ route('superadmin.users.index', array_filter(['filter' => $key, 'search' => request('search')])) }}" 
                            class="relative flex items-center gap-2 flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors {{ $colorClass }}">
                             <span class="flex items-center gap-1">
                                 {{ $label }}
@@ -122,6 +139,7 @@
             </div>
         </div>
 
+        <div id="users-list">
         <!-- Cabecera de columnas (solo desktop) -->
         @if($filter !== 'blocked' && $filter !== 'ghosts')
             <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center"
@@ -166,7 +184,6 @@
 
             @forelse($blockedUsers as $blocked)
                 <div class="user-row flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 -mx-2 px-2"
-                    data-search-name="{{ strtolower($blocked->name) }}" data-search-dni="{{ strtolower($blocked->dni ?? '') }}" data-search-email="{{ strtolower($blocked->email ?? '') }}"
                     style="grid-template-columns: 1fr 100px 110px 120px 130px 120px 24px;">
 
                     <div class="flex items-center gap-3 min-w-0">
@@ -213,7 +230,6 @@
                 @php $status = $user->documents?->status @endphp
                 @php $hasPendingChanges = $user->profileChangeRequests()->where('status', 'pending')->exists() @endphp
                 <div class="user-row flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
-                    data-search-name="{{ strtolower($user->name) }}" data-search-dni="{{ strtolower($user->dni ?? '') }}" data-search-email="{{ strtolower($user->email ?? '') }}"
                     style="grid-template-columns: {{ $user->is_ghost ? '1fr 100px 110px 120px 130px 120px 100px 24px' : '1fr 100px 100px 110px 110px 80px 100px 90px 90px 24px' }};">
 
                     <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-3 min-w-0 flex-1">
@@ -423,6 +439,7 @@
                 </div>
             </div>
         @endif
+        </div>
 
     </div>
 
@@ -430,32 +447,72 @@
     (function() {
         const searchInput = document.getElementById('users-search');
         const clearBtn = document.getElementById('users-search-clear');
-        if (!searchInput) return;
+        const spinner = document.getElementById('users-search-spinner');
+        const badge = document.getElementById('users-search-badge');
+        const searchTerm = document.getElementById('users-search-term');
+        const searchCount = document.getElementById('users-search-count');
+        const usersList = document.getElementById('users-list');
+        if (!searchInput || !usersList) return;
 
-        function filterRows() {
-            const term = searchInput.value.trim().toLowerCase();
-            const rows = document.querySelectorAll('.user-row');
+        const currentFilter = '{{ $filter }}';
+        const baseUrl = '{{ route("superadmin.users.index") }}';
+        let debounceTimer = null;
+        let currentRequest = null;
 
-            clearBtn.classList.toggle('hidden', !term);
+        function performSearch(term) {
+            if (currentRequest) currentRequest.abort();
 
-            rows.forEach(function(row) {
-                if (!term) {
-                    row.style.display = '';
-                    return;
+            const params = new URLSearchParams();
+            if (term) params.set('search', term);
+            if (currentFilter !== 'all') params.set('filter', currentFilter);
+
+            const url = baseUrl + (params.toString() ? '?' + params.toString() : '');
+
+            if (!term) {
+                clearBtn.classList.add('hidden');
+                badge.classList.add('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                searchTerm.textContent = term;
+                badge.classList.remove('hidden');
+            }
+
+            currentRequest = new AbortController();
+
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-Live-Search': 'true' },
+                signal: currentRequest.signal
+            })
+            .then(function(response) { return response.text(); })
+            .then(function(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newList = doc.getElementById('users-list');
+                if (newList) {
+                    usersList.innerHTML = newList.innerHTML;
                 }
-                const name = (row.dataset.searchName || '').toLowerCase();
-                const dni = (row.dataset.searchDni || '').toLowerCase();
-                const email = (row.dataset.searchEmail || '').toLowerCase();
-                const match = name.includes(term) || dni.includes(term) || email.includes(term);
-                row.style.display = match ? '' : 'none';
+                const newCount = doc.getElementById('users-search-count');
+                if (newCount && searchCount) searchCount.textContent = newCount.textContent;
+            })
+            .catch(function(err) {
+                if (err.name !== 'AbortError') console.error(err);
+            })
+            .finally(function() {
+                spinner.classList.add('hidden');
+                if (term) clearBtn.classList.remove('hidden');
             });
         }
 
-        searchInput.addEventListener('input', filterRows);
+        searchInput.addEventListener('input', function() {
+            const term = this.value.trim();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() { performSearch(term); }, 300);
+        });
 
         clearBtn.addEventListener('click', function() {
             searchInput.value = '';
-            filterRows();
+            performSearch('');
             searchInput.focus();
         });
     })();
