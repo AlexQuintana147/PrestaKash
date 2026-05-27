@@ -43,7 +43,8 @@ class WorkerPermission
         $perm = $user->workerPermissions()->where('section', $section)->first();
 
         if (!$perm || !$perm->can_view) {
-            abort(403, 'No tienes permiso para acceder a esta sección.');
+            // Redirect to dashboard instead of showing 403 error
+            return redirect()->route('superadmin.dashboard')->with('error', 'No tienes permiso para acceder a esa sección.');
         }
 
         return $next($request);

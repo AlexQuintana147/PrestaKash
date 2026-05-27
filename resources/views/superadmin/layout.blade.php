@@ -292,7 +292,7 @@
                             </div>
                         </a>
                         @endif
-                        
+
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investments'))
                         <a href="{{ route('superadmin.investments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
@@ -440,7 +440,7 @@
                     <div class="min-w-0">
                         <p class="text-xs font-medium text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}
                         </p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">Super Admin</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">{{ Auth::user()->isSuperAdmin() ? 'Super Admin' : 'Trabajador' }}</p>
                     </div>
                 </div>
 
