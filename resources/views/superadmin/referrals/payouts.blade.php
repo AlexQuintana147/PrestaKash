@@ -364,28 +364,36 @@ document.getElementById('userDetailModal').addEventListener('keydown', function(
 });
 
 function formatReferralAmount(input) {
-    let raw = input.value.replace(/[^0-9.]/g, '');
-    let parts = raw.split('.');
-    let intPart = parts[0];
-    let decPart = parts[1] ? parts[1].slice(0, 2) : '';
-    if (intPart.length > 3) {
-        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-    input.value = intPart + (decPart !== '' ? '.' + decPart : '');
-    // Update hidden with clean value
+    let digits = input.value.replace(/\D/g, '');
+    if (digits.length === 0) digits = '0';
+    while (digits.length < 3) digits = '0' + digits;
+    let intPart = digits.slice(0, -2);
+    let decPart = digits.slice(-2);
+    intPart = parseInt(intPart, 10).toString();
+    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    input.value = intPart + '.' + decPart;
     let hidden = input.parentElement.querySelector('.referral-amount-hidden');
     if (hidden) {
-        hidden.value = parseFloat(raw || 0).toFixed(2);
+        hidden.value = (parseFloat(digits.slice(0, -2) + '.' + digits.slice(-2))).toFixed(2);
     }
 }
 
 function validateReferralAmount(input) {
-    let raw = input.value.replace(/,/g, '');
-    let val = parseFloat(raw || 0);
+    let digits = input.value.replace(/\D/g, '');
+    if (digits.length === 0) digits = '0';
+    while (digits.length < 3) digits = '0' + digits;
+    let val = parseFloat(digits.slice(0, -2) + '.' + digits.slice(-2));
     let max = parseFloat(input.dataset.max || 0);
     if (val < 0) val = 0;
     if (max > 0 && val > max) val = max;
-    input.value = val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    // Rebuild formatted value from adjusted val
+    let intStr = Math.floor(val).toString();
+    let decStr = Math.round((val % 1) * 100).toString().padStart(2, '0');
+    let newDigits = intStr + decStr;
+    while (newDigits.length < 3) newDigits = '0' + newDigits;
+    let intPart = parseInt(newDigits.slice(0, -2), 10).toString();
+    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    input.value = intPart + '.' + newDigits.slice(-2);
     let hidden = input.parentElement.querySelector('.referral-amount-hidden');
     if (hidden) hidden.value = val.toFixed(2);
 }
