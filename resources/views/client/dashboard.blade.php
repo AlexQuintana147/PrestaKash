@@ -663,8 +663,8 @@
             </div>
         </div>
         <div class="px-5 py-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
-            <a href="{{ $user->profile_completed ? route('client.loans.profile.edit') : route('client.loans') }}" class="w-full py-3 rounded-xl bg-[#006BFF] dark:bg-[#4A90E2] text-white text-sm font-semibold hover:bg-[#0052CC] dark:hover:bg-[#3A7BC8] transition-colors flex items-center justify-center">
-                {{ $user->profile_completed ? 'Editar perfil' : 'Completa tu perfil' }}
+            <a href="{{ $user->clientProfile ? route('client.loans.profile.edit') : route('client.loans') }}" class="w-full py-3 rounded-xl bg-[#006BFF] dark:bg-[#4A90E2] text-white text-sm font-semibold hover:bg-[#0052CC] dark:hover:bg-[#3A7BC8] transition-colors flex items-center justify-center">
+                {{ $user->clientProfile ? 'Editar perfil' : 'Completa tu perfil' }}
             </a>
         </div>
     </div>
