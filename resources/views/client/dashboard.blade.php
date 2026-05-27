@@ -916,6 +916,11 @@
             setTimeout(function () { notice.remove(); }, 200);
         });
     }
+
+    // Auto-open bank modal if redirected from loan creation
+    if (new URLSearchParams(window.location.search).get('open_bank') === '1') {
+        openBankModal();
+    }
 </script>
 <script>
 (function(){

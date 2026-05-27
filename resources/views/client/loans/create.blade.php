@@ -301,7 +301,7 @@
                                         <p class="text-xs text-amber-700 dark:text-amber-500/80 mb-4 leading-relaxed">Para
                                             solicitar un préstamo, primero debes agregar una cuenta bancaria donde recibirás el
                                             dinero.</p>
-                                        <a href="{{ route('client.dashboard') }}"
+                                        <a href="{{ route('client.dashboard', ['open_bank' => 1]) }}"
                                             class="inline-flex items-center text-[10px] font-black text-amber-900 dark:text-amber-400 uppercase tracking-[0.2em] border-b-2 border-amber-900 dark:border-amber-400 pb-0.5 hover:opacity-70 transition-opacity">
                                             Ir al inicio para agregar cuenta
                                         </a>
