@@ -498,6 +498,7 @@ class ContractController extends Controller
                         : ($vals[0] ?? '');
                     $data['numero_cuenta_empresa'] = $fmt(array_column($bankAccounts, 'account_number'));
                     $data['cci_empresa'] = $fmt(array_column($bankAccounts, 'cci'));
+                    $data['banco_empresa'] = $fmt(array_column($bankAccounts, 'bank'));
                     $data['tipo_cuenta_empresa'] = '—';
                     $data['tipo_moneda_empresa'] = $investment->currency === 'USD' ? 'Dólares (USD)' : 'Soles (PEN)';
                 }
