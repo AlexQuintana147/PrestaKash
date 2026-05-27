@@ -37,11 +37,11 @@
         <div>
             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Ganancias</p>
             <p class="text-2xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($totalEarnings, 2) }}</p>
-            @if($latestWithdrawal)
+            @if($latestWithdrawal && ($latestWithdrawal->status === 'pending' || $latestWithdrawal->status === 'paid'))
                 @if($latestWithdrawal->status === 'pending')
                     <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium">Retiro en proceso</p>
                     <p class="text-[10px] text-gray-400 dark:text-gray-600">S/ {{ number_format($latestWithdrawal->amount, 2) }} solicitados</p>
-                @elseif($latestWithdrawal->status === 'paid')
+                @else
                     <p class="text-[10px] text-green-600 dark:text-green-400 mt-1 font-medium">Retiro pagado</p>
                     <p class="text-[10px] text-gray-400 dark:text-gray-600">S/ {{ number_format($latestWithdrawal->amount, 2) }} — {{ $latestWithdrawal->paid_at?->format('d/m/Y') }}</p>
                     @if($latestWithdrawal->voucher_path)
@@ -49,12 +49,6 @@
                             Ver comprobante
                         </button>
                     @endif
-                @else
-                    <p class="text-[10px] text-green-600 dark:text-green-400 mt-1 font-medium">Retiro confirmado</p>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-600">S/ {{ number_format($latestWithdrawal->amount, 2) }} — {{ $latestWithdrawal->paid_at?->format('d/m/Y') }}</p>
-                    <button type="button" class="mt-2 w-full text-[10px] font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg px-3 py-1.5 transition-colors">
-                        Ver historial de pagos
-                    </button>
                 @endif
             @elseif($totalEarnings >= 50)
                 <button type="button" onclick="openWithdrawModal()" class="mt-2 w-full text-[10px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-3 py-1.5 transition-colors">

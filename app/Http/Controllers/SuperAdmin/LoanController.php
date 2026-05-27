@@ -1340,7 +1340,11 @@ class LoanController extends Controller
             ? \App\Models\ReferralWithdrawal::with(['user', 'bankAccount'])->where('status', 'pending')->latest()->paginate(15)->withQueryString()
             : null;
 
-        return view('superadmin.referrals.payouts', compact('referrals', 'filter', 'counts', 'withdrawals'));
+        $paidWithdrawals = $filter === 'paid'
+            ? \App\Models\ReferralWithdrawal::with(['user', 'bankAccount'])->whereIn('status', ['paid', 'confirmed'])->latest()->paginate(15)->withQueryString()
+            : null;
+
+        return view('superadmin.referrals.payouts', compact('referrals', 'filter', 'counts', 'withdrawals', 'paidWithdrawals'));
     }
 
     public function storeReferralPayout(Request $request, \App\Models\Referral $referral)

@@ -271,6 +271,59 @@
                 {{ $referrals->links() }}
             </div>
         @endif
+
+        @if($filter === 'paid' && $paidWithdrawals && $paidWithdrawals->count() > 0)
+            <div class="mt-10 mb-4">
+                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold">Retiros de referidos pagados</p>
+            </div>
+            @foreach($paidWithdrawals as $w)
+                <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-5 md:p-6 mb-4">
+                    <div class="flex flex-col md:flex-row md:items-center gap-5">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Referidor</p>
+                            <div class="flex items-center gap-3">
+                                @php $wSelfie = $w->user->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($w->user->documents->selfie) : null; @endphp
+                                <button type="button" onclick="openUserDetailModal({{ $w->user->id }})" class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/20 hover:ring-2 hover:ring-indigo-300 transition-all cursor-pointer">
+                                    @if($wSelfie)
+                                        <img src="{{ $wSelfie }}" alt="{{ $w->user->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
+                                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">{{ strtoupper(substr($w->user->name, 0, 1)) }}</span>
+                                        </div>
+                                    @endif
+                                </button>
+                                <div class="min-w-0">
+                                    <button type="button" onclick="openUserDetailModal({{ $w->user->id }})" class="text-left hover:underline">
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $w->user->name }}</p>
+                                    </button>
+                                    <p class="text-xs text-gray-400 truncate">{{ $w->user->email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
+                            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Cuenta bancaria</p>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $w->bankAccount->bank_name }}</p>
+                            <p class="text-xs text-gray-400">{{ ucfirst($w->bankAccount->account_type) }} — {{ $w->bankAccount->currency === 'USD' ? '$' : 'S/' }} {{ $w->bankAccount->account_number }}</p>
+                            <p class="text-[10px] text-gray-400 mt-1">CCI: {{ $w->bankAccount->cci_number ?? '—' }}</p>
+                        </div>
+                        <div class="md:w-64 shrink-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
+                            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto transferido</p>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($w->amount, 2) }}</p>
+                            <p class="text-xs text-gray-400 mt-1">Pagado el {{ $w->paid_at?->format('d/m/Y') ?? '—' }}</p>
+                            <span class="inline-flex mt-2 items-center px-2 py-0.5 text-[10px] font-medium {{ $w->status === 'confirmed' ? 'text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' }} rounded-md">
+                                {{ $w->status === 'confirmed' ? 'Confirmado por cliente' : 'Pagado' }}
+                            </span>
+                            @if($w->voucher_path)
+                                <a href="{{ \Illuminate\Support\Facades\Storage::url($w->voucher_path) }}" target="_blank" class="mt-2 inline-block text-[10px] font-semibold text-green-600 dark:text-green-400 hover:underline">Ver comprobante →</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+            @if($paidWithdrawals->hasPages())
+                <div class="mt-6">{{ $paidWithdrawals->links() }}</div>
+            @endif
+        @endif
     @endif
 </div>
 
