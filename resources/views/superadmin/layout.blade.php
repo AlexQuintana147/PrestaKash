@@ -176,6 +176,7 @@
                             </svg>
                             Dashboard
                         </a>
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('clients'))
                         <a href="{{ route('superadmin.users.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.users.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -201,6 +202,8 @@
                                 @endif
                             </div>
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.workers.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.workers.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -210,6 +213,8 @@
                             </svg>
                             Trabajadores
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investors'))
                         <a href="{{ route('superadmin.investors.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.investors.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -230,6 +235,8 @@
                             @endif
                             </div>
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.settings') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.settings*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -241,6 +248,8 @@
                             </svg>
                             Configuración
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.contracts.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.contracts*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -249,6 +258,7 @@
                             </svg>
                             Contratos
                         </a>
+                        @endif
                     </div>
                 </div>
 
@@ -260,6 +270,7 @@
                         class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-widest">
                         Finanzas</p>
                     <div class="space-y-1">
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('loans'))
                         <a href="{{ route('superadmin.loans.index', ['filter' => 'pending']) }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.loans.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -280,7 +291,9 @@
                             @endif
                             </div>
                         </a>
+                        @endif
                         
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investments'))
                         <a href="{{ route('superadmin.investments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ (request()->routeIs('superadmin.investments.*') && !request()->routeIs('superadmin.investments.payouts')) ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -311,6 +324,8 @@
                             @endif
                             </div>
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('collections'))
                         <a href="{{ route('superadmin.installments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.installments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -333,6 +348,8 @@
                             @endif
                             </div>
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investments'))
                         <a href="{{ route('superadmin.investments.payouts') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.investments.payouts') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -342,6 +359,8 @@
                             </svg>
                             Pagos
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('clients'))
                         <a href="{{ route('superadmin.referrals.payouts') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.referrals.payouts') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -353,6 +372,8 @@
                                 Referidos
                             </div>
                         </a>
+                        @endif
+                        @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('cashboxes'))
                         <a href="{{ route('superadmin.cashboxes.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                               {{ request()->routeIs('superadmin.cashboxes.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
@@ -362,6 +383,7 @@
                             </svg>
                             Caja
                         </a>
+                        @endif
                     </div>
                 </div>
 

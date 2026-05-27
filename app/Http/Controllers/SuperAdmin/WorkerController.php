@@ -54,19 +54,16 @@ class WorkerController extends Controller
                 'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
                 'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
                     if (empty($value)) {
-                        $fail('Debes asignar al menos un permiso de acceso.');
+                        $fail('Debes asignar al menos un módulo de acceso.');
                         return;
                     }
-                    $hasAnyView = collect($value)->contains(fn($p) => !empty($p['can_view']));
-                    if (!$hasAnyView) {
-                        $fail('El trabajador debe tener al menos un permiso de "Ver" activo.');
+                    $hasAnyEnabled = collect($value)->contains(fn($p) => !empty($p['enabled']));
+                    if (!$hasAnyEnabled) {
+                        $fail('El trabajador debe tener al menos un módulo habilitado.');
                     }
                 }],
                 'permissions.*.section' => ['required', 'string', 'in:' . implode(',', array_keys(WorkerPermission::availableSections()))],
-                'permissions.*.can_view' => 'boolean',
-                'permissions.*.can_create' => 'boolean',
-                'permissions.*.can_edit' => 'boolean',
-                'permissions.*.can_delete' => 'boolean',
+                'permissions.*.enabled' => 'boolean',
             ], [
                 'first_name.regex' => 'Los nombres solo pueden contener letras, espacios, guiones y puntos.',
                 'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
@@ -100,14 +97,16 @@ class WorkerController extends Controller
 
             if (!empty($validated['permissions'])) {
                 foreach ($validated['permissions'] as $perm) {
-                    WorkerPermission::create([
-                        'user_id' => $worker->id,
-                        'section' => $perm['section'],
-                        'can_view' => $perm['can_view'] ?? false,
-                        'can_create' => $perm['can_create'] ?? false,
-                        'can_edit' => $perm['can_edit'] ?? false,
-                        'can_delete' => $perm['can_delete'] ?? false,
-                    ]);
+                    if (!empty($perm['enabled'])) {
+                        WorkerPermission::create([
+                            'user_id' => $worker->id,
+                            'section' => $perm['section'],
+                            'can_view' => true,
+                            'can_create' => false,
+                            'can_edit' => false,
+                            'can_delete' => false,
+                        ]);
+                    }
                 }
             }
 
@@ -167,27 +166,23 @@ class WorkerController extends Controller
             'phone' => [
                 'nullable',
                 'string',
-                'regex:/^(\+51)?\s?9\d{8}$/',
-                'max:15',
+                'regex:/^\d{9}$/',
                 Rule::unique('users', 'phone')->ignore($worker->id),
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'status' => 'nullable|string|in:active,inactive',
             'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
                 if (empty($value)) {
-                    $fail('Debes asignar al menos un permiso de acceso.');
+                    $fail('Debes asignar al menos un módulo de acceso.');
                     return;
                 }
-                $hasAnyView = collect($value)->contains(fn($p) => !empty($p['can_view']));
-                if (!$hasAnyView) {
-                    $fail('El trabajador debe tener al menos un permiso de "Ver" activo.');
+                $hasAnyEnabled = collect($value)->contains(fn($p) => !empty($p['enabled']));
+                if (!$hasAnyEnabled) {
+                    $fail('El trabajador debe tener al menos un módulo habilitado.');
                 }
             }],
             'permissions.*.section' => ['required', 'string', 'in:' . implode(',', array_keys(WorkerPermission::availableSections()))],
-            'permissions.*.can_view' => 'boolean',
-            'permissions.*.can_create' => 'boolean',
-            'permissions.*.can_edit' => 'boolean',
-            'permissions.*.can_delete' => 'boolean',
+            'permissions.*.enabled' => 'boolean',
         ], [
             'first_name.regex' => 'Los nombres solo pueden contener letras, espacios, guiones y puntos.',
             'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
@@ -219,14 +214,16 @@ class WorkerController extends Controller
         $worker->workerPermissions()->delete();
         if (!empty($validated['permissions'])) {
             foreach ($validated['permissions'] as $perm) {
-                WorkerPermission::create([
-                    'user_id' => $worker->id,
-                    'section' => $perm['section'],
-                    'can_view' => $perm['can_view'] ?? false,
-                    'can_create' => $perm['can_create'] ?? false,
-                    'can_edit' => $perm['can_edit'] ?? false,
-                    'can_delete' => $perm['can_delete'] ?? false,
-                ]);
+                if (!empty($perm['enabled'])) {
+                    WorkerPermission::create([
+                        'user_id' => $worker->id,
+                        'section' => $perm['section'],
+                        'can_view' => true,
+                        'can_create' => false,
+                        'can_edit' => false,
+                        'can_delete' => false,
+                    ]);
+                }
             }
         }
 

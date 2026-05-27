@@ -99,50 +99,17 @@
             <div class="space-y-0 divide-y divide-gray-100 dark:divide-gray-800/60">
                 @foreach($sections as $key => $label)
                 @php
-                    $base = "permissions[" . $key . "]";
+                    $base = "permissions[" . $loop->index . "]";
                     $perm = $existingPermissions[$key] ?? null;
+                    $isChecked = ($perm && $perm['can_view']) || old($base . '.enabled') ? true : false;
                 @endphp
-                <div class="py-3 flex items-start gap-4 group">
-                    <span class="text-xs font-bold text-gray-700 dark:text-gray-300 w-28 flex-shrink-0 pt-0.5">{{ $label }}</span>
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-wrap">
-                        <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
-                            <input type="checkbox" name="{{ $base }}[can_view]" value="1" {{ ($perm && $perm['can_view']) || (!$perm && old($base . '.can_view')) ? 'checked' : '' }}
-                                class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-500 dark:bg-gray-800">
-                            <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Ver</span>
-                            <span class="help-icon hidden sm:flex relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
-                                ?
-                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Ver y listar {{ strtolower($label) }}</span>
-                            </span>
-                        </label>
-                        <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
-                            <input type="checkbox" name="{{ $base }}[can_create]" value="1" {{ ($perm && $perm['can_create']) || old($base . '.can_create') ? 'checked' : '' }}
-                                class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-emerald-500 focus:ring-emerald-500 dark:bg-gray-800">
-                            <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Crear</span>
-                            <span class="help-icon hidden sm:flex relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
-                                ?
-                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Crear nuevos {{ strtolower($label) }}</span>
-                            </span>
-                        </label>
-                        <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
-                            <input type="checkbox" name="{{ $base }}[can_edit]" value="1" {{ ($perm && $perm['can_edit']) || old($base . '.can_edit') ? 'checked' : '' }}
-                                class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-blue-500 focus:ring-blue-500 dark:bg-gray-800">
-                            <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Editar</span>
-                            <span class="help-icon hidden sm:flex relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
-                                ?
-                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Modificar {{ strtolower($label) }}</span>
-                            </span>
-                        </label>
-                        <label class="inline-flex items-center gap-1 cursor-pointer group/perm relative">
-                            <input type="checkbox" name="{{ $base }}[can_delete]" value="1" {{ ($perm && $perm['can_delete']) || old($base . '.can_delete') ? 'checked' : '' }}
-                                class="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-red-500 focus:ring-red-500 dark:bg-gray-800">
-                            <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Eliminar</span>
-                            <span class="help-icon hidden sm:flex relative w-3.5 h-3.5 rounded-full bg-gray-200 dark:bg-gray-700 items-center justify-center text-[8px] font-bold text-gray-400 cursor-help opacity-0 group-hover/perm:opacity-100 transition-opacity">
-                                ?
-                                <span class="tooltip invisible absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[9px] font-medium rounded-md whitespace-nowrap shadow-lg z-50 opacity-0 transition-all duration-150 group-hover/perm:visible group-hover/perm:opacity-100">Eliminar {{ strtolower($label) }}</span>
-                            </span>
-                        </label>
-                    </div>
-                    <input type="hidden" name="{{ $base }}[section]" value="{{ $key }}">
+                <div class="py-3 flex items-center gap-4 group">
+                    <label class="inline-flex items-center gap-3 cursor-pointer">
+                        <input type="hidden" name="{{ $base }}[section]" value="{{ $key }}">
+                        <input type="checkbox" name="{{ $base }}[enabled]" value="1" {{ $isChecked ? 'checked' : '' }}
+                            class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-500 dark:bg-gray-800">
+                        <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ $label }}</span>
+                    </label>
                 </div>
                 @endforeach
             </div>
@@ -165,10 +132,10 @@
 
     <script>
     function toggleAllPermissions() {
-        const all = document.querySelectorAll('form input[type="checkbox"][name*="[can_view]"]');
+        const all = document.querySelectorAll('form input[type="checkbox"][name*="[enabled]"]');
         if (!all.length) return;
         const firstState = all[0].checked;
-        document.querySelectorAll('form input[type="checkbox"]').forEach(cb => {
+        all.forEach(cb => {
             cb.checked = !firstState;
         });
     }

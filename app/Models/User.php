@@ -125,13 +125,7 @@ class User extends Authenticatable
         if ($this->isSuperAdmin() || $this->isAdmin()) return true;
         $perm = $this->workerPermissions()->where('section', $section)->first();
         if (!$perm) return false;
-        return match($action) {
-            'view' => $perm->can_view,
-            'create' => $perm->can_create,
-            'edit' => $perm->can_edit,
-            'delete' => $perm->can_delete,
-            default => false,
-        };
+        return $perm->can_view;
     }
 
     public function isSuperAdmin(): bool

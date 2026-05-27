@@ -10,7 +10,12 @@ class SuperAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->role?->name !== 'superadmin') {
+        if (!auth()->check()) {
+            abort(404);
+        }
+
+        $role = auth()->user()->role?->name;
+        if (!in_array($role, ['superadmin', 'trabajador'])) {
             abort(404);
         }
 
