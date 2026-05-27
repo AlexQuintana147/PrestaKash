@@ -168,7 +168,7 @@
                             'field' => 'credit_line',
                             'prefix' => 'S/ '
                         ] : null,
-                        'Registro'     => $user->created_at->format('d/m/Y'),
+                        'Registro'     => $user->created_at->format('d/m/Y H:i'),
                         'Referido por' => (!$user->is_ghost && $user->referrer) ? [
                             'value' => $user->referrer->first_name . ' ' . $user->referrer->last_name,
                             'link' => route('superadmin.users.show', $user->referrer),
