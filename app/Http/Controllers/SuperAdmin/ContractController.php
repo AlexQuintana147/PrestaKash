@@ -490,6 +490,15 @@ class ContractController extends Controller
                 $data['moneda'] = $investment->currency;
                 $data['tipo_amortizacion'] = $pivot->amortization_type;
                 $data['cuota_mensual'] = 'S/ ' . number_format($pivot->amount * ($investment->monthly_return_rate / 100), 2, ',', '.');
+
+                $bankAccounts = $investment->bank_accounts ?? [];
+                if (!empty($bankAccounts)) {
+                    $fmt = fn($vals) => implode(', ', array_map(fn($v) => '[' . $v . ']', $vals));
+                    $data['numero_cuenta_empresa'] = $fmt(array_column($bankAccounts, 'account_number'));
+                    $data['cci_empresa'] = $fmt(array_column($bankAccounts, 'cci'));
+                    $data['tipo_cuenta_empresa'] = '—';
+                    $data['tipo_moneda_empresa'] = $investment->currency === 'USD' ? 'Dólares (USD)' : 'Soles (PEN)';
+                }
             }
         }
 
