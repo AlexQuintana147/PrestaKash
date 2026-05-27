@@ -250,66 +250,100 @@ async function openUserDetailModal(userId) {
             ? `<img src="${data.selfie}" alt="${data.name}" class="w-full h-full object-cover">`
             : `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">${data.initials}</div>`;
 
-        let html = '';
+        const debtColor = data.has_debt ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400';
+        const debtBg = data.has_debt ? 'bg-red-50 dark:bg-red-950/20 border-red-100 dark:border-red-900/30' : 'bg-green-50 dark:bg-green-950/20 border-green-100 dark:border-green-900/30';
+        const debtLabel = data.has_debt ? 'Tiene deudas' : 'Sin deudas';
 
-        // Estado general
-        html += `<div class="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4">
-            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-3">Estado financiero</p>
-            <div class="grid grid-cols-3 gap-3">
-                <div class="text-center">
-                    <p class="text-lg font-bold ${data.total_debt > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">${data.total_debt > 0 ? 'S/ ' + data.total_debt.toFixed(2) : 'S/ 0.00'}</p>
-                    <p class="text-[10px] text-gray-400">Deuda total</p>
+        content.innerHTML = `
+            <div class="grid grid-cols-2 gap-3">
+                <!-- Estado de deuda -->
+                <div class="rounded-2xl p-4 border ${debtBg}">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg ${data.has_debt ? 'bg-red-100 dark:bg-red-900/30' : 'bg-green-100 dark:bg-green-900/30'} flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 ${debtColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                ${data.has_debt
+                                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>'
+                                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+                                }
+                            </svg>
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest font-semibold ${data.has_debt ? 'text-red-400' : 'text-green-400'}">${debtLabel}</p>
+                    </div>
+                    <p class="text-xl font-bold ${debtColor}">S/ ${data.total_debt.toFixed(2)}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">${data.overdue_count} cuota${data.overdue_count !== 1 ? 's' : ''} vencida${data.overdue_count !== 1 ? 's' : ''}</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-lg font-bold text-gray-900 dark:text-white">${data.active_loans}</p>
-                    <p class="text-[10px] text-gray-400">Préstamos activos</p>
+
+                <!-- Total préstamos -->
+                <div class="rounded-2xl p-4 border bg-gray-50 dark:bg-gray-900/50 border-gray-100 dark:border-gray-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Total préstamos</p>
+                    </div>
+                    <p class="text-xl font-bold text-gray-900 dark:text-white">${data.total_loans}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">${data.active_loans} activo${data.active_loans !== 1 ? 's' : ''}</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-lg font-bold text-gray-900 dark:text-white">${data.paid_loans}</p>
-                    <p class="text-[10px] text-gray-400">Préstamos pagados</p>
+
+                <!-- Activos -->
+                <div class="rounded-2xl p-4 border bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/30">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest font-semibold text-blue-400">Activos</p>
+                    </div>
+                    <p class="text-xl font-bold text-blue-600 dark:text-blue-400">${data.active_loans}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">${data.upcoming_count} por pagar</p>
+                </div>
+
+                <!-- Pagados -->
+                <div class="rounded-2xl p-4 border bg-green-50 dark:bg-green-950/20 border-green-100 dark:border-green-900/30">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest font-semibold text-green-400">Pagados</p>
+                    </div>
+                    <p class="text-xl font-bold text-green-600 dark:text-green-400">${data.paid_loans}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">completados</p>
+                </div>
+
+                <!-- Pendientes -->
+                <div class="rounded-2xl p-4 border bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest font-semibold text-amber-400">En revisión</p>
+                    </div>
+                    <p class="text-xl font-bold text-amber-600 dark:text-amber-400">${data.pending_loans}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">pendientes</p>
+                </div>
+
+                <!-- Rechazados -->
+                <div class="rounded-2xl p-4 border bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-7 h-7 rounded-lg bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </div>
+                        <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Rechazados</p>
+                    </div>
+                    <p class="text-xl font-bold text-gray-700 dark:text-gray-300">${data.rejected_loans}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">denegados</p>
                 </div>
             </div>
-        </div>`;
-
-        // Cuotas vencidas
-        if (data.overdue_installments.length > 0) {
-            html += `<div class="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-2xl p-4">
-                <p class="text-[10px] uppercase tracking-widest font-semibold text-red-400 mb-3">Cuotas vencidas</p>
-                <div class="space-y-2">`;
-            data.overdue_installments.forEach(inst => {
-                html += `<div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-700 dark:text-gray-300">${inst.loan_code} — Cuota #${inst.number}</span>
-                    <span class="font-bold text-red-600 dark:text-red-400">S/ ${inst.amount.toFixed(2)}</span>
-                </div>`;
-            });
-            html += `</div></div>`;
-        }
-
-        // Próximos pagos
-        if (data.upcoming_installments.length > 0) {
-            html += `<div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-2xl p-4">
-                <p class="text-[10px] uppercase tracking-widest font-semibold text-amber-400 mb-3">Próximos pagos</p>
-                <div class="space-y-2">`;
-            data.upcoming_installments.forEach(inst => {
-                html += `<div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-700 dark:text-gray-300">${inst.loan_code} — Cuota #${inst.number}</span>
-                    <span class="font-bold text-amber-600 dark:text-amber-400">S/ ${inst.amount.toFixed(2)}</span>
-                </div><p class="text-[10px] text-gray-400">Vence ${inst.due_date}</p>`;
-            });
-            html += `</div></div>`;
-        }
-
-        if (data.overdue_installments.length === 0 && data.upcoming_installments.length === 0) {
-            html += `<div class="text-center py-8">
-                <div class="w-12 h-12 mx-auto mb-3 rounded-xl bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <p class="text-sm font-medium text-gray-500">Sin cuotas pendientes</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">El usuario está al día con sus pagos.</p>
-            </div>`;
-        }
-
-        content.innerHTML = html;
+        `;
     } catch (e) {
         content.innerHTML = `<p class="text-sm text-red-500 text-center py-8">Error al cargar los datos.</p>`;
     }
