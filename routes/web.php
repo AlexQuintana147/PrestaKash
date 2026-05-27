@@ -6,6 +6,102 @@ use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/setup-storage', function () {
+    $results = [];
+    $base = storage_path();
+
+    $directories = [
+        'app/private',
+        'app/public/documents',
+        'app/public/vouchers',
+        'app/public/selfies',
+        'framework/cache',
+        'framework/cache/data',
+        'framework/sessions',
+        'framework/testing',
+        'framework/views',
+        'logs',
+    ];
+
+    foreach ($directories as $dir) {
+        $fullPath = $base . '/' . $dir;
+        if (!is_dir($fullPath)) {
+            try {
+                mkdir($fullPath, 0755, true);
+                $results[$dir] = '✅ Creado';
+            } catch (\Throwable $e) {
+                $results[$dir] = '❌ Error: ' . $e->getMessage();
+            }
+        } else {
+            $results[$dir] = '⏩ Ya existe';
+        }
+    }
+
+    $gitignorePaths = [
+        'app/private/.gitignore' => "*\n!.gitignore\n",
+        'app/public/.gitignore' => "*\n!.gitignore\n",
+        'framework/.gitignore' => "*\n!.gitignore\n",
+        'framework/cache/.gitignore' => "*\n!.gitignore\n",
+        'framework/cache/data/.gitignore' => "*\n!.gitignore\n",
+        'framework/sessions/.gitignore' => "*\n!.gitignore\n",
+        'framework/testing/.gitignore' => "*\n!.gitignore\n",
+        'framework/views/.gitignore' => "*\n!.gitignore\n",
+        'logs/.gitignore' => "*\n!.gitignore\n",
+    ];
+
+    foreach ($gitignorePaths as $relativePath => $content) {
+        $fullPath = $base . '/' . $relativePath;
+        if (!file_exists($fullPath)) {
+            try {
+                file_put_contents($fullPath, $content);
+                $results[".gitignore: {$relativePath}"] = '✅ Creado';
+            } catch (\Throwable $e) {
+                $results[".gitignore: {$relativePath}"] = '❌ Error: ' . $e->getMessage();
+            }
+        } else {
+            $results[".gitignore: {$relativePath}"] = '⏩ Ya existe';
+        }
+    }
+
+    $publicStorage = public_path('storage');
+    $storageAppPublic = $base . '/app/public';
+    $symlinkResult = '';
+
+    if (is_link($publicStorage)) {
+        $symlinkResult = '⏩ Symlink ya existe → ' . readlink($publicStorage);
+    } elseif (is_dir($publicStorage)) {
+        $symlinkResult = '⚠️ public/storage es un directorio real (no symlink). Considera reemplazarlo.';
+    } else {
+        try {
+            symlink($storageAppPublic, $publicStorage);
+            $symlinkResult = '✅ Symlink creado: public/storage → storage/app/public';
+        } catch (\Throwable $e) {
+            $symlinkResult = '❌ Error symlink: ' . $e->getMessage() . ' — Ejecuta manualmente: php artisan storage:link';
+        }
+    }
+
+    $writableCheck = [];
+    $checkDirs = [
+        'app/public' => storage_path('app/public'),
+        'app/private' => storage_path('app/private'),
+        'framework/cache' => storage_path('framework/cache'),
+        'framework/sessions' => storage_path('framework/sessions'),
+        'logs' => storage_path('logs'),
+    ];
+
+    foreach ($checkDirs as $label => $path) {
+        $writableCheck[$label] = is_writable($path) ? '✅ Escribible' : '❌ NO escribible';
+    }
+
+    return response()->json([
+        'storage_base' => $base,
+        'directories' => $results,
+        'symlink' => $symlinkResult,
+        'permissions' => $writableCheck,
+        'tip' => 'ELIMINA ESTA RUTA después de usarla en routes/web.php',
+    ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+});
+
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();

@@ -425,7 +425,15 @@
                 },
                 body: formData
             })
-                .then(response => response.json().then(data => ({ status: response.status, data })))
+                .then(response => {
+                    if (response.status === 419) {
+                        loginErrorMessage.textContent = 'Tu sesión ha expirado. Recargando la página...';
+                        loginError.classList.remove('hidden');
+                        setTimeout(() => window.location.reload(), 1500);
+                        throw new Error('CSRF token mismatch');
+                    }
+                    return response.json().then(data => ({ status: response.status, data }));
+                })
                 .then(({ status, data }) => {
                     if (status === 200 && data.success) {
                         window.location.href = data.redirect;
@@ -438,6 +446,7 @@
                     }
                 })
                 .catch(error => {
+                    if (error.message === 'CSRF token mismatch') return;
                     console.error('Error:', error);
                     loginErrorMessage.textContent = 'Error de conexión con el servidor.';
                     loginError.classList.remove('hidden');

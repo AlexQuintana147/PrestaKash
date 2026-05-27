@@ -27,6 +27,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Tu sesión ha expirado. Por favor, recarga la página e intenta de nuevo.',
+                ], 419);
+            }
+
+            return response()->view('errors.419', [], 419);
+        });
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
             return response()->view('errors.404', [], 404);
         });
