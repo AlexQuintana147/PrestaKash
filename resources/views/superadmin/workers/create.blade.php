@@ -13,6 +13,12 @@
         <p class="text-sm text-gray-400 mt-1">Completa los datos y asigna permisos de acceso</p>
     </div>
 
+    @if($errors->has('general'))
+        <div class="mb-6 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 p-4">
+            <p class="text-sm font-medium text-red-600 dark:text-red-400">{{ $errors->first('general') }}</p>
+        </div>
+    @endif
+
     <form action="{{ route('superadmin.workers.store') }}" method="POST" class="space-y-6">
         @csrf
 

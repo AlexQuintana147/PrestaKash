@@ -32,91 +32,89 @@ class WorkerController extends Controller
 
     public function store(Request $request)
     {
-        $this->checkRateLimit($request);
+        try {
+            $this->checkRateLimit($request);
 
-        $validated = $request->validate([
-            'first_name' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u'],
-            'last_name' => ['required', 'string', 'min:4', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u', function ($attr, $value, $fail) {
-                $parts = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
-                if (count($parts) < 2) {
-                    $fail('Debes ingresar ambos apellidos (apellido paterno y materno).');
-                }
-            }],
-            'dni' => [
-                'required',
-                'string',
-                'regex:/^[1-9]\d{7}$/',
-                'unique:users,dni',
-                function ($attr, $value, $fail) {
-                    if (!preg_match('/^[1-9]\d{7}$/', $value)) {
-                        $fail('El DNI no puede empezar con 0.');
+            $validated = $request->validate([
+                'first_name' => ['required', 'string', 'min:2', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u'],
+                'last_name' => ['required', 'string', 'min:4', 'max:120', 'regex:/^[\p{L}\s\-\.]+$/u', function ($attr, $value, $fail) {
+                    $parts = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                    if (count($parts) < 2) {
+                        $fail('Debes ingresar ambos apellidos (apellido paterno y materno).');
+                    }
+                }],
+                'dni' => [
+                    'required',
+                    'string',
+                    'regex:/^[1-9]\d{7}$/',
+                    'unique:users,dni',
+                ],
+                'email' => ['required', 'email', 'unique:users,email', 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
+                'phone' => ['nullable', 'string', 'regex:/^\d{9}$/', 'unique:users,phone'],
+                'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+                'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
+                    if (empty($value)) {
+                        $fail('Debes asignar al menos un permiso de acceso.');
                         return;
                     }
-                },
-            ],
-            'email' => ['required', 'email', 'unique:users,email', 'regex:/^(?!.*@(tempmail|10minutemail|guerrillamail|mailinator|throwaway|fake|disposable)\.com$).+$/i'],
-            'phone' => ['nullable', 'string', 'regex:/^(\+51)?\s?9\d{8}$/', 'max:15', 'unique:users,phone'],
-            'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
-            'permissions' => ['nullable', 'array', function ($attr, $value, $fail) {
-                if (empty($value)) {
-                    $fail('Debes asignar al menos un permiso de acceso.');
-                    return;
+                    $hasAnyView = collect($value)->contains(fn($p) => !empty($p['can_view']));
+                    if (!$hasAnyView) {
+                        $fail('El trabajador debe tener al menos un permiso de "Ver" activo.');
+                    }
+                }],
+                'permissions.*.section' => ['required', 'string', 'in:' . implode(',', array_keys(WorkerPermission::availableSections()))],
+                'permissions.*.can_view' => 'boolean',
+                'permissions.*.can_create' => 'boolean',
+                'permissions.*.can_edit' => 'boolean',
+                'permissions.*.can_delete' => 'boolean',
+            ], [
+                'first_name.regex' => 'Los nombres solo pueden contener letras, espacios, guiones y puntos.',
+                'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
+                'last_name.regex' => 'Los apellidos solo pueden contener letras, espacios, guiones y puntos.',
+                'last_name.min' => 'Los apellidos deben tener al menos 4 caracteres.',
+                'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos y no puede empezar con 0.',
+                'dni.unique' => 'Este DNI ya está registrado en el sistema.',
+                'email.unique' => 'Este correo electrónico ya está registrado en el sistema.',
+                'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
+                'phone.unique' => 'Este número de celular ya está registrado en el sistema.',
+                'phone.regex' => 'El celular debe tener exactamente 9 dígitos numéricos.',
+                'password.regex' => 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.',
+            ]);
+
+            $this->checkMaxWorkers();
+
+            $trabajadorRole = Role::where('name', 'trabajador')->firstOrFail();
+
+            $firstName = strip_tags(trim($validated['first_name']));
+            $lastName = strip_tags(trim($validated['last_name']));
+
+            $worker = User::create([
+                'role_id' => $trabajadorRole->id,
+                'name' => $firstName . ' ' . $lastName,
+                'dni' => $validated['dni'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'profile_completed' => true,
+            ]);
+
+            if (!empty($validated['permissions'])) {
+                foreach ($validated['permissions'] as $perm) {
+                    WorkerPermission::create([
+                        'user_id' => $worker->id,
+                        'section' => $perm['section'],
+                        'can_view' => $perm['can_view'] ?? false,
+                        'can_create' => $perm['can_create'] ?? false,
+                        'can_edit' => $perm['can_edit'] ?? false,
+                        'can_delete' => $perm['can_delete'] ?? false,
+                    ]);
                 }
-                $hasAnyView = collect($value)->contains(fn($p) => !empty($p['can_view']));
-                if (!$hasAnyView) {
-                    $fail('El trabajador debe tener al menos un permiso de "Ver" activo.');
-                }
-            }],
-            'permissions.*.section' => ['required', 'string', 'in:' . implode(',', array_keys(WorkerPermission::availableSections()))],
-            'permissions.*.can_view' => 'boolean',
-            'permissions.*.can_create' => 'boolean',
-            'permissions.*.can_edit' => 'boolean',
-            'permissions.*.can_delete' => 'boolean',
-        ], [
-            'first_name.regex' => 'Los nombres solo pueden contener letras, espacios, guiones y puntos.',
-            'first_name.min' => 'Los nombres deben tener al menos 2 caracteres.',
-            'last_name.regex' => 'Los apellidos solo pueden contener letras, espacios, guiones y puntos.',
-            'last_name.min' => 'Los apellidos deben tener al menos 4 caracteres.',
-            'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos y no puede empezar con 0.',
-            'dni.unique' => 'Este DNI ya está registrado en el sistema.',
-            'email.unique' => 'Este correo electrónico ya está registrado en el sistema.',
-            'email.regex' => 'El correo electrónico no es válido o usa un dominio temporal.',
-            'phone.unique' => 'Este número de celular ya está registrado en el sistema.',
-            'phone.regex' => 'El celular debe tener formato válido (+51 9XXXXXXXX).',
-            'password.regex' => 'La contraseña debe incluir al menos una mayúscula, una minúscula y un número.',
-        ]);
-
-        $this->checkMaxWorkers();
-
-        $trabajadorRole = Role::where('name', 'trabajador')->firstOrFail();
-
-        $firstName = strip_tags(trim($validated['first_name']));
-        $lastName = strip_tags(trim($validated['last_name']));
-
-        $worker = User::create([
-            'role_id' => $trabajadorRole->id,
-            'name' => $firstName . ' ' . $lastName,
-            'dni' => $validated['dni'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'profile_completed' => true,
-        ]);
-
-        if (!empty($validated['permissions'])) {
-            foreach ($validated['permissions'] as $perm) {
-                WorkerPermission::create([
-                    'user_id' => $worker->id,
-                    'section' => $perm['section'],
-                    'can_view' => $perm['can_view'] ?? false,
-                    'can_create' => $perm['can_create'] ?? false,
-                    'can_edit' => $perm['can_edit'] ?? false,
-                    'can_delete' => $perm['can_delete'] ?? false,
-                ]);
             }
-        }
 
-        return redirect()->route('superadmin.workers.index')->with('success', 'Trabajador creado correctamente');
+            return redirect()->route('superadmin.workers.index')->with('success', 'Trabajador creado correctamente');
+        } catch (\Throwable $e) {
+            return back()->withInput()->withErrors(['general' => 'Error al crear trabajador: ' . $e->getMessage()]);
+        }
     }
 
     public function edit(User $worker)
