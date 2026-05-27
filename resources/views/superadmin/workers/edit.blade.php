@@ -52,8 +52,10 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Celular</label>
-                    <input type="text" name="phone" maxlength="15" value="{{ old('phone', $worker->phone) }}"
-                        class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors">
+                    <input type="tel" name="phone" maxlength="9" inputmode="numeric" value="{{ old('phone', $worker->phone) }}"
+                        class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
+                        placeholder="912345678"
+                        oninput="this.value = this.value.replace(/\D/g,'')">
                     @error('phone')
                     <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p>
                     @enderror
