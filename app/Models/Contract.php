@@ -159,9 +159,6 @@ class Contract extends Model
                     'tipo_moneda_empresa' => ['desc' => 'Tipo de moneda de la cuenta empresarial', 'source' => 'CompanySetting.currency'],
                     'cci_empresa' => ['desc' => 'CCI de la cuenta bancaria de la empresa', 'source' => 'CompanySetting.cci'],
                     'banco_empresa' => ['desc' => 'Nombre del banco de la cuenta empresarial', 'source' => 'InvestmentOpportunity.bank_accounts[*].bank'],
-                    'logo_empresa' => ['desc' => 'Logo de la empresa (se insertará como imagen)', 'source' => 'Imagen'],
-                    'firma_representante' => ['desc' => 'Firma del representante legal (se insertará como imagen)', 'source' => 'Imagen'],
-                    'sello_empresa' => ['desc' => 'Sello de la empresa (se insertará como imagen)', 'source' => 'Imagen'],
                 ],
             ],
             'fechas' => [
