@@ -41,12 +41,20 @@
                 @if($latestWithdrawal->status === 'pending')
                     <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium">Retiro en proceso</p>
                     <p class="text-[10px] text-gray-400 dark:text-gray-600">S/ {{ number_format($latestWithdrawal->amount, 2) }} solicitados</p>
-                @else
+                @elseif($latestWithdrawal->status === 'paid')
                     <p class="text-[10px] text-green-600 dark:text-green-400 mt-1 font-medium">Retiro pagado</p>
                     <p class="text-[10px] text-gray-400 dark:text-gray-600">S/ {{ number_format($latestWithdrawal->amount, 2) }} — {{ $latestWithdrawal->paid_at?->format('d/m/Y') }}</p>
                     @if($latestWithdrawal->voucher_path)
-                        <a href="{{ \Illuminate\Support\Facades\Storage::url($latestWithdrawal->voucher_path) }}" target="_blank" class="mt-1 inline-block text-[10px] font-semibold text-green-600 dark:text-green-400 hover:underline">Ver comprobante →</a>
+                        <button type="button" onclick="openVoucherModal()" class="mt-2 w-full text-[10px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-3 py-1.5 transition-colors">
+                            Ver comprobante
+                        </button>
                     @endif
+                @else
+                    <p class="text-[10px] text-green-600 dark:text-green-400 mt-1 font-medium">Retiro confirmado</p>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-600">S/ {{ number_format($latestWithdrawal->amount, 2) }} — {{ $latestWithdrawal->paid_at?->format('d/m/Y') }}</p>
+                    <button type="button" class="mt-2 w-full text-[10px] font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg px-3 py-1.5 transition-colors">
+                        Ver historial de pagos
+                    </button>
                 @endif
             @elseif($totalEarnings >= 50)
                 <button type="button" onclick="openWithdrawModal()" class="mt-2 w-full text-[10px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-3 py-1.5 transition-colors">
@@ -234,6 +242,34 @@
     </div>
 </div>
 
+<!-- Voucher Modal -->
+<div id="voucherModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <div onclick="closeVoucherModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 max-h-[85vh] sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md sm:w-full bg-white dark:bg-gray-950 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white">Comprobante de pago</h3>
+                <p class="text-[10px] text-gray-400">Verifica la transferencia antes de confirmar</p>
+            </div>
+            <button type="button" onclick="closeVoucherModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-5 space-y-4">
+            @if($latestWithdrawal && $latestWithdrawal->voucher_path)
+                <img src="{{ \Illuminate\Support\Facades\Storage::url($latestWithdrawal->voucher_path) }}" alt="Comprobante" class="w-full rounded-2xl border border-gray-100 dark:border-gray-800">
+                <form action="{{ route('client.referrals.withdrawals.confirm-voucher', $latestWithdrawal) }}" method="POST" class="pt-2">
+                    @csrf
+                    <button type="submit" class="w-full text-sm font-semibold text-white bg-green-600 hover:bg-green-700 active:bg-green-800 rounded-xl px-4 py-3 transition-colors">
+                        Confirmar y eliminar comprobante
+                    </button>
+                    <p class="text-[10px] text-gray-400 text-center mt-2">Al confirmar, el comprobante se eliminará permanentemente del sistema.</p>
+                </form>
+            @endif
+        </div>
+    </div>
+</div>
+
 <script>
 function openReferralDetailModal(data) {
     const modal = document.getElementById('referralDetailModal');
@@ -294,6 +330,16 @@ function openWithdrawModal() {
 
 function closeWithdrawModal() {
     document.getElementById('withdrawModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function openVoucherModal() {
+    document.getElementById('voucherModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVoucherModal() {
+    document.getElementById('voucherModal').classList.add('hidden');
     document.body.style.overflow = '';
 }
 

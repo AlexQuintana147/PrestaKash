@@ -91,4 +91,24 @@ class ReferralController extends Controller
 
         return back()->with('success', 'Solicitud de retiro enviada. El equipo de PrestaKash procesará tu pago en las próximas 24 horas hábiles.');
     }
+
+    public function confirmVoucher(Request $request, \App\Models\ReferralWithdrawal $withdrawal)
+    {
+        $user = Auth::user();
+
+        if ($withdrawal->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($withdrawal->voucher_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($withdrawal->voucher_path);
+        }
+
+        $withdrawal->update([
+            'status' => 'confirmed',
+            'voucher_path' => null,
+        ]);
+
+        return back()->with('success', 'Comprobante confirmado. El archivo ha sido eliminado del sistema.');
+    }
 }
