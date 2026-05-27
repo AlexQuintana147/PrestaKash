@@ -37,7 +37,17 @@
         <div>
             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Ganancias</p>
             <p class="text-2xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($totalEarnings, 2) }}</p>
-            <p class="text-[10px] text-gray-400 dark:text-gray-600 mt-0.5">Retiro mínimo S/ 50</p>
+            @if($totalEarnings >= 50)
+                <button type="button" onclick="openWithdrawModal()" class="mt-2 w-full text-[10px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-3 py-1.5 transition-colors">
+                    Solicitar retiro
+                </button>
+            @else
+                @php $remaining = max(0, 50 - $totalEarnings); @endphp
+                <p class="text-[10px] text-gray-400 dark:text-gray-600 mt-1">Te falta S/ {{ number_format($remaining, 2) }} para retirar</p>
+                <div class="mt-1.5 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full transition-all" style="width: {{ min(($totalEarnings / 50) * 100, 100) }}%"></div>
+                </div>
+            @endif
         </div>
     </section>
 
@@ -173,15 +183,13 @@ function openReferralDetailModal(data) {
 
     if (data.amount) {
         const isPaid = data.status_payout === 'paid';
-        const statusColor = isPaid ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400';
         const statusBg = isPaid ? 'bg-green-50 dark:bg-green-950/20 border-green-100 dark:border-green-900/30' : 'bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30';
-        const statusLabel = isPaid ? 'Pagado' : 'Pendiente';
+        const statusColor = isPaid ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400';
 
         html += `<div class="rounded-2xl p-5 border ${statusBg} mb-4">
             <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-3">Tu ganancia</p>
             <p class="text-3xl font-bold ${statusColor}">S/ ${data.amount}</p>
             <div class="flex items-center gap-2 mt-2">
-                <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-medium ${statusColor} bg-white dark:bg-gray-900 rounded-md">${statusLabel}</span>
                 ${data.loan_code ? `<span class="text-[10px] text-gray-400">${data.loan_code}</span>` : ''}
             </div>
             ${data.paid_at ? `<p class="text-[10px] text-gray-400 mt-1">Pagado el ${data.paid_at}</p>` : ''}

@@ -49,7 +49,7 @@ class ReferralController extends Controller
         ];
 
         $totalEarnings = \App\Models\ReferralPayout::whereIn('referral_id', $user->referralRecords()->pluck('id'))
-            ->where('status', 'paid')
+            ->whereIn('status', ['paid', 'pending'])
             ->sum('amount');
 
         return view('client.referrals.index', compact('user', 'referralLink', 'totalReferrals', 'referrals', 'filter', 'counts', 'totalEarnings'));
