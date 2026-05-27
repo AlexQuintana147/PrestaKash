@@ -26,10 +26,14 @@
             <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : ($inst->requested_type === 'total' ? 'text-green-600 dark:text-green-400' : 'text-gray-400') }} font-bold tabular-nums">
                 @if($inst->requested_type === 'total')
                     @php
-                        $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
-                        $pendingFromTotal = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                        if ($inst->status === 'approved') {
+                            $totalDisplayAmount = $inst->amount + ($inst->charged_late_fee ?? 0);
+                        } else {
+                            $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
+                            $totalDisplayAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                        }
                     @endphp
-                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($pendingFromTotal, 2) }}
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($totalDisplayAmount, 2) }}
                 @elseif((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + $lateFee, 2) }}
                 @else

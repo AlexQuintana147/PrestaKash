@@ -1011,17 +1011,13 @@ class LoanController extends Controller
 
         // LÓGICA SIMPLIFICADA: Determinar qué tipo de pago es y si puede revertirse
 
+        $isTotalPayment = $installment->requested_type === 'total';
+
         if ($installment->status === 'approved') {
             // CASO A: Revertir cuota aprobada
             // Verificar que sea el ÚLTIMO pago del préstamo (comparando fechas)
 
-            // 1. Obtener última cuota aprobada
-            $lastApprovedInstallment = $loan->installments()
-                ->where('status', 'approved')
-                ->orderBy('paid_at', 'desc')
-                ->first();
-
-            // 2. Obtener último interés pagado
+            // 1. Obtener último interés pagado
             $lastInterestPayment = null;
             $lastInterestDate = null;
 
@@ -1039,7 +1035,7 @@ class LoanController extends Controller
                 }
             }
 
-            // 3. Comparar fechas para determinar el último pago real
+            // 2. Comparar fechas para determinar el último pago real
             $canRevertThis = true;
 
             if ($lastInterestPayment && $lastInterestDate) {
@@ -1049,9 +1045,26 @@ class LoanController extends Controller
                 }
             }
 
-            // También verificar que sea efectivamente la última cuota aprobada
-            if ($lastApprovedInstallment && $lastApprovedInstallment->id !== $installment->id) {
-                $canRevertThis = false;
+            if ($isTotalPayment) {
+                // Para pago total: verificar que no haya cuotas aprobadas DESPUÉS del batch
+                $hasLaterApproved = $loan->installments()
+                    ->where('status', 'approved')
+                    ->where('paid_at', '>', $installment->paid_at)
+                    ->exists();
+
+                if ($hasLaterApproved) {
+                    $canRevertThis = false;
+                }
+            } else {
+                // Para cuotas normales: verificar que sea efectivamente la última cuota aprobada
+                $lastApprovedInstallment = $loan->installments()
+                    ->where('status', 'approved')
+                    ->orderBy('paid_at', 'desc')
+                    ->first();
+
+                if ($lastApprovedInstallment && $lastApprovedInstallment->id !== $installment->id) {
+                    $canRevertThis = false;
+                }
             }
 
             if (!$canRevertThis) {
@@ -1105,7 +1118,7 @@ class LoanController extends Controller
             return back()->withErrors(['unapprove' => 'No se puede revertir este pago.']);
         }
 
-        \DB::transaction(function () use ($installment, $loan, $isInterestPayment, $interestPayment) {
+        \DB::transaction(function () use ($installment, $loan, $isInterestPayment, $interestPayment, $isTotalPayment) {
             if ($isInterestPayment && $interestPayment) {
                 // REVERSIÓN DE PAGO DE INTERÉS → volver a "Por validar"
 
@@ -1171,6 +1184,46 @@ class LoanController extends Controller
                 // 6. Eliminar registro del interés (sin borrar voucher, se movió a la cuota)
                 $interestPayment->delete();
 
+            } elseif ($isTotalPayment) {
+                // REVERSIÓN DE PAGO TOTAL → revertir todas las cuotas del batch
+                $batchPaidAt = $installment->paid_at;
+                $batchInstallments = $loan->installments()
+                    ->where('status', 'approved')
+                    ->where('paid_at', $batchPaidAt)
+                    ->get();
+
+                foreach ($batchInstallments as $inst) {
+                    if ($inst->id === $installment->id) {
+                        // La cuota que inició el pago total vuelve a processing con sus datos
+                        $inst->update([
+                            'status' => 'processing',
+                            'paid_at' => null,
+                        ]);
+                    } else {
+                        // Las demás cuotas del batch vuelven a pending
+                        $inst->update([
+                            'status' => 'pending',
+                            'paid_at' => null,
+                        ]);
+                    }
+                }
+
+                if ($loan->status === 'paid') {
+                    $loan->update(['status' => 'approved']);
+                }
+
+                $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                    ->where('reference_id', $installment->id)
+                    ->whereNull('interest_payment_id')
+                    ->first();
+
+                if ($movement) {
+                    $cashbox = $movement->cashbox;
+                    if ($cashbox) {
+                        $cashbox->decrement('balance', $movement->amount);
+                    }
+                    $movement->delete();
+                }
             } else {
                 // REVERSIÓN DE CUOTA APROBADA → volver a "Por validar"
                 $installment->update([

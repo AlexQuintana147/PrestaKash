@@ -187,11 +187,15 @@
                     </p>
                 @elseif($inst->requested_type === 'total')
                     @php
-                        $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
-                        $pendingFromTotal = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                        if ($inst->status === 'approved') {
+                            $totalDisplayAmount = $inst->amount + ($inst->charged_late_fee ?? 0);
+                        } else {
+                            $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
+                            $totalDisplayAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                        }
                     @endphp
                     <p class="text-sm font-black text-green-600 dark:text-green-400 tabular-nums">
-                        {{ $currency }} {{ number_format($pendingFromTotal, 2) }}
+                        {{ $currency }} {{ number_format($totalDisplayAmount, 2) }}
                     </p>
                     <p class="text-[8px] text-green-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         Pago Total
