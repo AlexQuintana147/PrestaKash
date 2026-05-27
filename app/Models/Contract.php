@@ -157,7 +157,6 @@ class Contract extends Model
                     'empresa_representante_dni' => ['desc' => 'DNI del representante legal', 'source' => 'CompanySetting.representative_dni'],
                     'numero_cuenta_empresa' => ['desc' => 'Número de cuenta bancaria de la empresa', 'source' => 'CompanySetting.account_number'],
                     'tipo_moneda_empresa' => ['desc' => 'Tipo de moneda de la cuenta empresarial', 'source' => 'CompanySetting.currency'],
-                    'tipo_cuenta_empresa' => ['desc' => 'Tipo de cuenta bancaria de la empresa', 'source' => 'CompanySetting.account_type'],
                     'cci_empresa' => ['desc' => 'CCI de la cuenta bancaria de la empresa', 'source' => 'CompanySetting.cci'],
                     'logo_empresa' => ['desc' => 'Logo de la empresa (se insertará como imagen)', 'source' => 'Imagen'],
                     'firma_representante' => ['desc' => 'Firma del representante legal (se insertará como imagen)', 'source' => 'Imagen'],
