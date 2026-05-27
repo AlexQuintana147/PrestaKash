@@ -1291,4 +1291,85 @@ class LoanController extends Controller
             ->route('superadmin.installments.index', ['filter' => 'paid'])
             ->with('success', "Se eliminaron {$result['deleted_count']} comprobante(s) y se liberaron {$result['freed_human']}.");
     }
+
+    public function referralPayouts(Request $request)
+    {
+        $filter = $request->get('filter', 'pending');
+
+        $query = \App\Models\Referral::with(['referrer', 'referred'])
+            ->whereHas('referred.loans', function ($q) {
+                $q->where('status', 'paid');
+            });
+
+        if ($filter === 'pending') {
+            $query->whereDoesntHave('payouts', function ($q) {
+                $q->where('status', 'paid');
+            })->orWhereHas('payouts', function ($q) {
+                $q->where('status', 'pending');
+            });
+        } elseif ($filter === 'paid') {
+            $query->whereHas('payouts', function ($q) {
+                $q->where('status', 'paid');
+            });
+        }
+
+        $referrals = $query->latest()->paginate(15)->withQueryString();
+
+        foreach ($referrals as $referral) {
+            $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
+            $referral->paid_loan = $paidLoan;
+            $referral->payout = $referral->payouts()->where('loan_id', $paidLoan?->id)->first();
+            $referral->referrer_has_loans = $referral->referrer->loans()->whereIn('status', ['approved', 'disbursed', 'active', 'paid'])->exists();
+            $referral->referrer_has_investments = $referral->referrer->investorApplication !== null
+                && \DB::table('investor_opportunity')->where('user_id', $referral->referrer_id)->where('status', 'approved')->exists();
+        }
+
+        $counts = [
+            'pending' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
+                $q->where('status', 'paid');
+            })->whereDoesntHave('payouts', function ($q) {
+                $q->where('status', 'paid');
+            })->count(),
+            'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
+                $q->where('status', 'paid');
+            })->count(),
+        ];
+
+        return view('superadmin.referrals.payouts', compact('referrals', 'filter', 'counts'));
+    }
+
+    public function storeReferralPayout(Request $request, \App\Models\Referral $referral)
+    {
+        $data = $request->validate([
+            'amount' => 'required|numeric|min:0',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
+
+        if (!$paidLoan) {
+            return back()->withErrors(['referral' => 'El referido no tiene préstamos pagados.']);
+        }
+
+        $referral->payouts()->updateOrCreate(
+            ['loan_id' => $paidLoan->id],
+            [
+                'amount' => $data['amount'],
+                'status' => 'pending',
+                'notes' => $data['notes'] ?? null,
+            ]
+        );
+
+        return back()->with('success', 'Monto de referido registrado correctamente.');
+    }
+
+    public function confirmReferralPayout(Request $request, \App\Models\ReferralPayout $payout)
+    {
+        $payout->update([
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        return back()->with('success', 'Pago a referidor confirmado correctamente.');
+    }
 }

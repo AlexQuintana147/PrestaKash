@@ -143,6 +143,11 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::post('/pagos/comprobantes/vista-previa', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'previewVoucherCleanup'])->name('installments.vouchers.preview');
     Route::post('/pagos/comprobantes/limpiar', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'cleanupVouchers'])->name('installments.vouchers.cleanup');
 
+    // Referidos
+    Route::get('/referidos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'referralPayouts'])->name('referrals.payouts');
+    Route::post('/referidos/{referral}/pago', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'storeReferralPayout'])->name('referrals.payouts.store');
+    Route::post('/referidos/pagos/{payout}/confirmar', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'confirmReferralPayout'])->name('referrals.payouts.confirm');
+
     // Gestión de cajas
     Route::get('/cajas', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'index'])->name('cashboxes.index');
     Route::get('/cajas/{cashbox}/historial', [\App\Http\Controllers\SuperAdmin\CashboxController::class, 'history'])->name('cashboxes.history');
