@@ -1340,16 +1340,16 @@ class LoanController extends Controller
 
     public function storeReferralPayout(Request $request, \App\Models\Referral $referral)
     {
-        $data = $request->validate([
-            'amount' => 'required|numeric|min:0',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
         $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
 
         if (!$paidLoan) {
             return back()->withErrors(['referral' => 'El referido no tiene préstamos pagados.']);
         }
+
+        $data = $request->validate([
+            'amount' => 'required|numeric|min:0|max:' . $paidLoan->total_amount,
+            'notes' => 'nullable|string|max:500',
+        ]);
 
         $referral->payouts()->updateOrCreate(
             ['loan_id' => $paidLoan->id],

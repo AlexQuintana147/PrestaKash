@@ -146,10 +146,15 @@
                                 <label class="block text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto para referidor</label>
                                 <div class="relative">
                                     <span class="absolute left-0 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">S/</span>
-                                    <input type="number" name="amount" step="0.01" min="0" required
-                                           value="{{ $referral->payout ? number_format($referral->payout->amount, 2, '.', '') : '' }}"
-                                           class="w-full pl-5 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
+                                    <input type="text" required
+                                           data-max="{{ $referral->paid_loan?->total_amount ?? 0 }}"
+                                           value="{{ $referral->payout ? number_format($referral->payout->amount, 2, '.', ',') : '' }}"
+                                           class="referral-amount-input w-full pl-5 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors"
+                                           oninput="formatReferralAmount(this)" onblur="validateReferralAmount(this)">
+                                    <input type="hidden" name="amount" class="referral-amount-hidden"
+                                           value="{{ $referral->payout ? number_format($referral->payout->amount, 2, '.', '') : '' }}">
                                 </div>
+                                <p class="text-[10px] text-gray-400 mt-1">Máx: S/ {{ number_format($referral->paid_loan?->total_amount ?? 0, 2, '.', ',') }}</p>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Notas (opcional)</label>
@@ -356,6 +361,41 @@ function closeUserDetailModal() {
 
 document.getElementById('userDetailModal').addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeUserDetailModal();
+});
+
+function formatReferralAmount(input) {
+    let raw = input.value.replace(/[^0-9.]/g, '');
+    let parts = raw.split('.');
+    let intPart = parts[0];
+    let decPart = parts[1] ? parts[1].slice(0, 2) : '';
+    if (intPart.length > 3) {
+        intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    input.value = intPart + (decPart !== '' ? '.' + decPart : '');
+    // Update hidden with clean value
+    let hidden = input.parentElement.querySelector('.referral-amount-hidden');
+    if (hidden) {
+        hidden.value = parseFloat(raw || 0).toFixed(2);
+    }
+}
+
+function validateReferralAmount(input) {
+    let raw = input.value.replace(/,/g, '');
+    let val = parseFloat(raw || 0);
+    let max = parseFloat(input.dataset.max || 0);
+    if (val < 0) val = 0;
+    if (max > 0 && val > max) val = max;
+    input.value = val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    let hidden = input.parentElement.querySelector('.referral-amount-hidden');
+    if (hidden) hidden.value = val.toFixed(2);
+}
+
+// Validate all forms before submit
+document.querySelectorAll('form[action*="referidos"]').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const input = form.querySelector('.referral-amount-input');
+        if (input) validateReferralAmount(input);
+    });
 });
 </script>
 @endsection
