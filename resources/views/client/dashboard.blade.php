@@ -709,24 +709,24 @@
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Banco</label>
                             <select id="f_bank_name" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
-                                <option value="">Seleccionar</option>
+                                <option value="" class="dark:bg-gray-900">Seleccionar</option>
                                 @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa'] as $bank)
-                                    <option value="{{ $bank }}">{{ $bank }}</option>
+                                    <option value="{{ $bank }}" class="dark:bg-gray-900">{{ $bank }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Tipo</label>
                             <select id="f_account_type" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
-                                <option value="ahorros">Ahorros</option>
-                                <option value="corriente">Corriente</option>
+                                <option value="ahorros" class="dark:bg-gray-900">Ahorros</option>
+                                <option value="corriente" class="dark:bg-gray-900">Corriente</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Moneda</label>
                             <select id="f_currency" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
-                                <option value="PEN">Soles (S/)</option>
-                                <option value="USD">Dólares ($)</option>
+                                <option value="PEN" class="dark:bg-gray-900">Soles (S/)</option>
+                                <option value="USD" class="dark:bg-gray-900">Dólares ($)</option>
                             </select>
                         </div>
                         <div>
