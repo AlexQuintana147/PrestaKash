@@ -921,7 +921,7 @@ function renderPreview() {
             renderedContent = renderedContent.replace(/\[([a-z_]+)\]/gi, function(match, key) {
                 const val = SAMPLE_DATA[key.toLowerCase()];
                 const v = VARIABLES_MAP[key.toLowerCase()];
-                if (val && v.color) {
+                if (val && v && v.color) {
                     const bg = isPreviewDark ? v.bg_dark : v.bg_light;
                     const color = isPreviewDark ? v.text_dark : v.text_light;
                     const border = isPreviewDark ? v.border_dark : v.border_light;

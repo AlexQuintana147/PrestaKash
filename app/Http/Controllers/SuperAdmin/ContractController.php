@@ -8,6 +8,7 @@ use App\Models\ContractClause;
 use App\Models\User;
 use App\Models\Loan;
 use App\Models\InvestmentOpportunity;
+use App\Models\CompanySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -414,18 +415,13 @@ class ContractController extends Controller
             } : null,
             'ocupacion' => $profile?->job_title,
             'lugar_trabajo' => $profile?->workplace,
-            'empresa_nombre' => 'PrestaKash Soluciones Financieras S.A.C.',
-            'empresa_ruc' => '20601234567',
-            'empresa_direccion' => 'Av. Central 456, Oficina 302, Cercado de Lima, Perú',
-            'empresa_telefono' => '+51 (01) 111 222 333',
-            'empresa_email' => 'contacto@prestakash.com',
-            'empresa_representante' => 'Juan Carlos Pérez García',
-            'empresa_representante_dni' => '45678901',
-            'logo_empresa' => '',
-            'firma_representante' => '[FIRMA DEL REPRESENTANTE]',
-            'sello_empresa' => '[SELLO DE LA EMPRESA]',
-            'firma_cliente' => '[FIRMA DEL CLIENTE]',
-            'huella_cliente' => '[HUELLA DIGITAL]',
+            'empresa_nombre' => CompanySetting::get('company_razon_social') ?? '—',
+            'empresa_ruc' => CompanySetting::get('company_ruc') ?? '—',
+            'empresa_direccion' => CompanySetting::get('company_address') ?? '—',
+            'empresa_telefono' => CompanySetting::get('company_phone') ?? '—',
+            'empresa_email' => CompanySetting::get('company_email') ?? '—',
+            'empresa_representante' => trim((CompanySetting::get('representative_name') ?? '') . ' ' . (CompanySetting::get('representative_last_name') ?? '')) ?: '—',
+            'empresa_representante_dni' => CompanySetting::get('representative_dni') ?? '—',
         ];
 
         if ($type === 'loan') {
