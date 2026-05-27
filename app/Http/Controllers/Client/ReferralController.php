@@ -53,8 +53,9 @@ class ReferralController extends Controller
             ->sum('amount');
 
         $bankAccounts = $user->bankAccounts;
+        $latestWithdrawal = \App\Models\ReferralWithdrawal::where('user_id', $user->id)->latest()->first();
 
-        return view('client.referrals.index', compact('user', 'referralLink', 'totalReferrals', 'referrals', 'filter', 'counts', 'totalEarnings', 'bankAccounts'));
+        return view('client.referrals.index', compact('user', 'referralLink', 'totalReferrals', 'referrals', 'filter', 'counts', 'totalEarnings', 'bankAccounts', 'latestWithdrawal'));
     }
 
     public function withdraw(Request $request)
@@ -73,7 +74,20 @@ class ReferralController extends Controller
             'account_id' => 'required|exists:bank_accounts,id',
         ]);
 
-        // TODO: Process withdrawal request — mark payouts as withdrawn, create movement, notify admin
+        $bankAccount = $user->bankAccounts()->findOrFail($data['account_id']);
+
+        // Create withdrawal record
+        \App\Models\ReferralWithdrawal::create([
+            'user_id' => $user->id,
+            'bank_account_id' => $bankAccount->id,
+            'amount' => $totalEarnings,
+            'status' => 'pending',
+        ]);
+
+        // Mark payouts as withdrawn
+        \App\Models\ReferralPayout::whereIn('referral_id', $user->referralRecords()->pluck('id'))
+            ->whereIn('status', ['paid', 'pending'])
+            ->update(['status' => 'withdrawn']);
 
         return back()->with('success', 'Solicitud de retiro enviada. El equipo de PrestaKash procesará tu pago en las próximas 24 horas hábiles.');
     }

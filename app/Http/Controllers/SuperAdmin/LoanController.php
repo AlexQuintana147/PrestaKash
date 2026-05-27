@@ -1333,9 +1333,14 @@ class LoanController extends Controller
             'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
                 $q->where('status', 'paid');
             })->count(),
+            'withdrawals' => \App\Models\ReferralWithdrawal::where('status', 'pending')->count(),
         ];
 
-        return view('superadmin.referrals.payouts', compact('referrals', 'filter', 'counts'));
+        $withdrawals = $filter === 'withdrawals'
+            ? \App\Models\ReferralWithdrawal::with(['user', 'bankAccount'])->where('status', 'pending')->latest()->paginate(15)->withQueryString()
+            : null;
+
+        return view('superadmin.referrals.payouts', compact('referrals', 'filter', 'counts', 'withdrawals'));
     }
 
     public function storeReferralPayout(Request $request, \App\Models\Referral $referral)
@@ -1371,6 +1376,28 @@ class LoanController extends Controller
         ]);
 
         return back()->with('success', 'Pago a referidor confirmado correctamente.');
+    }
+
+    public function confirmWithdrawal(Request $request, \App\Models\ReferralWithdrawal $withdrawal)
+    {
+        $data = $request->validate([
+            'voucher' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $update = [
+            'status' => 'paid',
+            'paid_at' => now(),
+            'notes' => $data['notes'] ?? null,
+        ];
+
+        if ($request->hasFile('voucher')) {
+            $update['voucher_path'] = $request->file('voucher')->store('withdrawals', 'public');
+        }
+
+        $withdrawal->update($update);
+
+        return back()->with('success', 'Retiro de referidos confirmado correctamente.');
     }
 
     public function userDetail(Request $request)

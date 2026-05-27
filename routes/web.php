@@ -147,6 +147,7 @@ Route::middleware(['auth', 'superadmin', 'prevent.back', 'cleanup.rejected'])->p
     Route::get('/referidos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'referralPayouts'])->name('referrals.payouts');
     Route::post('/referidos/{referral}/pago', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'storeReferralPayout'])->name('referrals.payouts.store');
     Route::post('/referidos/pagos/{payout}/confirmar', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'confirmReferralPayout'])->name('referrals.payouts.confirm');
+    Route::post('/referidos/retiros/{withdrawal}/confirmar', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'confirmWithdrawal'])->name('referrals.withdrawals.confirm');
     Route::get('/referidos/usuario-detalle', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'userDetail'])->name('referrals.user-detail');
 
     // Gestión de cajas
