@@ -52,6 +52,29 @@ class ReferralController extends Controller
             ->whereIn('status', ['paid', 'pending'])
             ->sum('amount');
 
-        return view('client.referrals.index', compact('user', 'referralLink', 'totalReferrals', 'referrals', 'filter', 'counts', 'totalEarnings'));
+        $bankAccounts = $user->bankAccounts;
+
+        return view('client.referrals.index', compact('user', 'referralLink', 'totalReferrals', 'referrals', 'filter', 'counts', 'totalEarnings', 'bankAccounts'));
+    }
+
+    public function withdraw(Request $request)
+    {
+        $user = Auth::user();
+
+        $totalEarnings = \App\Models\ReferralPayout::whereIn('referral_id', $user->referralRecords()->pluck('id'))
+            ->whereIn('status', ['paid', 'pending'])
+            ->sum('amount');
+
+        if ($totalEarnings < 50) {
+            return back()->withErrors(['withdraw' => 'Aún no has alcanzado el monto mínimo de S/ 50 para retirar.']);
+        }
+
+        $data = $request->validate([
+            'account_id' => 'required|exists:bank_accounts,id',
+        ]);
+
+        // TODO: Process withdrawal request — mark payouts as withdrawn, create movement, notify admin
+
+        return back()->with('success', 'Solicitud de retiro enviada. El equipo de PrestaKash procesará tu pago en las próximas 24 horas hábiles.');
     }
 }

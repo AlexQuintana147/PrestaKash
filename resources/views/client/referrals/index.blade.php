@@ -170,6 +170,59 @@
     </div>
 </div>
 
+<!-- Withdraw Modal -->
+<div id="withdrawModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <div onclick="closeWithdrawModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 max-h-[85vh] sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md sm:w-full bg-white dark:bg-gray-950 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white">Solicitar retiro</h3>
+                <p class="text-[10px] text-gray-400">Revisa los datos antes de confirmar</p>
+            </div>
+            <button type="button" onclick="closeWithdrawModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-5 space-y-4">
+            <div class="rounded-2xl p-5 border bg-green-50 dark:bg-green-950/20 border-green-100 dark:border-green-900/30">
+                <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Monto a recibir</p>
+                <p class="text-3xl font-bold text-green-600 dark:text-green-400">S/ {{ number_format($totalEarnings, 2) }}</p>
+                <p class="text-[10px] text-gray-400 mt-1">Se transferirá a tu cuenta bancaria registrada.</p>
+            </div>
+
+            @if($bankAccounts->count() > 0)
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-3">Cuenta de destino</p>
+                    <div class="space-y-2">
+                        @foreach($bankAccounts as $account)
+                            <label class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 cursor-pointer">
+                                <input type="radio" name="withdraw_account" value="{{ $account->id }}" {{ $loop->first ? 'checked' : '' }} class="accent-green-600 w-4 h-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $account->bank_name }}</p>
+                                    <p class="text-[10px] text-gray-400">{{ ucfirst($account->account_type) }} — {{ $account->currency === 'USD' ? '$' : 'S/' }} ·••• {{ substr($account->account_number, -4) }}</p>
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                <form action="{{ route('client.referrals.withdraw') }}" method="POST" class="pt-2">
+                    @csrf
+                    <input type="hidden" name="account_id" id="withdrawAccountId" value="{{ $bankAccounts->first()->id }}">
+                    <button type="submit" class="w-full text-sm font-semibold text-white bg-green-600 hover:bg-green-700 active:bg-green-800 rounded-xl px-4 py-3 transition-colors">
+                        Confirmar retiro de S/ {{ number_format($totalEarnings, 2) }}
+                    </button>
+                </form>
+            @else
+                <div class="rounded-2xl p-4 border bg-red-50 dark:bg-red-950/20 border-red-100 dark:border-red-900/30">
+                    <p class="text-sm font-medium text-red-600 dark:text-red-400">No tienes cuentas bancarias registradas</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Agrega una cuenta bancaria en tu dashboard para poder recibir el retiro.</p>
+                    <a href="{{ route('client.dashboard', ['open_bank' => 1]) }}" class="mt-3 inline-block text-xs font-semibold text-green-600 dark:text-green-400 hover:underline">Ir a agregar cuenta →</a>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
 <script>
 function openReferralDetailModal(data) {
     const modal = document.getElementById('referralDetailModal');
@@ -222,6 +275,23 @@ function closeReferralDetailModal() {
     document.getElementById('referralDetailModal').classList.add('hidden');
     document.body.style.overflow = '';
 }
+
+function openWithdrawModal() {
+    document.getElementById('withdrawModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeWithdrawModal() {
+    document.getElementById('withdrawModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// Sync hidden input with selected radio
+document.querySelectorAll('input[name="withdraw_account"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('withdrawAccountId').value = this.value;
+    });
+});
 
 function copyReferralLink() {
     const link = document.getElementById('referralLink').textContent.trim();

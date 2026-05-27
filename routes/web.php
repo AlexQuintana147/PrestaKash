@@ -193,6 +193,7 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::post('/prestamos/{loan}/aceptar-contraoferta', [\App\Http\Controllers\Client\LoanController::class, 'acceptCounterOffer'])->name('loans.accept-counter');
     Route::post('/prestamos/{loan}/rechazar-contraoferta', [\App\Http\Controllers\Client\LoanController::class, 'rejectCounterOffer'])->name('loans.reject-counter');
     Route::get('/referidos', [\App\Http\Controllers\Client\ReferralController::class, 'index'])->name('referidos');
+    Route::post('/referidos/retiro', [\App\Http\Controllers\Client\ReferralController::class, 'withdraw'])->name('referrals.withdraw');
     Route::get('/invertir', [\App\Http\Controllers\Client\DashboardController::class, 'invest'])->name('invertir');
     Route::get('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'create'])->name('invest.apply');
     Route::post('/invertir/postular', [\App\Http\Controllers\Client\InvestorApplicationController::class, 'store'])->name('invest.store');
