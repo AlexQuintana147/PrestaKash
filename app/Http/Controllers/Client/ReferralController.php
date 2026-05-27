@@ -35,7 +35,7 @@ class ReferralController extends Controller
             $referralsQuery->whereHas('documents', fn($q) => $q->where('status', 'rejected'));
         }
 
-        $referrals = $referralsQuery->get();
+        $referrals = $referralsQuery->paginate(10)->withQueryString();
         $totalReferrals = $user->referrals()->count();
 
         $counts = [

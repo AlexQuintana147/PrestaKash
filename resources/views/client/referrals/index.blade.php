@@ -74,11 +74,18 @@
                     @php $status = $referral->documents?->status; @endphp
                     <div class="flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-800 last:border-0">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: {{ match($status) { 'approved' => '#dcfce7', 'rejected' => '#fee2e2', 'pending' => '#fef9c3', default => '#f3f4f6' } }};">
-                                <svg class="w-4 h-4" style="color: {{ match($status) { 'approved' => '#22c55e', 'rejected' => '#ef4444', 'pending' => '#eab308', default => '#9ca3af' } }};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                </svg>
-                            </div>
+                            @php
+                                $selfieUrl = $referral->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($referral->documents->selfie) : null;
+                            @endphp
+                            @if($selfieUrl)
+                                <img src="{{ $selfieUrl }}" alt="{{ $referral->name }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0 border border-gray-200 dark:border-gray-700">
+                            @else
+                                <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: {{ match($status) { 'approved' => '#dcfce7', 'rejected' => '#fee2e2', 'pending' => '#fef9c3', default => '#f3f4f6' } }};">
+                                    <svg class="w-4 h-4" style="color: {{ match($status) { 'approved' => '#22c55e', 'rejected' => '#ef4444', 'pending' => '#eab308', default => '#9ca3af' } }};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                </div>
+                            @endif
                             <div>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $referral->name }}</p>
                                 <p class="text-xs text-gray-400 dark:text-gray-500">{{ $referral->email }}</p>
@@ -106,6 +113,10 @@
                         </div>
                     </div>
                 @endforeach
+            </div>
+
+            <div class="mt-6">
+                {{ $referrals->links() }}
             </div>
         @endif
     </section>
