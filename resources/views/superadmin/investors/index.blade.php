@@ -29,13 +29,38 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input type="text" id="investors-search" placeholder="Buscar por nombre, DNI u ocupación..."
+               value="{{ request('search') }}"
                class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
-        <button type="button" id="investors-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+        <button type="button" id="investors-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ request('search') ? '' : 'hidden' }}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
+        <div id="investors-search-spinner" class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
+            <svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+        </div>
     </div>
+
+    @if(request('search'))
+        <div id="investors-search-badge" class="mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            Mostrando resultados para "<span class="font-medium text-gray-700 dark:text-gray-300">{{ request('search') }}</span>"
+            — <span id="investors-search-count">{{ $applications->total() }}</span> encontrado(s)
+        </div>
+    @else
+        <div id="investors-search-badge" class="hidden mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            Mostrando resultados para "<span id="investors-search-term" class="font-medium text-gray-700 dark:text-gray-300"></span>"
+            — <span id="investors-search-count">{{ $applications->total() }}</span> encontrado(s)
+        </div>
+    @endif
 
     <!-- Filtros Mobile -->
     <div class="md:hidden mb-6">
@@ -45,7 +70,7 @@
                 'pending'  => ['label' => 'Solicitudes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                 'approved' => ['label' => 'Interesados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
             ] as $key => $cfg)
-                <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
+                <a href="{{ route('superadmin.investors.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                    class="flex items-center justify-center gap-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                           {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
                     @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3 h-3 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif
@@ -60,7 +85,7 @@
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
                 @foreach(['all' => 'Todos', 'pending' => 'Solicitudes', 'approved' => 'Interesados'] as $key => $label)
-                    <a href="{{ route('superadmin.investors.index', ['filter' => $key]) }}"
+                    <a href="{{ route('superadmin.investors.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                        class="relative flex items-center gap-2 flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
                               {{ $filter === $key
                                   ? 'text-gray-900 dark:text-white'
@@ -79,6 +104,8 @@
             </div>
         </div>
     </div>
+
+    <div id="investors-list">
 
     <!-- Cabecera de columnas (solo desktop) -->
     <div class="hidden md:grid py-2 mb-1 px-2 text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider items-center" style="grid-template-columns: 1fr 150px 130px 120px 100px 80px;">
@@ -240,6 +267,8 @@
         </div>
     </div>
     @endif
+
+    </div>
 
 </div>
 
@@ -410,32 +439,71 @@
 (function() {
     const searchInput = document.getElementById('investors-search');
     const clearBtn = document.getElementById('investors-search-clear');
-    if (!searchInput) return;
+    const spinner = document.getElementById('investors-search-spinner');
+    const badge = document.getElementById('investors-search-badge');
+    const searchTerm = document.getElementById('investors-search-term');
+    const searchCount = document.getElementById('investors-search-count');
+    const investorsList = document.getElementById('investors-list');
+    if (!searchInput || !investorsList) return;
 
-    function filterRows() {
-        const term = searchInput.value.trim().toLowerCase();
-        const rows = document.querySelectorAll('.investor-row');
+    const currentFilter = '{{ $filter }}';
+    const baseUrl = '{{ route("superadmin.investors.index") }}';
+    let debounceTimer = null;
+    let currentRequest = null;
 
-        clearBtn.classList.toggle('hidden', !term);
+    function performSearch(term) {
+        if (currentRequest) currentRequest.abort();
 
-        rows.forEach(function(row) {
-            if (!term) {
-                row.style.display = '';
-                return;
-            }
-            const name = (row.dataset.searchName || '').toLowerCase();
-            const dni = (row.dataset.searchDni || '').toLowerCase();
-            const occupation = (row.dataset.searchOccupation || '').toLowerCase();
-            const match = name.includes(term) || dni.includes(term) || occupation.includes(term);
-            row.style.display = match ? '' : 'none';
+        const params = new URLSearchParams();
+        if (term) params.set('search', term);
+        if (currentFilter !== 'all') params.set('filter', currentFilter);
+
+        const url = baseUrl + (params.toString() ? '?' + params.toString() : '');
+
+        if (!term) {
+            clearBtn.classList.add('hidden');
+            badge.classList.add('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            if (searchTerm) searchTerm.textContent = term;
+            badge.classList.remove('hidden');
+            badge.style.display = '';
+        }
+
+        currentRequest = new AbortController();
+
+        fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            signal: currentRequest.signal
+        })
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newList = doc.getElementById('investors-list');
+            if (newList) investorsList.innerHTML = newList.innerHTML;
+            const newCount = doc.getElementById('investors-search-count');
+            if (newCount && searchCount) searchCount.textContent = newCount.textContent;
+        })
+        .catch(function(err) {
+            if (err.name !== 'AbortError') console.error(err);
+        })
+        .finally(function() {
+            spinner.classList.add('hidden');
+            if (term) clearBtn.classList.remove('hidden');
         });
     }
 
-    searchInput.addEventListener('input', filterRows);
+    searchInput.addEventListener('input', function() {
+        const term = this.value.trim();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() { performSearch(term); }, 300);
+    });
 
     clearBtn.addEventListener('click', function() {
         searchInput.value = '';
-        filterRows();
+        performSearch('');
         searchInput.focus();
     });
 })();

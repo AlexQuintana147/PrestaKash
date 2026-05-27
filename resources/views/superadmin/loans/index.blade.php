@@ -30,13 +30,38 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 <input type="text" id="loans-search" placeholder="Buscar por nombre, DNI o código de préstamo..."
+                       value="{{ request('search') }}"
                        class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
-                <button type="button" id="loans-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+                <button type="button" id="loans-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ request('search') ? '' : 'hidden' }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
+                <div id="loans-search-spinner" class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
+                    <svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                </div>
             </div>
+
+            @if(request('search'))
+                <div id="loans-search-badge" class="mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    Mostrando resultados para "<span class="font-medium text-gray-700 dark:text-gray-300">{{ request('search') }}</span>"
+                    — <span id="loans-search-count">{{ $loans->total() }}</span> encontrado(s)
+                </div>
+            @else
+                <div id="loans-search-badge" class="hidden mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    Mostrando resultados para "<span id="loans-search-term" class="font-medium text-gray-700 dark:text-gray-300"></span>"
+                    — <span id="loans-search-count">{{ $loans->total() }}</span> encontrado(s)
+                </div>
+            @endif
 
             <!-- Filtros Mobile -->
             <div class="md:hidden">
@@ -49,7 +74,7 @@
                         'paid'     => ['label' => 'Pagados',    'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'all'      => ['label' => 'Todos',      'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     ] as $key => $cfg)
-                        <a href="{{ route('superadmin.loans.index', ['filter' => $key]) }}"
+                        <a href="{{ route('superadmin.loans.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                            class="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                                   {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
                             {{ $cfg['label'] }}
@@ -103,6 +128,7 @@
     </div>
 </div>
 
+            <div id="loans-list">
             <!-- Lista de préstamos -->
             <div class="divide-y divide-gray-100 dark:divide-gray-900">
                 @forelse($loans as $loan)
@@ -1023,6 +1049,7 @@
             <!-- Paginación -->
             <div class="mt-10">
                 {{ $loans->appends(request()->query())->links() }}
+            </div>
             </div>
 
         </div>
@@ -2152,32 +2179,77 @@
     (function() {
         const searchInput = document.getElementById('loans-search');
         const clearBtn = document.getElementById('loans-search-clear');
-        if (!searchInput) return;
+        const spinner = document.getElementById('loans-search-spinner');
+        const badge = document.getElementById('loans-search-badge');
+        const searchTerm = document.getElementById('loans-search-term');
+        const searchCount = document.getElementById('loans-search-count');
+        const loansList = document.getElementById('loans-list');
+        if (!searchInput || !loansList) return;
 
-        function filterRows() {
-            const term = searchInput.value.trim().toLowerCase();
-            const rows = document.querySelectorAll('.loan-row');
+        const currentFilter = '{{ $filter }}';
+        const baseUrl = '{{ route("superadmin.loans.index") }}';
+        let debounceTimer = null;
+        let currentRequest = null;
 
-            clearBtn.classList.toggle('hidden', !term);
+        function performSearch(term) {
+            if (currentRequest) currentRequest.abort();
 
-            rows.forEach(function(row) {
-                if (!term) {
-                    row.style.display = '';
-                    return;
-                }
-                const name = (row.dataset.searchName || '').toLowerCase();
-                const dni = (row.dataset.searchDni || '').toLowerCase();
-                const code = (row.dataset.searchCode || '').toLowerCase();
-                const match = name.includes(term) || dni.includes(term) || code.includes(term);
-                row.style.display = match ? '' : 'none';
+            const params = new URLSearchParams();
+            if (term) params.set('search', term);
+            if (currentFilter !== 'pending') params.set('filter', currentFilter);
+            const currency = '{{ request("currency") }}';
+            const fromDate = '{{ request("from_date") }}';
+            const toDate = '{{ request("to_date") }}';
+            if (currency) params.set('currency', currency);
+            if (fromDate) params.set('from_date', fromDate);
+            if (toDate) params.set('to_date', toDate);
+
+            const url = baseUrl + (params.toString() ? '?' + params.toString() : '');
+
+            if (!term) {
+                clearBtn.classList.add('hidden');
+                badge.classList.add('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                if (searchTerm) searchTerm.textContent = term;
+                badge.classList.remove('hidden');
+                badge.style.display = '';
+            }
+
+            currentRequest = new AbortController();
+
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                signal: currentRequest.signal
+            })
+            .then(function(response) { return response.text(); })
+            .then(function(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newList = doc.getElementById('loans-list');
+                if (newList) loansList.innerHTML = newList.innerHTML;
+                const newCount = doc.getElementById('loans-search-count');
+                if (newCount && searchCount) searchCount.textContent = newCount.textContent;
+            })
+            .catch(function(err) {
+                if (err.name !== 'AbortError') console.error(err);
+            })
+            .finally(function() {
+                spinner.classList.add('hidden');
+                if (term) clearBtn.classList.remove('hidden');
             });
         }
 
-        searchInput.addEventListener('input', filterRows);
+        searchInput.addEventListener('input', function() {
+            const term = this.value.trim();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() { performSearch(term); }, 300);
+        });
 
         clearBtn.addEventListener('click', function() {
             searchInput.value = '';
-            filterRows();
+            performSearch('');
             searchInput.focus();
         });
     })();

@@ -39,12 +39,19 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input type="text" id="cobranzas-search" placeholder="Buscar por nombre o DNI{{ in_array($filter, ['grouped', 'pending_validation', 'paid']) ? ', o código de préstamo' : '' }}..."
+                   value="{{ request('search') }}"
                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
-            <button type="button" id="cobranzas-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+            <button type="button" id="cobranzas-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ request('search') ? '' : 'hidden' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
+            <div id="cobranzas-search-spinner" class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
+                <svg class="w-4 h-4 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+            </div>
         </div>
 
         <!-- Filtros Mobile -->
@@ -54,7 +61,7 @@
                     'all'     => ['label' => 'Personas',     'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'grouped' => ['label' => 'Por Grupo', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                 ] as $key => $cfg)
-                    <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
+                    <a href="{{ route('superadmin.installments.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                        class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                               {{ $filter === $key ? $cfg['active'] . ' border-transparent' : $cfg['inactive'] }}">
                         {{ $cfg['label'] }}
@@ -62,7 +69,7 @@
                 @endforeach
             </div>
             <div class="grid grid-cols-2 gap-2">
-                <a href="{{ route('superadmin.installments.index', ['filter' => 'pending_validation']) }}"
+                <a href="{{ route('superadmin.installments.index', array_filter(['filter' => 'pending_validation', 'search' => request('search')])) }}"
                    class="flex items-center justify-center gap-2 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                           {{ $filter === 'pending_validation' ? 'bg-purple-600 text-white border-transparent' : 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800' }}">
                     Por Validar
@@ -72,13 +79,13 @@
                         </svg>
                     @endif
                 </a>
-                <a href="{{ route('superadmin.installments.index', ['filter' => 'paid']) }}"
+                <a href="{{ route('superadmin.installments.index', array_filter(['filter' => 'paid', 'search' => request('search')])) }}"
                    class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                           {{ $filter === 'paid' ? 'bg-green-600 text-white border-transparent' : 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800' }}">
                     Pagadas
                 </a>
             </div>
-            <a href="{{ route('superadmin.installments.index', ['filter' => 'overdue']) }}"
+            <a href="{{ route('superadmin.installments.index', array_filter(['filter' => 'overdue', 'search' => request('search')])) }}"
                class="flex items-center justify-center gap-2 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border w-full mt-2
                       {{ $filter === 'overdue' ? 'bg-red-600 text-white border-transparent' : 'bg-transparent text-red-500 border-red-200 dark:border-red-900' }}">
                 Cuotas vencidas
@@ -88,7 +95,7 @@
         <!-- Filtros Desktop -->
         <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
             @foreach(['all' => 'Personas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas', 'overdue' => 'Cuotas vencidas'] as $key => $label)
-                <a href="{{ route('superadmin.installments.index', ['filter' => $key]) }}"
+                <a href="{{ route('superadmin.installments.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                     class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors flex items-center gap-2
                               {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
                     {{ $label }}
@@ -113,6 +120,7 @@
             $loansPaginator = $loansPaginator ?? null;
         @endphp
 
+        <div id="cobranzas-list">
         @if($filter === 'grouped')
             <!-- Vista Agrupada (2 columnas) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
@@ -404,9 +412,8 @@
                 </div>
             @endif
         @endif
+        </div>
     </div>
-
-    <!-- Modal Validación de Pago -->
     @include('superadmin.loans.partials.validate-modal')
 
     <!-- Modal Detalle Préstamo -->
@@ -897,32 +904,62 @@
         (function() {
             const searchInput = document.getElementById('cobranzas-search');
             const clearBtn = document.getElementById('cobranzas-search-clear');
-            if (!searchInput) return;
+            const spinner = document.getElementById('cobranzas-search-spinner');
+            const cobranzasList = document.getElementById('cobranzas-list');
+            if (!searchInput || !cobranzasList) return;
 
-            function filterRows() {
-                const term = searchInput.value.trim().toLowerCase();
-                const rows = document.querySelectorAll('.cobranzas-row');
+            const currentFilter = '{{ $filter }}';
+            const baseUrl = '{{ route("superadmin.installments.index") }}';
+            let debounceTimer = null;
+            let currentRequest = null;
 
-                clearBtn.classList.toggle('hidden', !term);
+            function performSearch(term) {
+                if (currentRequest) currentRequest.abort();
 
-                rows.forEach(function(row) {
-                    if (!term) {
-                        row.style.display = '';
-                        return;
-                    }
-                    const name = (row.dataset.searchName || '').toLowerCase();
-                    const dni = (row.dataset.searchDni || '').toLowerCase();
-                    const code = (row.dataset.searchCode || '').toLowerCase();
-                    const match = name.includes(term) || dni.includes(term) || code.includes(term);
-                    row.style.display = match ? '' : 'none';
+                const params = new URLSearchParams();
+                if (term) params.set('search', term);
+                if (currentFilter !== 'all') params.set('filter', currentFilter);
+
+                const url = baseUrl + (params.toString() ? '?' + params.toString() : '');
+
+                if (!term) {
+                    clearBtn.classList.add('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                    spinner.classList.remove('hidden');
+                }
+
+                currentRequest = new AbortController();
+
+                fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    signal: currentRequest.signal
+                })
+                .then(function(response) { return response.text(); })
+                .then(function(html) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newList = doc.getElementById('cobranzas-list');
+                    if (newList) cobranzasList.innerHTML = newList.innerHTML;
+                })
+                .catch(function(err) {
+                    if (err.name !== 'AbortError') console.error(err);
+                })
+                .finally(function() {
+                    spinner.classList.add('hidden');
+                    if (term) clearBtn.classList.remove('hidden');
                 });
             }
 
-            searchInput.addEventListener('input', filterRows);
+            searchInput.addEventListener('input', function() {
+                const term = this.value.trim();
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(function() { performSearch(term); }, 300);
+            });
 
             clearBtn.addEventListener('click', function() {
                 searchInput.value = '';
-                filterRows();
+                performSearch('');
                 searchInput.focus();
             });
         })();
