@@ -493,7 +493,9 @@ class ContractController extends Controller
 
                 $bankAccounts = $investment->bank_accounts ?? [];
                 if (!empty($bankAccounts)) {
-                    $fmt = fn($vals) => implode(', ', array_map(fn($v) => '[' . $v . ']', $vals));
+                    $fmt = fn($vals) => count($vals) > 1
+                        ? implode(', ', array_map(fn($v) => '[' . $v . ']', $vals))
+                        : ($vals[0] ?? '');
                     $data['numero_cuenta_empresa'] = $fmt(array_column($bankAccounts, 'account_number'));
                     $data['cci_empresa'] = $fmt(array_column($bankAccounts, 'cci'));
                     $data['tipo_cuenta_empresa'] = '—';
