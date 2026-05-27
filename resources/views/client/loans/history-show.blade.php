@@ -332,7 +332,7 @@
                         @else
                             {{ $cur }} {{ number_format($inst->amount, 2) }}
                             <span class="text-[8px] text-gray-400 font-normal block">
-                                Capital: {{ $cur }}{{ number_format($inst->capital, 2) }} • 
+                                Capital: {{ $cur }}{{ number_format($inst->capital, 2) }} •
                                 Interés: {{ $cur }}{{ number_format($inst->interest, 2) }}
                                 @if($inst->late_fee > 0)
                                     • <span class="text-orange-500">Mora: {{ $cur }}{{ number_format($inst->late_fee, 2) }}</span>
@@ -381,6 +381,11 @@
                                 {{ $detail['type'] === 'grace' ? 'text-blue-500' : '' }}
                                 {{ $detail['type'] === 'late' ? 'text-orange-500' : '' }}">
                                 {{ $detail['label'] }}
+                            </span>
+                        @endif
+                        @if($inst->status === 'approved' && $inst->operation_number)
+                            <span class="block text-[7px] font-bold mt-0.5 text-gray-400">
+                                N° Op: {{ $inst->operation_number }}
                             </span>
                         @endif
                     </div>
@@ -463,7 +468,7 @@
             Monto: <span id="modal_amount_text" class="text-gray-900 dark:text-white"></span>
         </p>
         <p class="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-6">
-            Sistema: 
+            Sistema:
             @if($loan->type === 'unico')
                 <span class="text-blue-500">Único pago</span>
             @elseif($loan->amortization_system === 'americano')
@@ -508,7 +513,7 @@
                     * Esta opción cancela <span id="total-remaining-count"></span> cuotas restantes del préstamo de una sola vez.
                 </p>
             </div>
-            
+
             <!-- Payment Method -->
             <div class="space-y-3">
                 <p class="text-[8px] font-black uppercase tracking-widest text-gray-400">Método de pago</p>
@@ -789,7 +794,7 @@ function togglePaymentFields(method) {
 function toggleCustomBank(value) {
     const container = document.getElementById('modal_bank_custom_container');
     const input = document.getElementById('modal_bank_name_custom');
-    
+
     if (value === 'Otros') {
         container.classList.remove('hidden');
         input.required = true;
