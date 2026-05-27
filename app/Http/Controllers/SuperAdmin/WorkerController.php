@@ -122,7 +122,7 @@ class WorkerController extends Controller
             abort(404);
         }
         $sections = WorkerPermission::availableSections();
-        $existingPermissions = $worker->workerPermissions()->pluck(null, 'section')->toArray();
+        $existingPermissions = $worker->workerPermissions()->get()->keyBy('section')->toArray();
         $nameParts = explode(' ', trim($worker->name), 2);
         $firstName = $nameParts[0] ?? '';
         $lastName = $nameParts[1] ?? '';
