@@ -1392,7 +1392,31 @@ class LoanController extends Controller
         ];
 
         if ($request->hasFile('voucher')) {
-            $update['voucher_path'] = $request->file('voucher')->store('withdrawals', 'public');
+            $file = $request->file('voucher');
+            $ext = strtolower($file->getClientOriginalExtension());
+            $srcPath = $file->getRealPath();
+
+            $image = match ($ext) {
+                'jpg', 'jpeg' => @imagecreatefromjpeg($srcPath),
+                'png' => @imagecreatefrompng($srcPath),
+                'webp' => @imagecreatefromwebp($srcPath),
+                default => null,
+            };
+
+            if ($image) {
+                $filename = uniqid('withdrawal_', true) . '.webp';
+                $relativePath = 'withdrawals/' . $filename;
+                $fullPath = storage_path('app/public/' . $relativePath);
+
+                if (!is_dir(dirname($fullPath))) {
+                    mkdir(dirname($fullPath), 0755, true);
+                }
+
+                imagewebp($image, $fullPath, 85);
+                imagedestroy($image);
+
+                $update['voucher_path'] = $relativePath;
+            }
         }
 
         $withdrawal->update($update);
