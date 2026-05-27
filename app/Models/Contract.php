@@ -197,11 +197,6 @@ class Contract extends Model
                 'borderDark' => '#115e59',
                 'variables' => [
                     'contrato_nombre' => ['desc' => 'Nombre del contrato', 'source' => 'Contract.name'],
-                    'contrato_numero' => ['desc' => 'Número de contrato generado (ej: CT-00001)', 'source' => 'Contract.id'],
-                    'fecha_firma' => ['desc' => 'Fecha de firma del contrato (dd/mm/aaaa)', 'source' => 'now()'],
-                    'ciudad' => ['desc' => 'Ciudad donde se firma el contrato', 'source' => 'Configuración'],
-                    'firma_cliente' => ['desc' => 'Espacio para firma del cliente', 'source' => 'Imagen'],
-                    'huella_cliente' => ['desc' => 'Espacio para huella digital del cliente', 'source' => 'Imagen'],
                     'fecha_actual' => ['desc' => 'Fecha actual en formato dd/mm/aaaa', 'source' => 'now()'],
                 ],
             ],
