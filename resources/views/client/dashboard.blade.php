@@ -402,11 +402,11 @@
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Deuda</p>
-                            <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($totalDebt, 0) }}</p>
+                            <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($totalDebt, 2) }}</p>
                         </div>
                         <div>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Cuota/Mes</p>
-                            <p class="text-lg md:text-xl font-bold text-[#006BFF] dark:text-[#4A90E2]">S/ {{ number_format($monthlyPayment, 0) }}</p>
+                            <p class="text-lg md:text-xl font-bold text-[#006BFF] dark:text-[#4A90E2]">S/ {{ number_format($monthlyPayment, 2) }}</p>
                         </div>
                         <div>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Estado</p>
