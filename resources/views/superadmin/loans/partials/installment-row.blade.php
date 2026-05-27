@@ -188,7 +188,11 @@
                 @elseif($inst->requested_type === 'total')
                     @php
                         if ($inst->status === 'approved') {
-                            $totalDisplayAmount = $inst->amount + ($inst->charged_late_fee ?? 0);
+                            $cashboxMov = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                                ->where('reference_id', $inst->id)
+                                ->whereNull('interest_payment_id')
+                                ->first();
+                            $totalDisplayAmount = $cashboxMov ? $cashboxMov->amount : $inst->loan->total_amount;
                         } else {
                             $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
                             $totalDisplayAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
