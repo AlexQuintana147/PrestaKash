@@ -1372,4 +1372,55 @@ class LoanController extends Controller
 
         return back()->with('success', 'Pago a referidor confirmado correctamente.');
     }
+
+    public function userDetail(Request $request)
+    {
+        $user = \App\Models\User::with(['documents', 'loans.installments'])->findOrFail($request->get('user_id'));
+
+        $loans = $user->loans;
+        $activeLoans = $loans->whereIn('status', ['approved', 'disbursed', 'active']);
+        $paidLoans = $loans->where('status', 'paid');
+
+        $overdueInstallments = [];
+        $upcomingInstallments = [];
+        $totalDebt = 0;
+
+        foreach ($activeLoans as $loan) {
+            foreach ($loan->installments as $inst) {
+                if ($inst->status !== 'approved') {
+                    $amount = (float) $inst->amount + (float) ($inst->late_fee ?? 0);
+                    if ($inst->due_date < now()->startOfDay()) {
+                        $overdueInstallments[] = [
+                            'number' => $inst->installment_number,
+                            'amount' => $amount,
+                            'loan_code' => $loan->code,
+                            'due_date' => $inst->due_date->format('d/m/Y'),
+                        ];
+                        $totalDebt += $amount;
+                    } else {
+                        $upcomingInstallments[] = [
+                            'number' => $inst->installment_number,
+                            'amount' => $amount,
+                            'loan_code' => $loan->code,
+                            'due_date' => $inst->due_date->diffForHumans(),
+                        ];
+                    }
+                }
+            }
+        }
+
+        $selfie = $user->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($user->documents->selfie) : null;
+
+        return response()->json([
+            'name' => $user->name,
+            'email' => $user->email,
+            'initials' => strtoupper(substr($user->name, 0, 1)),
+            'selfie' => $selfie,
+            'active_loans' => $activeLoans->count(),
+            'paid_loans' => $paidLoans->count(),
+            'total_debt' => $totalDebt,
+            'overdue_installments' => $overdueInstallments,
+            'upcoming_installments' => $upcomingInstallments,
+        ]);
+    }
 }

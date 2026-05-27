@@ -74,11 +74,21 @@
                 <div class="flex-1 min-w-0">
                     <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Referido</p>
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-500/10 flex items-center justify-center ring-1 ring-inset ring-green-100 dark:ring-green-500/20">
-                            <span class="text-xs font-bold text-green-600 dark:text-green-400">{{ strtoupper(substr($referral->referred->name, 0, 1)) }}</span>
-                        </div>
+                        @php $refSelfie = $referral->referred->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($referral->referred->documents->selfie) : null; @endphp
+                        <button type="button" onclick="openUserDetailModal({{ $referral->referred->id }})"
+                            class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-inset ring-green-100 dark:ring-green-500/20 hover:ring-2 hover:ring-green-300 transition-all cursor-pointer">
+                            @if($refSelfie)
+                                <img src="{{ $refSelfie }}" alt="{{ $referral->referred->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
+                                    <span class="text-xs font-bold text-green-600 dark:text-green-400">{{ strtoupper(substr($referral->referred->name, 0, 1)) }}</span>
+                                </div>
+                            @endif
+                        </button>
                         <div class="min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $referral->referred->name }}</p>
+                            <button type="button" onclick="openUserDetailModal({{ $referral->referred->id }})" class="text-left hover:underline">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $referral->referred->name }}</p>
+                            </button>
                             <p class="text-xs text-gray-400 truncate">{{ $referral->referred->email }}</p>
                         </div>
                     </div>
@@ -99,11 +109,21 @@
                 <div class="flex-1 min-w-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
                     <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Referidor</p>
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/20">
-                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">{{ strtoupper(substr($referral->referrer->name, 0, 1)) }}</span>
-                        </div>
+                        @php $refSelfie = $referral->referrer->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($referral->referrer->documents->selfie) : null; @endphp
+                        <button type="button" onclick="openUserDetailModal({{ $referral->referrer->id }})"
+                            class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/20 hover:ring-2 hover:ring-indigo-300 transition-all cursor-pointer">
+                            @if($refSelfie)
+                                <img src="{{ $refSelfie }}" alt="{{ $referral->referrer->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
+                                    <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">{{ strtoupper(substr($referral->referrer->name, 0, 1)) }}</span>
+                                </div>
+                            @endif
+                        </button>
                         <div class="min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $referral->referrer->name }}</p>
+                            <button type="button" onclick="openUserDetailModal({{ $referral->referrer->id }})" class="text-left hover:underline">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $referral->referrer->name }}</p>
+                            </button>
                             <p class="text-xs text-gray-400 truncate">{{ $referral->referrer->email }}</p>
                         </div>
                     </div>
@@ -181,4 +201,127 @@
         </div>
     @endif
 </div>
+
+<!-- User Detail Modal -->
+<div id="userDetailModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <div onclick="closeUserDetailModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 max-h-[85vh] sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg sm:w-full bg-white dark:bg-gray-950 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div id="modalAvatar" class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-900"></div>
+                <div>
+                    <h3 id="modalName" class="text-sm font-bold text-gray-900 dark:text-white"></h3>
+                    <p id="modalEmail" class="text-[10px] text-gray-400"></p>
+                </div>
+            </div>
+            <button type="button" onclick="closeUserDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div id="modalContent" class="flex-1 overflow-y-auto p-5 space-y-4">
+            <div class="animate-pulse space-y-3">
+                <div class="h-4 bg-gray-100 dark:bg-gray-900 rounded w-3/4"></div>
+                <div class="h-4 bg-gray-100 dark:bg-gray-900 rounded w-1/2"></div>
+                <div class="h-4 bg-gray-100 dark:bg-gray-900 rounded w-2/3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function openUserDetailModal(userId) {
+    const modal = document.getElementById('userDetailModal');
+    const content = document.getElementById('modalContent');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    content.innerHTML = `
+        <div class="animate-pulse space-y-3">
+            <div class="h-4 bg-gray-100 dark:bg-gray-900 rounded w-3/4"></div>
+            <div class="h-4 bg-gray-100 dark:bg-gray-900 rounded w-1/2"></div>
+            <div class="h-4 bg-gray-100 dark:bg-gray-900 rounded w-2/3"></div>
+        </div>
+    `;
+    try {
+        const res = await fetch('{{ route("superadmin.referrals.user-detail") }}?user_id=' + userId);
+        const data = await res.json();
+        document.getElementById('modalName').textContent = data.name;
+        document.getElementById('modalEmail').textContent = data.email;
+        document.getElementById('modalAvatar').innerHTML = data.selfie
+            ? `<img src="${data.selfie}" alt="${data.name}" class="w-full h-full object-cover">`
+            : `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">${data.initials}</div>`;
+
+        let html = '';
+
+        // Estado general
+        html += `<div class="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4">
+            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-3">Estado financiero</p>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="text-center">
+                    <p class="text-lg font-bold ${data.total_debt > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">${data.total_debt > 0 ? 'S/ ' + data.total_debt.toFixed(2) : 'S/ 0.00'}</p>
+                    <p class="text-[10px] text-gray-400">Deuda total</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-lg font-bold text-gray-900 dark:text-white">${data.active_loans}</p>
+                    <p class="text-[10px] text-gray-400">Préstamos activos</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-lg font-bold text-gray-900 dark:text-white">${data.paid_loans}</p>
+                    <p class="text-[10px] text-gray-400">Préstamos pagados</p>
+                </div>
+            </div>
+        </div>`;
+
+        // Cuotas vencidas
+        if (data.overdue_installments.length > 0) {
+            html += `<div class="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-widest font-semibold text-red-400 mb-3">Cuotas vencidas</p>
+                <div class="space-y-2">`;
+            data.overdue_installments.forEach(inst => {
+                html += `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-gray-300">${inst.loan_code} — Cuota #${inst.number}</span>
+                    <span class="font-bold text-red-600 dark:text-red-400">S/ ${inst.amount.toFixed(2)}</span>
+                </div>`;
+            });
+            html += `</div></div>`;
+        }
+
+        // Próximos pagos
+        if (data.upcoming_installments.length > 0) {
+            html += `<div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-widest font-semibold text-amber-400 mb-3">Próximos pagos</p>
+                <div class="space-y-2">`;
+            data.upcoming_installments.forEach(inst => {
+                html += `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-gray-300">${inst.loan_code} — Cuota #${inst.number}</span>
+                    <span class="font-bold text-amber-600 dark:text-amber-400">S/ ${inst.amount.toFixed(2)}</span>
+                </div><p class="text-[10px] text-gray-400">Vence ${inst.due_date}</p>`;
+            });
+            html += `</div></div>`;
+        }
+
+        if (data.overdue_installments.length === 0 && data.upcoming_installments.length === 0) {
+            html += `<div class="text-center py-8">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-xl bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="text-sm font-medium text-gray-500">Sin cuotas pendientes</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">El usuario está al día con sus pagos.</p>
+            </div>`;
+        }
+
+        content.innerHTML = html;
+    } catch (e) {
+        content.innerHTML = `<p class="text-sm text-red-500 text-center py-8">Error al cargar los datos.</p>`;
+    }
+}
+
+function closeUserDetailModal() {
+    document.getElementById('userDetailModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('userDetailModal').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeUserDetailModal();
+});
+</script>
 @endsection
