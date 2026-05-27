@@ -686,6 +686,7 @@ class LoanController extends Controller
         $isInterestOnly = $installment->requested_type === 'interest';
         $isMoraInterest = $installment->requested_type === 'mora_interest';
         $isMoraFull = $installment->requested_type === 'mora_full';
+        $isTotal = $installment->requested_type === 'total';
 
         if ($isMoraInterest) {
             $overdueInstallments = $loan->overdue_installments;
@@ -697,11 +698,15 @@ class LoanController extends Controller
             $amount = $totalLateFees + $installment->amount;
         } elseif ($isInterestOnly) {
             $amount = $installment->interest + ($installment->late_fee ?? 0);
+        } elseif ($isTotal) {
+            $amount = $loan->installments()
+                ->whereIn('status', ['pending', 'rejected', 'processing'])
+                ->sum('amount');
         } else {
             $amount = $installment->amount + ($installment->late_fee ?? 0);
         }
 
-        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull) {
+        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull, $isTotal) {
             $loan = $installment->loan;
 
             if ($isInterestOnly) {
@@ -879,6 +884,33 @@ class LoanController extends Controller
                     $loan->update(['status' => 'paid']);
                 }
 
+            } elseif ($isTotal) {
+                $pendingInsts = $loan->installments()
+                    ->whereIn('status', ['pending', 'rejected', 'processing'])
+                    ->get();
+
+                $now = now();
+                foreach ($pendingInsts as $inst) {
+                    $inst->update([
+                        'status' => 'approved',
+                        'paid_at' => $now,
+                        'charged_late_fee' => 0,
+                    ]);
+                }
+
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por PAGO TOTAL de préstamo {$loan->code} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+                $loan->update(['status' => 'paid']);
+
             } else {
                 $installment->update([
                     'status' => 'approved',
@@ -920,6 +952,8 @@ class LoanController extends Controller
             $successMsg = 'Pago de mora + cuota completa aprobado. Estado de mora desactivado.';
         } elseif ($isInterestOnly) {
             $successMsg = 'Pago de interés aprobado y fechas postergadas.';
+        } elseif ($isTotal) {
+            $successMsg = 'Pago total aprobado. El préstamo ha sido marcado como pagado.';
         }
 
         return back()->with('success', $successMsg);

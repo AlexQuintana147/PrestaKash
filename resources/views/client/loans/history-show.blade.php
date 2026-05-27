@@ -21,6 +21,11 @@
     $hasPreviousDebts = $overdueInstallments->count() > 1;
     $moraPlusInterest = $totalLateFees + ($nextInst ? $nextInst->interest : 0);
     $moraPlusFull = $totalLateFees + ($nextInst ? $nextInst->amount : 0);
+    $totalRestante = $loan->installments()->whereIn('status', ['pending', 'rejected'])->sum('amount');
+    $remainingCount = $loan->installments()->whereIn('status', ['pending', 'rejected'])->count();
+    $canAmortize = !$isInDefault && !$hasAnyProcessing
+        && $overdueInstallments->count() === 0
+        && $nextInst !== null && $nextInst->due_date->isToday();
 @endphp
 
 <div class="min-h-screen px-4 md:px-8 py-6 max-w-2xl mx-auto">
@@ -388,7 +393,7 @@
                             $payInterest = $isNextWithOverdue ? $inst->accumulated_debt['mora'] + $inst->interest : $inst->interest;
                         @endphp
                         <button type="button"
-                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }}, {{ $inst->interest }})"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }}, {{ $inst->interest }}, null, {{ $canAmortize ? 'true' : 'false' }}, {{ $totalRemaining }}, {{ $remainingCount }})"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-px hover:opacity-60 transition-opacity">
                             Pagar
                         </button>
@@ -489,9 +494,18 @@
                         </div>
                     </label>
                     @endif
+                    <label id="total-payment-option" class="flex-1 cursor-pointer group hidden">
+                        <input type="radio" name="requested_type" value="total" class="hidden peer" onchange="updateModalAmount('total')">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-green-600 transition-all border-b-2 border-transparent peer-checked:border-green-600 hover:text-gray-600 dark:hover:text-gray-400">
+                            PAGO TOTAL
+                        </div>
+                    </label>
                 </div>
                 <p id="interest-only-warning" class="hidden text-[8px] text-amber-500 font-bold uppercase leading-tight italic">
                     * Esta opción es exclusiva si no puedes pagar la cuota pactada. Se cobrará solo el interés y todas las cuotas se postergarán un periodo.
+                </p>
+                <p id="total-payment-warning" class="hidden text-[8px] text-green-600 font-bold uppercase leading-tight italic">
+                    * Esta opción cancela <span id="total-remaining-count"></span> cuotas restantes del préstamo de una sola vez.
                 </p>
             </div>
             
@@ -628,15 +642,18 @@ function changePage(delta) {
 
 let _currentInstData = null;
 
-function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType = null) {
+function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType = null, canAmortize = false, totalAmount = 0, remainingCount = 1) {
     const baseAmount = parseFloat(amount.replace(/[^0-9.-]+/g,""));
     _currentInstData = {
         id: instId,
         fullAmount: baseAmount + lateFee,
         interestAmount: interest + lateFee,
+        totalAmount: totalAmount,
         amountStr: amount,
         lateFee: lateFee,
-        paymentType: paymentType
+        paymentType: paymentType,
+        canAmortize: canAmortize,
+        remainingCount: remainingCount
     };
 
     const isMoraPayment = paymentType === 'mora_interest' || paymentType === 'mora_full';
@@ -658,6 +675,15 @@ function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType 
         }
     }
 
+    const totalOption = document.getElementById('total-payment-option');
+    if (totalOption) {
+        if (canAmortize && !isMoraPayment && totalAmount > (baseAmount + lateFee)) {
+            totalOption.classList.remove('hidden');
+        } else {
+            totalOption.classList.add('hidden');
+        }
+    }
+
     document.getElementById('uploadForm').action = `/panel/historial-crediticio/pagar/${instId}`;
     document.getElementById('uploadModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -668,14 +694,23 @@ function updateModalAmount(type) {
 
     const amountEl = document.getElementById('modal_amount_text');
     const warningEl = document.getElementById('interest-only-warning');
+    const totalWarningEl = document.getElementById('total-payment-warning');
     const isInterest = type === 'interest';
+    const isTotal = type === 'total';
     const isMoraPayment = _currentInstData.paymentType === 'mora_interest' || _currentInstData.paymentType === 'mora_full';
 
-    const amountToDisplay = isInterest ? _currentInstData.interestAmount : _currentInstData.fullAmount;
-    
+    let amountToDisplay;
+    if (isTotal) {
+        amountToDisplay = _currentInstData.totalAmount;
+    } else if (isInterest) {
+        amountToDisplay = _currentInstData.interestAmount;
+    } else {
+        amountToDisplay = _currentInstData.fullAmount;
+    }
+
     amountEl.textContent = (window._cur || '') + ' ' + amountToDisplay.toFixed(2);
-    
-    if (_currentInstData.lateFee > 0) {
+
+    if (!isTotal && _currentInstData.lateFee > 0) {
         amountEl.innerHTML += `<br><span class="text-[10px] text-orange-500 uppercase font-bold">Incluye ${_currentInstData.lateFee.toFixed(2)} de mora</span>`;
     }
 
@@ -684,10 +719,20 @@ function updateModalAmount(type) {
         amountEl.innerHTML += `<br><span class="text-[10px] text-red-500 uppercase font-bold">${moraLabel}</span>`;
     }
 
+    if (isTotal) {
+        const rCount = _currentInstData.remainingCount || 1;
+        const countLabel = rCount === 1 ? '1 cuota' : `${rCount} cuotas`;
+        amountEl.innerHTML += `<br><span class="text-[10px] text-green-600 uppercase font-bold">Cancela ${countLabel} restantes</span>`;
+        const countEl = document.getElementById('total-remaining-count');
+        if (countEl) countEl.textContent = rCount;
+    }
+
     const requestedTypeInput = document.querySelector('input[name="requested_type"]');
     if (requestedTypeInput) {
         if (isMoraPayment) {
             requestedTypeInput.value = _currentInstData.paymentType;
+        } else if (isTotal) {
+            requestedTypeInput.value = 'total';
         } else {
             requestedTypeInput.value = isInterest ? 'interest' : 'full';
         }
@@ -698,6 +743,14 @@ function updateModalAmount(type) {
             warningEl.classList.remove('hidden');
         } else {
             warningEl.classList.add('hidden');
+        }
+    }
+
+    if (totalWarningEl) {
+        if (isTotal) {
+            totalWarningEl.classList.remove('hidden');
+        } else {
+            totalWarningEl.classList.add('hidden');
         }
     }
 }

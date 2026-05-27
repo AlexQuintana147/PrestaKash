@@ -185,6 +185,17 @@
                     <p class="text-[8px] text-orange-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         Mora + Cuota Total
                     </p>
+                @elseif($inst->requested_type === 'total')
+                    @php
+                        $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
+                        $pendingFromTotal = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                    @endphp
+                    <p class="text-sm font-black text-green-600 dark:text-green-400 tabular-nums">
+                        {{ $currency }} {{ number_format($pendingFromTotal, 2) }}
+                    </p>
+                    <p class="text-[8px] text-green-500/80 font-bold mt-0.5 uppercase tracking-tighter">
+                        Pago Total
+                    </p>
                 @elseif($inst->requested_type === 'interest' || (isset($inst->is_interest_payment) && $inst->is_interest_payment))
                     <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
                         {{ $currency }} {{ number_format($inst->interest + $lateFee, 2) }}
@@ -255,10 +266,17 @@
             <div class="flex items-center gap-3">
                 @if($inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at))
                     @php
-                        $baseAmount = $inst->requested_type === 'interest' 
-                            ? $inst->interest
-                            : $inst->amount;
-                        $displayAmount = $baseAmount + $lateFee;
+                        if ($inst->requested_type === 'total') {
+                            $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
+                            $baseAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                            $displayAmount = $baseAmount;
+                        } elseif ($inst->requested_type === 'interest') {
+                            $baseAmount = $inst->interest;
+                            $displayAmount = $baseAmount + $lateFee;
+                        } else {
+                            $baseAmount = $inst->amount;
+                            $displayAmount = $baseAmount + $lateFee;
+                        }
 
                         $validateData = [
                             'id' => $inst->id,

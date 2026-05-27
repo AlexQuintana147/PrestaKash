@@ -23,13 +23,19 @@
                     Cuota #{{ $inst->installment_number }}
                 @endif
             </span>
-            <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400' }} font-bold tabular-nums">
-                @if((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
+            <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : ($inst->requested_type === 'total' ? 'text-green-600 dark:text-green-400' : 'text-gray-400') }} font-bold tabular-nums">
+                @if($inst->requested_type === 'total')
+                    @php
+                        $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
+                        $pendingFromTotal = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                    @endphp
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($pendingFromTotal, 2) }}
+                @elseif((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + $lateFee, 2) }}
                 @else
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount + $lateFee, 2) }}
                 @endif
-                @if($lateFee > 0)
+                @if($lateFee > 0 && $inst->requested_type !== 'total')
                     <span class="text-orange-500 ml-1">+ {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($lateFee, 2) }} mora</span>
                 @endif
             </span>
@@ -101,10 +107,17 @@
 
         @if($inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at))
                 @php
-                    $baseAmount = $inst->requested_type === 'interest' 
-                        ? $inst->interest
-                        : $inst->amount;
-                    $displayAmount = $baseAmount + $lateFee;
+                    if ($inst->requested_type === 'total') {
+                        $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
+                        $baseAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                        $displayAmount = $baseAmount;
+                    } elseif ($inst->requested_type === 'interest') {
+                        $baseAmount = $inst->interest;
+                        $displayAmount = $baseAmount + $lateFee;
+                    } else {
+                        $baseAmount = $inst->amount;
+                        $displayAmount = $baseAmount + $lateFee;
+                    }
                 @endphp
                 <button type="button" onclick="openValidateModal({{ json_encode([
                 'id' => $inst->id,
