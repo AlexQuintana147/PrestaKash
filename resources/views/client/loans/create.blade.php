@@ -333,7 +333,7 @@
                                     </div>
                                 </div>
                                 <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <a
-                                        href="{{ route('client.dashboard') }}"
+                                        href="{{ route('client.dashboard', ['open_bank' => 1]) }}"
                                         class="text-green-600 dark:text-green-400 font-bold hover:underline">Gestiónalas
                                         aquí</a></p>
                             </div>
