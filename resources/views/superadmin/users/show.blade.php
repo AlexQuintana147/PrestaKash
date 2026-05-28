@@ -105,6 +105,7 @@
                     @endif
                 </div>
                 <div class="space-y-3">
+                    @php $cp = $user->clientProfile; @endphp
                     @foreach(array_filter([
                         'Nombres'      => [
                             'value' => $user->first_name,
@@ -156,6 +157,43 @@
                             'editable' => true,
                             'field' => 'address'
                         ],
+                        'Estado Civil'  => $cp && $cp->marital_status ? [
+                            'value' => match($cp->marital_status) {
+                                'soltero' => 'Soltero/a',
+                                'casado' => 'Casado/a',
+                                'divorciado' => 'Divorciado/a',
+                                'viudo' => 'Viudo/a',
+                                'conviviente' => 'Conviviente',
+                                default => $cp->marital_status
+                            }
+                        ] : null,
+                        'Hijos'        => ($cp && $cp->has_children) ? [
+                            'value' => ($cp->children_count ?? 1) . (($cp->children_count ?? 1) == 1 ? ' hijo' : ' hijos')
+                        ] : (($cp && !$cp->has_children) ? ['value' => 'No'] : null),
+                        'Empleo'       => $cp ? [
+                            'value' => $cp->is_employed
+                                ? ($cp->employment_type === 'independent'
+                                    ? 'Independiente' . ($cp->independent_type ? ' (' . $cp->independent_type . ')' : '')
+                                    : ($cp->employment_type ?? 'Dependiente'))
+                                : 'Sin empleo'
+                        ] : null,
+                        'Lugar trabajo'=> ($cp && $cp->workplace) ? ['value' => $cp->workplace] : null,
+                        'Cargo'        => ($cp && $cp->job_title) ? ['value' => $cp->job_title] : null,
+                        'Ingreso mensual' => ($cp && $cp->monthly_income) ? [
+                            'value' => 'S/ ' . number_format($cp->monthly_income, 2, '.', ',')
+                        ] : null,
+                        'Institución'  => ($cp && $cp->institution) ? ['value' => $cp->institution] : null,
+                        'Carrera'      => ($cp && $cp->career) ? ['value' => $cp->career] : null,
+                        'Estado académico' => ($cp && $cp->academic_status) ? ['value' => $cp->academic_status] : null,
+                        'Instagram'    => ($cp && $cp->instagram) ? [
+                            'value' => $cp->instagram,
+                            'icon' => 'insta',
+                            'link' => 'https://instagram.com/' . ltrim($cp->instagram, '@'),
+                            'is_instagram' => true
+                        ] : null,
+                        'Cónyuge Nombres' => ($cp && $cp->marital_status && in_array($cp->marital_status, ['casado', 'conviviente']) && $cp->spouse_first_name) ? ['value' => $cp->spouse_first_name] : null,
+                        'Cónyuge Apellidos' => ($cp && $cp->marital_status && in_array($cp->marital_status, ['casado', 'conviviente']) && $cp->spouse_last_name) ? ['value' => $cp->spouse_last_name] : null,
+                        'Cónyuge DNI' => ($cp && $cp->marital_status && in_array($cp->marital_status, ['casado', 'conviviente']) && $cp->spouse_dni) ? ['value' => $cp->spouse_dni] : null,
                         'Tasa de interés' => ($status === 'approved' && !$user->is_ghost) ? [
                             'value' => number_format($user->loan_interest_rate ?? 20, 2, '.', ''),
                             'editable' => true,
@@ -186,6 +224,17 @@
                                 <span class="text-xs font-semibold text-white dark:text-gray-900 text-right ml-4">
                                     {{ $value }}
                                 </span>
+                            </a>
+                        @elseif(is_array($data) && isset($data['is_instagram']))
+                            <a href="{{ $data['link'] }}" target="_blank"
+                               class="flex justify-between items-center py-3 px-3 -mx-3 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 mb-2 hover:opacity-90 transition-opacity border border-white shadow-sm">
+                                <span class="text-xs text-white flex-shrink-0">{{ $label }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-white text-right">{{ $value ?? '—' }}</span>
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="white">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                                    </svg>
+                                </div>
                             </a>
                         @elseif(is_array($data) && isset($data['is_whatsapp']))
                             <div class="flex justify-between items-center py-3 px-3 -mx-3 bg-green-500 mb-2 hover:bg-green-600 transition-colors border border-white shadow-sm relative group">

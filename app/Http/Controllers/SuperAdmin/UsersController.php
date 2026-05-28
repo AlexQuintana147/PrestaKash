@@ -304,7 +304,7 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        $user->load('documents');
+        $user->load(['documents', 'clientProfile']);
 
         // Resolver nombres de ubigeo (IDs en BD son strings con ceros: '01', '0101', '010110')
         $department = $user->department
