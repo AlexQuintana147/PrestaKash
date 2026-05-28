@@ -207,7 +207,6 @@
                 <p class="text-[7px] sm:text-[8px] text-white">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
                 @endif
             </div>
-            <p class="text-[6px] sm:text-[7px] text-white mt-2 italic">Solo se contabilizan las cuotas pagadas. El total pagado en intereses no se incluye en este monto.</p>
         </div>
         <div class="bg-orange-500 rounded-2xl px-3 sm:px-4 py-3 sm:py-4">
             <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pendiente</p>
@@ -219,7 +218,6 @@
                 <p class="text-[7px] sm:text-[8px] text-white">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
                 @endif
             </div>
-            <p class="text-[6px] sm:text-[7px] text-white mt-2 italic">Recuerda pagar a tiempo para evitar recargos por mora. El monto puede variar si se acumulan intereses por atraso.</p>
         </div>
     </div>
 
