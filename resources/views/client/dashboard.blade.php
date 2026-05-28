@@ -581,7 +581,7 @@
                     @if($profile->instagram)
                     <div class="pk-card px-4 py-2.5 flex items-center justify-between">
                         <span class="text-xs text-gray-500 dark:text-gray-400">Instagram</span>
-                        <span class="text-sm font-medium text-gray-900 dark:text-white">@{{ $profile->instagram }}</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->instagram }}</span>
                     </div>
                     @endif
                 </div>
