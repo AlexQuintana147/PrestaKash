@@ -147,7 +147,7 @@
                                     @php
                                         $canNavigate = in_array($loan->status, ['approved', 'paid']);
                                         $clickAction = $canNavigate
-                                            ? "window.location.href='" . route('client.loans.history.show', $loan) . "'"
+                                            ? "sessionStorage.setItem('from_loans','1');window.location.href='" . route('client.loans.history.show', $loan) . "'"
                                             : "openLoanStatusModal({$loan->id}, '{$loan->status}')";
                                     @endphp
                                     <div

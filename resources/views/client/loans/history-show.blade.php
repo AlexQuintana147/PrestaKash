@@ -818,9 +818,14 @@ function previewImage(input) {
 }
 
 var back = document.getElementById('backToPanel');
-if (back && sessionStorage.getItem('from_dashboard')) {
-    back.href = '{{ route('client.dashboard') }}';
-    sessionStorage.removeItem('from_dashboard');
+if (back) {
+    if (sessionStorage.getItem('from_dashboard')) {
+        back.href = '{{ route('client.dashboard') }}';
+        sessionStorage.removeItem('from_dashboard');
+    } else if (sessionStorage.getItem('from_loans')) {
+        back.href = '{{ route('client.loans') }}';
+        sessionStorage.removeItem('from_loans');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => render());
