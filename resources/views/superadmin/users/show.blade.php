@@ -1114,17 +1114,18 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
         </div>
     </div>
 
-    <!-- Imagen con scroll si hace zoom -->
-    <div class="overflow-hidden w-full max-w-4xl flex items-center justify-center" style="max-height: 80vh;">
+    <!-- Imagen con zoom y pan -->
+    <div id="lightboxImgContainer"
+         class="overflow-hidden w-full max-w-4xl flex items-center justify-center rounded-lg relative"
+         style="max-height: 80vh; cursor: grab;">
         <img id="lightboxImg" src="" alt=""
-             class="transition-transform duration-200 rounded-lg select-none"
-             style="transform-origin: center; max-width: 100%;">
+             class="transition-transform duration-100 rounded-lg select-none"
+             style="transform-origin: center; max-width: 100%; will-change: transform;"
+             onwheel="event.preventDefault(); event.stopPropagation(); zoom(event.deltaY < 0 ? 0.15 : -0.15);">
     </div>
 </div>
 
 <script>
-let currentScale = 1;
-
 function formatCurrencyInput(cents) {
     let amount = cents / 100;
     let parts = amount.toFixed(2).split('.');
@@ -1340,10 +1341,18 @@ document.getElementById('approveModal').addEventListener('click', e => {
     if (e.target === document.getElementById('approveModal')) closeApproveModal();
 });
 
+let currentScale = 1;
+let panX = 0;
+let panY = 0;
+let isPanning = false;
+let startX, startY;
+
 function openLightbox(src, label) {
     currentScale = 1;
-    document.getElementById('lightboxImg').src = src;
-    document.getElementById('lightboxImg').style.transform = 'scale(1)';
+    panX = 0; panY = 0;
+    const img = document.getElementById('lightboxImg');
+    img.src = src;
+    img.style.transform = `translate(0px, 0px) scale(1)`;
     document.getElementById('lightboxLabel').textContent = label;
     document.getElementById('zoomLevel').textContent = '100%';
     document.getElementById('lightbox').classList.remove('hidden');
@@ -1356,16 +1365,25 @@ function closeLightbox(e) {
     document.body.style.overflow = '';
 }
 
+function applyTransform() {
+    const img = document.getElementById('lightboxImg');
+    img.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+}
+
 function zoom(delta) {
-    currentScale = Math.min(4, Math.max(0.25, currentScale + delta));
-    document.getElementById('lightboxImg').style.transform = `scale(${currentScale})`;
+    currentScale = Math.min(5, Math.max(0.25, currentScale + delta));
+    if (currentScale <= 1) { panX = 0; panY = 0; }
+    applyTransform();
     document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%';
+    document.getElementById('lightboxImgContainer').style.cursor = currentScale > 1 ? 'grab' : 'default';
 }
 
 function resetZoom() {
     currentScale = 1;
-    document.getElementById('lightboxImg').style.transform = 'scale(1)';
+    panX = 0; panY = 0;
+    applyTransform();
     document.getElementById('zoomLevel').textContent = '100%';
+    document.getElementById('lightboxImgContainer').style.cursor = 'default';
 }
 
 // Cerrar con Escape
@@ -1769,12 +1787,44 @@ document.getElementById('emitContractModal').addEventListener('click', e => {
     if (e.target === document.getElementById('emitContractModal')) closeEmitContractModal();
 });
 
-// Zoom con rueda del mouse (en todo el modal)
-document.getElementById('lightbox').addEventListener('wheel', e => {
-    if (document.getElementById('lightbox').classList.contains('hidden')) return;
+// Zoom con rueda del mouse
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+
+lb.addEventListener('wheel', function(e) {
+    if (lb.classList.contains('hidden')) return;
     e.preventDefault();
+    e.stopPropagation();
     zoom(e.deltaY < 0 ? 0.15 : -0.15);
 }, { passive: false });
+
+// Drag/Pan con mouse
+const imgContainer = document.getElementById('lightboxImgContainer');
+
+imgContainer.addEventListener('mousedown', e => {
+    if (currentScale <= 1) return;
+    isPanning = true;
+    startX = e.clientX - panX;
+    startY = e.clientY - panY;
+    imgContainer.style.cursor = 'grabbing';
+});
+
+document.addEventListener('mousemove', e => {
+    if (!isPanning) return;
+    panX = e.clientX - startX;
+    panY = e.clientY - startY;
+    applyTransform();
+});
+
+document.addEventListener('mouseup', () => {
+    isPanning = false;
+    imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
+});
+
+lbImg.addEventListener('mouseleave', () => {
+    isPanning = false;
+    imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
+});
 
 function openDeleteGhostModal() {
     document.getElementById('deleteGhostModal').classList.remove('hidden');
