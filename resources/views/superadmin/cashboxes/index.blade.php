@@ -36,7 +36,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
-            <div id="cashboxSearchResults" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg z-50 hidden max-h-60 overflow-y-auto"></div>
+            <div id="cashboxSearchResults" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg z-50 hidden max-h-60 overflow-y-auto [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700"></div>
         </div>
         @endif
 
@@ -2850,7 +2850,7 @@
                 const matches = cashboxNames.filter(function(c) { return c.name.toLowerCase().includes(q); });
 
                 if (matches.length === 0) {
-                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400">Sin resultados</div>';
+                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400 dark:text-gray-500">Sin resultados</div>';
                 } else {
                     resultsDiv.innerHTML = matches.map(function(m) {
                         return '<button type="button" data-idx="' + m.index + '" class="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between"><span>' + m.name + '</span><svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
