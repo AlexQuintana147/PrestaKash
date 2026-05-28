@@ -13,26 +13,19 @@
 
     <!-- Link -->
     <section class="mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-end gap-4">
-            <div class="flex-1">
-                <span id="referralLink" class="text-sm font-medium text-gray-700 dark:text-gray-300 block border-b border-gray-200 dark:border-gray-800 pb-2">{{ $referralLink }}</span>
-            </div>
-            <button onclick="copyReferralLink()"
-                    class="text-green-600 dark:text-green-400 hover:text-green-500 dark:hover:text-green-300 text-xs font-medium transition-colors pb-0.5 border-b border-green-600 dark:border-green-400">
-                <span id="copyText">Copiar link</span>
-            </button>
-        </div>
+        <span id="referralLink" class="hidden">{{ $referralLink }}</span>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Comparte tu link de referido y gana dinero por cada amigo que se registre y complete un préstamo.</p>
+        <button onclick="copyReferralLink()"
+                class="text-green-600 dark:text-green-400 hover:text-green-500 dark:hover:text-green-300 text-sm font-medium transition-colors border-b border-green-600 dark:border-green-400 pb-0.5">
+            <span id="copyText">Copiar link de referido</span>
+        </button>
     </section>
 
     <!-- Stats -->
-    <section class="grid grid-cols-3 gap-6 mb-10">
+    <section class="grid grid-cols-2 gap-4 sm:gap-6 mb-10">
         <div>
             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Referidos</p>
             <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalReferrals }}</p>
-        </div>
-        <div>
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Tu código</p>
-            <p class="text-xl font-bold text-green-600 dark:text-green-400 tracking-wider">{{ $user->referral_code }}</p>
         </div>
         <div>
             <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Ganancias</p>
@@ -65,8 +58,8 @@
     </section>
 
     <!-- Filtros -->
-    <section class="mb-6">
-        <div class="flex items-center gap-0 border-b border-gray-200 dark:border-gray-800">
+    <section class="mb-6 -mx-5 md:mx-0">
+        <div class="flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 overflow-x-auto scrollbar-hide px-5 md:px-0">
             @foreach(['all' => 'Todos', 'approved' => 'Aprobados', 'pending' => 'Pendientes', 'rejected' => 'Rechazados'] as $key => $label)
                 <a href="{{ route('client.referidos', ['filter' => $key]) }}"
                    class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
@@ -145,7 +138,7 @@
                                     {{ $referred->referralStatus['label'] }}
                                 </span>
                             @endif
-                            <span class="text-[10px] text-gray-400 dark:text-gray-600">{{ $record->created_at->diffForHumans() }}</span>
+                            <span class="hidden sm:inline text-[10px] text-gray-400 dark:text-gray-600">{{ $record->created_at->diffForHumans() }}</span>
                             <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
                             </svg>
@@ -350,7 +343,7 @@ function copyReferralLink() {
         const copyText = document.getElementById('copyText');
         copyText.textContent = '¡Copiado!';
         setTimeout(() => {
-            copyText.textContent = 'Copiar link';
+            copyText.textContent = 'Copiar link de referido';
         }, 2000);
     });
 }
