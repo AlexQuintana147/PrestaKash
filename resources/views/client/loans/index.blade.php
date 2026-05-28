@@ -91,9 +91,15 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Solicita financiamiento rápido y
                         seguro. Elige el monto y plazo que mejor se adapte a ti.</p>
                 </div>
-                <span
-                    class="self-start text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all">Solicitar
-                    ahora</span>
+                <div class="relative group/self-start self-start">
+                    <span
+                        class="text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all cursor-pointer">Solicitar
+                        ahora</span>
+                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/self-start:opacity-100 group-hover/self-start:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
+                        Completa el formulario de solicitud
+                        <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
+                    </div>
+                </div>
             </a>
 
             <!-- Historial crediticio -->
@@ -110,9 +116,15 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Consulta tus préstamos anteriores,
                         pagos realizados y tu estado crediticio actual.</p>
                 </div>
-                <span
-                    class="self-start text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all">Ver
-                    historial</span>
+                <div class="relative group/history self-start">
+                    <span
+                        class="text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all cursor-pointer">Ver
+                        historial</span>
+                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/history:opacity-100 group-hover/history:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
+                        Revisa tus préstamos y pagos
+                        <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
+                    </div>
+                </div>
             </a>
         </div>
 
@@ -132,8 +144,15 @@
                 @else
                     <div class="space-y-1">
                         @foreach($loans as $loan)
+                                    @php
+                                        $canNavigate = in_array($loan->status, ['approved', 'paid']);
+                                        $clickAction = $canNavigate
+                                            ? "window.location.href='" . route('client.loans.history.show', $loan) . "'"
+                                            : "openLoanStatusModal({$loan->id}, '{$loan->status}')";
+                                    @endphp
                                     <div
-                                        class="group py-5 px-4 flex flex-col md:flex-row md:items-center justify-between gap-6 rounded-xl hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-all duration-300 ease-in-out">
+                                        class="group py-5 px-4 flex flex-col md:flex-row md:items-center justify-between gap-6 rounded-xl hover:bg-gray-50/70 dark:hover:bg-white/[0.03] transition-all duration-300 ease-in-out cursor-pointer"
+                                        onclick="{{ $clickAction }}">
 
                                         <!-- Izquierda: Info Principal -->
                                         <div class="flex items-center gap-5">
@@ -274,6 +293,29 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Modal Estado de Préstamo -->
+    <div id="loanStatusModal"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+        onclick="if(event.target===this)closeLoanStatusModal()">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-2xl shadow-2xl p-6 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeLoanStatusModal()"
+                class="absolute top-3 right-3 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="text-center">
+                <div id="loanStatusIcon" class="mx-auto mb-4"></div>
+                <h3 id="loanStatusTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-2"></h3>
+                <p id="loanStatusDesc" class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6"></p>
+                <button onclick="closeLoanStatusModal()"
+                    class="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold uppercase tracking-widest rounded-lg hover:opacity-80 transition-opacity">
+                    Entendido
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Aceptar Contra-oferta -->
@@ -635,6 +677,48 @@
                 notice.style.overflow = 'hidden';
                 setTimeout(function () { notice.remove(); }, 300);
             });
+        }
+
+        function openLoanStatusModal(loanId, status) {
+            var modal = document.getElementById('loanStatusModal');
+            var icon = document.getElementById('loanStatusIcon');
+            var title = document.getElementById('loanStatusTitle');
+            var desc = document.getElementById('loanStatusDesc');
+
+            var configs = {
+                pending: {
+                    icon: '<svg class="w-12 h-12 text-yellow-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                    title: 'Solicitud en revisión',
+                    desc: 'Tu solicitud de préstamo está siendo evaluada por nuestro equipo. Te notificaremos cuando haya una actualización.'
+                },
+                counter_offered: {
+                    icon: '<svg class="w-12 h-12 text-purple-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>',
+                    title: 'Contra-oferta recibida',
+                    desc: 'Se te ha enviado una contra-oferta con nuevas condiciones. Revisa los detalles para aceptarla o rechazarla.'
+                },
+                rejected: {
+                    icon: '<svg class="w-12 h-12 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                    title: 'Solicitud rechazada',
+                    desc: 'Tu solicitud de préstamo no fue aprobada en esta ocasión. Puedes volver a solicitar cuando lo desees.'
+                }
+            };
+
+            var cfg = configs[status] || {
+                icon: '<svg class="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+                title: 'Estado: ' + status,
+                desc: 'Consulta el estado de tu solicitud más adelante.'
+            };
+
+            icon.innerHTML = cfg.icon;
+            title.textContent = cfg.title;
+            desc.textContent = cfg.desc;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoanStatusModal() {
+            document.getElementById('loanStatusModal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
     </script>
 
