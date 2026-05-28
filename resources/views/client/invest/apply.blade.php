@@ -7,12 +7,19 @@
 
     <!-- Header -->
     <div class="mb-12">
-        <a href="{{ route('client.invertir') }}" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hover:text-gray-900 dark:hover:text-white transition-colors mb-8">
+        <a id="backFromApply" href="{{ route('client.invertir') }}" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hover:text-gray-900 dark:hover:text-white transition-colors mb-8">
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
             </svg>
             Volver
         </a>
+        <script>
+        var backApply = document.getElementById('backFromApply');
+        if (backApply && sessionStorage.getItem('from_dashboard')) {
+            backApply.href = '{{ route('client.dashboard') }}';
+            sessionStorage.removeItem('from_dashboard');
+        }
+        </script>
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">Postulación</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">Completa tu perfil para unirte a nuestra red de inversión.</p>
 

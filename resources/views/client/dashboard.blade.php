@@ -365,7 +365,7 @@
                 </a>
 
                 {{-- Card 2: Invertir --}}
-                <a href="{{ $isInvestor ? route('client.investments.index') : ($hasInvestorApp ? route('client.invertir') : route('client.invest.apply')) }}" class="pk-card-cta purple p-4 flex flex-col justify-between min-h-[100px]">
+                <a href="{{ $isInvestor ? route('client.investments.index') : ($hasInvestorApp ? route('client.invertir') : route('client.invest.apply')) }}" onclick="sessionStorage.setItem('from_dashboard','1')" class="pk-card-cta purple p-4 flex flex-col justify-between min-h-[100px]">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-[#8247f5] dark:text-[#9B59B6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ $isInvestor ? 'Activo' : 'Nuevo' }}</span>
