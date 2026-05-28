@@ -24,6 +24,22 @@
             </div>
         </div>
 
+        @if($cashboxes->count() > 1)
+        <div class="mb-6 relative max-w-xs">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input type="text" id="cashboxSearch" placeholder="Buscar caja por nombre..."
+                   class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
+            <button type="button" id="cashboxSearchClear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hidden">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div id="cashboxSearchResults" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg z-50 hidden max-h-60 overflow-y-auto"></div>
+        </div>
+        @endif
+
         @if(session('success'))
             <div
                 class="mb-12 flex items-center gap-3 text-xs font-bold text-green-500 uppercase tracking-widest animate-in fade-in slide-in-from-top-2 duration-500">
@@ -2808,5 +2824,63 @@
 
             amountInput.value = cleanAmount;
         });
+
+        // Cashbox search
+        (function() {
+            const searchInput = document.getElementById('cashboxSearch');
+            const clearBtn = document.getElementById('cashboxSearchClear');
+            const resultsDiv = document.getElementById('cashboxSearchResults');
+            if (!searchInput) return;
+
+            const cashboxNames = [];
+            cards.forEach(function(card, i) {
+                const nameEl = card.querySelector('.cashbox-name');
+                if (nameEl) cashboxNames.push({ name: nameEl.textContent.trim(), index: i, id: card.dataset.id });
+            });
+
+            searchInput.addEventListener('input', function() {
+                const q = this.value.trim().toLowerCase();
+                clearBtn.classList.toggle('hidden', !q);
+
+                if (!q) {
+                    resultsDiv.classList.add('hidden');
+                    return;
+                }
+
+                const matches = cashboxNames.filter(function(c) { return c.name.toLowerCase().includes(q); });
+
+                if (matches.length === 0) {
+                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400">Sin resultados</div>';
+                } else {
+                    resultsDiv.innerHTML = matches.map(function(m) {
+                        return '<button type="button" data-idx="' + m.index + '" class="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between"><span>' + m.name + '</span><svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
+                    }).join('');
+                }
+                resultsDiv.classList.remove('hidden');
+            });
+
+            resultsDiv.addEventListener('click', function(e) {
+                const btn = e.target.closest('button[data-idx]');
+                if (!btn) return;
+                const idx = parseInt(btn.dataset.idx);
+                scrollToIndex(idx);
+                searchInput.value = '';
+                clearBtn.classList.add('hidden');
+                resultsDiv.classList.add('hidden');
+            });
+
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                clearBtn.classList.add('hidden');
+                resultsDiv.classList.add('hidden');
+                searchInput.focus();
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+                    resultsDiv.classList.add('hidden');
+                }
+            });
+        })();
     </script>
 @endsection
