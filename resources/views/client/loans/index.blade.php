@@ -254,12 +254,6 @@
                                                 </p>
                                             </div>
 
-                                            <div class="flex flex-col justify-center">
-                                                <p class="text-[10px] text-gray-400 dark:text-gray-600 uppercase font-bold mb-1">Motivo</p>
-                                                <p class="text-xs text-gray-700 dark:text-gray-300 italic" title="{{ $loan->reason }}">
-                                                    "{{ Str::limit($loan->reason, 15) }}"
-                                                </p>
-                                            </div>
                                         </div>
 
                                         <!-- Derecha: Estado -->
