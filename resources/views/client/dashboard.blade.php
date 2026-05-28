@@ -6,7 +6,7 @@
 @php
     $selfie = $user->documents?->selfie;
     $profilePhoto = $selfie ? Storage::url($selfie) : ($user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=E7EDF6&color=476788');
-    $firstName = $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : ($user->first_name ?? $user->name);
+    $fullName = $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : trim(($user->first_name ?? '').' '.($user->last_name ?? ''));
     $greeting = now()->hour < 12 ? 'Buenos días' : (now()->hour < 18 ? 'Buenas tardes' : 'Buenas noches');
     $hasActiveLoans = $activeLoans->count() > 0;
     $hasPendingLoans = $pendingLoans->count() > 0;
@@ -220,7 +220,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $greeting }}</p>
-                        <p class="text-base md:text-lg font-bold text-gray-900 dark:text-white truncate mt-0.5">{{ $firstName }}</p>
+                        <p class="text-base md:text-lg font-bold text-gray-900 dark:text-white truncate mt-0.5" title="{{ $fullName }}">{{ $fullName }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
