@@ -31,7 +31,7 @@
 <div class="min-h-screen px-4 md:px-8 py-6 max-w-2xl mx-auto">
 
     <!-- Back -->
-    <a href="{{ route('client.loans.history') }}"
+    <a id="backToPanel" href="{{ route('client.loans.history') }}"
         class="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
@@ -815,6 +815,12 @@ function previewImage(input) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+var back = document.getElementById('backToPanel');
+if (back && sessionStorage.getItem('from_dashboard')) {
+    back.href = '{{ route('client.dashboard') }}';
+    sessionStorage.removeItem('from_dashboard');
 }
 
 document.addEventListener('DOMContentLoaded', () => render());

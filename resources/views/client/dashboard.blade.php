@@ -268,7 +268,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </button>
             </div>
         </div>
     </div>
@@ -391,7 +391,7 @@
 
                 @if($hasActiveLoans)
                 {{-- Card 4: Resumen (wide) --}}
-                <div class="pk-card col-span-2 p-4">
+                <button type="button" onclick="openSummaryModal()" class="pk-card col-span-2 p-4 text-left cursor-pointer hover:border-[#E94560]/30 dark:hover:border-[#E94560]/30 transition-colors">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
                             <svg class="w-5 h-5 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
@@ -417,7 +417,7 @@
                             @endif
                         </div>
                     </div>
-                </div>
+                </button>
                 @endif
 
                 {{-- Card 5: Cuentas Banco --}}
@@ -1152,5 +1152,126 @@ function closePendingLoansModal() {
 document.getElementById('pendingLoansModal').addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closePendingLoansModal();
 });
+function openSummaryModal() {
+    document.getElementById('summaryModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeSummaryModal() {
+    document.getElementById('summaryModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
 </script>
+
+{{-- Modal Resumen --}}
+<div id="summaryModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+    <div onclick="closeSummaryModal()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="absolute inset-x-0 bottom-0 max-h-[90vh] sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-lg sm:w-full bg-white dark:bg-gray-950 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white">Resumen de Préstamos</h3>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $activeLoans->count() }} préstamo{{ $activeLoans->count() > 1 ? 's' : '' }} activo{{ $activeLoans->count() > 1 ? 's' : '' }}</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeSummaryModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-5 space-y-5">
+
+            {{-- Cards principales --}}
+            <div class="grid grid-cols-2 gap-3">
+                <div class="block bg-[#E94560] rounded-2xl p-4 hover:shadow-md transition-all">
+                    <p class="text-[10px] font-medium text-white/70 uppercase tracking-wider mb-1">Deuda Total</p>
+                    <p class="text-xl font-black text-white">S/ {{ number_format($totalDebt, 2) }}</p>
+                </div>
+                <div class="block bg-[#006BFF] rounded-2xl p-4 hover:shadow-md transition-all">
+                    <p class="text-[10px] font-medium text-white/70 uppercase tracking-wider mb-1">Cuota Mensual</p>
+                    <p class="text-xl font-black text-white">S/ {{ number_format($monthlyPayment, 2) }}</p>
+                </div>
+            </div>
+
+            {{-- Estado global --}}
+            @if($hasOverdue)
+            <a href="{{ route('client.loans.history') }}" onclick="sessionStorage.setItem('from_dashboard','1');closeSummaryModal()" class="flex items-center gap-3 bg-red-50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/20 rounded-2xl p-4 hover:shadow-md transition-all group cursor-pointer active:scale-[0.98]">
+                <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-red-600 dark:text-red-400">Tienes pagos atrasados</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400">{{ $overdueCount }} cuota{{ $overdueCount > 1 ? 's' : '' }} pendiente{{ $overdueCount > 1 ? 's' : '' }}</p>
+                </div>
+                <svg class="w-4 h-4 text-red-300 dark:text-red-600 group-hover:translate-x-0.5 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+            @else
+            <div class="flex items-center gap-3 bg-green-50 dark:bg-green-500/5 border border-green-200 dark:border-green-500/20 rounded-2xl p-4">
+                <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-green-700 dark:text-green-400">Todo al día</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400">Sin pagos vencidos</p>
+                </div>
+            </div>
+            @endif
+
+            {{-- Préstamos activos --}}
+            @if($activeLoans->isNotEmpty())
+            <div>
+                <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Tus préstamos</p>
+                <div class="space-y-2.5">
+                    @foreach($activeLoans->take(5) as $loan)
+                    @php
+                        $paid_i = $loan->installments->where('status', 'approved')->count();
+                        $total_i = $loan->installments->count();
+                        if ($total_i === 0) {
+                            $ipm = match($loan->payment_frequency ?? 'mensual') { 'diario'=>30, 'semanal'=>4, 'quincenal'=>2, default=>1 };
+                            $total_i = ($loan->months ?? 1) * $ipm;
+                        }
+                        $perc = ($paid_i / max($total_i, 1)) * 100;
+                        $isOverdue = $loan->installments->where('status', 'overdue')->isNotEmpty();
+                    @endphp
+                    <a href="{{ route('client.loans.history.show', $loan) }}" onclick="sessionStorage.setItem('from_dashboard','1');closeSummaryModal()" class="block bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-2xl p-3.5 hover:border-[#E94560]/30 dark:hover:border-[#E94560]/30 hover:shadow-sm transition-all group cursor-pointer active:scale-[0.98]">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="text-[10px] font-black text-white bg-black dark:text-black dark:bg-white px-1.5 py-0.5 rounded">{{ $loan->code }}</span>
+                                <span class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 0) }}</span>
+                            </div>
+                            @if($isOverdue)
+                            <span class="flex-shrink-0 px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-500/20 text-[9px] font-bold text-red-600 dark:text-red-400">Atrasado</span>
+                            @else
+                            <span class="flex-shrink-0 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-500/20 text-[9px] font-bold text-green-600 dark:text-green-400">Activo</span>
+                            @endif
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-[#E94560] rounded-full transition-all" style="width: {{ $perc }}%"></div>
+                            </div>
+                            <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 tabular-nums flex-shrink-0">{{ $paid_i }}/{{ $total_i }}</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500">{{ number_format($loan->interest_rate, 1) }}% interés</span>
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 flex items-center gap-0.5 group-hover:text-[#E94560] transition-colors">
+                                Ver cronograma
+                                <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </span>
+                        </div>
+                    </a>
+                    @endforeach
+                </div>
+                @if($activeLoans->count() > 5)
+                <a href="{{ route('client.loans.history') }}" onclick="sessionStorage.setItem('from_dashboard','1');closeSummaryModal()" class="mt-3 block text-center text-[11px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">
+                    Ver los {{ $activeLoans->count() - 5 }} restantes →
+                </a>
+                @endif
+            </div>
+            @endif
+
+        </div>
+    </div>
+</div>
 @endif
