@@ -112,7 +112,9 @@
     <!-- Mobile topbar -->
     <header
         class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
-        <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
+        <a href="{{ route('superadmin.dashboard') }}" class="flex items-center">
+            <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
+        </a>
         <button onclick="toggleSidebar()"
             class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
             <svg id="menuOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +143,9 @@
 
             <!-- Logo (desktop) -->
             <div class="hidden md:flex px-6 py-5 border-b border-gray-200 dark:border-gray-900 items-center gap-3">
-                <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                <a href="{{ route('superadmin.dashboard') }}" class="flex items-center">
+                    <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                </a>
                 <button onclick="refreshSidebar(this)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Refrescar">
                     <svg class="w-4 h-4 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -151,7 +155,9 @@
 
             <!-- Logo (mobile) -->
             <div class="md:hidden px-6 py-5 border-b border-gray-200 dark:border-gray-900 flex-shrink-0 flex items-center gap-3">
-                <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                <a href="{{ route('superadmin.dashboard') }}" class="flex items-center">
+                    <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                </a>
                 <button onclick="refreshSidebar(this)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Refrescar">
                     <svg class="w-4 h-4 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

@@ -102,7 +102,9 @@
     <!-- Mobile topbar -->
     <header
         class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
-        <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
+        <a href="{{ route('client.dashboard') }}" class="flex items-center">
+            <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
+        </a>
         <button onclick="toggleSidebar()"
             class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
             <svg id="menuOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,13 +130,17 @@
 
             <!-- Logo (desktop) -->
             <div class="hidden md:block px-6 py-5 border-b border-gray-100 dark:border-gray-900">
-                <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                <a href="{{ route('client.dashboard') }}" class="block">
+                    <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                </a>
                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">Mi Panel</p>
             </div>
 
             <!-- Logo (mobile) -->
             <div class="md:hidden px-6 py-5 border-b border-gray-100 dark:border-gray-900 flex-shrink-0">
-                <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                <a href="{{ route('client.dashboard') }}" class="block">
+                    <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
+                </a>
                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">Mi Panel</p>
             </div>
 
