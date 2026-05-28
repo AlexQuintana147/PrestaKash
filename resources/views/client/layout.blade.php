@@ -99,6 +99,12 @@
 
 <body class="h-full bg-white dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-200">
 
+    <div id="app-loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .2s">
+        <div style="width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:#E94560;border-radius:50%;animation:pk-spin .6s linear infinite"></div>
+        <style>#app-loader{background:#fff}.dark #app-loader{background:#030712}.dark #app-loader>div{border-color:#374151;border-top-color:#E94560}@keyframes pk-spin{to{transform:rotate(360deg)}}</style>
+    </div>
+    <script>document.addEventListener('DOMContentLoaded',function(){var l=document.getElementById('app-loader');l.style.opacity='0';setTimeout(function(){l.remove()},200)})</script>
+
     <!-- Mobile topbar -->
     <header
         class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
