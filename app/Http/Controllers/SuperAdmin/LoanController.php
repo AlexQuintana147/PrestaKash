@@ -168,25 +168,13 @@ class LoanController extends Controller
 
         $updateData['total_amount'] = $totalAmount;
         $updateData['monthly_payment'] = $periodicPayment;
+        $updateData['cashbox_id'] = $request->cashbox_id;
 
-        \DB::transaction(function () use ($loan, $updateData, $cashbox, $amount) {
+        \DB::transaction(function () use ($loan, $updateData) {
             $loan->update($updateData);
-
-            // Register movement
-            $cashbox->movements()->create([
-                'user_id' => auth()->id(),
-                'type' => 'expense',
-                'amount' => $amount,
-                'description' => "Egreso por contra-oferta de préstamo {$loan->code} a {$loan->user->name}",
-                'reference_type' => 'loan',
-                'reference_id' => $loan->id,
-                'date' => now(),
-            ]);
-
-            $cashbox->decrement('balance', $amount);
         });
 
-        return back()->with('success', 'Contra-oferta enviada y egreso registrado correctamente.');
+        return back()->with('success', 'Contra-oferta enviada correctamente. Se registrará el egreso cuando el cliente acepte.');
     }
 
     public function approve(Request $request, Loan $loan)
