@@ -160,7 +160,8 @@
                         'Estado Civil'  => $cp && $cp->marital_status ? [
                             'value' => match($cp->marital_status) {
                                 'soltero' => 'Soltero/a',
-                                'casado' => 'Casado/a',
+                                'casado_separado' => 'Casado/a — bienes separados',
+                                'casado_compartido' => 'Casado/a — bienes compartidos',
                                 'divorciado' => 'Divorciado/a',
                                 'viudo' => 'Viudo/a',
                                 'conviviente' => 'Conviviente',
@@ -191,9 +192,9 @@
                             'link' => 'https://instagram.com/' . ltrim($cp->instagram, '@'),
                             'is_instagram' => true
                         ] : null,
-                        'Cónyuge Nombres' => ($cp && $cp->marital_status && in_array($cp->marital_status, ['casado', 'conviviente']) && $cp->spouse_first_name) ? ['value' => $cp->spouse_first_name] : null,
-                        'Cónyuge Apellidos' => ($cp && $cp->marital_status && in_array($cp->marital_status, ['casado', 'conviviente']) && $cp->spouse_last_name) ? ['value' => $cp->spouse_last_name] : null,
-                        'Cónyuge DNI' => ($cp && $cp->marital_status && in_array($cp->marital_status, ['casado', 'conviviente']) && $cp->spouse_dni) ? ['value' => $cp->spouse_dni] : null,
+                        'Cónyuge Nombres' => ($cp && $cp->marital_status === 'casado_compartido' && $cp->spouse_first_name) ? ['value' => $cp->spouse_first_name] : null,
+                        'Cónyuge Apellidos' => ($cp && $cp->marital_status === 'casado_compartido' && $cp->spouse_last_name) ? ['value' => $cp->spouse_last_name] : null,
+                        'Cónyuge DNI' => ($cp && $cp->marital_status === 'casado_compartido' && $cp->spouse_dni) ? ['value' => $cp->spouse_dni] : null,
                         'Tasa de interés' => ($status === 'approved' && !$user->is_ghost) ? [
                             'value' => number_format($user->loan_interest_rate ?? 20, 2, '.', ''),
                             'editable' => true,
