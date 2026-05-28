@@ -566,6 +566,7 @@ const SAMPLE_DATA = {!! json_encode([
     'email' => 'pepe@correo.com','telefono' => '+51 999 888 777',
     'direccion' => 'Av. Principal 123, Urbanización San Isidro, Lima',
     'estado_civil' => 'Casado','ocupacion' => 'Ingeniero de Sistemas','lugar_trabajo' => 'Tecnologías del Perú S.A.C.',
+    'conyuge_nombre' => 'María García','conyuge_apellido' => 'Luna García','conyuge_dni' => '87654321',
     'numero_cuenta' => '191-1234567890-0-56','tipo_moneda' => 'Soles','tipo_cuenta' => 'Cuenta de Ahorros','cci' => '00219101234567890056',
     'monto_invertido' => 'S/ 10,000.00','monto_deseado' => 'S/ 15,000.00','tasa_retorno_mensual' => '3.5%',
     'plazo_meses' => '12','cuota_mensual' => 'S/ 350.00','fecha_inicio' => '01 de junio de 2026',
