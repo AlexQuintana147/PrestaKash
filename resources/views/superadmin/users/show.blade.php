@@ -168,24 +168,34 @@
                                 default => $cp->marital_status
                             }
                         ] : null,
-                        'Hijos'        => ($cp && $cp->has_children) ? [
-                            'value' => ($cp->children_count ?? 1) . (($cp->children_count ?? 1) == 1 ? ' hijo' : ' hijos')
-                        ] : (($cp && !$cp->has_children) ? ['value' => 'No'] : null),
+                        'Hijos'        => $cp ? [
+                            'value' => $cp->has_children
+                                ? (($cp->children_count ?? 1) . (($cp->children_count ?? 1) == 1 ? ' hijo' : ' hijos'))
+                                : 'No tiene'
+                        ] : null,
                         'Empleo'       => $cp ? [
                             'value' => $cp->is_employed
                                 ? ($cp->employment_type === 'independent'
-                                    ? 'Independiente' . ($cp->independent_type ? ' (' . $cp->independent_type . ')' : '')
-                                    : ($cp->employment_type ?? 'Dependiente'))
+                                    ? 'Independiente' . ($cp->independent_type ? ' — ' . $cp->independent_type : '')
+                                    : 'Dependiente')
                                 : 'Sin empleo'
                         ] : null,
-                        'Lugar trabajo'=> ($cp && $cp->workplace) ? ['value' => $cp->workplace] : null,
-                        'Cargo'        => ($cp && $cp->job_title) ? ['value' => $cp->job_title] : null,
-                        'Ingreso mensual' => ($cp && $cp->monthly_income) ? [
+                        'Lugar trabajo'=> ($cp && $cp->is_employed && $cp->workplace) ? ['value' => $cp->workplace] : null,
+                        'Cargo'        => ($cp && $cp->is_employed && $cp->job_title) ? ['value' => $cp->job_title] : null,
+                        'Ingreso mensual' => ($cp && $cp->is_employed && $cp->monthly_income) ? [
                             'value' => 'S/ ' . number_format($cp->monthly_income, 2, '.', ',')
+                        ] : null,
+                        'Estado académico' => ($cp && $cp->academic_status) ? [
+                            'value' => $cp->academic_status
+                        ] : null,
+                        'Tipo educación' => ($cp && $cp->academic_status && str_contains($cp->academic_status, 'Superior —')) ? [
+                            'value' => preg_replace('/Superior — (.+) \(.+/', '$1', $cp->academic_status)
+                        ] : null,
+                        'Nivel académico' => ($cp && $cp->academic_status && str_contains($cp->academic_status, 'Superior —')) ? [
+                            'value' => preg_replace('/Superior — .+ \((.+)\)/', '$1', $cp->academic_status)
                         ] : null,
                         'Institución'  => ($cp && $cp->institution) ? ['value' => $cp->institution] : null,
                         'Carrera'      => ($cp && $cp->career) ? ['value' => $cp->career] : null,
-                        'Estado académico' => ($cp && $cp->academic_status) ? ['value' => $cp->academic_status] : null,
                         'Instagram'    => ($cp && $cp->instagram) ? [
                             'value' => $cp->instagram,
                             'icon' => 'insta',
