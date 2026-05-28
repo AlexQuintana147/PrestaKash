@@ -7,7 +7,7 @@
 
         <!-- Header -->
         <div class="mb-12 flex flex-col gap-4">
-            <a href="{{ route('client.loans') }}"
+            <a id="backToPanel" href="{{ route('client.loans') }}"
                 class="text-xs font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center gap-2 self-start">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -232,5 +232,12 @@
             });
         });
     })();
+        (function() {
+            var back = document.getElementById('backToPanel');
+            if (sessionStorage.getItem('from_dashboard')) {
+                back.href = '{{ route('client.dashboard') }}';
+                sessionStorage.removeItem('from_dashboard');
+            }
+        })();
     </script>
 @endsection
