@@ -1079,7 +1079,8 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
 
 <!-- Lightbox modal -->
 <div id="lightbox" onclick="closeLightbox(event)"
-     class="hidden fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4">
+     class="hidden fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4"
+     onwheel="if(!this.classList.contains('hidden')){event.preventDefault();zoom(event.deltaY<0?0.15:-0.15)}">
 
     <!-- Header -->
     <div class="flex items-center justify-between w-full max-w-4xl mb-3 flex-shrink-0">
@@ -1787,16 +1788,16 @@ document.getElementById('emitContractModal').addEventListener('click', e => {
     if (e.target === document.getElementById('emitContractModal')) closeEmitContractModal();
 });
 
-// Zoom con rueda del mouse
+// Zoom con rueda del mouse — en TODO el lightbox
 const lb = document.getElementById('lightbox');
-const lbImg = document.getElementById('lightboxImg');
 
 lb.addEventListener('wheel', function(e) {
     if (lb.classList.contains('hidden')) return;
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation();
     zoom(e.deltaY < 0 ? 0.15 : -0.15);
-}, { passive: false });
+}, { passive: false, capture: true });
 
 // Drag/Pan con mouse
 const imgContainer = document.getElementById('lightboxImgContainer');
