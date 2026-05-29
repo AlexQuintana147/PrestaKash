@@ -301,10 +301,10 @@
                                         <p class="text-xs text-amber-700 dark:text-amber-500/80 mb-4 leading-relaxed">Para
                                             solicitar un préstamo, primero debes agregar una cuenta bancaria donde recibirás el
                                             dinero.</p>
-                                        <a href="{{ route('client.dashboard', ['open_bank' => 1]) }}"
-                                            class="inline-flex items-center text-[10px] font-black text-amber-900 dark:text-amber-400 uppercase tracking-[0.2em] border-b-2 border-amber-900 dark:border-amber-400 pb-0.5 hover:opacity-70 transition-opacity">
-                                            Ir al inicio para agregar cuenta
-                                        </a>
+                                        <button type="button" onclick="openBankModal()"
+                                            class="inline-flex items-center text-[10px] font-black text-amber-900 dark:text-amber-400 uppercase tracking-[0.2em] border-b-2 border-amber-900 dark:border-amber-400 pb-0.5 hover:opacity-70 transition-opacity bg-transparent cursor-pointer">
+                                            Agregar cuenta bancaria →
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -332,10 +332,10 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <a
-                                        href="{{ route('client.dashboard', ['open_bank' => 1]) }}"
-                                        class="text-green-600 dark:text-green-400 font-bold hover:underline">Gestiónalas
-                                        aquí</a></p>
+                                <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <button
+                                        type="button" onclick="openBankModal()"
+                                        class="text-green-600 dark:text-green-400 font-bold hover:underline bg-transparent cursor-pointer">Gestiónalas
+                                        aquí</button></p>
                             </div>
 
                             <div id="noAccountWarning"
@@ -356,10 +356,10 @@
                                             Para solicitar un préstamo en esta moneda, primero debes registrar una cuenta
                                             bancaria correspondiente.
                                         </p>
-                                        <a href="{{ route('client.dashboard') }}"
-                                            class="inline-flex items-center text-[10px] font-black text-red-900 dark:text-red-400 uppercase tracking-[0.2em] border-b-2 border-red-900 dark:border-red-400 pb-0.5 hover:opacity-70 transition-opacity">
+                                        <button type="button" onclick="openBankModal()"
+                                            class="inline-flex items-center text-[10px] font-black text-red-900 dark:text-red-400 uppercase tracking-[0.2em] border-b-2 border-red-900 dark:border-red-400 pb-0.5 hover:opacity-70 transition-opacity bg-transparent cursor-pointer">
                                             Registrar cuenta ahora
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -1151,4 +1151,309 @@
             charCount.textContent = reason.value.length;
         });
     </script>
+
+<style>
+    .pk-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    .pk-modal-overlay.active { display: flex; }
+    @media (min-width: 768px) {
+        .pk-modal-overlay.active { align-items: center; padding: 1rem; }
+    }
+    .pk-modal-content {
+        position: relative;
+        z-index: 10;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 24px 24px 0 0;
+        width: 100%;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .dark .pk-modal-content {
+        background: #111827;
+        border-color: #1f2937;
+    }
+    @media (min-width: 768px) {
+        .pk-modal-content {
+            border-radius: 24px;
+            max-width: 480px;
+            max-height: 80vh;
+        }
+    }
+</style>
+
+{{-- Modal Cuentas Bancarias --}}
+<div id="bankModal" class="pk-modal-overlay" role="dialog" aria-modal="true">
+    <div onclick="closeBankModal()" class="absolute inset-0 bg-black/60"></div>
+    <div class="pk-modal-content">
+        <div class="px-6 pt-6 pb-4 flex-shrink-0">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#D4910E]/10 dark:bg-[#F5A623]/10 flex items-center justify-center">
+                        <svg class="w-4.5 h-4.5 text-[#D4910E] dark:text-[#F5A623]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 003-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-gray-900 dark:text-white">Cuentas Bancarias</h3>
+                        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Donde recibirás tus desembolsos</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeBankModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6 pb-4">
+            <div id="bankAccountsList" class="space-y-2">
+                <div class="animate-pulse space-y-2">
+                    <div class="h-16 bg-gray-50 dark:bg-gray-900 rounded-xl"></div>
+                    <div class="h-16 bg-gray-50 dark:bg-gray-900 rounded-xl"></div>
+                </div>
+            </div>
+            <div id="bankAccountForm" class="hidden pt-5 mt-5 border-t border-gray-100 dark:border-gray-800/50">
+                <h4 id="formTitle" class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-5">Nueva Cuenta</h4>
+                <form id="actualBankForm" onsubmit="saveBankAccount(event)" class="space-y-4">
+                    <input type="hidden" id="editingId" value="">
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Alias</label>
+                        <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Banco</label>
+                            <select id="f_bank_name" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
+                                <option value="" class="dark:bg-gray-900">Seleccionar</option>
+                                @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa'] as $bank)
+                                    <option value="{{ $bank }}" class="dark:bg-gray-900">{{ $bank }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Tipo</label>
+                            <select id="f_account_type" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
+                                <option value="ahorros" class="dark:bg-gray-900">Ahorros</option>
+                                <option value="corriente" class="dark:bg-gray-900">Corriente</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Moneda</label>
+                            <select id="f_currency" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
+                                <option value="PEN" class="dark:bg-gray-900">Soles (S/)</option>
+                                <option value="USD" class="dark:bg-gray-900">Dólares ($)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Nro. Cuenta</label>
+                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">CCI</label>
+                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
+                    </div>
+                    <div class="flex gap-3 pt-3">
+                        <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">Guardar</button>
+                        <button type="button" onclick="hideBankForm()" class="px-5 py-2.5 rounded-xl text-gray-400 dark:text-gray-500 text-sm font-medium hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="addBtnContainer" class="px-6 py-4 border-t border-gray-100 dark:border-gray-800/50 flex-shrink-0">
+            <button type="button" onclick="showBankForm()" class="w-full py-2.5 rounded-xl text-sm font-medium text-[#006BFF] dark:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors flex items-center justify-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Agregar cuenta
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- Delete Confirm Modal --}}
+<div id="deleteConfirmModal" class="pk-modal-overlay" role="dialog" aria-modal="true" style="align-items:center;padding:1rem;">
+    <div onclick="closeDeleteConfirm()" class="absolute inset-0 bg-black/60"></div>
+    <div class="pk-modal-content" style="max-width:360px;">
+        <div class="px-6 pt-8 pb-6 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-[#E94560]/10 dark:bg-[#E94560]/20 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white">Eliminar cuenta</h3>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">¿Estás seguro? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="px-6 pb-6 flex gap-3">
+            <button type="button" onclick="closeDeleteConfirm()" class="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
+            <button type="button" onclick="confirmDeleteAccount()" class="flex-1 py-2.5 rounded-xl bg-[#E94560] text-white text-sm font-semibold hover:bg-[#d63d56] transition-colors">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let bankAccounts = [];
+
+    function openBankModal() {
+        document.getElementById('bankModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        loadBankAccounts();
+    }
+
+    function closeBankModal() {
+        document.getElementById('bankModal').classList.remove('active');
+        document.body.style.overflow = '';
+        hideBankForm();
+    }
+
+    async function loadBankAccounts() {
+        const list = document.getElementById('bankAccountsList');
+        try {
+            const response = await fetch('{{ route("client.bank-accounts.index") }}');
+            bankAccounts = await response.json();
+            if (bankAccounts.length === 0) {
+                list.innerHTML = '<div class="py-10 text-center"><svg class="w-10 h-10 mx-auto text-gray-200 dark:text-gray-800 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 003-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg><p class="text-sm text-gray-300 dark:text-gray-700">Sin cuentas registradas</p></div>';
+                return;
+            }
+            list.innerHTML = bankAccounts.map(acc => `
+                <div class="group flex items-center justify-between py-3 border-b border-gray-50 dark:border-gray-800/50 last:border-0">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">${acc.alias || acc.bank_name}</span>
+                            <span class="text-[10px] font-medium text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-800/50 px-1.5 py-0.5 rounded">${acc.bank_name}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 dark:text-gray-600 tabular-nums mt-0.5">${acc.account_type === 'ahorros' ? 'Ahorros' : 'Corriente'} · ${acc.currency === 'PEN' ? 'S/' : '$'} · ${acc.account_number}</p>
+                    </div>
+                    <div class="flex gap-0.5 flex-shrink-0 ml-3">
+                        <button onclick="editBankAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        </button>
+                        <button onclick="deleteBankAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#E94560] hover:bg-[#E94560]/5 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {
+            list.innerHTML = '<p class="text-red-500 text-sm">Error al cargar</p>';
+        }
+    }
+
+    function showBankForm() {
+        document.getElementById('bankAccountForm').classList.remove('hidden');
+        document.getElementById('addBtnContainer').classList.add('hidden');
+    }
+
+    function hideBankForm() {
+        document.getElementById('bankAccountForm').classList.add('hidden');
+        document.getElementById('addBtnContainer').classList.remove('hidden');
+        document.getElementById('actualBankForm').reset();
+        document.getElementById('editingId').value = '';
+        document.getElementById('formTitle').textContent = 'Nueva Cuenta';
+    }
+
+    function editBankAccount(id) {
+        const acc = bankAccounts.find(a => a.id === id);
+        if (!acc) return;
+        document.getElementById('editingId').value = acc.id;
+        document.getElementById('f_alias').value = acc.alias || '';
+        document.getElementById('f_bank_name').value = acc.bank_name;
+        document.getElementById('f_account_type').value = acc.account_type;
+        document.getElementById('f_currency').value = acc.currency || 'PEN';
+        document.getElementById('f_account_number').value = acc.account_number;
+        document.getElementById('f_cci').value = acc.cci || '';
+        document.getElementById('formTitle').textContent = 'Editar Cuenta';
+        showBankForm();
+    }
+
+    async function saveBankAccount(e) {
+        e.preventDefault();
+        const id = document.getElementById('editingId').value;
+        const data = {
+            alias: document.getElementById('f_alias').value,
+            bank_name: document.getElementById('f_bank_name').value,
+            account_type: document.getElementById('f_account_type').value,
+            currency: document.getElementById('f_currency').value,
+            account_number: document.getElementById('f_account_number').value,
+            cci: document.getElementById('f_cci').value,
+            _token: '{{ csrf_token() }}'
+        };
+        const url = id ? '/panel/cuentas-bancarias/' + id : '{{ route("client.bank-accounts.store") }}';
+        const method = id ? 'PUT' : 'POST';
+        try {
+            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify(data) });
+            if (!response.ok) {
+                let msg = 'Error al guardar';
+                try { const err = await response.json(); if (err.message) msg = err.message; } catch (_) {}
+                return alert(msg);
+            }
+            const result = await response.json();
+            if (result.success) {
+                hideBankForm();
+                refreshBankSelect(result.account || null);
+                loadBankAccounts();
+            } else {
+                alert(result.message || 'Error al guardar');
+            }
+        } catch (e) { console.error(e); alert('Error de conexión'); }
+    }
+
+    function refreshBankSelect(newAccount) {
+        const select = document.getElementById('bank_account_id');
+        if (!select) return;
+        const selectorGroup = document.getElementById('accountSelectorGroup');
+        const warningSection = select.closest('section')?.querySelector('.bg-amber-50');
+
+        fetch('{{ route("client.bank-accounts.index") }}')
+            .then(r => r.json())
+            .then(accounts => {
+                select.innerHTML = '<option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>';
+                accounts.forEach(acc => {
+                    const opt = document.createElement('option');
+                    opt.value = acc.id;
+                    opt.dataset.currency = acc.currency;
+                    opt.className = 'dark:bg-gray-950';
+                    opt.textContent = (acc.alias || acc.bank_name) + ' — ' + acc.account_number + ' (' + acc.currency + ')';
+                    select.appendChild(opt);
+                });
+
+                if (newAccount && newAccount.id) {
+                    select.value = newAccount.id;
+                } else if (accounts.length > 0) {
+                    select.value = accounts[accounts.length - 1].id;
+                }
+
+                if (warningSection) {
+                    warningSection.remove();
+                    selectorGroup.classList.remove('hidden');
+                }
+                filterBankAccounts();
+            })
+            .catch(() => {});
+    }
+
+    let pendingDeleteId = null;
+
+    function deleteBankAccount(id) {
+        pendingDeleteId = id;
+        document.getElementById('deleteConfirmModal').classList.add('active');
+    }
+
+    function closeDeleteConfirm() {
+        document.getElementById('deleteConfirmModal').classList.remove('active');
+        pendingDeleteId = null;
+    }
+
+    async function confirmDeleteAccount() {
+        if (!pendingDeleteId) return;
+        const id = pendingDeleteId;
+        closeDeleteConfirm();
+        try {
+            const response = await fetch('/panel/cuentas-bancarias/' + id, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' } });
+            const result = await response.json();
+            if (result.success) await loadBankAccounts();
+        } catch (e) { alert('Error al eliminar'); }
+    }
+</script>
 @endsection
