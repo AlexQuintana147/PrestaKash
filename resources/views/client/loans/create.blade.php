@@ -285,7 +285,7 @@
                             desembolso</p>
 
                         @if($bankAccounts->isEmpty())
-                            <div
+                            <div id="noAccountsWarning"
                                 class="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl p-6">
                                 <div class="flex gap-4">
                                     <div class="text-amber-500">
@@ -1400,14 +1400,35 @@
     }
 
     function refreshBankSelect(newAccount) {
-        const select = document.getElementById('bank_account_id');
-        if (!select) return;
-        const selectorGroup = document.getElementById('accountSelectorGroup');
-        const warningSection = select.closest('section')?.querySelector('.bg-amber-50');
+        let select = document.getElementById('bank_account_id');
+        const warningSection = document.getElementById('noAccountsWarning');
 
         fetch('{{ route("client.bank-accounts.index") }}')
             .then(r => r.json())
             .then(accounts => {
+                if (!select && accounts.length > 0) {
+                    if (warningSection) {
+                        const selectorHTML = `
+                            <div class="group" id="accountSelectorGroup">
+                                <label for="bank_account_id" class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Selecciona tu cuenta de destino</label>
+                                <div class="relative">
+                                    <select name="bank_account_id" id="bank_account_id" required
+                                        class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
+                                        <option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>
+                                    </select>
+                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <button type="button" onclick="openBankModal()" class="text-green-600 dark:text-green-400 font-bold hover:underline bg-transparent cursor-pointer">Gestiónalas aquí</button></p>
+                            </div>`;
+                        warningSection.outerHTML = selectorHTML;
+                        select = document.getElementById('bank_account_id');
+                    }
+                }
+
+                if (!select) return;
+
                 select.innerHTML = '<option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>';
                 accounts.forEach(acc => {
                     const opt = document.createElement('option');
@@ -1424,10 +1445,6 @@
                     select.value = accounts[accounts.length - 1].id;
                 }
 
-                if (warningSection) {
-                    warningSection.remove();
-                    selectorGroup.classList.remove('hidden');
-                }
                 filterBankAccounts();
             })
             .catch(() => {});
