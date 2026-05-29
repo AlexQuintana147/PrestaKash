@@ -543,25 +543,21 @@
 
                         <!-- Submit mobile -->
                         <div class="md:hidden flex gap-3">
-                            @if($bankAccounts->isNotEmpty())
-                                <button type="button" id="toggleScheduleMobile"
-                                    class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-bold transition-colors uppercase tracking-tighter">
-                                    Ver cronograma
-                                </button>
-                                <button type="submit"
-                                    class="flex-[2] py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-colors uppercase tracking-tighter">
-                                    Enviar solicitud
-                                </button>
-                            @endif
+                            <button type="button" id="toggleScheduleMobile"
+                                class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-bold transition-colors uppercase tracking-tighter">
+                                Ver cronograma
+                            </button>
+                            <button type="submit" id="submitBtnMobile"
+                                class="flex-[2] py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-colors uppercase tracking-tighter disabled:opacity-30 disabled:cursor-not-allowed">
+                                Enviar solicitud
+                            </button>
                         </div>
 
                         <!-- Submit desktop -->
-                        @if($bankAccounts->isNotEmpty())
-                            <button type="submit"
-                                class="hidden md:block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
-                                Enviar solicitud
-                            </button>
-                        @endif
+                        <button type="submit" id="submitBtnDesktop"
+                            class="hidden md:block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                            Enviar solicitud
+                        </button>
 
                     </div>
                 </div>
@@ -833,22 +829,34 @@
                 const missingName = document.getElementById('missingCurrencyName');
 
                 if (matchCount === 0) {
-                    group.classList.add('hidden');
-                    warning.classList.remove('hidden');
-                    missingName.textContent = selectedCurrency === 'USD' ? 'Dólares' : 'Soles';
+                    if (group) group.classList.add('hidden');
+                    if (warning) {
+                        warning.classList.remove('hidden');
+                    } else if (group) {
+                        const noAccountDiv = document.createElement('div');
+                        noAccountDiv.id = 'noAccountWarning';
+                        noAccountDiv.className = 'bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-2xl p-6';
+                        noAccountDiv.innerHTML = `<div class="flex gap-4"><div class="text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div><div><h4 class="text-sm font-bold text-red-900 dark:text-red-400 uppercase tracking-widest mb-1">No tienes cuentas en <span id="missingCurrencyName">${selectedCurrency === 'USD' ? 'Dólares' : 'Soles'}</span></h4><p class="text-xs text-red-700 dark:text-red-500/80 mb-4 leading-relaxed">Para solicitar un préstamo en esta moneda, primero debes registrar una cuenta bancaria correspondiente.</p><button type="button" onclick="openBankModal()" class="inline-flex items-center text-[10px] font-black text-red-900 dark:text-red-400 uppercase tracking-[0.2em] border-b-2 border-red-900 dark:border-red-400 pb-0.5 hover:opacity-70 transition-opacity bg-transparent cursor-pointer">Registrar cuenta ahora</button></div></div>`;
+                        group.after(noAccountDiv);
+                    }
+                    if (missingName) missingName.textContent = selectedCurrency === 'USD' ? 'Dólares' : 'Soles';
                     select.required = false;
                     select.value = '';
                 } else {
-                    group.classList.remove('hidden');
-                    warning.classList.add('hidden');
+                    if (group) group.classList.remove('hidden');
+                    if (warning) warning.classList.add('hidden');
                     select.required = true;
 
-                    // Si la opción seleccionada quedó oculta, resetear select
                     const currentOpt = select.options[select.selectedIndex];
                     if (currentOpt && currentOpt.classList.contains('hidden')) {
                         select.value = '';
                     }
                 }
+
+                const submitMobile = document.getElementById('submitBtnMobile');
+                const submitDesktop = document.getElementById('submitBtnDesktop');
+                if (submitMobile) submitMobile.disabled = matchCount === 0;
+                if (submitDesktop) submitDesktop.disabled = matchCount === 0;
             }
 
             function update() {
