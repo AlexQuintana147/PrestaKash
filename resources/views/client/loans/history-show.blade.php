@@ -236,6 +236,7 @@
             'Frecuencia'          => ucfirst($loan->payment_frequency),
             'Banco destino'       => $loan->bank_name,
             'Desembolso'          => $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d M Y') : '—',
+            'Tasa de interés'     => number_format($loan->interest_rate, 2) . '%',
         ] as $label => $value)
         <div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
             <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">{{ $label }}</p>
