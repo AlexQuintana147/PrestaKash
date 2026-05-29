@@ -158,14 +158,21 @@
                 @endphp
 
                 <div class="group rounded-xl overflow-hidden {{ $isOverdue ? 'bg-red-50 dark:bg-red-950/15' : 'bg-gray-50 dark:bg-gray-900/60' }}
-                    {{ $inst->status === 'approved' || (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'opacity-65' : '' }}"
+                    {{ $inst->status === 'approved' || (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'opacity-65' : '' }}
+                    {{ in_array($inst->status, ['processing', 'pending']) ? 'cursor-pointer hover:ring-2 hover:ring-purple-300 dark:hover:ring-purple-700 transition-all' : '' }}"
                     data-installment-id="{{ $inst->id }}"
                     data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
                     @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
                         data-interest-payment-id="{{ $inst->interest_payment->id }}"
                         data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
                     @endif
-                    {{ $isOverdue || $isDueToday ? 'overdue-installment-row' : '' }}">
+                    {{ $isOverdue || $isDueToday ? 'overdue-installment-row' : '' }}
+                    @if(in_array($inst->status, ['processing', 'pending']))
+                        onclick="window.location.href='{{ route('superadmin.installments.group', $loan) }}'"
+                        role="button"
+                        tabindex="0"
+                    @endif
+                    >
 
                     <div class="flex items-stretch">
 
