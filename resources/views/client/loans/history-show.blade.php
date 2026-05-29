@@ -202,8 +202,8 @@
             <p class="text-sm sm:text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->amount, 2) }}</p>
         </div>
         <div class="bg-white dark:bg-gray-950 px-2 sm:px-4 py-3 sm:py-4">
-            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Total a pagar</p>
-            <p class="text-sm sm:text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($loan->total_amount, 2) }}</p>
+            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Capital pendiente</p>
+            <p class="text-sm sm:text-base font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }} {{ number_format($pendingCapital, 2) }}</p>
         </div>
         <div class="bg-white dark:bg-gray-950 px-2 sm:px-4 py-3 sm:py-4">
             <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Por cuota</p>
