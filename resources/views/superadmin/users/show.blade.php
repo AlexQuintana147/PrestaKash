@@ -175,8 +175,8 @@
                         ] : null,
                         'Empleo'       => $cp ? [
                             'value' => $cp->is_employed
-                                ? ($cp->employment_type === 'independent'
-                                    ? 'Independiente' . ($cp->independent_type ? ' — ' . $cp->independent_type : '')
+                                ? ($cp->employment_type === 'independiente'
+                                    ? 'Independiente' . ($cp->independent_type ? ' — ' . ucfirst($cp->independent_type) : '')
                                     : 'Dependiente')
                                 : 'Sin empleo'
                         ] : null,
