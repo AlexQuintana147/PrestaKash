@@ -435,15 +435,12 @@
                     $ipList = $inst->interestPayments ?? collect([]);
                 @endphp
                 @foreach($ipList as $ipIdx => $ip)
-                <div class="inst-row py-2.5 sm:py-3 flex items-center gap-2 sm:gap-4 pl-8 sm:pl-12 bg-purple-50/40 dark:bg-purple-950/10 rounded-lg my-1" data-status="paid">
-                    <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-purple-500/20">
-                        <span class="text-[8px] font-black text-purple-600">I{{ $ipIdx + 1 }}</span>
-                    </div>
+                <div class="inst-row py-2.5 sm:py-3 flex items-center gap-2 sm:gap-4 pl-4 sm:pl-6 bg-purple-50/40 dark:bg-purple-950/10 rounded-lg my-1" data-status="paid">
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold text-purple-700 dark:text-purple-300">
                             {{ $cur }} {{ number_format($ip->amount + ($ip->late_fee ?? 0), 2) }}
                             <span class="text-[8px] text-gray-400 font-normal block">
-                                Interés de Cuota #{{ $inst->installment_number }} · Pago {{ $ipIdx + 1 }} de {{ $ipList->count() }}
+                                Pago {{ $ipIdx + 1 }} de {{ $ipList->count() }}
                                 @if($ip->late_fee > 0)
                                     · <span class="text-orange-500">+Mora: {{ $cur }}{{ number_format($ip->late_fee, 2) }}</span>
                                 @endif

@@ -302,6 +302,7 @@ class LoanController extends Controller
         $instId = $request->get('installment_id');
         $highlightInterest = $request->get('highlight_interest', false);
         $movementDate = $request->get('movement_date');
+        $paidDate = null;
         $search = $request->get('search');
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
