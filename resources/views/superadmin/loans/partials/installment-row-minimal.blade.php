@@ -40,10 +40,7 @@
                     @endphp
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($totalDisplayAmount, 2) }}
                 @elseif($inst->requested_type === 'partial')
-                    @php
-                        $partialAmount = $inst->amount + $lateFee + ($inst->amortization_extra ?? 0);
-                    @endphp
-                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($partialAmount, 2) }}
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->amount + $lateFee, 2) }}
                 @elseif((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + $lateFee, 2) }}
                 @else

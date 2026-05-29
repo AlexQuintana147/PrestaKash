@@ -214,10 +214,11 @@
                     </p>
                 @elseif($inst->requested_type === 'partial')
                     @php
-                        $partialAmount = $inst->amount + $lateFee + ($inst->amortization_extra ?? 0);
+                        $partialExtra = $inst->amortization_extra ?? 0;
+                        $originalCuota = $inst->amount - $partialExtra;
                     @endphp
                     <p class="text-sm font-black text-blue-600 dark:text-blue-400 tabular-nums">
-                        {{ $currency }} {{ number_format($partialAmount, 2) }}
+                        {{ $currency }} {{ number_format($inst->amount + $lateFee, 2) }}
                     </p>
                     <p class="text-[8px] text-blue-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         Amortización Parcial
@@ -228,7 +229,7 @@
                         @endif
                     </p>
                     <p class="text-[8px] text-gray-400 font-bold mt-0.5">
-                        Cuota: {{ $currency }}{{ number_format($inst->amount, 2) }} + Extra: {{ $currency }}{{ number_format($inst->amortization_extra ?? 0, 2) }}
+                        Cuota: {{ $currency }}{{ number_format($originalCuota, 2) }} + Extra: {{ $currency }}{{ number_format($partialExtra, 2) }}
                     </p>
                 @elseif($inst->requested_type === 'interest' || (isset($inst->is_interest_payment) && $inst->is_interest_payment))
                     <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
