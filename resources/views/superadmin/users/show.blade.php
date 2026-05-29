@@ -182,7 +182,7 @@
                         ] : null,
                         'Lugar trabajo'=> ($cp && $cp->is_employed && $cp->workplace) ? ['value' => $cp->workplace] : null,
                         'Cargo'        => ($cp && $cp->is_employed && $cp->job_title) ? ['value' => $cp->job_title] : null,
-                        'Ingreso mensual' => ($cp && $cp->is_employed && $cp->monthly_income) ? [
+                        'Ingreso mensual' => ($cp && $cp->monthly_income) ? [
                             'value' => 'S/ ' . number_format($cp->monthly_income, 2, '.', ',')
                         ] : null,
                         'Estado académico' => ($cp && $cp->academic_status) ? [
