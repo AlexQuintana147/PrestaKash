@@ -249,7 +249,8 @@ class LoanController extends Controller
                         $instCapital = $periodicPayment - $instInterest;
 
                         if ($i === $nTotal) {
-                            $instCapital = $remainingBalance;
+                            $instCapital = round($remainingBalance, 2);
+                            $instInterest = round($periodicPayment - $instCapital, 2);
                         }
 
                         $remainingBalance -= $instCapital;
