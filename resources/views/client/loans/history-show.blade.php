@@ -435,7 +435,13 @@
                     $ipList = $inst->interestPayments ?? collect([]);
                 @endphp
                 @foreach($ipList as $ipIdx => $ip)
-                <div class="inst-row py-2.5 sm:py-3 flex items-center gap-2 sm:gap-4 pl-4 sm:pl-6 bg-purple-50/40 dark:bg-purple-950/10 rounded-lg my-1" data-status="paid">
+                <div class="inst-row py-2.5 sm:py-3 flex items-center gap-2 sm:gap-4 pl-4 sm:pl-6 bg-purple-50/40 dark:bg-purple-950/10 rounded-lg my-1 cursor-pointer hover:bg-purple-100/60 dark:hover:bg-purple-950/20 transition-all" data-status="paid"
+                    @if($ip->payment_voucher)
+                        onclick="openVoucherModal('{{ Storage::url($ip->payment_voucher) }}')"
+                        role="button"
+                        tabindex="0"
+                    @endif
+                >
                     <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold text-purple-700 dark:text-purple-300">
                             {{ $cur }} {{ number_format($ip->amount + ($ip->late_fee ?? 0), 2) }}
@@ -458,16 +464,10 @@
                     <div class="flex items-center gap-3 flex-shrink-0">
                         <div class="text-right">
                             <span class="block text-[8px] font-black uppercase tracking-widest text-purple-500">Interés Pagado</span>
+                            @if($ip->payment_voucher)
+                                <span class="block text-[6px] text-purple-400 mt-0.5">👆 Ver comprobante</span>
+                            @endif
                         </div>
-                        @if($ip->payment_voucher)
-                            <a href="{{ Storage::url($ip->payment_voucher) }}" target="_blank"
-                                class="text-purple-300 dark:text-purple-700 hover:text-purple-500 transition-colors">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                            </a>
-                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -885,5 +885,37 @@ if (back) {
 }
 
 document.addEventListener('DOMContentLoaded', () => render());
+
+function openVoucherModal(url) {
+    document.getElementById('voucherModalImg').src = url;
+    document.getElementById('voucherModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVoucherModal() {
+    document.getElementById('voucherModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeVoucherModal();
+});
 </script>
 @endsection
+
+<!-- Modal Voucher (Ver Comprobante) -->
+<div id="voucherModal" class="fixed inset-0 z-[110] hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeVoucherModal()"></div>
+    <div class="absolute inset-4 sm:inset-8 md:inset-16 lg:inset-24 flex items-center justify-center">
+        <div class="relative w-full max-w-3xl max-h-full">
+            <button onclick="closeVoucherModal()"
+                class="absolute -top-10 right-0 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition-colors text-white z-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <img id="voucherModalImg" src="" alt="Comprobante"
+                class="w-full h-full object-contain rounded-xl shadow-2xl">
+        </div>
+    </div>
+</div>
