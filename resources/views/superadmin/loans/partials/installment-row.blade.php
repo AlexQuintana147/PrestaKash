@@ -73,9 +73,9 @@
                     <span
                         class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $loan->code }}</span>
                     <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">
+                    <span class="text-[9px] text-purple-500 font-bold uppercase tracking-widest">
                         @if(isset($inst->is_interest_payment) && $inst->is_interest_payment)
-                            Interés pago {{ $inst->interest_payment_number }} de {{ $inst->total_interest_payments }} (Cuota #{{ $inst->installment_number }})
+                            Interés pago {{ $inst->interest_payment_number }} de {{ $inst->total_interest_payments }}
                         @elseif($inst->interest_payments_count > 0)
                             Interés #{{ $inst->installment_number }}
                         @else
