@@ -12,7 +12,7 @@
         'photo' => $photo,
         'name' => $user->name,
         'loanId' => $loan->code,
-        'status' => match ($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', default => $loan->status},
+        'status' => match ($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', 'pending' => 'Pendiente', 'counter_offered' => 'Contra-oferta', 'rejected' => 'Rechazado', default => $loan->status},
         'profileUrl' => route('superadmin.users.show', $user),
         'dni' => $user->dni,
         'ruc' => $user->person_type === 'juridica' ? $user->ruc : null,

@@ -307,7 +307,7 @@ class LoanController extends Controller
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
         $totalOverdueCount = \App\Models\LoanInstallment::whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
-            ->where('status', '!=', 'approved')
+            ->whereNotIn('status', ['approved', 'paid'])
             ->where('due_date', '<', now()->startOfDay())
             ->count();
 
@@ -437,7 +437,7 @@ class LoanController extends Controller
         } elseif ($filter === 'overdue') {
             $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
                 ->whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
-                ->where('status', '!=', 'approved')
+                ->whereNotIn('status', ['approved', 'paid'])
                 ->where('due_date', '<', now()->startOfDay())
                 ->orderBy('due_date', 'asc')
                 ->get();

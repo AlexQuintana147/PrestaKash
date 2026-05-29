@@ -53,7 +53,7 @@
         </div>
         <span class="flex-shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
             {{ $loan->status === 'approved' ? 'bg-emerald-500 text-white' : ($loan->status === 'paid' ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-amber-500 text-white') }}">
-            {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Pagado', default => $loan->status } }}
+            {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Pagado', 'pending' => 'Pendiente', 'counter_offered' => 'Contra-oferta', 'rejected' => 'Rechazado', default => $loan->status } }}
         </span>
     </div>
 
@@ -166,7 +166,7 @@
                         data-interest-payment-id="{{ $inst->interest_payment->id }}"
                         data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
                     @endif
-                    {{ $isOverdue || $isDueToday ? 'overdue-installment-row' : '' }}
+                    {{ ($isOverdue || $isDueToday) && !in_array($inst->status, ['approved', 'paid']) && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'overdue-installment-row' : '' }}
                     @if($inst->status === 'processing')
                         onclick="window.location.href='/gestion-interna/pagos?filter=pending_validation&installment_id={{ $inst->id }}'"
                         role="button"
@@ -177,7 +177,7 @@
                     <div class="flex items-stretch">
 
                         <div class="w-12 flex items-center justify-center flex-shrink-0
-                            {{ $inst->status === 'approved' ? 'bg-emerald-500' : ((isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'bg-emerald-500' : ($isOverdue ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700')) }}">
+                            {{ $inst->status === 'approved' ? 'bg-emerald-500' : ((isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'bg-emerald-500' : ($inst->status === 'paid' ? 'bg-emerald-500' : ($isOverdue ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'))) }}">
                             <span class="text-xs font-black text-white">{{ $inst->installment_number }}</span>
                         </div>
 
@@ -187,9 +187,10 @@
                                 <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase
                                     {{ $inst->status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
                                        ((isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
+                                       ($inst->status === 'paid' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
                                        ($inst->status === 'processing' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400' :
                                        ($inst->status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' :
-                                       ($isOverdue ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400')))) }}">
+                                       ($isOverdue ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'))))) }}">
                                     @if($inst->status === 'approved')
                                         Pagado
                                     @elseif(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at)
@@ -199,6 +200,7 @@
                                         'pending' => $isOverdue ? 'Vencida' : 'Pendiente',
                                         'processing' => 'Validar',
                                         'rejected' => 'Rechazado',
+                                        'paid' => 'Pagado',
                                         default => $inst->status
                                     } }}
                                     @endif
