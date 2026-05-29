@@ -430,6 +430,50 @@
                     @endif
                 </div>
             </div>
+            @if($inst->interest_payments_count > 0)
+                @php
+                    $ipList = $inst->interestPayments ?? collect([]);
+                @endphp
+                @foreach($ipList as $ipIdx => $ip)
+                <div class="inst-row py-2.5 sm:py-3 flex items-center gap-2 sm:gap-4 pl-8 sm:pl-12 bg-purple-50/40 dark:bg-purple-950/10 rounded-lg my-1" data-status="paid">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-purple-500/20">
+                        <span class="text-[8px] font-black text-purple-600">I{{ $ipIdx + 1 }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-purple-700 dark:text-purple-300">
+                            {{ $cur }} {{ number_format($ip->amount + ($ip->late_fee ?? 0), 2) }}
+                            <span class="text-[8px] text-gray-400 font-normal block">
+                                Interés de Cuota #{{ $inst->installment_number }} · Pago {{ $ipIdx + 1 }} de {{ $ipList->count() }}
+                                @if($ip->late_fee > 0)
+                                    · <span class="text-orange-500">+Mora: {{ $cur }}{{ number_format($ip->late_fee, 2) }}</span>
+                                @endif
+                            </span>
+                        </p>
+                        <p class="text-[9px] text-purple-500 mt-0.5">
+                            @if($ip->paid_at)
+                                {{ $ip->paid_at->format('d M Y') }}
+                            @endif
+                            @if($ip->operation_number)
+                                <span class="ml-2 text-gray-400">OP: {{ $ip->operation_number }}</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="text-right">
+                            <span class="block text-[8px] font-black uppercase tracking-widest text-purple-500">Interés Pagado</span>
+                        </div>
+                        @if($ip->payment_voucher)
+                            <a href="{{ Storage::url($ip->payment_voucher) }}" target="_blank"
+                                class="text-purple-300 dark:text-purple-700 hover:text-purple-500 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a6 6 0 00-6-6z"/>
+                                </svg>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            @endif
             @endforeach
         </div>
 
