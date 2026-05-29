@@ -124,7 +124,7 @@
                         $baseAmount = $pendingCapital + $inst->interest;
                         $displayAmount = $baseAmount;
                     } elseif ($inst->requested_type === 'partial') {
-                        $baseAmount = $inst->amount + ($inst->amortization_extra ?? 0);
+                        $baseAmount = $inst->amount;
                         $displayAmount = $baseAmount + $lateFee;
                     } elseif ($inst->requested_type === 'interest') {
                         $baseAmount = $inst->interest;
