@@ -494,7 +494,7 @@
             <div class="mt-6 flex justify-end">
                 <button type="submit" id="profileSubmitBtn"
                     class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-900 dark:disabled:hover:text-white disabled:hover:border-gray-900 dark:disabled:hover:border-white text-gray-900 dark:text-white border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400">
-                    Enviar solicitud de cambio →
+                    {{ isset($editing) ? 'Enviar solicitud de cambio →' : 'Guardar perfil →' }}
                 </button>
             </div>
 
