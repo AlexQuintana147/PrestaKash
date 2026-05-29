@@ -831,6 +831,7 @@
             } else {
                 params.delete('paid_date');
             }
+            params.set('page', '1');
             window.location.href = window.location.pathname + '?' + params.toString();
         }
 
