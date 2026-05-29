@@ -92,6 +92,24 @@
             </a>
         </div>
 
+        @if($filter === 'paid')
+        <div class="md:hidden flex items-center gap-2 mb-6">
+            <input type="date" id="paid-date-filter-mobile"
+                value="{{ request('paid_date') && request('paid_date') !== 'today' ? request('paid_date') : (request('paid_date') === 'today' ? now()->format('Y-m-d') : '') }}"
+                class="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
+            <button type="button" onclick="filterByPaidDate('today')"
+                class="px-3 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border
+                       {{ request('paid_date') === 'today' ? 'bg-green-600 text-white border-transparent' : 'bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' }}">
+                Hoy
+            </button>
+            @if(request('paid_date'))
+                <button type="button" onclick="clearPaidDateFilter()" class="p-2 rounded-lg text-gray-400 hover:text-gray-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            @endif
+        </div>
+        @endif
+
         <!-- Filtros Desktop -->
         <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
             @foreach(['all' => 'Personas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas', 'overdue' => 'Cuotas vencidas'] as $key => $label)
@@ -110,6 +128,28 @@
                 </a>
             @endforeach
         </div>
+
+        @if($filter === 'paid')
+        <div class="flex items-center gap-3 mb-6">
+            <div class="flex items-center gap-2 flex-1 max-w-xs">
+                <label class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">Fecha:</label>
+                <input type="date" id="paid-date-filter"
+                    value="{{ request('paid_date') && request('paid_date') !== 'today' ? request('paid_date') : (request('paid_date') === 'today' ? now()->format('Y-m-d') : '') }}"
+                    class="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
+            </div>
+            <button type="button" onclick="filterByPaidDate('today')"
+                class="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all border
+                       {{ request('paid_date') === 'today' ? 'bg-green-600 text-white border-transparent' : 'bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30' }}">
+                Hoy
+            </button>
+            @if(request('paid_date'))
+                <button type="button" onclick="clearPaidDateFilter()"
+                    class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            @endif
+        </div>
+        @endif
 
         @php
             $borrowers = $borrowers ?? null;
@@ -782,6 +822,27 @@
                     }, 3000);
                 }
             }
+        });
+
+        function filterByPaidDate(value) {
+            const params = new URLSearchParams(window.location.search);
+            if (value) {
+                params.set('paid_date', value);
+            } else {
+                params.delete('paid_date');
+            }
+            window.location.href = window.location.pathname + '?' + params.toString();
+        }
+
+        function clearPaidDateFilter() {
+            filterByPaidDate(null);
+        }
+
+        document.getElementById('paid-date-filter')?.addEventListener('change', function() {
+            filterByPaidDate(this.value || null);
+        });
+        document.getElementById('paid-date-filter-mobile')?.addEventListener('change', function() {
+            filterByPaidDate(this.value || null);
         });
     </script>
 

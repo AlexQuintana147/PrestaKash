@@ -425,7 +425,7 @@ class LoanController extends Controller
                 ['path' => LengthAwarePaginator::resolveCurrentPath()]
             );
             $installments->withQueryString();
-            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
+            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate'));
         } elseif ($filter === 'overdue') {
             $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
                 ->whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
@@ -481,6 +481,14 @@ class LoanController extends Controller
         $installments = $query->with('interestPayments')->orderBy('due_date', 'asc')
             ->get();
 
+        $paidDate = null;
+        if ($filter === 'paid') {
+            $pd = $request->get('paid_date');
+            if ($pd) {
+                $paidDate = $pd === 'today' ? today()->toDateString() : $pd;
+            }
+        }
+
         // Expand installments with interest payments into separate rows
         $expandedInstallments = collect();
         foreach ($installments as $inst) {
@@ -522,6 +530,15 @@ class LoanController extends Controller
             }
         }
 
+        if ($paidDate) {
+            $expandedInstallments = $expandedInstallments->filter(function ($row) use ($paidDate) {
+                if (isset($row->is_interest_payment) && $row->is_interest_payment && isset($row->interest_payment) && $row->interest_payment) {
+                    return $row->interest_payment->paid_at?->toDateString() === $paidDate;
+                }
+                return $row->paid_at?->toDateString() === $paidDate;
+            })->values();
+        }
+
         // Paginate the expanded collection
         $page = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10;
@@ -535,7 +552,7 @@ class LoanController extends Controller
         );
         $installments->withQueryString();
 
-        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate'));
+        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate'));
     }
 
     public function userLoans(\App\Models\User $user)
