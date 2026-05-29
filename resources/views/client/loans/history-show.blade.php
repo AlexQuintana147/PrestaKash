@@ -311,7 +311,13 @@
                 $canPay = $firstPayable && $firstPayable->id === $inst->id;
                 $statusKey = $inst->status === 'approved' ? 'paid' : ($inst->status === 'processing' ? 'processing' : 'pending');
             @endphp
-            <div class="inst-row py-3 sm:py-4 flex items-center gap-2 sm:gap-4" data-status="{{ $statusKey }}">
+            <div class="inst-row py-3 sm:py-4 flex items-center gap-2 sm:gap-4 {{ $inst->status === 'approved' && $inst->payment_voucher ? 'cursor-pointer hover:bg-gray-100/60 dark:hover:bg-gray-900/40 transition-all rounded-lg' : '' }}" data-status="{{ $statusKey }}"
+                @if($inst->status === 'approved' && $inst->payment_voucher)
+                    onclick="openVoucherModal('{{ Storage::url($inst->payment_voucher) }}')"
+                    role="button"
+                    tabindex="0"
+                @endif
+            >
                 <!-- Número -->
                 <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0
                     {{ $inst->status === 'approved' ? 'bg-green-500/10' : ($isOverdue ? 'bg-red-500/10' : 'bg-gray-100 dark:bg-gray-900') }}">
@@ -367,6 +373,9 @@
                                 default      => $inst->status
                             } }}
                         </span>
+                        @if($inst->status === 'approved' && $inst->payment_voucher)
+                            <span class="block text-[6px] font-bold mt-0.5 text-green-400">👆 Ver comprobante</span>
+                        @endif
                         @if($inst->interest_payments_count > 0)
                             <span class="block text-[7px] font-bold mt-0.5 text-purple-500">
                                 {{ $inst->interest_payments_count }}x Interés pagado
@@ -420,13 +429,6 @@
                         <span class="text-[8px] font-black uppercase tracking-widest text-red-400">
                             Bloqueado
                         </span>
-                    @elseif($inst->payment_voucher && $inst->status !== 'pending')
-                        <a href="{{ Storage::url($inst->payment_voucher) }}" target="_blank"
-                            class="text-gray-300 dark:text-gray-700 hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </a>
                     @endif
                 </div>
             </div>
