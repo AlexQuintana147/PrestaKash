@@ -306,6 +306,11 @@ class LoanController extends Controller
         $search = $request->get('search');
         $cashboxes = \App\Models\Cashbox::orderBy('name')->get();
 
+        $totalOverdueCount = \App\Models\LoanInstallment::whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
+            ->where('status', '!=', 'approved')
+            ->where('due_date', '<', now()->startOfDay())
+            ->count();
+
         $query = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents', 'interestPayments'])
             ->whereHas('loan', function ($q) {
                 $q->whereIn('status', ['approved', 'paid']);
@@ -373,6 +378,7 @@ class LoanController extends Controller
                 'filter' => $filter,
                 'cashboxes' => $cashboxes,
                 'search' => $search,
+                'totalOverdueCount' => $totalOverdueCount,
             ]);
         } elseif ($filter === 'grouped') {
             $loansPaginator = \App\Models\Loan::with(['user', 'user.documents'])
@@ -401,7 +407,8 @@ class LoanController extends Controller
                 'groupedInstallments' => $groupedInstallments,
                 'loansPaginator' => $loansPaginator,
                 'filter' => $filter,
-                'cashboxes' => $cashboxes
+                'cashboxes' => $cashboxes,
+                'totalOverdueCount' => $totalOverdueCount,
             ]);
         } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
@@ -426,7 +433,7 @@ class LoanController extends Controller
                 ['path' => LengthAwarePaginator::resolveCurrentPath()]
             );
             $installments->withQueryString();
-            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate'));
+            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate', 'totalOverdueCount'));
         } elseif ($filter === 'overdue') {
             $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
                 ->whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
@@ -470,7 +477,8 @@ class LoanController extends Controller
             return view('superadmin.loans.installments', [
                 'overdueDebtors' => $overdueDebtors,
                 'filter' => $filter,
-                'cashboxes' => $cashboxes
+                'cashboxes' => $cashboxes,
+                'totalOverdueCount' => $totalOverdueCount,
             ]);
         } elseif ($filter === 'paid') {
             $query->where(function ($q) {
@@ -553,7 +561,7 @@ class LoanController extends Controller
         );
         $installments->withQueryString();
 
-        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate'));
+        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate', 'totalOverdueCount'));
     }
 
     public function userLoans(\App\Models\User $user)
