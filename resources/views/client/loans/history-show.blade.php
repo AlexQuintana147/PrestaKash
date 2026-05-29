@@ -371,6 +371,22 @@
                             <span class="block text-[7px] font-bold mt-0.5 text-purple-500">
                                 {{ $inst->interest_payments_count }}x Interés pagado
                             </span>
+                            @php
+                                $ipList = $inst->interestPayments ?? collect([]);
+                                $ipTotal = $ipList->count();
+                            @endphp
+                            @foreach($ipList as $ipIdx => $ip)
+                                <span class="block text-[6px] font-semibold mt-0.5 text-purple pl-1 border-l-2 border-purple-300">
+                                    Pago {{ $ipIdx + 1 }} de {{ $ipTotal }} ·
+                                    {{ $cur }}{{ number_format($ip->amount + ($ip->late_fee ?? 0), 2) }}
+                                    @if($ip->paid_at)
+                                        · {{ $ip->paid_at->format('d/m/Y') }}
+                                    @endif
+                                    @if($ip->late_fee > 0)
+                                        <span class="text-orange-500">(+mora)</span>
+                                    @endif
+                                </span>
+                            @endforeach
                         @endif
                         @if($inst->status === 'approved' && $inst->payment_status_detail)
                             @php $detail = $inst->payment_status_detail; @endphp
