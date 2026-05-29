@@ -889,35 +889,113 @@ if (back) {
 document.addEventListener('DOMContentLoaded', () => render());
 
 function openVoucherModal(url) {
-    document.getElementById('voucherModalImg').src = url;
-    document.getElementById('voucherModal').classList.remove('hidden');
+    currentScale = 1;
+    panX = 0; panY = 0;
+    const img = document.getElementById('lightboxImg');
+    img.src = url;
+    img.style.transform = `translate(0px, 0px) scale(1)`;
+    document.getElementById('lightboxLabel').textContent = 'Comprobante de pago';
+    document.getElementById('zoomLevel').textContent = '100%';
+    document.getElementById('lightbox').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
 
-function closeVoucherModal() {
-    document.getElementById('voucherModal').classList.add('hidden');
+function closeVoucherModal(e) {
+    if (e && e.target !== document.getElementById('lightbox')) return;
+    document.getElementById('lightbox').classList.add('hidden');
     document.body.style.overflow = '';
 }
 
+function applyTransform() {
+    const img = document.getElementById('lightboxImg');
+    img.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+}
+
+function zoom(delta) {
+    currentScale = Math.min(5, Math.max(0.25, currentScale + delta));
+    if (currentScale <= 1) { panX = 0; panY = 0; }
+    applyTransform();
+    document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%';
+    document.getElementById('lightboxImgContainer').style.cursor = currentScale > 1 ? 'grab' : 'default';
+}
+
+function resetZoom() {
+    currentScale = 1;
+    panX = 0; panY = 0;
+    applyTransform();
+    document.getElementById('zoomLevel').textContent = '100%';
+    document.getElementById('lightboxImgContainer').style.cursor = 'default';
+}
+
+let currentScale = 1;
+let panX = 0;
+let panY = 0;
+
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeVoucherModal();
+    if (e.key === '+' || e.key === '=') zoom(0.25);
+    if (e.key === '-') zoom(-0.25);
 });
+
+const imgContainer = document.getElementById('lightboxImgContainer');
+if (imgContainer) {
+    let startX, startY;
+    imgContainer.addEventListener('mousedown', e => {
+        if (currentScale <= 1) return;
+        e.preventDefault();
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        imgContainer.style.cursor = 'grabbing';
+
+        const onMove = e => {
+            panX = e.clientX - startX;
+            panY = e.clientY - startY;
+            applyTransform();
+        };
+
+        const onUp = () => {
+            imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+}
 </script>
 @endsection
 
-<!-- Modal Voucher (Ver Comprobante) -->
-<div id="voucherModal" class="fixed inset-0 z-[110] hidden">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeVoucherModal()"></div>
-    <div class="absolute inset-4 sm:inset-8 md:inset-16 lg:inset-24 flex items-center justify-center">
-        <div class="relative w-full max-w-3xl max-h-full">
-            <button onclick="closeVoucherModal()"
-                class="absolute -top-10 right-0 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition-colors text-white z-10">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
+<!-- Lightbox Modal (Ver Comprobante) -->
+<div id="lightbox" onclick="closeVoucherModal(event)"
+     class="hidden fixed inset-0 z-[110] bg-black/90 flex flex-col items-center justify-center p-4"
+     onwheel="if(!this.classList.contains('hidden')){event.preventDefault();zoom(event.deltaY<0?0.15:-0.15)}">
+
+    <div class="flex items-center justify-between w-full max-w-4xl mb-3 flex-shrink-0">
+        <p id="lightboxLabel" class="text-sm text-gray-400"></p>
+        <div class="flex items-center gap-3">
+            <button onclick="zoom(-0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/></svg>
             </button>
-            <img id="voucherModalImg" src="" alt="Comprobante"
-                class="w-full h-full object-contain rounded-xl shadow-2xl">
+            <span id="zoomLevel" class="text-xs text-gray-500 w-10 text-center">100%</span>
+            <button onclick="zoom(0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+            </button>
+            <button onclick="resetZoom()" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+            <button onclick="closeVoucherModal()" class="p-2 text-gray-400 hover:text-white transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
         </div>
+    </div>
+
+    <div id="lightboxImgContainer"
+         class="overflow-hidden w-full max-w-4xl flex items-center justify-center rounded-lg relative"
+         style="max-height: 80vh; cursor: grab;">
+        <img id="lightboxImg" src="" alt=""
+             class="transition-transform duration-100 rounded-lg select-none"
+             style="transform-origin: center; max-width: 100%; will-change: transform;"
+             onwheel="event.preventDefault(); event.stopPropagation(); zoom(event.deltaY < 0 ? 0.15 : -0.15);">
     </div>
 </div>
