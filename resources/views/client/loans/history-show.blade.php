@@ -191,8 +191,8 @@
         $totalPaidWithFees = $totalPaidAmount + $paidLateFees;
         $pendingFromTotal = max(0, $loan->total_amount - $totalPaidAmount);
         $pendingLateFeesNow = $overdueInstallments->sum('late_fee');
-        $totalRemaining = $pendingFromTotal + $pendingLateFeesNow;
         $pendingCapital = max(0, $loan->amount - $paidCapital);
+        $totalRemaining = $pendingCapital + ($nextInst ? $nextInst->interest : 0);
         $pendingInterest = max(0, ($loan->total_amount - $loan->amount) - $paidInterest);
     @endphp
     
@@ -544,7 +544,7 @@
                     * Esta opción es exclusiva si no puedes pagar la cuota pactada. Se cobrará solo el interés y todas las cuotas se postergarán un periodo.
                 </p>
                 <p id="total-payment-warning" class="hidden text-[8px] text-green-600 font-bold uppercase leading-tight italic">
-                    * Esta opción cancela <span id="total-remaining-count"></span> cuotas restantes del préstamo de una sola vez.
+                    * Esta opción cancela el capital pendiente + interés de la cuota actual, pagando todo el préstamo de una sola vez.
                 </p>
             </div>
 

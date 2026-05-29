@@ -713,11 +713,9 @@ class LoanController extends Controller
         } elseif ($isInterestOnly) {
             $amount = $installment->interest + ($installment->late_fee ?? 0);
         } elseif ($isTotal) {
-            $totalPaidAmount = $loan->installments()->where('status', 'approved')->sum('amount');
-            $pendingFromTotal = max(0, $loan->total_amount - $totalPaidAmount);
-            $pendingInstallments = $loan->installments()->whereIn('status', ['pending', 'rejected', 'processing'])->get();
-            $pendingLateFees = $pendingInstallments->sum('late_fee');
-            $amount = $pendingFromTotal + $pendingLateFees;
+            $paidCapital = $loan->installments()->where('status', 'approved')->sum('capital');
+            $pendingCapital = max(0, $loan->amount - $paidCapital);
+            $amount = $pendingCapital + $installment->interest;
         } else {
             $amount = $installment->amount + ($installment->late_fee ?? 0);
         }

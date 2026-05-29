@@ -31,10 +31,11 @@
                                 ->where('reference_id', $inst->id)
                                 ->whereNull('interest_payment_id')
                                 ->first();
-                            $totalDisplayAmount = $cashboxMov ? $cashboxMov->amount : $inst->loan->total_amount;
+                            $totalDisplayAmount = $cashboxMov ? $cashboxMov->amount : ($inst->loan->amount - $inst->loan->installments()->where('status', 'approved')->sum('capital') + $inst->interest);
                         } else {
-                            $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
-                            $totalDisplayAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                            $paidCapital = $inst->loan->installments()->where('status', 'approved')->sum('capital');
+                            $pendingCapital = max(0, $inst->loan->amount - $paidCapital);
+                            $totalDisplayAmount = $pendingCapital + $inst->interest;
                         }
                     @endphp
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($totalDisplayAmount, 2) }}
@@ -116,8 +117,9 @@
         @if($inst->status === 'processing' && !(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at))
                 @php
                     if ($inst->requested_type === 'total') {
-                        $totalPaidAmount = $inst->loan->installments()->where('status', 'approved')->sum('amount');
-                        $baseAmount = max(0, $inst->loan->total_amount - $totalPaidAmount);
+                        $paidCapital = $inst->loan->installments()->where('status', 'approved')->sum('capital');
+                        $pendingCapital = max(0, $inst->loan->amount - $paidCapital);
+                        $baseAmount = $pendingCapital + $inst->interest;
                         $displayAmount = $baseAmount;
                     } elseif ($inst->requested_type === 'interest') {
                         $baseAmount = $inst->interest;
