@@ -378,7 +378,7 @@
                 </a>
 
                 {{-- Card 3: Mis Préstamos --}}
-                <a href="{{ route('client.loans.history') }}" onclick="sessionStorage.setItem('from_dashboard','1')" class="pk-card p-4 flex flex-col justify-between min-h-[100px]">
+                <a href="{{ $hasProfile ? route('client.loans.history') : route('client.loans') }}" onclick="sessionStorage.setItem('from_dashboard','1')" class="pk-card p-4 flex flex-col justify-between min-h-[100px]">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-[#00A854] dark:text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Activos</span>

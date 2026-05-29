@@ -327,7 +327,13 @@ class LoanController extends Controller
 
     public function history()
     {
-        $loans = Auth::user()->loans()
+        $user = Auth::user();
+
+        if (!$user->clientProfile) {
+            return redirect()->route('client.loans');
+        }
+
+        $loans = $user->loans()
             ->whereIn('status', ['approved', 'paid'])
             ->with('installments')
             ->latest()
