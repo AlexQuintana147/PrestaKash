@@ -157,9 +157,9 @@
                     $instTotal = $inst->amount + ($inst->late_fee ?? 0);
                 @endphp
 
-                <div class="group rounded-xl overflow-hidden {{ $isOverdue ? 'bg-red-50 dark:bg-red-950/15' : 'bg-gray-50 dark:bg-gray-900/60' }}
+                <div class="group rounded-xl overflow-hidden {{ $inst->status === 'processing' ? 'bg-amber-50 dark:bg-amber-950/20 ring-2 ring-amber-300 dark:ring-amber-700' : ($isOverdue ? 'bg-red-50 dark:bg-red-950/15' : 'bg-gray-50 dark:bg-gray-900/60') }}
                     {{ $inst->status === 'approved' || (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at) ? 'opacity-65' : '' }}
-                    {{ in_array($inst->status, ['processing', 'pending']) ? 'cursor-pointer hover:ring-2 hover:ring-purple-300 dark:hover:ring-purple-700 transition-all' : '' }}"
+                    {{ $inst->status === 'processing' ? 'cursor-pointer hover:ring-4 hover:ring-amber-400 dark:hover:ring-amber-500 transition-all' : '' }}"
                     data-installment-id="{{ $inst->id }}"
                     data-is-interest-payment="{{ isset($inst->is_interest_payment) && $inst->is_interest_payment ? 'true' : 'false' }}"
                     @if(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
@@ -167,8 +167,8 @@
                         data-paid-at="{{ $inst->interest_payment->paid_at->timestamp }}"
                     @endif
                     {{ $isOverdue || $isDueToday ? 'overdue-installment-row' : '' }}
-                    @if(in_array($inst->status, ['processing', 'pending']))
-                        onclick="window.location.href='{{ route('superadmin.installments.group', $loan) }}'"
+                    @if($inst->status === 'processing')
+                        onclick="window.location.href='/gestion-interna/pagos?filter=pending_validation&installment_id={{ $inst->id }}'"
                         role="button"
                         tabindex="0"
                     @endif
