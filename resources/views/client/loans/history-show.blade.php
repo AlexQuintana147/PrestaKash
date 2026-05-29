@@ -195,32 +195,7 @@
         $pendingCapital = max(0, $loan->amount - $paidCapital);
         $pendingInterest = max(0, ($loan->total_amount - $loan->amount) - $paidInterest);
     @endphp
-
-    <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-4">
-        <div class="bg-emerald-500 rounded-2xl px-3 sm:px-4 py-3 sm:py-4">
-            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pagado</p>
-            <p class="text-base sm:text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalPaidWithFees, 2) }}</p>
-            <div class="mt-1.5 space-y-0.5">
-                <p class="text-[7px] sm:text-[8px] text-white">Capital: {{ $cur }}{{ number_format($paidCapital, 2) }}</p>
-                <p class="text-[7px] sm:text-[8px] text-white">Interés: {{ $cur }}{{ number_format($paidInterest, 2) }}</p>
-                @if($paidLateFees > 0)
-                <p class="text-[7px] sm:text-[8px] text-white">Mora: {{ $cur }}{{ number_format($paidLateFees, 2) }}</p>
-                @endif
-            </div>
-        </div>
-        <div class="bg-orange-500 rounded-2xl px-3 sm:px-4 py-3 sm:py-4">
-            <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-white/80 mb-1">Pendiente</p>
-            <p class="text-base sm:text-lg font-black text-white tabular-nums">{{ $cur }} {{ number_format($totalRemaining, 2) }}</p>
-            <div class="mt-1.5 space-y-0.5">
-                <p class="text-[7px] sm:text-[8px] text-white">Capital: {{ $cur }}{{ number_format($pendingCapital, 2) }}</p>
-                <p class="text-[7px] sm:text-[8px] text-white">Interés: {{ $cur }}{{ number_format($pendingInterest, 2) }}</p>
-                @if($overdueInstallments->sum('late_fee') > 0)
-                <p class="text-[7px] sm:text-[8px] text-white">Mora: {{ $cur }}{{ number_format($overdueInstallments->sum('late_fee'), 2) }}</p>
-                @endif
-            </div>
-        </div>
-    </div>
-
+    
     <div class="grid grid-cols-3 gap-1 sm:gap-px bg-gray-100 dark:bg-gray-900 rounded-2xl overflow-hidden mb-6">
         <div class="bg-white dark:bg-gray-950 px-2 sm:px-4 py-3 sm:py-4">
             <p class="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-gray-400 mb-0.5 sm:mb-1">Prestado</p>
