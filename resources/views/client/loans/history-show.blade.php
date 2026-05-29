@@ -23,9 +23,12 @@
     $moraPlusFull = $totalLateFees + ($nextInst ? $nextInst->amount : 0);
     $totalRestante = $loan->installments()->whereIn('status', ['pending', 'rejected'])->sum('amount');
     $remainingCount = $loan->installments()->whereIn('status', ['pending', 'rejected'])->count();
-    $canAmortize = !$isInDefault && !$hasAnyProcessing
+    $canAmortizeTotal = !$isInDefault && !$hasAnyProcessing
         && $overdueInstallments->count() === 0
         && $nextInst !== null && $nextInst->due_date->isToday();
+    $canAmortizePartial = !$isInDefault && !$hasAnyProcessing
+        && $overdueInstallments->count() === 0
+        && $nextInst !== null;
 @endphp
 
 <div class="min-h-screen px-4 md:px-8 py-6 max-w-2xl mx-auto">
@@ -397,7 +400,7 @@
                             $payInterest = $isNextWithOverdue ? $inst->accumulated_debt['mora'] + $inst->interest : $inst->interest;
                         @endphp
                         <button type="button"
-                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }}, {{ $inst->interest }}, null, {{ $canAmortize ? 'true' : 'false' }}, {{ $totalRemaining }}, {{ $remainingCount }})"
+                            onclick="window._cur='{{ $cur }}'; openUploadModal({{ $inst->id }}, '{{ $cur }}{{ number_format($payAmount, 2) }}', {{ $payMora }}, {{ $inst->interest }}, null, {{ $canAmortizeTotal ? 'true' : 'false' }}, {{ $canAmortizePartial ? 'true' : 'false' }}, {{ $totalRemaining }}, {{ $remainingCount }}, {{ $pendingCapital }})"
                             class="text-[9px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-px hover:opacity-60 transition-opacity">
                             Pagar
                         </button>
@@ -539,6 +542,14 @@
                             PAGO TOTAL
                         </div>
                     </label>
+                    @if($loan->type === 'cuotas' && $loan->amortization_system === 'frances')
+                    <label id="partial-amortization-option" class="flex-1 cursor-pointer group hidden">
+                        <input type="radio" name="requested_type" value="partial" class="hidden peer" onchange="updateModalAmount('partial')">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                            AMORTIZAR
+                        </div>
+                    </label>
+                    @endif
                 </div>
                 <p id="interest-only-warning" class="hidden text-[8px] text-amber-500 font-bold uppercase leading-tight italic">
                     * Esta opción es exclusiva si no puedes pagar la cuota pactada. Se cobrará solo el interés y todas las cuotas se postergarán un periodo.
@@ -546,6 +557,39 @@
                 <p id="total-payment-warning" class="hidden text-[8px] text-green-600 font-bold uppercase leading-tight italic">
                     * Esta opción cancela el capital pendiente + interés de la cuota actual, pagando todo el préstamo de una sola vez.
                 </p>
+                <div id="partial-amortization-fields" class="hidden space-y-3 mt-3">
+                    <p class="text-[8px] text-blue-600 font-bold uppercase leading-tight italic">
+                        * Paga más de tu cuota y reduce tu deuda. El exceso se aplica al capital.
+                    </p>
+                    <div>
+                        <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">Monto a pagar</label>
+                        <input type="text" name="amortization_amount" id="amortization_amount" inputmode="numeric"
+                            class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 text-sm font-black text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-gray-200 dark:placeholder:text-gray-800"
+                            placeholder="Ingresa el monto">
+                        <input type="hidden" name="amortization_amount_raw" id="amortization_amount_raw">
+                        <p id="amortization_amount_limits" class="text-[8px] text-gray-400 font-bold mt-1"></p>
+                        <p id="amortization_amount_error" class="text-[8px] text-red-500 font-bold mt-1 hidden"></p>
+                    </div>
+                    <div>
+                        <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">¿Cómo deseas reducir tu deuda?</label>
+                        <div class="flex gap-2">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="amortization_type" value="reduce_amount" class="hidden peer" checked>
+                                <div class="py-2 text-center text-[9px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    REDUCIR CUOTAS
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="amortization_type" value="reduce_term" class="hidden peer">
+                                <div class="py-2 text-center text-[9px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    REDUCIR PLAZO
+                                </div>
+                            </label>
+                        </div>
+                        <p id="reduce-amount-desc" class="text-[8px] text-gray-400 font-bold mt-1">Se mantienen las cuotas restantes pero con un monto menor.</p>
+                        <p id="reduce-term-desc" class="hidden text-[8px] text-gray-400 font-bold mt-1">Se mantiene el monto de la cuota pero se eliminan cuotas del final.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Payment Method -->
@@ -681,7 +725,7 @@ function changePage(delta) {
 
 let _currentInstData = null;
 
-function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType = null, canAmortize = false, totalAmount = 0, remainingCount = 1) {
+function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType = null, canAmortizeTotal = false, canAmortizePartial = false, totalAmount = 0, remainingCount = 1, pendingCapital = 0) {
     const baseAmount = parseFloat(amount.replace(/[^0-9.-]+/g,""));
     _currentInstData = {
         id: instId,
@@ -691,8 +735,10 @@ function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType 
         amountStr: amount,
         lateFee: lateFee,
         paymentType: paymentType,
-        canAmortize: canAmortize,
-        remainingCount: remainingCount
+        canAmortizeTotal: canAmortizeTotal,
+        canAmortizePartial: canAmortizePartial,
+        remainingCount: remainingCount,
+        pendingCapital: pendingCapital
     };
 
     const isMoraPayment = paymentType === 'mora_interest' || paymentType === 'mora_full';
@@ -716,10 +762,19 @@ function openUploadModal(instId, amount, lateFee = 0, interest = 0, paymentType 
 
     const totalOption = document.getElementById('total-payment-option');
     if (totalOption) {
-        if (canAmortize && !isMoraPayment && totalAmount > (baseAmount + lateFee)) {
+        if (canAmortizeTotal && !isMoraPayment && totalAmount > (baseAmount + lateFee)) {
             totalOption.classList.remove('hidden');
         } else {
             totalOption.classList.add('hidden');
+        }
+    }
+
+    const partialOption = document.getElementById('partial-amortization-option');
+    if (partialOption) {
+        if (canAmortizePartial && !isMoraPayment && pendingCapital > (baseAmount + lateFee)) {
+            partialOption.classList.remove('hidden');
+        } else {
+            partialOption.classList.add('hidden');
         }
     }
 
@@ -734,20 +789,47 @@ function updateModalAmount(type) {
     const amountEl = document.getElementById('modal_amount_text');
     const warningEl = document.getElementById('interest-only-warning');
     const totalWarningEl = document.getElementById('total-payment-warning');
+    const partialFieldsEl = document.getElementById('partial-amortization-fields');
     const isInterest = type === 'interest';
     const isTotal = type === 'total';
+    const isPartial = type === 'partial';
     const isMoraPayment = _currentInstData.paymentType === 'mora_interest' || _currentInstData.paymentType === 'mora_full';
+
+    if (partialFieldsEl) {
+        if (isPartial) {
+            partialFieldsEl.classList.remove('hidden');
+            const minAmt = _currentInstData.fullAmount;
+            const maxAmt = _currentInstData.totalAmount - 0.01;
+            const limitsEl = document.getElementById('amortization_amount_limits');
+            if (limitsEl) limitsEl.textContent = `Mínimo: ${(window._cur || '')} ${minAmt.toFixed(2)} · Máximo: ${(window._cur || '')} ${maxAmt.toFixed(2)}`;
+            const amtInput = document.getElementById('amortization_amount');
+            if (amtInput) {
+                amtInput.min = minAmt.toFixed(2);
+                amtInput.max = maxAmt.toFixed(2);
+                amtInput.value = '';
+            }
+            amountEl.textContent = (window._cur || '') + ' 0.00';
+        } else {
+            partialFieldsEl.classList.add('hidden');
+        }
+    } else {
+        if (partialFieldsEl) partialFieldsEl.classList.add('hidden');
+    }
 
     let amountToDisplay;
     if (isTotal) {
         amountToDisplay = _currentInstData.totalAmount;
     } else if (isInterest) {
         amountToDisplay = _currentInstData.interestAmount;
+    } else if (isPartial) {
+        amountToDisplay = 0;
     } else {
         amountToDisplay = _currentInstData.fullAmount;
     }
 
-    amountEl.textContent = (window._cur || '') + ' ' + amountToDisplay.toFixed(2);
+    if (!isPartial) {
+        amountEl.textContent = (window._cur || '') + ' ' + amountToDisplay.toFixed(2);
+    }
 
     if (!isTotal && _currentInstData.lateFee > 0) {
         amountEl.innerHTML += `<br><span class="text-[10px] text-orange-500 uppercase font-bold">Incluye ${_currentInstData.lateFee.toFixed(2)} de mora</span>`;
@@ -772,6 +854,8 @@ function updateModalAmount(type) {
             requestedTypeInput.value = _currentInstData.paymentType;
         } else if (isTotal) {
             requestedTypeInput.value = 'total';
+        } else if (isPartial) {
+            requestedTypeInput.value = 'partial';
         } else {
             requestedTypeInput.value = isInterest ? 'interest' : 'full';
         }
@@ -794,6 +878,107 @@ function updateModalAmount(type) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const amtInput = document.getElementById('amortization_amount');
+    const amtRawInput = document.getElementById('amortization_amount_raw');
+    if (amtInput) {
+        amtInput.addEventListener('input', function() {
+            let raw = this.value.replace(/[^0-9]/g, '');
+            if (raw.length === 0) {
+                this.value = '';
+                if (amtRawInput) amtRawInput.value = '';
+                const amountEl = document.getElementById('modal_amount_text');
+                if (amountEl && _currentInstData) {
+                    amountEl.textContent = (window._cur || '') + ' 0.00';
+                }
+                return;
+            }
+            const cents = parseInt(raw, 10);
+            const decimalVal = cents / 100;
+            const formatted = decimalVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            this.value = formatted;
+            if (amtRawInput) amtRawInput.value = decimalVal.toFixed(2);
+
+            const amountEl = document.getElementById('modal_amount_text');
+            const errorEl = document.getElementById('amortization_amount_error');
+            const min = _currentInstData ? _currentInstData.fullAmount : 0;
+            const max = _currentInstData ? _currentInstData.totalAmount - 0.01 : 0;
+
+            if (amountEl && _currentInstData) {
+                amountEl.textContent = (window._cur || '') + ' ' + formatted;
+            }
+
+            if (errorEl) {
+                if (decimalVal > 0 && decimalVal < min) {
+                    errorEl.textContent = `El monto no puede ser menor a la cuota: ${(window._cur || '')} ${min.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    errorEl.classList.remove('hidden');
+                } else if (decimalVal > max) {
+                    errorEl.textContent = `El monto no puede ser mayor a la deuda total. Usa "PAGO TOTAL" para cancelar todo.`;
+                    errorEl.classList.remove('hidden');
+                } else {
+                    errorEl.classList.add('hidden');
+                }
+            }
+        });
+
+        amtInput.addEventListener('keydown', function(e) {
+            if (e.key === '.' || e.key === ',' || e.key === '-' || e.key === 'e' || e.key === 'E') {
+                e.preventDefault();
+            }
+        });
+    }
+
+    const amortTypeRadios = document.querySelectorAll('input[name="amortization_type"]');
+    amortTypeRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            const reduceAmountDesc = document.getElementById('reduce-amount-desc');
+            const reduceTermDesc = document.getElementById('reduce-term-desc');
+            if (this.value === 'reduce_amount') {
+                if (reduceAmountDesc) reduceAmountDesc.classList.remove('hidden');
+                if (reduceTermDesc) reduceTermDesc.classList.add('hidden');
+            } else {
+                if (reduceAmountDesc) reduceAmountDesc.classList.add('hidden');
+                if (reduceTermDesc) reduceTermDesc.classList.remove('hidden');
+            }
+        });
+    });
+
+    const form = document.getElementById('uploadForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const requestedType = document.querySelector('input[name="requested_type"]');
+            if (requestedType && requestedType.value === 'partial') {
+                const amtRawInput = document.getElementById('amortization_amount_raw');
+                const amtDisplayInput = document.getElementById('amortization_amount');
+                const errorEl = document.getElementById('amortization_amount_error');
+                const val = parseFloat(amtRawInput.value) || 0;
+
+                if (amtDisplayInput) amtDisplayInput.value = val.toFixed(2);
+
+                const min = _currentInstData ? _currentInstData.fullAmount : 0;
+                const max = _currentInstData ? _currentInstData.totalAmount - 0.01 : 0;
+
+                if (val < min) {
+                    e.preventDefault();
+                    if (errorEl) {
+                        errorEl.textContent = `El monto no puede ser menor a la cuota: ${(window._cur || '')} ${min.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+                if (val >= _currentInstData.totalAmount) {
+                    e.preventDefault();
+                    if (errorEl) {
+                        errorEl.textContent = `El monto no puede ser mayor o igual a la deuda total. Usa "PAGO TOTAL" para cancelar todo.`;
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+            }
+        });
+    }
+});
+
 function closeUploadModal() {
     document.getElementById('uploadModal').classList.add('hidden');
     document.body.style.overflow = '';
@@ -802,6 +987,12 @@ function closeUploadModal() {
     document.getElementById('uploadPlaceholder').classList.remove('hidden');
     togglePaymentFields('transfer');
     toggleCustomBank('');
+    const partialFields = document.getElementById('partial-amortization-fields');
+    if (partialFields) partialFields.classList.add('hidden');
+    const errorEl = document.getElementById('amortization_amount_error');
+    if (errorEl) errorEl.classList.add('hidden');
+    const amtRawInput = document.getElementById('amortization_amount_raw');
+    if (amtRawInput) amtRawInput.value = '';
 }
 
 function togglePaymentFields(method) {

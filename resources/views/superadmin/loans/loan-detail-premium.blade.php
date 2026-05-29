@@ -212,6 +212,9 @@
                                 @if($inst->late_fee > 0)
                                     <span class="font-bold text-orange-600 dark:text-orange-400 tabular-nums">+{{ $cur }}{{ number_format($inst->late_fee, 2) }} mora</span>
                                 @endif
+                                @if($inst->amortization_extra > 0)
+                                    <span class="font-bold text-blue-600 dark:text-blue-400 tabular-nums">+{{ $cur }}{{ number_format($inst->amortization_extra, 2) }} amortización</span>
+                                @endif
                             </div>
                         </div>
 

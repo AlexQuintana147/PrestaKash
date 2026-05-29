@@ -706,10 +706,10 @@
             const methodLabel = data.method === 'cash' ? 'Efectivo' : 'Transferencia';
             document.getElementById('v_method').textContent = methodLabel;
             
-            const typeLabel = data.requested_type === 'interest' ? 'Solo Interés (Postergación)' : (data.requested_type === 'total' ? 'Pago Total' : 'Cuota Completa');
+            const typeLabel = data.requested_type === 'interest' ? 'Solo Interés (Postergación)' : (data.requested_type === 'total' ? 'Pago Total' : (data.requested_type === 'partial' ? 'Amortización Parcial' : 'Cuota Completa'));
             const vType = document.getElementById('v_type');
             vType.textContent = typeLabel;
-            vType.className = data.requested_type === 'total' ? 'font-black text-green-600 dark:text-green-400 uppercase' : 'font-black text-purple-600 dark:text-purple-400 uppercase';
+            vType.className = data.requested_type === 'total' ? 'font-black text-green-600 dark:text-green-400 uppercase' : (data.requested_type === 'partial' ? 'font-black text-blue-600 dark:text-blue-400 uppercase' : 'font-black text-purple-600 dark:text-purple-400 uppercase');
 
             const interestNotice = document.getElementById('interest_voucher_notice');
             if (interestNotice) {

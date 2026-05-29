@@ -702,6 +702,7 @@ class LoanController extends Controller
         $isMoraInterest = $installment->requested_type === 'mora_interest';
         $isMoraFull = $installment->requested_type === 'mora_full';
         $isTotal = $installment->requested_type === 'total';
+        $isPartial = $installment->requested_type === 'partial';
 
         if ($isMoraInterest) {
             $overdueInstallments = $loan->overdue_installments;
@@ -717,11 +718,13 @@ class LoanController extends Controller
             $paidCapital = $loan->installments()->where('status', 'approved')->sum('capital');
             $pendingCapital = max(0, $loan->amount - $paidCapital);
             $amount = $pendingCapital + $installment->interest;
+        } elseif ($isPartial) {
+            $amount = $installment->amount + ($installment->late_fee ?? 0) + ($installment->amortization_extra ?? 0);
         } else {
             $amount = $installment->amount + ($installment->late_fee ?? 0);
         }
 
-        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull, $isTotal) {
+        \DB::transaction(function () use ($installment, $cashbox, $amount, $isInterestOnly, $isMoraInterest, $isMoraFull, $isTotal, $isPartial) {
             $loan = $installment->loan;
 
             if ($isInterestOnly) {
@@ -926,6 +929,122 @@ class LoanController extends Controller
                 $cashbox->increment('balance', $amount);
                 $loan->update(['status' => 'paid']);
 
+            } elseif ($isPartial) {
+                $extraCapital = $installment->amortization_extra ?? 0;
+
+                $installment->update([
+                    'status' => 'approved',
+                    'paid_at' => now(),
+                    'charged_late_fee' => $installment->late_fee,
+                    'capital' => $installment->capital + $extraCapital,
+                    'amount' => $installment->amount + $extraCapital,
+                ]);
+
+                $cashbox->movements()->create([
+                    'user_id' => auth()->id(),
+                    'type' => 'income',
+                    'amount' => $amount,
+                    'description' => "Ingreso por AMORTIZACIÓN PARCIAL de cuota #{$installment->installment_number} de préstamo {$loan->code} de {$loan->user->name}",
+                    'reference_type' => 'loan_installment',
+                    'reference_id' => $installment->id,
+                    'date' => now(),
+                ]);
+
+                $cashbox->increment('balance', $amount);
+
+                $paidCapital = $loan->installments()->where('status', 'approved')->sum('capital');
+                $newRemainingBalance = max(0, $loan->amount - $paidCapital);
+
+                $pendingInsts = $loan->installments()
+                    ->whereIn('status', ['pending', 'rejected', 'processing'])
+                    ->orderBy('installment_number', 'asc')
+                    ->get();
+
+                if ($pendingInsts->count() > 0 && $newRemainingBalance > 0) {
+                    $rate = $loan->interest_rate / 100;
+                    $freq = $loan->payment_frequency;
+                    $installmentsPerMonth = match ($freq) {
+                        'diario' => 30,
+                        'semanal' => 4,
+                        'quincenal' => 2,
+                        'mensual' => 1,
+                        default => 1,
+                    };
+                    $periodicRate = $rate / $installmentsPerMonth;
+
+                    if ($installment->amortization_type === 'reduce_amount') {
+                        $nRemaining = $pendingInsts->count();
+                        if ($periodicRate > 0 && $nRemaining > 0) {
+                            $newPayment = ($newRemainingBalance * $periodicRate) / (1 - pow(1 + $periodicRate, -$nRemaining));
+                        } else {
+                            $newPayment = $newRemainingBalance / max(1, $nRemaining);
+                        }
+
+                        $remainingBal = $newRemainingBalance;
+                        foreach ($pendingInsts as $idx => $inst) {
+                            $i = $idx + 1;
+                            $instInterest = $remainingBal * $periodicRate;
+                            $instCapital = $newPayment - $instInterest;
+
+                            if ($i === $nRemaining) {
+                                $instCapital = round($remainingBal, 2);
+                                $instInterest = round($newPayment - $instCapital, 2);
+                            }
+
+                            $remainingBal -= $instCapital;
+
+                            $inst->update([
+                                'amount' => round($instInterest + $instCapital, 2),
+                                'capital' => round($instCapital, 2),
+                                'interest' => round($instInterest, 2),
+                            ]);
+                        }
+                    } elseif ($installment->amortization_type === 'reduce_term') {
+                        $currentPayment = $loan->monthly_payment;
+
+                        if ($periodicRate > 0 && $currentPayment > 0) {
+                            $nNeeded = ceil(log($currentPayment / ($currentPayment - $newRemainingBalance * $periodicRate)) / log(1 + $periodicRate));
+                        } else {
+                            $nNeeded = ceil($newRemainingBalance / max(0.01, $currentPayment));
+                        }
+
+                        $nNeeded = max(1, (int) $nNeeded);
+                        $nCurrent = $pendingInsts->count();
+
+                        $remainingBal = $newRemainingBalance;
+                        $keepInsts = $pendingInsts->take($nNeeded);
+                        $removeInsts = $pendingInsts->slice($nNeeded);
+
+                        foreach ($keepInsts as $idx => $inst) {
+                            $i = $idx + 1;
+                            $instInterest = $remainingBal * $periodicRate;
+                            $instCapital = $currentPayment - $instInterest;
+
+                            if ($i === $nNeeded) {
+                                $instCapital = round($remainingBal, 2);
+                                $instInterest = round($currentPayment - $instCapital, 2);
+                            }
+
+                            $remainingBal -= $instCapital;
+
+                            $inst->update([
+                                'amount' => round($instInterest + $instCapital, 2),
+                                'capital' => round($instCapital, 2),
+                                'interest' => round($instInterest, 2),
+                            ]);
+                        }
+
+                        foreach ($removeInsts as $inst) {
+                            $inst->delete();
+                        }
+                    }
+                }
+
+                $remaining = $loan->installments()->where('status', '!=', 'approved')->count();
+                if ($remaining === 0) {
+                    $loan->update(['status' => 'paid']);
+                }
+
             } else {
                 $installment->update([
                     'status' => 'approved',
@@ -969,6 +1088,8 @@ class LoanController extends Controller
             $successMsg = 'Pago de interés aprobado y fechas postergadas.';
         } elseif ($isTotal) {
             $successMsg = 'Pago total aprobado. El préstamo ha sido marcado como pagado.';
+        } elseif ($isPartial) {
+            $successMsg = 'Amortización parcial aprobada. Las cuotas restantes han sido recalculadas.';
         }
 
         return back()->with('success', $successMsg);
@@ -1027,6 +1148,7 @@ class LoanController extends Controller
         // LÓGICA SIMPLIFICADA: Determinar qué tipo de pago es y si puede revertirse
 
         $isTotalPayment = $installment->requested_type === 'total';
+        $isPartialPayment = $installment->requested_type === 'partial';
 
         if ($installment->status === 'approved') {
             // CASO A: Revertir cuota aprobada
@@ -1133,7 +1255,7 @@ class LoanController extends Controller
             return back()->withErrors(['unapprove' => 'No se puede revertir este pago.']);
         }
 
-        \DB::transaction(function () use ($installment, $loan, $isInterestPayment, $interestPayment, $isTotalPayment) {
+        \DB::transaction(function () use ($installment, $loan, $isInterestPayment, $interestPayment, $isTotalPayment, $isPartialPayment) {
             if ($isInterestPayment && $interestPayment) {
                 // REVERSIÓN DE PAGO DE INTERÉS → volver a "Por validar"
 
@@ -1239,6 +1361,85 @@ class LoanController extends Controller
                     }
                     $movement->delete();
                 }
+            } elseif ($isPartialPayment) {
+                $originalCapital = $installment->capital - ($installment->amortization_extra ?? 0);
+                $originalAmount = $installment->amount - ($installment->amortization_extra ?? 0);
+
+                $installment->update([
+                    'status' => 'processing',
+                    'requested_type' => 'partial',
+                    'paid_at' => null,
+                    'capital' => $originalCapital,
+                    'amount' => $originalAmount,
+                ]);
+
+                if ($loan->status === 'paid') {
+                    $loan->update(['status' => 'approved']);
+                }
+
+                $movement = \App\Models\CashboxMovement::where('reference_type', 'loan_installment')
+                    ->where('reference_id', $installment->id)
+                    ->whereNull('interest_payment_id')
+                    ->first();
+
+                if ($movement) {
+                    $cashbox = $movement->cashbox;
+                    if ($cashbox) {
+                        $cashbox->decrement('balance', $movement->amount);
+                    }
+                    $movement->delete();
+                }
+
+                $rate = $loan->interest_rate / 100;
+                $freq = $loan->payment_frequency;
+                $installmentsPerMonth = match ($freq) {
+                    'diario' => 30,
+                    'semanal' => 4,
+                    'quincenal' => 2,
+                    'mensual' => 1,
+                    default => 1,
+                };
+                $periodicRate = $rate / $installmentsPerMonth;
+                $nTotal = $loan->installments()->count();
+                $periodicPayment = $loan->monthly_payment;
+
+                $paidCapital = $loan->installments()->where('status', 'approved')->sum('capital');
+                $remainingBalance = max(0, $loan->amount - $paidCapital);
+
+                $pendingInsts = $loan->installments()
+                    ->whereIn('status', ['pending', 'rejected', 'processing'])
+                    ->orderBy('installment_number', 'asc')
+                    ->get();
+
+                if ($pendingInsts->count() > 0 && $remainingBalance > 0) {
+                    $nRemaining = $pendingInsts->count();
+                    if ($periodicRate > 0 && $nRemaining > 0) {
+                        $newPayment = ($remainingBalance * $periodicRate) / (1 - pow(1 + $periodicRate, -$nRemaining));
+                    } else {
+                        $newPayment = $remainingBalance / max(1, $nRemaining);
+                    }
+
+                    $remBal = $remainingBalance;
+                    foreach ($pendingInsts as $idx => $inst) {
+                        $i = $idx + 1;
+                        $instInterest = $remBal * $periodicRate;
+                        $instCapital = $newPayment - $instInterest;
+
+                        if ($i === $nRemaining) {
+                            $instCapital = round($remBal, 2);
+                            $instInterest = round($newPayment - $instCapital, 2);
+                        }
+
+                        $remBal -= $instCapital;
+
+                        $inst->update([
+                            'amount' => round($instInterest + $instCapital, 2),
+                            'capital' => round($instCapital, 2),
+                            'interest' => round($instInterest, 2),
+                        ]);
+                    }
+                }
+
             } else {
                 // REVERSIÓN DE CUOTA APROBADA → volver a "Por validar"
                 $installment->update([

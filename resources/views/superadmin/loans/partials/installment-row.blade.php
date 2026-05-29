@@ -212,6 +212,24 @@
                     <p class="text-[8px] text-green-500/80 font-bold mt-0.5 uppercase tracking-tighter">
                         Pago Total
                     </p>
+                @elseif($inst->requested_type === 'partial')
+                    @php
+                        $partialAmount = $inst->amount + $lateFee + ($inst->amortization_extra ?? 0);
+                    @endphp
+                    <p class="text-sm font-black text-blue-600 dark:text-blue-400 tabular-nums">
+                        {{ $currency }} {{ number_format($partialAmount, 2) }}
+                    </p>
+                    <p class="text-[8px] text-blue-500/80 font-bold mt-0.5 uppercase tracking-tighter">
+                        Amortización Parcial
+                        @if($inst->amortization_type === 'reduce_amount')
+                            · Reducir cuotas
+                        @elseif($inst->amortization_type === 'reduce_term')
+                            · Reducir plazo
+                        @endif
+                    </p>
+                    <p class="text-[8px] text-gray-400 font-bold mt-0.5">
+                        Cuota: {{ $currency }}{{ number_format($inst->amount, 2) }} + Extra: {{ $currency }}{{ number_format($inst->amortization_extra ?? 0, 2) }}
+                    </p>
                 @elseif($inst->requested_type === 'interest' || (isset($inst->is_interest_payment) && $inst->is_interest_payment))
                     <p class="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
                         {{ $currency }} {{ number_format($inst->interest + $lateFee, 2) }}
@@ -287,6 +305,9 @@
                             $pendingCapital = max(0, $inst->loan->amount - $paidCapital);
                             $baseAmount = $pendingCapital + $inst->interest;
                             $displayAmount = $baseAmount;
+                        } elseif ($inst->requested_type === 'partial') {
+                            $baseAmount = $inst->amount + ($inst->amortization_extra ?? 0);
+                            $displayAmount = $baseAmount + $lateFee;
                         } elseif ($inst->requested_type === 'interest') {
                             $baseAmount = $inst->interest;
                             $displayAmount = $baseAmount + $lateFee;

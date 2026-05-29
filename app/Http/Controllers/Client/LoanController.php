@@ -395,13 +395,37 @@ class LoanController extends Controller
             }
         }
 
+        // 6. Si es amortización parcial, validar monto y tipo
+        if ($requestedType === 'partial') {
+            $request->validate([
+                'amortization_amount' => 'required|numeric',
+                'amortization_type' => 'required|in:reduce_amount,reduce_term',
+            ]);
+
+            $amortAmount = floatval($request->amortization_amount);
+            $cuotaAmount = $installment->amount + ($installment->late_fee ?? 0);
+            $paidCapital = $installment->loan->installments()->where('status', 'approved')->sum('capital');
+            $pendingCapital = max(0, $installment->loan->amount - $paidCapital);
+            $totalDebt = $pendingCapital + $installment->interest;
+
+            if ($amortAmount < $cuotaAmount) {
+                return back()->withErrors(['error' => 'El monto no puede ser menor a la cuota.']);
+            }
+            if ($amortAmount >= $totalDebt) {
+                return back()->withErrors(['error' => 'El monto no puede ser mayor o igual a la deuda total. Usa "Pago Total" para cancelar todo.']);
+            }
+            if ($installment->loan->overdue_installments->count() > 0) {
+                return back()->withErrors(['error' => 'La amortización parcial no está disponible si tienes deudas vencidas pendientes.']);
+            }
+        }
+
         $request->validate([
             'payment_voucher' => 'required|image|max:5120',
             'payment_method' => 'required|in:transfer,cash',
             'bank_name' => 'required_if:payment_method,transfer|nullable|string|max:255',
             'bank_name_custom' => 'required_if:bank_name,Otros|nullable|string|max:255',
             'operation_number' => 'required_if:payment_method,transfer|nullable|alpha_num|max:25',
-            'requested_type' => 'nullable|in:full,interest,mora_interest,mora_full,total',
+            'requested_type' => 'nullable|in:full,interest,mora_interest,mora_full,total,partial',
         ]);
 
         $path = $imageService->storeAsWebp($request->file('payment_voucher'), 'vouchers/' . Auth::id(), 1200);
@@ -417,6 +441,8 @@ class LoanController extends Controller
             'bank_name' => $bankName,
             'operation_number' => $request->operation_number,
             'requested_type' => $request->requested_type ?? 'full',
+            'amortization_type' => $requestedType === 'partial' ? $request->amortization_type : null,
+            'amortization_extra' => $requestedType === 'partial' ? round(floatval($request->amortization_amount) - ($installment->amount + ($installment->late_fee ?? 0)), 2) : null,
             'status' => 'processing',
             'paid_at' => now(),
         ]);

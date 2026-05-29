@@ -23,7 +23,7 @@
                     Cuota #{{ $inst->installment_number }}
                 @endif
             </span>
-            <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : ($inst->requested_type === 'total' ? 'text-green-600 dark:text-green-400' : 'text-gray-400') }} font-bold tabular-nums">
+            <span class="text-[9px] {{ (isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest' ? 'text-amber-600 dark:text-amber-400' : ($inst->requested_type === 'total' ? 'text-green-600 dark:text-green-400' : ($inst->requested_type === 'partial' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400')) }} font-bold tabular-nums">
                 @if($inst->requested_type === 'total')
                     @php
                         if ($inst->status === 'approved') {
@@ -39,6 +39,11 @@
                         }
                     @endphp
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($totalDisplayAmount, 2) }}
+                @elseif($inst->requested_type === 'partial')
+                    @php
+                        $partialAmount = $inst->amount + $lateFee + ($inst->amortization_extra ?? 0);
+                    @endphp
+                    {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($partialAmount, 2) }}
                 @elseif((isset($inst->is_interest_payment) && $inst->is_interest_payment) || $inst->requested_type === 'interest')
                     {{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($inst->interest + $lateFee, 2) }}
                 @else
@@ -121,6 +126,9 @@
                         $pendingCapital = max(0, $inst->loan->amount - $paidCapital);
                         $baseAmount = $pendingCapital + $inst->interest;
                         $displayAmount = $baseAmount;
+                    } elseif ($inst->requested_type === 'partial') {
+                        $baseAmount = $inst->amount + ($inst->amortization_extra ?? 0);
+                        $displayAmount = $baseAmount + $lateFee;
                     } elseif ($inst->requested_type === 'interest') {
                         $baseAmount = $inst->interest;
                         $displayAmount = $baseAmount + $lateFee;

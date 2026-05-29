@@ -20,6 +20,8 @@ class LoanInstallment extends Model
         'bank_name',
         'operation_number',
         'requested_type',
+        'amortization_type',
+        'amortization_extra',
         'paid_at',
         'charged_late_fee',
         'admin_notes',
