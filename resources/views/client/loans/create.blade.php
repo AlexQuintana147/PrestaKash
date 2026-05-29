@@ -1469,8 +1469,36 @@
         try {
             const response = await fetch('/panel/cuentas-bancarias/' + id, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' } });
             const result = await response.json();
-            if (result.success) await loadBankAccounts();
+            if (result.success) {
+                loadBankAccounts();
+                checkAccountsEmpty();
+            }
         } catch (e) { alert('Error al eliminar'); }
+    }
+
+    async function checkAccountsEmpty() {
+        try {
+            const response = await fetch('{{ route("client.bank-accounts.index") }}');
+            const accounts = await response.json();
+            if (accounts.length === 0) {
+                const selectorGroup = document.getElementById('accountSelectorGroup');
+                if (selectorGroup) {
+                    selectorGroup.outerHTML = `
+                        <div id="noAccountsWarning" class="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-2xl p-6">
+                            <div class="flex gap-4">
+                                <div class="text-amber-500">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-amber-900 dark:text-amber-400 uppercase tracking-widest mb-1">No tienes cuentas registradas</h4>
+                                    <p class="text-xs text-amber-700 dark:text-amber-500/80 mb-4 leading-relaxed">Para solicitar un préstamo, primero debes agregar una cuenta bancaria donde recibirás el dinero.</p>
+                                    <button type="button" onclick="openBankModal()" class="inline-flex items-center text-[10px] font-black text-amber-900 dark:text-amber-400 uppercase tracking-[0.2em] border-b-2 border-amber-900 dark:border-amber-400 pb-0.5 hover:opacity-70 transition-opacity bg-transparent cursor-pointer">Agregar cuenta bancaria →</button>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            }
+        } catch (_) {}
     }
 </script>
 @endsection
