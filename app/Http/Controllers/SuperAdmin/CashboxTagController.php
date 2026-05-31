@@ -10,24 +10,38 @@ class CashboxTagController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/',
             'color' => 'required|string|max:7',
         ]);
 
-        CashboxTag::create($request->only('name', 'color'));
+        $tag = CashboxTag::create($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'tag' => ['id' => $tag->id, 'name' => $tag->name, 'color' => $tag->color],
+            ]);
+        }
 
         return back()->with('success', 'Etiqueta creada correctamente.');
     }
 
     public function update(Request $request, CashboxTag $cajas_etiqueta)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/',
             'color' => 'required|string|max:7',
         ]);
 
-        $cajas_etiqueta->update($request->only('name', 'color'));
+        $cajas_etiqueta->update($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'tag' => ['id' => $cajas_etiqueta->id, 'name' => $cajas_etiqueta->name, 'color' => $cajas_etiqueta->color],
+            ]);
+        }
 
         return back()->with('success', 'Etiqueta actualizada correctamente.');
     }

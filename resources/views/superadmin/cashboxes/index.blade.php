@@ -517,6 +517,7 @@
                         <!-- Etiqueta -->
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Etiqueta</label>
+                            <div id="mov_tag_container">
                             @if($tags->count() > 0)
                             <select name="cashbox_tag_id" id="mov_tag" required
                                 class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
@@ -528,12 +529,13 @@
                             @else
                             <div class="py-4 flex items-center gap-2">
                                 <p class="text-xs text-red-400 font-bold">Crea una etiqueta primero</p>
-                                <button type="button" onclick="closeMovementModal(); openTagsModal();"
+                                <button type="button" onclick="openTagsModal()"
                                     class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity">
                                     Crear etiqueta
                                 </button>
                             </div>
                             @endif
+                            </div>
                             <p id="mov_tag_error" class="hidden text-[8px] text-red-500 font-bold mt-1 uppercase tracking-widest">Selecciona una etiqueta o crea una nueva</p>
                         </div>
 
@@ -611,6 +613,7 @@
 
                         <div>
                             <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] block mb-1">Etiqueta</label>
+                            <div id="transfer_tag_container">
                             @if($tags->count() > 0)
                             <select name="cashbox_tag_id" id="transfer_tag" required
                                 class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
@@ -622,12 +625,13 @@
                             @else
                             <div class="py-4 flex items-center gap-2">
                                 <p class="text-xs text-red-400 font-bold">Crea una etiqueta primero</p>
-                                <button type="button" onclick="closeTransferModal(); openTagsModal();"
+                                <button type="button" onclick="openTagsModal()"
                                     class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity">
                                     Crear etiqueta
                                 </button>
                             </div>
                             @endif
+                            </div>
                             <p id="transfer_tag_error" class="hidden text-[8px] text-red-500 font-bold mt-1 uppercase tracking-widest">Selecciona una etiqueta o crea una nueva</p>
                         </div>
 
@@ -656,7 +660,7 @@
 
     <!-- Modal Gestionar Etiquetas -->
     <div id="tagsModal"
-        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 max-h-[90vh] flex flex-col">
             <div class="px-5 md:px-10 py-6 md:py-12 overflow-y-auto">
                 <div class="flex items-center justify-between mb-6 md:mb-16">
@@ -1692,6 +1696,88 @@
         document.getElementById('tag_color').addEventListener('input', function() {
             document.getElementById('tag_color_hex').textContent = this.value;
         });
+
+        document.getElementById('tagForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            const isEdit = document.getElementById('tag_method').value === 'PUT';
+            const submitBtn = document.getElementById('tagSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                if (data.success && data.tag) {
+                    if (isEdit) {
+                        const idx = allTagsData.findIndex(t => t.id === data.tag.id);
+                        if (idx !== -1) allTagsData[idx] = data.tag;
+                    } else {
+                        allTagsData.push(data.tag);
+                    }
+                    renderTagsList();
+                    refreshTagSelects();
+                    resetTagForm();
+                    closeTagsModal();
+                } else if (data.errors) {
+                    const firstError = Object.values(data.errors)[0];
+                    if (firstError) alert(firstError[0]);
+                } else if (data.message) {
+                    alert(data.message);
+                }
+            })
+            .catch(() => {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                alert('Error al guardar la etiqueta.');
+            });
+        });
+
+        function refreshTagSelects() {
+            const tagConfigs = [
+                { containerId: 'mov_tag_container', selectId: 'mov_tag', selectClass: 'w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all', errorId: 'mov_tag_error' },
+                { containerId: 'transfer_tag_container', selectId: 'transfer_tag', selectClass: 'w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all', errorId: 'transfer_tag_error' }
+            ];
+
+            tagConfigs.forEach(({ containerId, selectId, selectClass, errorId }) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                let select = document.getElementById(selectId);
+                if (!select && allTagsData.length > 0) {
+                    select = document.createElement('select');
+                    select.name = 'cashbox_tag_id';
+                    select.id = selectId;
+                    select.required = true;
+                    select.className = selectClass;
+                    container.innerHTML = '';
+                    container.appendChild(select);
+                }
+
+                if (select) {
+                    const currentVal = select.value;
+                    select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>';
+                    allTagsData.forEach(tag => {
+                        const opt = document.createElement('option');
+                        opt.value = tag.id;
+                        opt.textContent = tag.name;
+                        opt.className = 'dark:bg-gray-950 dark:text-white';
+                        if (tag.id == currentVal) opt.selected = true;
+                        select.appendChild(opt);
+                    });
+                }
+
+                const errorEl = document.getElementById(errorId);
+                if (errorEl) errorEl.classList.add('hidden');
+            });
+        }
 
         function confirmDelete(id, movementsCount) {
             if (movementsCount > 0) {
