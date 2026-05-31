@@ -103,6 +103,9 @@
             <div><p class="text-[9px] text-gray-400 mb-0.5">Interés</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ number_format(($loan->interest_rate ?? 0), 2) }}% mensual</p></div>
             <div><p class="text-[9px] text-gray-400 mb-0.5">Desembolso</p><p class="text-xs font-semibold text-gray-800 dark:text-gray-200">{{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d/m/Y') : '-' }}</p></div>
             <div><p class="text-[9px] text-gray-400 mb-0.5">Estado</p><p class="text-xs font-semibold {{ $loan->in_default ? 'text-red-600' : 'text-emerald-600' }}">{{ $loan->in_default ? 'Default' : 'Normal' }}</p></div>
+            @if($loan->disbursement_voucher)
+            <div><p class="text-[9px] text-gray-400 mb-0.5">Comprobante</p><button type="button" onclick="openVoucherModal()" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">Ver comprobante</button></div>
+            @endif
         </div>
 
         @if($loan->late_fee_enabled)
@@ -527,5 +530,168 @@ function closePaidModal() {
     document.body.style.overflow = '';
 }
 </script>
+
+@if($loan->disbursement_voucher)
+<div id="voucher-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeVoucherModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md sm:w-full bg-white dark:bg-gray-900 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div>
+                <h2 class="text-sm font-bold text-gray-900 dark:text-white">Comprobante de Desembolso</h2>
+                <p class="text-[10px] text-gray-400">{{ $loan->code }}</p>
+            </div>
+            <button onclick="closeVoucherModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors -mr-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-5 space-y-4">
+            <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-black cursor-zoom-in" onclick="openVoucherLightbox()">
+                <img src="{{ Storage::url($loan->disbursement_voucher) }}" alt="Comprobante de desembolso" class="w-full h-auto max-h-64 object-contain">
+            </div>
+            <p class="text-[9px] text-gray-400 text-center">Click en la imagen para hacer zoom</p>
+
+            @if($loan->disbursement_operation_number)
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50">
+                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Número de Operación</p>
+                <p class="text-lg font-black text-gray-900 dark:text-white tabular-nums">{{ $loan->disbursement_operation_number }}</p>
+            </div>
+            @endif
+
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50">
+                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Cuenta del Cliente</p>
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Banco</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white">{{ $loan->bank_name ?? '-' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">CTA</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $loan->account_number ?? '-' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">CCI</span>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $loan->cci ?? '-' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="voucher-lightbox" onclick="closeVoucherLightbox(event)"
+     class="hidden fixed inset-0 z-[60] bg-black/90 flex flex-col items-center justify-center p-4"
+     onwheel="if(!this.classList.contains('hidden')){event.preventDefault();voucherZoom(event.deltaY<0?0.15:-0.15)}">
+    <div class="flex items-center justify-between w-full max-w-4xl mb-3 flex-shrink-0">
+        <p class="text-sm text-gray-400">Comprobante de Desembolso</p>
+        <div class="flex items-center gap-3">
+            <button onclick="voucherZoom(-0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/></svg>
+            </button>
+            <span id="voucher-zoom-level" class="text-xs text-gray-500 w-10 text-center">100%</span>
+            <button onclick="voucherZoom(0.25)" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+            </button>
+            <button onclick="voucherResetZoom()" class="p-2 text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+            <button onclick="closeVoucherLightbox()" class="p-2 text-gray-400 hover:text-white transition-colors ml-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+    <div id="voucher-lightbox-container"
+         class="overflow-hidden w-full max-w-4xl flex items-center justify-center rounded-lg relative"
+         style="max-height: 80vh; cursor: grab;">
+        <img id="voucher-lightbox-img" src="{{ Storage::url($loan->disbursement_voucher) }}" alt=""
+             class="transition-transform duration-100 rounded-lg select-none"
+             style="transform-origin: center; max-width: 100%; will-change: transform;"
+             onwheel="event.preventDefault(); event.stopPropagation(); voucherZoom(event.deltaY < 0 ? 0.15 : -0.15);">
+    </div>
+</div>
+
+<script>
+let voucherScale = 1;
+let voucherPanX = 0;
+let voucherPanY = 0;
+let voucherIsPanning = false;
+
+function openVoucherModal() {
+    document.getElementById('voucher-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeVoucherModal() {
+    document.getElementById('voucher-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function openVoucherLightbox() {
+    voucherScale = 1;
+    voucherPanX = 0;
+    voucherPanY = 0;
+    const img = document.getElementById('voucher-lightbox-img');
+    img.style.transform = 'translate(0px, 0px) scale(1)';
+    document.getElementById('voucher-zoom-level').textContent = '100%';
+    document.getElementById('voucher-lightbox').classList.remove('hidden');
+}
+
+function closeVoucherLightbox(e) {
+    if (e && e.target !== document.getElementById('voucher-lightbox')) return;
+    document.getElementById('voucher-lightbox').classList.add('hidden');
+}
+
+function voucherApplyTransform() {
+    const img = document.getElementById('voucher-lightbox-img');
+    img.style.transform = `translate(${voucherPanX}px, ${voucherPanY}px) scale(${voucherScale})`;
+}
+
+function voucherZoom(delta) {
+    voucherScale = Math.min(5, Math.max(0.25, voucherScale + delta));
+    if (voucherScale <= 1) { voucherPanX = 0; voucherPanY = 0; }
+    voucherApplyTransform();
+    document.getElementById('voucher-zoom-level').textContent = Math.round(voucherScale * 100) + '%';
+    document.getElementById('voucher-lightbox-container').style.cursor = voucherScale > 1 ? 'grab' : 'default';
+}
+
+function voucherResetZoom() {
+    voucherScale = 1;
+    voucherPanX = 0;
+    voucherPanY = 0;
+    voucherApplyTransform();
+    document.getElementById('voucher-zoom-level').textContent = '100%';
+    document.getElementById('voucher-lightbox-container').style.cursor = 'default';
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        if (!document.getElementById('voucher-lightbox').classList.contains('hidden')) {
+            document.getElementById('voucher-lightbox').classList.add('hidden');
+        }
+    }
+});
+
+const vlbContainer = document.getElementById('voucher-lightbox-container');
+vlbContainer.addEventListener('mousedown', e => {
+    if (voucherScale <= 1) return;
+    voucherIsPanning = true;
+    const startX = e.clientX - voucherPanX;
+    const startY = e.clientY - voucherPanY;
+    vlbContainer.style.cursor = 'grabbing';
+    const onMove = ev => {
+        voucherPanX = ev.clientX - startX;
+        voucherPanY = ev.clientY - startY;
+        voucherApplyTransform();
+    };
+    const onUp = () => {
+        voucherIsPanning = false;
+        vlbContainer.style.cursor = voucherScale > 1 ? 'grab' : 'default';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+});
+</script>
+@endif
 
 @endsection
