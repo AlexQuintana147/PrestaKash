@@ -52,8 +52,8 @@
             <p class="text-[11px] text-gray-400 mt-0.5">Préstamo completo</p>
         </div>
         <span class="flex-shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
-            {{ $loan->status === 'approved' ? 'bg-emerald-500 text-white' : ($loan->status === 'paid' ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : 'bg-amber-500 text-white') }}">
-            {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Pagado', 'pending' => 'Pendiente', 'counter_offered' => 'Contra-oferta', 'rejected' => 'Rechazado', default => $loan->status } }}
+            {{ $loan->status === 'approved' ? 'bg-emerald-500 text-white' : ($loan->status === 'paid' ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : ($loan->status === 'counter_accepted' ? 'bg-amber-500 text-white' : 'bg-amber-500 text-white')) }}">
+            {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Pagado', 'pending' => 'Pendiente', 'counter_offered' => 'Contra-oferta', 'counter_accepted' => 'Aceptado', 'rejected' => 'Rechazado', default => $loan->status } }}
         </span>
     </div>
 

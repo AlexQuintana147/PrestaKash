@@ -79,12 +79,14 @@
             <span class="flex-shrink-0 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full
                 {{ $loan->status === 'approved' ? 'text-green-600 dark:text-green-400' : '' }}
                 {{ $loan->status === 'paid'     ? 'text-blue-600 dark:text-blue-400' : '' }}
-                {{ $loan->status === 'pending'  ? 'text-yellow-600 dark:text-yellow-400' : '' }}">
-                {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', 'pending' => 'En revisión', default => $loan->status } }}
+                {{ $loan->status === 'pending'  ? 'text-yellow-600 dark:text-yellow-400' : '' }}
+                {{ $loan->status === 'counter_accepted' ? 'text-amber-600 dark:text-amber-400' : '' }}">
+                {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', 'pending' => 'En revisión', 'counter_accepted' => 'En espera', default => $loan->status } }}
             </span>
         </div>
     </div>
 
+    @if($loan->status !== 'counter_accepted')
     <!-- Resumen financiero -->
     @php
         $totalToPayNow = $accumulatedDebt + ($nextInst ? $nextInst->amount : 0);
@@ -112,6 +114,16 @@
                 </div>
             </div>
         </div>
+    </div>
+    @endif
+
+    @if($loan->status === 'counter_accepted')
+    <div class="mb-8 bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/20 rounded-2xl p-6 sm:p-8 text-center">
+        <div class="w-14 h-14 bg-amber-100 dark:bg-amber-500/10 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="text-lg font-black text-amber-700 dark:text-amber-400 mb-2">Préstamo en Espera de Desembolso</h3>
+        <p class="text-sm text-amber-600/80 dark:text-amber-400/60">Has aceptado la contra-oferta. El desembolso se realizará próximamente y recibirás una notificación con el comprobante.</p>
     </div>
     @endif
 
@@ -510,6 +522,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <!-- Modal Pago -->
 <style>

@@ -58,6 +58,7 @@ class LoanController extends Controller
         $counts = [
             'pending' => Loan::where('status', 'pending')->count(),
             'counter_offered' => Loan::where('status', 'counter_offered')->count(),
+            'counter_accepted' => Loan::where('status', 'counter_accepted')->count(),
             'approved' => Loan::where('status', 'approved')->count(),
             'rejected' => Loan::where('status', 'rejected')->count(),
             'paid' => Loan::where('status', 'paid')->count(),
@@ -314,6 +315,135 @@ class LoanController extends Controller
     {
         $loan->update(['status' => 'rejected']);
         return back()->with('success', 'Préstamo rechazado.');
+    }
+
+    public function disburse(Request $request, Loan $loan)
+    {
+        if ($loan->status !== 'counter_accepted') {
+            abort(403);
+        }
+
+        $request->validate([
+            'cashbox_id' => 'required|exists:cashboxes,id',
+            'disbursement_voucher' => 'required|image|max:5120',
+            'disbursement_operation_number' => 'required|string|max:30',
+        ]);
+
+        $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
+        $amount = $loan->amount;
+
+        if ($cashbox->balance < $amount) {
+            return back()->withErrors(['cashbox_id' => 'Saldo insuficiente en la caja seleccionada.']);
+        }
+
+        $voucherPath = null;
+        if ($request->hasFile('disbursement_voucher')) {
+            $file = $request->file('disbursement_voucher');
+            $filename = 'voucher_' . $loan->code . '_' . time() . '.webp';
+            $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+            $fullPath = storage_path('app/public/vouchers/' . $filename);
+            if (!is_dir(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
+            imagewebp($image, $fullPath, 85);
+            imagedestroy($image);
+            $voucherPath = 'vouchers/' . $filename;
+        }
+
+        \DB::transaction(function () use ($loan, $cashbox, $amount, $voucherPath, $request) {
+            $loan->update([
+                'status' => 'approved',
+                'cashbox_id' => $cashbox->id,
+                'disbursement_voucher' => $voucherPath,
+                'disbursement_operation_number' => $request->disbursement_operation_number,
+            ]);
+
+            $cashbox->movements()->create([
+                'user_id' => auth()->id(),
+                'type' => 'expense',
+                'amount' => $amount,
+                'description' => "Egreso por desembolso de contra-oferta aceptada {$loan->code} a {$loan->user->name}",
+                'reference_type' => 'loan',
+                'reference_id' => $loan->id,
+                'date' => now(),
+            ]);
+
+            $cashbox->decrement('balance', $amount);
+
+            $loan->installments()->delete();
+            $rate = $loan->interest_rate / 100;
+            $system = $loan->amortization_system;
+            $type = $loan->type;
+            $freq = $loan->payment_frequency;
+            $months = $loan->months;
+
+            if ($type === 'cuotas') {
+                $installmentsPerMonth = match ($freq) {
+                    'diario' => 30,
+                    'semanal' => 4,
+                    'quincenal' => 2,
+                    'mensual' => 1,
+                    default => 1,
+                };
+
+                $nTotal = $months * $installmentsPerMonth;
+                $periodicRate = $rate / $installmentsPerMonth;
+                $periodicPayment = $loan->monthly_payment;
+
+                $remainingBalance = $amount;
+                $currentDate = now();
+
+                for ($i = 1; $i <= $nTotal; $i++) {
+                    if ($freq === 'diario')
+                        $currentDate->addDay();
+                    elseif ($freq === 'semanal')
+                        $currentDate->addWeek();
+                    elseif ($freq === 'quincenal')
+                        $currentDate->addDays(15);
+                    else
+                        $currentDate->addMonth();
+
+                    $instInterest = 0;
+                    $instCapital = 0;
+
+                    if ($system === 'frances') {
+                        $instInterest = $remainingBalance * $periodicRate;
+                        $instCapital = $periodicPayment - $instInterest;
+
+                        if ($i === $nTotal) {
+                            $instCapital = round($remainingBalance, 2);
+                            $instInterest = round($periodicPayment - $instCapital, 2);
+                        }
+
+                        $remainingBalance -= $instCapital;
+                    } else {
+                        $instInterest = $amount * $periodicRate;
+                        $instCapital = ($i === $nTotal) ? $amount : 0;
+                    }
+
+                    $loan->installments()->create([
+                        'installment_number' => $i,
+                        'amount' => $instInterest + $instCapital,
+                        'capital' => $instCapital,
+                        'interest' => $instInterest,
+                        'due_date' => $currentDate->format('Y-m-d'),
+                        'status' => 'pending',
+                    ]);
+                }
+            } else {
+                $interest = $amount * $rate;
+                $loan->installments()->create([
+                    'installment_number' => 1,
+                    'amount' => $amount + $interest,
+                    'capital' => $amount,
+                    'interest' => $interest,
+                    'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
+                    'status' => 'pending',
+                ]);
+            }
+        });
+
+        return back()->with('success', 'Desembolso realizado, egreso registrado y cronograma generado correctamente.');
     }
 
     public function toggleDefault(Loan $loan)

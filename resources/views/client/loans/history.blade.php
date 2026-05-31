@@ -51,6 +51,9 @@
                         <button type="button" data-filter="approved" class="filter-btn px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 whitespace-nowrap flex-shrink-0">
                             Activos
                         </button>
+                        <button type="button" data-filter="counter_accepted" class="filter-btn px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 whitespace-nowrap flex-shrink-0">
+                            En espera
+                        </button>
                         <button type="button" data-filter="paid" class="filter-btn px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 whitespace-nowrap flex-shrink-0">
                             Pagados
                         </button>
@@ -117,6 +120,8 @@
                             <div class="flex-shrink-0 text-right">
                                 @if($loan->status === 'paid')
                                     <span class="text-[10px] font-black text-blue-500 uppercase tracking-wider">Pagado</span>
+                                @elseif($loan->status === 'counter_accepted')
+                                    <span class="text-[10px] font-black text-amber-500 uppercase tracking-wider">En espera</span>
                                 @elseif($daysLeft !== null)
                                     @if($daysLeft < 0)
                                         <span class="text-[10px] font-black text-red-500">Tienes {{ abs($daysLeft) }} día{{ abs($daysLeft) !== 1 ? 's' : '' }} de atraso</span>

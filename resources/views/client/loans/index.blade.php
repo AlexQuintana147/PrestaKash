@@ -144,7 +144,7 @@
                     <div class="grid grid-cols-1">
                         @foreach($loans->take(5) as $loan)
                             @php
-                                $canNavigate = in_array($loan->status, ['approved', 'paid']);
+                                $canNavigate = in_array($loan->status, ['approved', 'paid', 'counter_accepted']);
                                 $total_h = $loan->installments->count();
                                 if ($total_h === 0) {
                                     $installmentsPerMonth = match ($loan->payment_frequency) {
@@ -207,6 +207,8 @@
                                             <span class="text-[10px] font-black text-yellow-600 uppercase tracking-wider">En revisión</span>
                                         @elseif($loan->status === 'counter_offered')
                                             <span class="text-[10px] font-black text-purple-600 uppercase tracking-wider">Contra-oferta</span>
+                                        @elseif($loan->status === 'counter_accepted')
+                                            <span class="text-[10px] font-black text-amber-500 uppercase tracking-wider">En espera</span>
                                         @endif
                                         <svg class="w-4 h-4 text-gray-300 dark:text-gray-700 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

@@ -69,6 +69,7 @@
                     @foreach([
                         'pending'  => ['label' => 'Pendientes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'counter_offered' => ['label' => 'Contra-ofertas', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                        'counter_accepted' => ['label' => 'Aceptados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'approved' => ['label' => 'Aprobados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'rejected' => ['label' => 'Rechazados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                         'paid'     => ['label' => 'Pagados',    'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
@@ -92,7 +93,7 @@
 <div class="hidden md:flex flex-col border-b border-gray-200 dark:border-gray-800 mb-8">
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
-            @foreach(['pending' => 'Pendientes', 'counter_offered' => 'Contra-ofertas', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
+            @foreach(['pending' => 'Pendientes', 'counter_offered' => 'Contra-ofertas', 'counter_accepted' => 'Aceptados', 'approved' => 'Aprobados', 'rejected' => 'Rechazados', 'paid' => 'Pagados', 'all' => 'Todos'] as $key => $label)
                 <a href="{{ route('superadmin.loans.index', ['filter' => $key, 'search' => request('search'), 'currency' => request('currency'), 'from_date' => request('from_date'), 'to_date' => request('to_date')]) }}"
                     class="relative flex items-center gap-2 flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
                               {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
@@ -139,6 +140,7 @@
                         $rowStatusColor = match($loan->status) {
                             'approved' => 'text-green-500',
                             'counter_offered' => 'text-purple-600',
+                            'counter_accepted' => 'text-amber-500',
                             'rejected' => 'text-red-500',
                             'paid' => 'text-blue-500',
                             default => 'text-amber-500'
@@ -147,6 +149,7 @@
                             'approved' => 'Aprobado',
                             'pending' => 'En revisión',
                             'counter_offered' => 'Contra-oferta',
+                            'counter_accepted' => 'Aceptado',
                             'rejected' => 'Rechazado',
                             'paid' => 'Pagado',
                             default => $loan->status
@@ -506,15 +509,25 @@
                                     </div>
                                 @else
                                     <div class="flex items-center gap-3">
+                                        @if($loan->status === 'counter_accepted')
+                                            <button type="button"
+                                                onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                                class="text-amber-600 hover:text-amber-400 transition-colors active:scale-[0.95]"
+                                                title="Desembolsar">
+                                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg>
+                                            </button>
+                                        @endif
                                         <span class="text-xs font-black uppercase tracking-widest
                                                     {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
                                                     {{ $loan->status === 'counter_offered' ? 'text-purple-600' : '' }}
+                                                    {{ $loan->status === 'counter_accepted' ? 'text-amber-500' : '' }}
                                                     {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
                                                     {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
                                             {{ match($loan->status) {
                                                 'approved' => 'Aprobado',
                                                 'pending'  => 'En revisión',
                                                 'counter_offered' => 'Contra-oferta',
+                                                'counter_accepted' => 'Aceptado',
                                                 'rejected' => 'Rechazado',
                                                 'paid'     => 'Pagado',
                                                 default    => $loan->status
@@ -662,14 +675,23 @@
                                         </div>
                                     @else
                                         <div class="pl-6 border-l border-gray-200 dark:border-gray-800 flex flex-col items-end gap-1">
+                                            @if($loan->status === 'counter_accepted')
+                                                <button type="button"
+                                                    onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                                    class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                                                    Desembolsar
+                                                </button>
+                                            @endif
                                             <span class="text-xs font-black uppercase tracking-widest
                                                         {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
+                                                        {{ $loan->status === 'counter_accepted' ? 'text-amber-500' : '' }}
                                                         {{ $loan->status === 'rejected' ? 'text-red-500' : '' }}
                                                         {{ $loan->status === 'paid' ? 'text-blue-500' : '' }}">
                                                 {{ match($loan->status) {
                                                     'approved' => 'APROBADO',
                                                     'pending'  => 'EN REVISIÓN',
                                                     'counter_offered' => 'CONTRA-OFERTA',
+                                                    'counter_accepted' => 'ACEPTADO',
                                                     'rejected' => 'RECHAZADO',
                                                     'paid'     => 'PAGADO',
                                                     default    => $loan->status
@@ -1867,8 +1889,6 @@
         const selectedOption = select.options[select.selectedIndex];
         const balance = parseFloat(selectedOption.dataset.balance);
         
-        // Get amount from text (hacky but works if we don't have it elsewhere)
-        // Better: store it in a variable when opening modal
         const amountStr = document.getElementById('approve_modal_amount').textContent.replace(/[^0-9.]/g, '');
         const amount = parseFloat(amountStr);
 
@@ -1898,6 +1918,45 @@
         document.getElementById('approve_submit_btn').opacity = '0.5';
     });
 
+    document.getElementById('disburseConfirmForm').addEventListener('submit', function(e) {
+        const select = document.getElementById('disburse_cashbox_id');
+        if (!select.value) {
+            e.preventDefault();
+            alert('Debe seleccionar una caja');
+            return;
+        }
+
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance);
+        const amountStr = document.getElementById('disburse_modal_amount').textContent.replace(/[^0-9.]/g, '');
+        const amount = parseFloat(amountStr);
+
+        if (amount > balance) {
+            e.preventDefault();
+            document.getElementById('disburse_cashbox_error').classList.remove('hidden');
+            return;
+        }
+
+        const voucherInput = document.getElementById('disburse_voucher');
+        if (!voucherInput.files || voucherInput.files.length === 0) {
+            e.preventDefault();
+            document.getElementById('disburse_voucher_error').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('disburse_voucher_error').classList.add('hidden');
+
+        const operationInput = document.getElementById('disburse_operation_number');
+        if (!operationInput.value.trim()) {
+            e.preventDefault();
+            document.getElementById('disburse_operation_error').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('disburse_operation_error').classList.add('hidden');
+
+        document.getElementById('disburse_submit_btn').disabled = true;
+        document.getElementById('disburse_submit_btn').opacity = '0.5';
+    });
+
     function closeApproveModal() {
         document.getElementById('approveConfirmModal').classList.add('hidden');
         document.body.style.overflow = '';
@@ -1907,6 +1966,133 @@
         const file = event.target.files[0];
         const preview = document.getElementById('approve_voucher_preview');
         const previewImg = document.getElementById('approve_voucher_preview_img');
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+            previewImg.src = '';
+        }
+    }
+
+    function openDisburseModal(loanId, amount, user) {
+        const loanData = @json($loans->items()).find(l => l.id == loanId);
+        if (!loanData) return;
+
+        document.getElementById('disburse_modal_amount').textContent = amount;
+        document.getElementById('disburse_modal_user').textContent = user;
+        document.getElementById('disburseConfirmForm').action = `/gestion-interna/prestamos/${loanId}/disburse`;
+
+        const bankAccountsContainer = document.getElementById('disburse_bank_accounts');
+        const noBankAccount = document.getElementById('disburse_no_bank_account');
+
+        if (loanData.account_number && loanData.cci) {
+            bankAccountsContainer.classList.remove('hidden');
+            noBankAccount.classList.add('hidden');
+            bankAccountsContainer.innerHTML =
+                `<div class="text-[9px] font-bold text-gray-600 dark:text-gray-300">
+                    <span class="text-gray-400 dark:text-gray-500">${loanData.bank_name || 'Banco'} (${loanData.currency}):</span>
+                    <span class="text-gray-700 dark:text-gray-200">CTA: ${loanData.account_number}</span>
+                    <span class="ml-2 text-gray-700 dark:text-gray-200">CCI: ${loanData.cci}</span>
+                </div>`;
+        } else {
+            bankAccountsContainer.innerHTML = '';
+            bankAccountsContainer.classList.add('hidden');
+            noBankAccount.classList.remove('hidden');
+        }
+
+        document.getElementById('disburse_voucher').value = '';
+        document.getElementById('disburse_voucher_error').classList.add('hidden');
+        document.getElementById('disburse_voucher_preview').classList.add('hidden');
+        document.getElementById('disburse_voucher_preview_img').src = '';
+        document.getElementById('disburse_operation_number').value = '';
+        document.getElementById('disburse_operation_error').classList.add('hidden');
+
+        const cashboxSelect = document.getElementById('disburse_cashbox_id');
+        const cashboxContainer = document.getElementById('disburse_cashbox_container');
+        const createBtn = document.getElementById('disburse_create_cashbox_btn');
+        const errorMsg = document.getElementById('disburse_cashbox_error');
+        errorMsg.classList.add('hidden');
+
+        const filteredCashboxes = allCashboxes.filter(cb => cb.currency === loanData.currency);
+
+        if (filteredCashboxes.length === 0) {
+            cashboxContainer.classList.add('hidden');
+            createBtn.classList.remove('hidden');
+            createBtn.querySelector('.currency-label').textContent = loanData.currency;
+            cashboxSelect.innerHTML = '';
+            cashboxSelect.required = false;
+            const addBtn = document.getElementById('disburse_add_cashbox_btn');
+            if (addBtn) addBtn.classList.add('hidden');
+        } else {
+            cashboxContainer.classList.remove('hidden');
+            createBtn.classList.add('hidden');
+            cashboxSelect.required = true;
+            cashboxSelect.innerHTML = filteredCashboxes.map(cb =>
+                `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
+            ).join('');
+            const addBtn = document.getElementById('disburse_add_cashbox_btn');
+            if (addBtn) addBtn.classList.remove('hidden');
+        }
+
+        cashboxSelect.onchange = () => validateDisburseCashbox();
+        validateDisburseCashbox();
+
+        document.getElementById('disburseConfirmModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDisburseModal() {
+        document.getElementById('disburseConfirmModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function validateDisburseCashbox() {
+        const select = document.getElementById('disburse_cashbox_id');
+        const btn = document.getElementById('disburse_submit_btn');
+        const errorMsg = document.getElementById('disburse_cashbox_error');
+        const createBtn = document.getElementById('disburse_create_cashbox_btn');
+
+        if (createBtn && !createBtn.classList.contains('hidden')) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+            btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            return;
+        }
+
+        if (!select.value) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            return;
+        }
+
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance);
+        const amountStr = document.getElementById('disburse_modal_amount').textContent.replace(/[^0-9.]/g, '');
+        const amount = parseFloat(amountStr);
+
+        if (amount > balance) {
+            errorMsg.classList.remove('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            btn.classList.add('bg-gray-400');
+        } else {
+            errorMsg.classList.add('hidden');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+            btn.classList.add('bg-amber-500', 'hover:bg-amber-600');
+        }
+    }
+
+    function previewDisburseVoucher(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('disburse_voucher_preview');
+        const previewImg = document.getElementById('disburse_voucher_preview_img');
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -2057,6 +2243,84 @@
                 </button>
                 <button type="submit" id="approve_submit_btn" class="flex-1 py-3 rounded-xl bg-green-600 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20">
                     Aprobar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Confirmar Desembolso (Contra-oferta aceptada) -->
+<div id="disburseConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center">
+    <div class="bg-white dark:bg-gray-950 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl relative max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-center">
+        <div class="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Desembolsar Préstamo</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+            El cliente aceptó la contra-oferta
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            ¿Confirmas el desembolso de <span id="disburse_modal_amount" class="font-bold text-gray-900 dark:text-white"></span> para <span id="disburse_modal_user" class="font-bold text-gray-900 dark:text-white"></span>?
+        </p>
+
+        <div id="disburse_bank_info" class="mb-6 bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-left">
+            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-2">Cuenta del Cliente para Depósito</p>
+            <div id="disburse_bank_accounts" class="space-y-1"></div>
+            <p id="disburse_no_bank_account" class="hidden text-[9px] font-bold text-red-500">El cliente no tiene cuentas bancarias registradas</p>
+        </div>
+
+        <form id="disburseConfirmForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                <div id="disburse_cashbox_container">
+                    <select name="cashbox_id" id="disburse_cashbox_id" required
+                            class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors appearance-none cursor-pointer">
+                    </select>
+                </div>
+                <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="disburse_create_cashbox_btn" 
+                   class="hidden w-full block text-center py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
+                    Crear caja de <span class="currency-label"></span>
+                </a>
+                <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="disburse_add_cashbox_btn"
+                   class="w-full block text-center py-1 text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 hover:opacity-60 transition-opacity mt-1">
+                    + Crear nueva caja
+                </a>
+                <p id="disburse_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
+                    Saldo insuficiente en caja
+                </p>
+            </div>
+
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
+                <input type="file" name="disbursement_voucher" id="disburse_voucher" accept="image/*,.pdf"
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 file:uppercase file:tracking-widest cursor-pointer"
+                    onchange="previewDisburseVoucher(event)">
+                <div id="disburse_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+                    <img id="disburse_voucher_preview_img" src="" alt="Vista previa" class="w-full h-auto max-h-40 object-contain bg-gray-50 dark:bg-gray-900">
+                </div>
+                <p class="text-[8px] text-gray-400">Se convertirá automáticamente a formato WebP</p>
+                <p id="disburse_voucher_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
+                    Debes subir el comprobante de depósito
+                </p>
+            </div>
+
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
+                <input type="text" name="disbursement_operation_number" id="disburse_operation_number" required placeholder="Ej: 123456789"
+                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors tabular-nums"
+                    maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                <p id="disburse_operation_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
+                    Debes ingresar el número de operación
+                </p>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="closeDisburseModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit" id="disburse_submit_btn" class="flex-1 py-3 rounded-xl bg-amber-500 text-white text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20">
+                    Desembolsar
                 </button>
             </div>
         </form>

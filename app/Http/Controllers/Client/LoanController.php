@@ -334,7 +334,7 @@ class LoanController extends Controller
         }
 
         $loans = $user->loans()
-            ->whereIn('status', ['approved', 'paid'])
+            ->whereIn('status', ['approved', 'paid', 'counter_accepted'])
             ->with('installments')
             ->latest()
             ->get();
@@ -456,102 +456,9 @@ class LoanController extends Controller
             abort(403);
         }
 
-        $amount = $loan->amount;
+        $loan->update(['status' => 'counter_accepted']);
 
-        \DB::transaction(function () use ($loan, $amount) {
-            $loan->update(['status' => 'approved']);
-
-            if ($loan->cashbox_id) {
-                $cashbox = \App\Models\Cashbox::findOrFail($loan->cashbox_id);
-
-                if ($cashbox->balance >= $amount) {
-                    $cashbox->movements()->create([
-                        'user_id' => $loan->user_id,
-                        'type' => 'expense',
-                        'amount' => $amount,
-                        'description' => "Egreso por contra-oferta aceptada de préstamo {$loan->code} a {$loan->user->name}",
-                        'reference_type' => 'loan',
-                        'reference_id' => $loan->id,
-                        'date' => now(),
-                    ]);
-
-                    $cashbox->decrement('balance', $amount);
-                }
-            }
-
-            $loan->installments()->delete();
-            $rate = $loan->interest_rate / 100;
-            $system = $loan->amortization_system;
-            $type = $loan->type;
-            $freq = $loan->payment_frequency;
-            $months = $loan->months;
-
-            if ($type === 'cuotas') {
-                $installmentsPerMonth = match ($freq) {
-                    'diario' => 30,
-                    'semanal' => 4,
-                    'quincenal' => 2,
-                    'mensual' => 1,
-                    default => 1,
-                };
-
-                $nTotal = $months * $installmentsPerMonth;
-                $periodicRate = $rate / $installmentsPerMonth;
-                $periodicPayment = $loan->monthly_payment;
-
-                $remainingBalance = $amount;
-                $currentDate = now();
-
-                for ($i = 1; $i <= $nTotal; $i++) {
-                    if ($freq === 'diario')
-                        $currentDate->addDay();
-                    elseif ($freq === 'semanal')
-                        $currentDate->addWeek();
-                    elseif ($freq === 'quincenal')
-                        $currentDate->addDays(15);
-                    else
-                        $currentDate->addMonth();
-
-                    $instInterest = 0;
-                    $instCapital = 0;
-
-                    if ($system === 'frances') {
-                        $instInterest = $remainingBalance * $periodicRate;
-                        $instCapital = $periodicPayment - $instInterest;
-
-                        if ($i === $nTotal) {
-                            $instCapital = $remainingBalance;
-                        }
-
-                        $remainingBalance -= $instCapital;
-                    } else {
-                        $instInterest = $amount * $periodicRate;
-                        $instCapital = ($i === $nTotal) ? $amount : 0;
-                    }
-
-                    $loan->installments()->create([
-                        'installment_number' => $i,
-                        'amount' => $instInterest + $instCapital,
-                        'capital' => $instCapital,
-                        'interest' => $instInterest,
-                        'due_date' => $currentDate->format('Y-m-d'),
-                        'status' => 'pending',
-                    ]);
-                }
-            } else {
-                $interest = $amount * $rate;
-                $loan->installments()->create([
-                    'installment_number' => 1,
-                    'amount' => $amount + $interest,
-                    'capital' => $amount,
-                    'interest' => $interest,
-                    'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
-                    'status' => 'pending',
-                ]);
-            }
-        });
-
-        return back()->with('success', 'Has aceptado la contra-oferta. Tu préstamo ha sido aprobado.');
+        return back()->with('success', 'Has aceptado la contra-oferta. Tu préstamo está en espera de desembolso.');
     }
 
     public function rejectCounterOffer(Loan $loan)

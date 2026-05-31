@@ -226,6 +226,7 @@ Route::middleware(['auth', 'superadmin', 'worker.permission', 'prevent.back', 'c
     Route::get('/prestamos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'index'])->name('loans.index');
     Route::post('/prestamos/{loan}/counter-offer', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'counterOffer'])->name('loans.counter-offer');
     Route::post('/prestamos/{loan}/approve', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'approve'])->name('loans.approve');
+    Route::post('/prestamos/{loan}/disburse', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'disburse'])->name('loans.disburse');
     Route::post('/prestamos/{loan}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'reject'])->name('loans.reject');
     Route::post('/prestamos/{loan}/toggle-default', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'toggleDefault'])->name('loans.toggle-default');
 
