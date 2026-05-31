@@ -1615,7 +1615,7 @@
                     schedule.push({ n: '...', principal: 0, interest: 0, balance: 0, spacer: true });
                 }
             }
-            pmtText = `${currency}${periodicPayment.toFixed(2)} / ${freq}`;
+            pmtText = `${currency}${periodicPayment.toLocaleString('en-US', amountObj)} / ${freq}`;
         } else {
             periodicPayment = amount * periodicRate;
             let balance = amount;
@@ -1631,7 +1631,7 @@
                 }
             }
             const finalPmt = amount + periodicPayment;
-            pmtText = `${currency}${periodicPayment.toFixed(2)} (Final: ${currency}${finalPmt.toFixed(2)})`;
+            pmtText = `${currency}${periodicPayment.toLocaleString('en-US', amountObj)} (Final: ${currency}${finalPmt.toLocaleString('en-US', amountObj)})`;
         }
 
         schedule.forEach(row => {
@@ -1649,7 +1649,7 @@
             `;
         });
 
-        totalEl.textContent = `${currency}${(amount + totalInterest).toFixed(2)}`;
+        totalEl.textContent = `${currency}${(amount + totalInterest).toLocaleString('en-US', amountObj)}`;
         monthlyEl.textContent = pmtText;
         gainEl.textContent = `${currency} ${totalInterest.toLocaleString('en-US', amountObj)}`;
     }
