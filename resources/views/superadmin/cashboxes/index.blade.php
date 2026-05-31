@@ -574,7 +574,7 @@
         class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-md animate-in fade-in zoom-in duration-500 max-h-[90vh] overflow-y-auto">
             <div class="px-5 md:px-10 py-6 md:py-12">
-                <div class="flex items-center justify-between mb-6 md:mb-16">
+                <div class="flex items-center justify-between mb-2">
                     <h3 class="text-xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tighter uppercase">Desplazar</h3>
                     <button onclick="closeTransferModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -584,6 +584,8 @@
                         </svg>
                     </button>
                 </div>
+
+                <p class="text-[9px] font-black text-red-400 dark:text-red-500 uppercase tracking-[0.3em] mb-6 md:mb-12">Caja Origen — Saldo: <span id="transfer_source_balance" class="text-red-600 dark:text-red-400 tabular-nums">S/ 0.00</span></p>
 
                 <form id="transferForm" method="POST" class="space-y-6 md:space-y-12">
                     @csrf
@@ -1590,6 +1592,9 @@
             document.getElementById('transfer_from_id').value = cashboxId;
             currencyLabel.textContent = currency;
             currencyHint.textContent = `Solo cajas en ${currency === 'PEN' ? 'Soles' : 'Dólares'}`;
+            const balanceEl = document.getElementById('transfer_source_balance');
+            const sym = currency === 'PEN' ? 'S/' : '$';
+            balanceEl.textContent = `${sym} ${parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
 
             select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar caja destino</option>';
             allCashboxesData.forEach(cb => {
