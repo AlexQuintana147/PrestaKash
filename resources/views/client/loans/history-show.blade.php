@@ -91,17 +91,25 @@
     @endphp
 
     @if($loan->disbursement_voucher && $loan->status === 'approved')
-    <div class="mb-6 bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 sm:p-5">
-        <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-3">Comprobante de Desembolso</p>
-        <div class="flex items-start gap-4">
-            <div class="flex-1">
-                <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
-                    <img src="{{ Storage::url($loan->disbursement_voucher) }}" alt="Comprobante de desembolso" class="w-full h-auto max-h-48 object-contain">
+    <div class="mb-6 bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden">
+        <button type="button" onclick="toggleVoucherSection()"
+            class="w-full flex items-center justify-between p-4 sm:p-5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400">Comprobante de Desembolso</p>
+            <svg id="voucherChevron" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+        </button>
+        <div id="voucherContent" class="hidden px-4 sm:px-5 pb-4 sm:pb-5">
+            <div class="flex items-start gap-4">
+                <div class="flex-1">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-black cursor-zoom-in" onclick="openVoucherLightbox()">
+                        <img src="{{ Storage::url($loan->disbursement_voucher) }}" alt="Comprobante de desembolso" class="w-full h-auto max-h-48 object-contain">
+                    </div>
                 </div>
-            </div>
-            <div class="flex-shrink-0 text-right">
-                <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">N° Operación</p>
-                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $loan->disbursement_operation_number }}</p>
+                <div class="flex-shrink-0 text-right">
+                    <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">N° Operación</p>
+                    <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $loan->disbursement_operation_number }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1101,6 +1109,26 @@ if (back) {
 }
 
 document.addEventListener('DOMContentLoaded', () => render());
+
+function toggleVoucherSection() {
+    const content = document.getElementById('voucherContent');
+    const chevron = document.getElementById('voucherChevron');
+    content.classList.toggle('hidden');
+    chevron.classList.toggle('rotate-180');
+}
+
+function openVoucherLightbox() {
+    const url = '{{ Storage::url($loan->disbursement_voucher) }}';
+    currentScale = 1;
+    panX = 0; panY = 0;
+    const img = document.getElementById('lightboxImg');
+    img.src = url;
+    img.style.transform = `translate(0px, 0px) scale(1)`;
+    document.getElementById('lightboxLabel').textContent = 'Comprobante de Desembolso';
+    document.getElementById('zoomLevel').textContent = '100%';
+    document.getElementById('lightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
 
 function openVoucherModal(url) {
     currentScale = 1;
