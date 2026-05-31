@@ -836,7 +836,7 @@
                         const noAccountDiv = document.createElement('div');
                         noAccountDiv.id = 'noAccountWarning';
                         noAccountDiv.className = 'bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-2xl p-6';
-                        noAccountDiv.innerHTML = `<div class="flex gap-4"><div class="text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div><div><h4 class="text-sm font-bold text-red-900 dark:text-red-400 uppercase tracking-widest mb-1">No tienes cuentas en <span id="missingCurrencyName">${selectedCurrency === 'USD' ? 'Dólares' : 'Soles'}</span></h4><p class="text-xs text-red-700 dark:text-red-500/80 mb-4 leading-relaxed">Para solicitar un préstamo en esta moneda, primero debes registrar una cuenta bancaria correspondiente.</p><button type="button" onclick="openBankModal()" class="inline-flex items-center text-[10px] font-black text-red-900 dark:text-red-400 uppercase tracking-[0.2em] border-b-2 border-red-900 dark:border-red-400 pb-0.5 hover:opacity-70 transition-opacity bg-transparent cursor-pointer">Registrar cuenta ahora</button></div></div>`;
+                        noAccountDiv.innerHTML = `<div class="flex gap-4"><div class="text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div><div><h4 class="text-sm font-bold text-red-900 dark:text-red-400 uppercase tracking-widest mb-1">No tienes cuentas en <span id="missingCurrencyName">${selectedCurrency === 'USD' ? 'Dólares' : 'Soles'}</span></h4><p class="text-xs text-red-700 dark:text-red-500/80 mb-4 leading-relaxed">Para solicitar un préstamo en esta moneda, primero debes registrar una cuenta bancaria correspondiente.</p><button type="button" onclick="openBankModal('${selectedCurrency}')" class="inline-flex items-center text-[10px] font-black text-red-900 dark:text-red-400 uppercase tracking-[0.2em] border-b-2 border-red-900 dark:border-red-400 pb-0.5 hover:opacity-70 transition-opacity bg-transparent cursor-pointer">Registrar cuenta ahora</button></div></div>`;
                         group.after(noAccountDiv);
                     }
                     if (missingName) missingName.textContent = selectedCurrency === 'USD' ? 'Dólares' : 'Soles';
@@ -1303,10 +1303,14 @@
 <script>
     let bankAccounts = [];
 
-    function openBankModal() {
+    function openBankModal(currency) {
         document.getElementById('bankModal').classList.add('active');
         document.body.style.overflow = 'hidden';
         loadBankAccounts();
+        if (currency) {
+            showBankForm();
+            document.getElementById('f_currency').value = currency;
+        }
     }
 
     function closeBankModal() {
@@ -1410,34 +1414,42 @@
     function refreshBankSelect(newAccount) {
         let select = document.getElementById('bank_account_id');
         const warningSection = document.getElementById('noAccountsWarning');
+        const noAccountWarning = document.getElementById('noAccountWarning');
 
         fetch('{{ route("client.bank-accounts.index") }}')
             .then(r => r.json())
             .then(accounts => {
-                if (!select && accounts.length > 0) {
-                    if (warningSection) {
-                        const selectorHTML = `
-                            <div class="group" id="accountSelectorGroup">
-                                <label for="bank_account_id" class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Selecciona tu cuenta de destino</label>
-                                <div class="relative">
-                                    <select name="bank_account_id" id="bank_account_id" required
-                                        class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
-                                        <option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>
-                                    </select>
-                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                                    </div>
+                const targetEl = warningSection || noAccountWarning;
+
+                if (targetEl && accounts.length > 0) {
+                    const existingGroup = document.getElementById('accountSelectorGroup');
+                    if (existingGroup) existingGroup.remove();
+                    const selectorHTML = `
+                        <div class="group" id="accountSelectorGroup">
+                            <label for="bank_account_id" class="block text-xs text-gray-500 dark:text-gray-400 mb-2">Selecciona tu cuenta de destino</label>
+                            <div class="relative">
+                                <select name="bank_account_id" id="bank_account_id" required
+                                    class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors appearance-none cursor-pointer">
+                                    <option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>
+                                </select>
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                 </div>
-                                <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <button type="button" onclick="openBankModal()" class="text-green-600 dark:text-green-400 font-bold hover:underline bg-transparent cursor-pointer">Gestiónalas aquí</button></p>
-                            </div>`;
-                        warningSection.outerHTML = selectorHTML;
-                        select = document.getElementById('bank_account_id');
-                    }
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest">¿Quieres usar otra? <button type="button" onclick="openBankModal()" class="text-green-600 dark:text-green-400 font-bold hover:underline bg-transparent cursor-pointer">Gestiónalas aquí</button></p>
+                        </div>`;
+                    targetEl.outerHTML = selectorHTML;
+                    select = document.getElementById('bank_account_id');
                 }
 
                 if (!select) return;
 
                 select.innerHTML = '<option value="" class="dark:bg-gray-950">Seleccionar cuenta</option>';
+
+                if (newAccount && newAccount.id && !accounts.find(a => a.id === newAccount.id)) {
+                    accounts.push(newAccount);
+                }
+
                 accounts.forEach(acc => {
                     const opt = document.createElement('option');
                     opt.value = acc.id;
