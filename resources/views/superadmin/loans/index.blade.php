@@ -1349,6 +1349,10 @@
                            class="hidden w-full block text-center py-1.5 sm:py-2 text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
                             Crear caja de <span class="currency-label"></span>
                         </a>
+                        <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="counter_add_cashbox_btn"
+                           class="w-full block text-center py-1 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 hover:opacity-60 transition-opacity mt-1">
+                            + Crear nueva caja
+                        </a>
                         <p id="counter_cashbox_error" class="hidden text-[8px] sm:text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">
                             Saldo insuficiente en caja
                         </p>
@@ -1679,6 +1683,8 @@
             createBtn.querySelector('.currency-label').textContent = loanData.currency;
             cashboxSelect.innerHTML = '';
             cashboxSelect.required = false;
+            const addBtn = document.getElementById('approve_add_cashbox_btn');
+            if (addBtn) addBtn.classList.add('hidden');
         } else {
             cashboxContainer.classList.remove('hidden');
             createBtn.classList.add('hidden');
@@ -1686,6 +1692,8 @@
             cashboxSelect.innerHTML = filteredCashboxes.map(cb => 
                 `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
             ).join('');
+            const addBtn = document.getElementById('approve_add_cashbox_btn');
+            if (addBtn) addBtn.classList.remove('hidden');
         }
 
         cashboxSelect.onchange = () => validateApproveCashbox();
@@ -1754,6 +1762,8 @@
             createBtn.querySelector('.currency-label').textContent = currency;
             cashboxSelect.innerHTML = '';
             cashboxSelect.required = false;
+            const addBtn = document.getElementById('counter_add_cashbox_btn');
+            if (addBtn) addBtn.classList.add('hidden');
         } else {
             cashboxContainer.classList.remove('hidden');
             createBtn.classList.add('hidden');
@@ -1761,6 +1771,8 @@
             cashboxSelect.innerHTML = filteredCashboxes.map(cb =>
                 `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
             ).join('');
+            const addBtn = document.getElementById('counter_add_cashbox_btn');
+            if (addBtn) addBtn.classList.remove('hidden');
         }
 
         cashboxSelect.onchange = () => validateCounterCashbox();
@@ -1937,6 +1949,10 @@
                 <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="approve_create_cashbox_btn" 
                    class="hidden w-full block text-center py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
                     Crear caja de <span class="currency-label"></span>
+                </a>
+                <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="approve_add_cashbox_btn"
+                   class="w-full block text-center py-1 text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 hover:opacity-60 transition-opacity mt-1">
+                    + Crear nueva caja
                 </a>
                 <p id="approve_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
                     Saldo insuficiente en caja
