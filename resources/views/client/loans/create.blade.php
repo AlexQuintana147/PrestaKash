@@ -7,7 +7,7 @@
 
         <!-- Header -->
         <div class="mb-10">
-            <a href="{{ route('client.loans') }}"
+            <a href="{{ route('client.dashboard') }}"
                 class="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-4">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
