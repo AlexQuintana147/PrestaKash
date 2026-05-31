@@ -228,7 +228,7 @@ class CashboxController extends Controller
             $to->increment('balance', $amount);
         });
 
-        return back()->with('success', "Desplazamiento de {$from->currency} {$amount} realizado correctamente.");
+        return back()->with('success', "Desplazamiento de {$from->currency} " . number_format($amount, 2, '.', ',') . " realizado correctamente.");
     }
 
     public function deleteMovement(CashboxMovement $movement)
