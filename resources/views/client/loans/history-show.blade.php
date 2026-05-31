@@ -507,7 +507,7 @@
 <div id="uploadModal"
     class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center"
     onclick="if(event.target===this) closeUploadModal()">
-    <div class="bg-white dark:bg-gray-950 w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto">
+    <div class="bg-white dark:bg-gray-950 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto">
         <button onclick="closeUploadModal()"
             class="absolute top-5 right-5 text-gray-300 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -516,9 +516,24 @@
         </button>
 
         <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">Confirmar pago</p>
-        <p class="text-lg font-black text-gray-900 dark:text-white mb-1">
-            Monto: <span id="modal_amount_text" class="text-gray-900 dark:text-white"></span>
-        </p>
+        <div class="flex items-start justify-between gap-4 mb-1">
+            <p class="text-lg font-black text-gray-900 dark:text-white">
+                Monto: <span id="modal_amount_text" class="text-gray-900 dark:text-white"></span>
+            </p>
+            @if($loan->currency === 'PEN')
+            <div class="text-right flex-shrink-0 pt-1">
+                <p class="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-tight">Depositar en</p>
+                <p class="text-[8px] font-bold text-gray-500 leading-tight">CTA: 200-3008190320</p>
+                <p class="text-[8px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190320-32</p>
+            </div>
+            @else
+            <div class="text-right flex-shrink-0 pt-1">
+                <p class="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-tight">Depositar en</p>
+                <p class="text-[8px] font-bold text-gray-500 leading-tight">CTA: 200-3008190337</p>
+                <p class="text-[8px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190337-36</p>
+            </div>
+            @endif
+        </div>
         <p class="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-6">
             Sistema:
             @if($loan->type === 'unico')
