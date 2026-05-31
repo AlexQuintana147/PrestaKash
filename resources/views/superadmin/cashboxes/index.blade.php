@@ -658,7 +658,7 @@
         <div class="bg-white dark:bg-gray-950 w-full max-w-lg animate-in fade-in zoom-in duration-500 max-h-[90vh] flex flex-col">
             <div class="px-5 md:px-10 py-6 md:py-12 overflow-y-auto">
                 <div class="flex items-center justify-between mb-6 md:mb-16">
-                    <h3 class="text-xl md:text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase">Etiquetas</h3>
+                    <h3 id="tagModalTitle" class="text-xl md:text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase">Etiquetas</h3>
                     <button onclick="closeTagsModal()"
                         class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -671,6 +671,7 @@
                 <form id="tagForm" method="POST" class="space-y-6 md:space-y-12 mb-6 md:mb-12">
                     @csrf
                     <input type="hidden" name="tag_id" id="tag_id">
+                    <input type="hidden" name="_method" id="tag_method">
 
                     <div class="space-y-6 md:space-y-10">
                         <div>
@@ -695,7 +696,7 @@
                             class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
                             Limpiar
                         </button>
-                        <button type="submit"
+                        <button type="submit" id="tagSubmitBtn"
                             class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-1 hover:opacity-60 transition-opacity">
                             Guardar Etiqueta
                         </button>
@@ -797,6 +798,40 @@
                     <button id="confirmSimpleDeleteBtn"
                         class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
                         Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Etiqueta -->
+    <div id="deleteTagModal"
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-950 w-full max-w-sm animate-in fade-in zoom-in duration-500">
+            <div class="px-5 md:px-10 py-6 md:py-12">
+                <div class="flex items-center justify-between mb-6 md:mb-12">
+                    <h3 class="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tighter uppercase">Eliminar Etiqueta</h3>
+                    <button onclick="closeDeleteTagModal()"
+                        class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mb-6 md:mb-12">
+                    <p class="text-sm font-bold text-gray-900 dark:text-white mb-2">¿Eliminar la etiqueta <span id="deleteTagName" class="text-red-600 dark:text-red-400"></span>?</p>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-relaxed">Esta acción no se puede deshacer. Las cajas que usen esta etiqueta quedarán sin ella.</p>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button type="button" onclick="closeDeleteTagModal()"
+                        class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-gray-900 dark:hover:text-white border-b border-transparent hover:border-gray-900 dark:hover:border-white pb-1 transition-all">
+                        Cancelar
+                    </button>
+                    <button id="confirmDeleteTagBtn"
+                        class="text-[10px] font-black uppercase tracking-[0.3em] text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400 pb-1 hover:opacity-60 transition-opacity">
+                        Eliminar
                     </button>
                 </div>
             </div>
@@ -1590,6 +1625,9 @@
             document.getElementById('tag_color_hex').textContent = '#6366f1';
             document.getElementById('tagForm').action = "{{ route('superadmin.cashbox-tags.store') }}";
             document.getElementById('tagForm').method = 'POST';
+            document.getElementById('tag_method').value = '';
+            document.getElementById('tagModalTitle').textContent = 'Etiquetas';
+            document.getElementById('tagSubmitBtn').textContent = 'Guardar Etiqueta';
         }
 
         function editTag(id, name, color) {
@@ -1599,16 +1637,28 @@
             document.getElementById('tag_color_hex').textContent = color;
             document.getElementById('tagForm').action = "{{ route('superadmin.cashbox-tags.update', ['cajas_etiqueta' => '__ID__']) }}".replace('__ID__', id);
             document.getElementById('tagForm').method = 'POST';
+            document.getElementById('tag_method').value = 'PUT';
+            document.getElementById('tagModalTitle').textContent = 'Editar Etiqueta';
+            document.getElementById('tagSubmitBtn').textContent = 'Editar Etiqueta';
         }
 
         function deleteTag(id) {
-            if (!confirm('¿Eliminar esta etiqueta?')) return;
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = "{{ route('superadmin.cashbox-tags.destroy', ['cajas_etiqueta' => '__ID__']) }}".replace('__ID__', id);
-            form.innerHTML = `@csrf <input type="hidden" name="_method" value="DELETE">`;
-            document.body.appendChild(form);
-            form.submit();
+            const tag = allTagsData.find(t => t.id === id);
+            if (!tag) return;
+            document.getElementById('deleteTagName').textContent = `"${tag.name}"`;
+            document.getElementById('confirmDeleteTagBtn').onclick = function() {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('superadmin.cashbox-tags.destroy', ['cajas_etiqueta' => '__ID__']) }}".replace('__ID__', id);
+                form.innerHTML = `@csrf <input type="hidden" name="_method" value="DELETE">`;
+                document.body.appendChild(form);
+                form.submit();
+            };
+            document.getElementById('deleteTagModal').classList.remove('hidden');
+        }
+
+        function closeDeleteTagModal() {
+            document.getElementById('deleteTagModal').classList.add('hidden');
         }
 
         function renderTagsList() {
