@@ -1638,9 +1638,9 @@
             body.innerHTML += `
                 <tr class="border-b border-gray-50 dark:border-gray-900/50 last:border-0">
                     <td class="py-3 font-bold text-center">${row.n}</td>
-                    <td class="py-3 tabular-nums text-center">${currency}${row.principal.toFixed(2)}</td>
-                    <td class="py-3 tabular-nums text-center">${currency}${row.interest.toFixed(2)}</td>
-                    <td class="py-3 tabular-nums text-center font-black text-gray-900 dark:text-white">${currency}${row.balance.toFixed(2)}</td>
+                    <td class="py-3 tabular-nums text-center">${currency}${row.principal.toLocaleString('en-US', amountObj)}</td>
+                    <td class="py-3 tabular-nums text-center">${currency}${row.interest.toLocaleString('en-US', amountObj)}</td>
+                    <td class="py-3 tabular-nums text-center font-black text-gray-900 dark:text-white">${currency}${row.balance.toLocaleString('en-US', amountObj)}</td>
                 </tr>
             `;
         });
