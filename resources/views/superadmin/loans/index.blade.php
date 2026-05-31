@@ -1668,6 +1668,31 @@
         document.getElementById('approve_modal_user').textContent = user;
         document.getElementById('approveConfirmForm').action = `/gestion-interna/prestamos/${loanId}/approve`;
 
+        // Show loan-specific bank account
+        const bankAccountsContainer = document.getElementById('approve_bank_accounts');
+        const noBankAccount = document.getElementById('approve_no_bank_account');
+
+        if (loanData.account_number && loanData.cci) {
+            bankAccountsContainer.classList.remove('hidden');
+            noBankAccount.classList.add('hidden');
+            bankAccountsContainer.innerHTML =
+                `<div class="text-[9px] font-bold text-gray-600 dark:text-gray-300">
+                    <span class="text-gray-400 dark:text-gray-500">${loanData.bank_name || 'Banco'} (${loanData.currency}):</span>
+                    <span class="text-gray-700 dark:text-gray-200">CTA: ${loanData.account_number}</span>
+                    <span class="ml-2 text-gray-700 dark:text-gray-200">CCI: ${loanData.cci}</span>
+                </div>`;
+        } else {
+            bankAccountsContainer.innerHTML = '';
+            bankAccountsContainer.classList.add('hidden');
+            noBankAccount.classList.remove('hidden');
+        }
+
+        // Reset voucher
+        document.getElementById('approve_voucher').value = '';
+        document.getElementById('approve_voucher_error').classList.add('hidden');
+        document.getElementById('approve_operation_number').value = '';
+        document.getElementById('approve_operation_error').classList.add('hidden');
+
         // Populate cashboxes
         const cashboxSelect = document.getElementById('approve_cashbox_id');
         const cashboxContainer = document.getElementById('approve_cashbox_container');
@@ -1850,7 +1875,23 @@
             document.getElementById('approve_cashbox_error').classList.remove('hidden');
             return;
         }
-        
+
+        const voucherInput = document.getElementById('approve_voucher');
+        if (!voucherInput.files || voucherInput.files.length === 0) {
+            e.preventDefault();
+            document.getElementById('approve_voucher_error').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('approve_voucher_error').classList.add('hidden');
+
+        const operationInput = document.getElementById('approve_operation_number');
+        if (!operationInput.value.trim()) {
+            e.preventDefault();
+            document.getElementById('approve_operation_error').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('approve_operation_error').classList.add('hidden');
+
         document.getElementById('approve_submit_btn').disabled = true;
         document.getElementById('approve_submit_btn').opacity = '0.5';
     });
@@ -1932,11 +1973,19 @@
             <svg class="w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20,2H6A2,2,0,0,0,4,4V17H4a2,2,0,0,0-2,2H2a3,3,0,0,0,3,3H19.5A2.5,2.5,0,0,0,22,19.5V4A2,2,0,0,0,20,2Z" opacity="0.3"/><path d="M19,22v0H5a3,3,0,0,1-3-3H2a2,2,0,0,1,2-2H15a2,2,0,0,1,2,2v.5A2.52,2.52,0,0,0,19,22ZM12.71,11.71l4-4a1,1,0,1,0-1.42-1.42L12,9.59l-1.29-1.3A1,1,0,0,0,9.29,9.71l2,2a1,1,0,0,0,1.42,0Z"/></svg>
         </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aprobar Préstamo</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
             ¿Confirmas la aprobación del préstamo por <span id="approve_modal_amount" class="font-bold text-gray-900 dark:text-white"></span> para <span id="approve_modal_user" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
 
-        <form id="approveConfirmForm" method="POST" class="space-y-6">
+        <div id="approve_bank_info" class="mb-6 bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-left">
+            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-2">Cuenta del Cliente para Depósito</p>
+            <div id="approve_bank_accounts" class="space-y-1">
+                <!-- JS populated -->
+            </div>
+            <p id="approve_no_bank_account" class="hidden text-[9px] font-bold text-red-500">El cliente no tiene cuentas bancarias registradas</p>
+        </div>
+
+        <form id="approveConfirmForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
@@ -1956,6 +2005,26 @@
                 </a>
                 <p id="approve_cashbox_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
                     Saldo insuficiente en caja
+                </p>
+            </div>
+
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
+                <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf"
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:uppercase file:tracking-widest cursor-pointer">
+                <p class="text-[8px] text-gray-400">Se convertirá automáticamente a formato WebP</p>
+                <p id="approve_voucher_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
+                    Debes subir el comprobante de depósito
+                </p>
+            </div>
+
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
+                <input type="text" name="disbursement_operation_number" id="approve_operation_number" required placeholder="Ej: 123456789"
+                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors tabular-nums"
+                    maxlength="30">
+                <p id="approve_operation_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
+                    Debes ingresar el número de operación
                 </p>
             </div>
 

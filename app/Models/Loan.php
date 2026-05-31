@@ -19,6 +19,8 @@ class Loan extends Model
         'total_amount',
         'monthly_payment',
         'status',
+        'disbursement_voucher',
+        'disbursement_operation_number',
         'type',
         'disbursement_date',
         'payment_frequency',

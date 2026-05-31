@@ -21,7 +21,7 @@ class LoanController extends Controller
         $fromDate = $request->get('from_date');
         $toDate = $request->get('to_date');
 
-        $query = Loan::with(['user.documents', 'user.clientProfile'])->latest();
+        $query = Loan::with(['user.documents', 'user.clientProfile', 'user.bankAccounts'])->latest();
 
         if ($loanId) {
             $query->where('id', $loanId);
@@ -181,6 +181,8 @@ class LoanController extends Controller
     {
         $request->validate([
             'cashbox_id' => 'required|exists:cashboxes,id',
+            'disbursement_voucher' => 'required|image|max:5120',
+            'disbursement_operation_number' => 'required|string|max:30',
         ]);
 
         $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
@@ -190,8 +192,32 @@ class LoanController extends Controller
             return back()->withErrors(['cashbox_id' => 'Saldo insuficiente en la caja seleccionada.']);
         }
 
-        \DB::transaction(function () use ($loan, $cashbox, $amount) {
-            $loan->update(['status' => 'approved']);
+        // Process voucher image and convert to WebP
+        $voucherPath = null;
+        if ($request->hasFile('disbursement_voucher')) {
+            $file = $request->file('disbursement_voucher');
+            $filename = 'voucher_' . $loan->code . '_' . time() . '.webp';
+            
+            // Read the image
+            $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+            
+            // Convert to WebP with 85% quality
+            $fullPath = storage_path('app/public/vouchers/' . $filename);
+            if (!is_dir(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
+            imagewebp($image, $fullPath, 85);
+            imagedestroy($image);
+            
+            $voucherPath = 'vouchers/' . $filename;
+        }
+
+        \DB::transaction(function () use ($loan, $cashbox, $amount, $voucherPath, $request) {
+            $loan->update([
+                'status' => 'approved',
+                'disbursement_voucher' => $voucherPath,
+                'disbursement_operation_number' => $request->disbursement_operation_number,
+            ]);
 
             // Register movement
             $cashbox->movements()->create([
