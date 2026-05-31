@@ -1690,6 +1690,8 @@
         // Reset voucher
         document.getElementById('approve_voucher').value = '';
         document.getElementById('approve_voucher_error').classList.add('hidden');
+        document.getElementById('approve_voucher_preview').classList.add('hidden');
+        document.getElementById('approve_voucher_preview_img').src = '';
         document.getElementById('approve_operation_number').value = '';
         document.getElementById('approve_operation_error').classList.add('hidden');
 
@@ -1901,6 +1903,23 @@
         document.body.style.overflow = '';
     }
 
+    function previewApproveVoucher(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('approve_voucher_preview');
+        const previewImg = document.getElementById('approve_voucher_preview_img');
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+            previewImg.src = '';
+        }
+    }
+
     function openRejectModal(loanId, amount, user) {
         document.getElementById('reject_modal_amount').textContent = amount;
         document.getElementById('reject_modal_user').textContent = user;
@@ -1967,8 +1986,8 @@
 </div>
 
 <!-- Modal Confirmar Aprobación -->
-<div id="approveConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-8 text-center">
+<div id="approveConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center">
+    <div class="bg-white dark:bg-gray-950 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl relative max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-center">
         <div class="w-16 h-16 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20,2H6A2,2,0,0,0,4,4V17H4a2,2,0,0,0-2,2H2a3,3,0,0,0,3,3H19.5A2.5,2.5,0,0,0,22,19.5V4A2,2,0,0,0,20,2Z" opacity="0.3"/><path d="M19,22v0H5a3,3,0,0,1-3-3H2a2,2,0,0,1,2-2H15a2,2,0,0,1,2,2v.5A2.52,2.52,0,0,0,19,22ZM12.71,11.71l4-4a1,1,0,1,0-1.42-1.42L12,9.59l-1.29-1.3A1,1,0,0,0,9.29,9.71l2,2a1,1,0,0,0,1.42,0Z"/></svg>
         </div>
@@ -2011,7 +2030,11 @@
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
                 <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf"
-                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:uppercase file:tracking-widest cursor-pointer">
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:uppercase file:tracking-widest cursor-pointer"
+                    onchange="previewApproveVoucher(event)">
+                <div id="approve_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+                    <img id="approve_voucher_preview_img" src="" alt="Vista previa" class="w-full h-auto max-h-40 object-contain bg-gray-50 dark:bg-gray-900">
+                </div>
                 <p class="text-[8px] text-gray-400">Se convertirá automáticamente a formato WebP</p>
                 <p id="approve_voucher_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
                     Debes subir el comprobante de depósito
@@ -2022,7 +2045,7 @@
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
                 <input type="text" name="disbursement_operation_number" id="approve_operation_number" required placeholder="Ej: 123456789"
                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors tabular-nums"
-                    maxlength="30">
+                    maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                 <p id="approve_operation_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
                     Debes ingresar el número de operación
                 </p>
