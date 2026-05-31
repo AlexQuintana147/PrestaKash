@@ -611,6 +611,10 @@
                                 <span id="transfer_currency_label"
                                     class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
                             </div>
+                            <button type="button" onclick="setTransferMaxAmount()"
+                                class="mt-2 text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 border-b border-blue-600 dark:border-blue-400 pb-0.5 hover:opacity-60 transition-opacity">
+                                Poner máximo
+                            </button>
                             <p id="transfer_error"
                                 class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
                                 Saldo insuficiente en caja origen
@@ -1620,6 +1624,12 @@
         function closeTransferModal() {
             document.getElementById('transferModal').classList.add('hidden');
             document.body.style.overflow = '';
+        }
+
+        function setTransferMaxAmount() {
+            const input = document.getElementById('transfer_amount');
+            input.value = parseFloat(transferSourceBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('transfer_error').classList.add('hidden');
         }
 
         const allTagsData = @json($tags ?? []);
