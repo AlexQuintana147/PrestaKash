@@ -90,6 +90,23 @@
         $totalToPayNow = $accumulatedDebt + ($nextInst ? $nextInst->amount : 0);
     @endphp
 
+    @if($loan->disbursement_voucher && $loan->status === 'approved')
+    <div class="mb-6 bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 sm:p-5">
+        <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-3">Comprobante de Desembolso</p>
+        <div class="flex items-start gap-4">
+            <div class="flex-1">
+                <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
+                    <img src="{{ Storage::url($loan->disbursement_voucher) }}" alt="Comprobante de desembolso" class="w-full h-auto max-h-48 object-contain">
+                </div>
+            </div>
+            <div class="flex-shrink-0 text-right">
+                <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">N° Operación</p>
+                <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $loan->disbursement_operation_number }}</p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     @if($isInDefault && $overdueInstallments->count() > 0)
         <div class="mb-8 bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 rounded-2xl p-4 sm:p-6">
             <div class="flex items-start gap-3 sm:gap-4">
