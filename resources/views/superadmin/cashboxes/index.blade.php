@@ -534,6 +534,7 @@
                                 </button>
                             </div>
                             @endif
+                            <p id="mov_tag_error" class="hidden text-[8px] text-red-500 font-bold mt-1 uppercase tracking-widest">Selecciona una etiqueta o crea una nueva</p>
                         </div>
 
                         <!-- Motivo / Descripción -->
@@ -627,6 +628,7 @@
                                 </button>
                             </div>
                             @endif
+                            <p id="transfer_tag_error" class="hidden text-[8px] text-red-500 font-bold mt-1 uppercase tracking-widest">Selecciona una etiqueta o crea una nueva</p>
                         </div>
 
                         <div>
@@ -2834,6 +2836,16 @@
             const amountInput = document.getElementById('mov_amount');
             const typeInput = document.getElementById('mov_type');
             const errorMsg = document.getElementById('mov_error');
+            const tagSelect = document.getElementById('mov_tag');
+
+            if (!tagSelect || !tagSelect.value) {
+                e.preventDefault();
+                const tagError = document.getElementById('mov_tag_error');
+                if (tagError) tagError.classList.remove('hidden');
+                return;
+            }
+            const tagError = document.getElementById('mov_tag_error');
+            if (tagError) tagError.classList.add('hidden');
 
             // Remove commas before submit so Laravel validates numeric
             const cleanAmount = parseFloat(amountInput.value.replace(/,/g, ''));
@@ -2863,6 +2875,16 @@
         document.getElementById('transferForm').addEventListener('submit', function (e) {
             const amountInput = document.getElementById('transfer_amount');
             const errorMsg = document.getElementById('transfer_error');
+            const tagSelect = document.getElementById('transfer_tag');
+
+            if (!tagSelect || !tagSelect.value) {
+                e.preventDefault();
+                const tagError = document.getElementById('transfer_tag_error');
+                if (tagError) tagError.classList.remove('hidden');
+                return;
+            }
+            const tagError = document.getElementById('transfer_tag_error');
+            if (tagError) tagError.classList.add('hidden');
 
             const cleanAmount = parseFloat(amountInput.value.replace(/,/g, ''));
 
