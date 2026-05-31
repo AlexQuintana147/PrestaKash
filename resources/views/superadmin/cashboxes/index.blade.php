@@ -812,7 +812,7 @@
 
     <!-- Modal Eliminar Etiqueta -->
     <div id="deleteTagModal"
-        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[120] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-950 w-full max-w-sm animate-in fade-in zoom-in duration-500">
             <div class="px-5 md:px-10 py-6 md:py-12">
                 <div class="flex items-center justify-between mb-6 md:mb-12">
