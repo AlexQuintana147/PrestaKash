@@ -34,7 +34,7 @@
 
     <!-- Filtros -->
     <div class="hidden md:flex items-center gap-0 border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto no-scrollbar">
-        @foreach(['pending' => 'Pendientes', 'paid' => 'Pagados', 'withdrawals' => 'Por pagar'] as $key => $label)
+        @foreach(['pending' => 'Pendientes', 'withdrawals' => 'Por pagar', 'paid' => 'Pagados'] as $key => $label)
             <a href="{{ route('superadmin.referrals.payouts', ['filter' => $key]) }}"
                 class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors flex items-center gap-2
                           {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
@@ -52,7 +52,7 @@
     <!-- Filtros Mobile -->
     <div class="md:hidden mb-8">
         <div class="grid grid-cols-2 gap-2">
-            @foreach(['pending' => 'Pendientes', 'paid' => 'Pagados', 'withdrawals' => 'Por pagar'] as $key => $label)
+            @foreach(['pending' => 'Pendientes', 'withdrawals' => 'Por pagar', 'paid' => 'Pagados'] as $key => $label)
                 <a href="{{ route('superadmin.referrals.payouts', ['filter' => $key]) }}"
                    class="flex items-center justify-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                           {{ $filter === $key ? 'bg-gray-900 text-white dark:bg-white dark:text-black border-transparent' : 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800' }}">
