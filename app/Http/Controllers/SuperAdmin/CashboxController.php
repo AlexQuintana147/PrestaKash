@@ -113,6 +113,10 @@ class CashboxController extends Controller
 
         Cashbox::create($request->all());
 
+        if ($request->query('from') === 'loans') {
+            return redirect()->route('superadmin.loans.index')->with('success', 'Caja creada correctamente.');
+        }
+
         return back()->with('success', 'Caja creada correctamente.');
     }
 

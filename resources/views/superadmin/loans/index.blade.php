@@ -1345,7 +1345,7 @@
                                 <!-- JS populated -->
                             </select>
                         </div>
-                        <a href="{{ route('superadmin.cashboxes.index') }}" id="counter_create_cashbox_btn" 
+                        <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="counter_create_cashbox_btn"
                            class="hidden w-full block text-center py-1.5 sm:py-2 text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
                             Crear caja de <span class="currency-label"></span>
                         </a>
@@ -1934,7 +1934,7 @@
                         <!-- JS populated -->
                     </select>
                 </div>
-                <a href="{{ route('superadmin.cashboxes.index') }}" id="approve_create_cashbox_btn" 
+                <a href="{{ route('superadmin.cashboxes.index') }}?from=loans" id="approve_create_cashbox_btn" 
                    class="hidden w-full block text-center py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 border-b-2 border-amber-600 hover:opacity-70 transition-all">
                     Crear caja de <span class="currency-label"></span>
                 </a>

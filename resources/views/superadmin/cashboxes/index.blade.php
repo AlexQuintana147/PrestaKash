@@ -3055,5 +3055,10 @@
                 }
             });
         })();
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'loans') {
+            openCashboxModal();
+            history.replaceState(null, '', window.location.pathname);
+        }
     </script>
 @endsection
