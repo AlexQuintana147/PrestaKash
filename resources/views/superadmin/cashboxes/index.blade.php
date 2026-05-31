@@ -526,6 +526,10 @@
                                     <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                            <button type="button" onclick="openTagsModal()"
+                                class="mt-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity">
+                                + Agregar nueva etiqueta
+                            </button>
                             @else
                             <div class="py-4 flex items-center gap-2">
                                 <p class="text-xs text-red-400 font-bold">Crea una etiqueta primero</p>
@@ -622,6 +626,10 @@
                                     <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                            <button type="button" onclick="openTagsModal()"
+                                class="mt-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity">
+                                + Agregar nueva etiqueta
+                            </button>
                             @else
                             <div class="py-4 flex items-center gap-2">
                                 <p class="text-xs text-red-400 font-bold">Crea una etiqueta primero</p>
@@ -1752,13 +1760,20 @@
 
                 let select = document.getElementById(selectId);
                 if (!select && allTagsData.length > 0) {
+                    container.innerHTML = '';
                     select = document.createElement('select');
                     select.name = 'cashbox_tag_id';
                     select.id = selectId;
                     select.required = true;
                     select.className = selectClass;
-                    container.innerHTML = '';
                     container.appendChild(select);
+
+                    const addBtn = document.createElement('button');
+                    addBtn.type = 'button';
+                    addBtn.onclick = function() { openTagsModal(); };
+                    addBtn.className = 'mt-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 border-b border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-60 transition-opacity';
+                    addBtn.textContent = '+ Agregar nueva etiqueta';
+                    container.appendChild(addBtn);
                 }
 
                 if (select) {
