@@ -52,7 +52,7 @@
     @endif
 
     <!-- Header -->
-    <div class="flex items-start justify-between gap-4 mb-8">
+        <div class="flex items-start justify-between gap-4 mb-8">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
@@ -62,12 +62,27 @@
             </div>
             <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">{{ $loan->created_at->format('d M Y') }}</p>
         </div>
-        <span class="flex-shrink-0 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full mt-1
-            {{ $loan->status === 'approved' ? 'text-green-600 dark:text-green-400' : '' }}
-            {{ $loan->status === 'paid'     ? 'text-blue-600 dark:text-blue-400' : '' }}
-            {{ $loan->status === 'pending'  ? 'text-yellow-600 dark:text-yellow-400' : '' }}">
-            {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', 'pending' => 'En revisión', default => $loan->status } }}
-        </span>
+        <div class="flex items-center gap-3 flex-shrink-0">
+            @if($loan->currency === 'PEN')
+            <div class="text-right hidden sm:block">
+                <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Cuenta para Depósitos (Soles)</p>
+                <p class="text-[9px] font-bold text-gray-500 leading-tight">CTA: 200-3008190320</p>
+                <p class="text-[9px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190320-32</p>
+            </div>
+            @else
+            <div class="text-right hidden sm:block">
+                <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Cuenta para Depósitos (Dólares)</p>
+                <p class="text-[9px] font-bold text-gray-500 leading-tight">CTA: 200-3008190337</p>
+                <p class="text-[9px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190337-36</p>
+            </div>
+            @endif
+            <span class="flex-shrink-0 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full
+                {{ $loan->status === 'approved' ? 'text-green-600 dark:text-green-400' : '' }}
+                {{ $loan->status === 'paid'     ? 'text-blue-600 dark:text-blue-400' : '' }}
+                {{ $loan->status === 'pending'  ? 'text-yellow-600 dark:text-yellow-400' : '' }}">
+                {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Completado', 'pending' => 'En revisión', default => $loan->status } }}
+            </span>
+        </div>
     </div>
 
     <!-- Resumen financiero -->
