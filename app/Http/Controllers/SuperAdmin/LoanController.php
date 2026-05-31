@@ -1688,6 +1688,10 @@ class LoanController extends Controller
         foreach ($referrals as $referral) {
             $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
             $referral->paid_loan = $paidLoan;
+            if ($paidLoan) {
+                $paidLoan->installments_count = $paidLoan->installments()->count();
+                $paidLoan->total_interest = round($paidLoan->total_amount - $paidLoan->amount, 2);
+            }
             $referral->payout = $referral->payouts()->where('loan_id', $paidLoan?->id)->first();
             $referral->referrer_has_loans = $referral->referrer->loans()->whereIn('status', ['approved', 'disbursed', 'active', 'paid'])->exists();
             $referral->referrer_has_investments = $referral->referrer->investorApplication !== null

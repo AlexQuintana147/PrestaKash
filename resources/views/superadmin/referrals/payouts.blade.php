@@ -159,14 +159,26 @@
                             </div>
                         </div>
                         @if($referral->paid_loan)
-                            <div class="mt-3 flex items-center gap-3 text-xs">
-                                <span class="px-2 py-0.5 rounded-md bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 font-medium ring-1 ring-inset ring-green-100 dark:ring-green-500/20">
-                                    Préstamo pagado
-                                </span>
-                                <span class="text-gray-500">
-                                    {{ $referral->paid_loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($referral->paid_loan->total_amount, 2) }}
-                                </span>
-                                <span class="text-gray-400">{{ $referral->paid_loan->code }}</span>
+                            <div class="mt-3 space-y-2">
+                                <div class="flex items-center gap-2 text-xs">
+                                    <span class="px-2 py-0.5 rounded-md bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 font-medium ring-1 ring-inset ring-green-100 dark:ring-green-500/20">
+                                        Préstamo pagado
+                                    </span>
+                                    <span class="text-gray-900 dark:text-white font-semibold tabular-nums">
+                                        {{ $referral->paid_loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($referral->paid_loan->amount, 2) }}
+                                    </span>
+                                    <span class="text-gray-400 text-[10px]">{{ $referral->paid_loan->code }}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-gray-500 dark:text-gray-400">
+                                    <div class="flex justify-between"><span>Interés:</span><span class="font-medium text-gray-700 dark:text-gray-300 tabular-nums">{{ number_format($referral->paid_loan->interest_rate, 2) }}%</span></div>
+                                    <div class="flex justify-between"><span>Interés cobrado:</span><span class="font-medium text-amber-600 dark:text-amber-400 tabular-nums">{{ $referral->paid_loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($referral->paid_loan->total_interest, 2) }}</span></div>
+                                    @if($referral->paid_loan->type === 'cuotas')
+                                        <div class="flex justify-between"><span>Cuotas:</span><span class="font-medium text-gray-700 dark:text-gray-300 tabular-nums">{{ $referral->paid_loan->installments_count }}</span></div>
+                                    @else
+                                        <div class="flex justify-between"><span>Tipo:</span><span class="font-medium text-gray-700 dark:text-gray-300">Pago único</span></div>
+                                    @endif
+                                    <div class="flex justify-between"><span>Total pagado:</span><span class="font-medium text-green-600 dark:text-green-400 tabular-nums">{{ $referral->paid_loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($referral->paid_loan->total_amount, 2) }}</span></div>
+                                </div>
                             </div>
                         @endif
                     </div>
