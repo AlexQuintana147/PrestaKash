@@ -1672,7 +1672,15 @@ class LoanController extends Controller
             });
 
         if ($filter === 'pending') {
-            $query->doesntHave('payouts');
+            $query->whereHas('referred.loans', function ($q) {
+                $q->where('status', 'paid')
+                  ->whereNotExists(function ($sub) {
+                      $sub->selectRaw(1)
+                          ->from('referral_payouts')
+                          ->whereColumn('referral_payouts.loan_id', 'loans.id')
+                          ->whereIn('referral_payouts.status', ['pending', 'paid', 'withdrawn']);
+                  });
+            });
         } elseif ($filter === 'withdrawals') {
             $query->whereHas('payouts', function ($q) {
                 $q->where('status', 'pending');
@@ -1686,7 +1694,19 @@ class LoanController extends Controller
         $referrals = $query->latest()->paginate(15)->withQueryString();
 
         foreach ($referrals as $referral) {
-            $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
+            if ($filter === 'pending') {
+                $paidLoans = $referral->referred->loans()->where('status', 'paid')->latest()->get();
+                $paidLoan = $paidLoans->first(function ($loan) {
+                    return !\App\Models\ReferralPayout::where('loan_id', $loan->id)
+                        ->whereIn('status', ['pending', 'paid', 'withdrawn'])
+                        ->exists();
+                });
+                if (!$paidLoan) {
+                    $paidLoan = $paidLoans->first();
+                }
+            } else {
+                $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
+            }
             $referral->paid_loan = $paidLoan;
             if ($paidLoan) {
                 $paidLoan->installments_count = $paidLoan->installments()->count();
@@ -1700,8 +1720,14 @@ class LoanController extends Controller
 
         $counts = [
             'pending' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
-                $q->where('status', 'paid');
-            })->doesntHave('payouts')->count(),
+                $q->where('status', 'paid')
+                  ->whereNotExists(function ($sub) {
+                      $sub->selectRaw(1)
+                          ->from('referral_payouts')
+                          ->whereColumn('referral_payouts.loan_id', 'loans.id')
+                          ->whereIn('referral_payouts.status', ['pending', 'paid', 'withdrawn']);
+                  });
+            })->count(),
             'withdrawals' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
                 $q->where('status', 'paid');
             })->whereHas('payouts', function ($q) {
@@ -1756,6 +1782,14 @@ class LoanController extends Controller
         ]);
 
         return back()->with('success', 'Pago a referidor confirmado correctamente.');
+    }
+
+    public function revertReferralPayout(Request $request, \App\Models\ReferralPayout $payout)
+    {
+        \DB::table('referral_payouts')->where('id', $payout->id)->update(['status' => 'reverted']);
+
+        return redirect()->route('superadmin.referrals.payouts', ['filter' => 'pending'])
+            ->with('success', 'Payout revertido correctamente. El referido volvió a Pendientes.');
     }
 
     public function confirmWithdrawal(Request $request, \App\Models\ReferralWithdrawal $withdrawal)

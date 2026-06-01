@@ -135,6 +135,14 @@
                                         Confirmar pago
                                     </button>
                                 </form>
+                                <form action="{{ route('superadmin.referrals.payouts.revert', $referral->payout) }}" method="POST" class="mt-2">
+                                    @csrf
+                                    <button type="submit"
+                                            onclick="return confirm('¿Estás seguro de revertir este payout? Volverá a Pendientes.')"
+                                            class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
+                                        Revertir
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
