@@ -1705,8 +1705,8 @@ class LoanController extends Controller
                 $q->whereIn('status', ['paid', 'withdrawn']);
             })->count(),
             'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
-                $q->whereIn('status', ['paid', 'withdrawn']);
-            })->count() + \App\Models\ReferralWithdrawal::whereIn('status', ['paid', 'confirmed'])->count(),
+                $q->where('status', 'paid');
+            })->count(),
             'withdrawals' => \App\Models\ReferralWithdrawal::where('status', 'pending')->count(),
         ];
 
