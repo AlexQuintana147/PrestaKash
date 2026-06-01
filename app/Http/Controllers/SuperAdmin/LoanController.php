@@ -1672,16 +1672,14 @@ class LoanController extends Controller
             });
 
         if ($filter === 'pending') {
-            $query->whereDoesntHave('payouts', function ($q) {
-                $q->where('status', 'paid');
+            $query->doesntHave('payouts');
+        } elseif ($filter === 'withdrawals') {
+            $query->whereHas('payouts', function ($q) {
+                $q->where('status', 'pending');
             });
         } elseif ($filter === 'paid') {
             $query->whereHas('payouts', function ($q) {
                 $q->where('status', 'paid');
-            });
-        } elseif ($filter === 'withdrawals') {
-            $query->whereHas('payouts', function ($q) {
-                $q->where('status', 'pending');
             });
         }
 
@@ -1703,17 +1701,15 @@ class LoanController extends Controller
         $counts = [
             'pending' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
                 $q->where('status', 'paid');
-            })->whereDoesntHave('payouts', function ($q) {
-                $q->where('status', 'paid');
-            })->count(),
-            'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
-                $q->where('status', 'paid');
-            })->count(),
+            })->doesntHave('payouts')->count(),
             'withdrawals' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
                 $q->where('status', 'paid');
             })->whereHas('payouts', function ($q) {
                 $q->where('status', 'pending');
             })->count() + \App\Models\ReferralWithdrawal::where('status', 'pending')->count(),
+            'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
+                $q->where('status', 'paid');
+            })->count(),
         ];
 
         $withdrawals = $filter === 'withdrawals'

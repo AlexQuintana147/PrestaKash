@@ -66,6 +66,81 @@
     </div>
 
     @if($filter === 'withdrawals')
+        @if($referrals && $referrals->count() > 0)
+            <div class="mb-4">
+                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold">Referidos por pagar</p>
+            </div>
+            @foreach($referrals as $referral)
+                <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-5 md:p-6 mb-4">
+                    <div class="flex flex-col md:flex-row md:items-center gap-5">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Referido</p>
+                            <div class="flex items-center gap-3">
+                                @php $refSelfie = $referral->referred->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($referral->referred->documents->selfie) : null; @endphp
+                                <button type="button" onclick="openUserDetailModal({{ $referral->referred->id }})"
+                                    class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-inset ring-green-100 dark:ring-green-500/20 hover:ring-2 hover:ring-green-300 transition-all cursor-pointer">
+                                    @if($refSelfie)
+                                        <img src="{{ $refSelfie }}" alt="{{ $referral->referred->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
+                                            <span class="text-xs font-bold text-green-600 dark:text-green-400">{{ strtoupper(substr($referral->referred->name, 0, 1)) }}</span>
+                                        </div>
+                                    @endif
+                                </button>
+                                <div class="min-w-0">
+                                    <button type="button" onclick="openUserDetailModal({{ $referral->referred->id }}" class="text-left hover:underline">
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $referral->referred->name }}</p>
+                                    </button>
+                                    <p class="text-xs text-gray-400 truncate">{{ $referral->referred->email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
+                            <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Referidor</p>
+                            <div class="flex items-center gap-3">
+                                @php $refSelfie = $referral->referrer->documents?->selfie ? \Illuminate\Support\Facades\Storage::url($referral->referrer->documents->selfie) : null; @endphp
+                                <button type="button" onclick="openUserDetailModal({{ $referral->referrer->id }}"
+                                    class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-inset ring-indigo-100 dark:ring-indigo-500/20 hover:ring-2 hover:ring-indigo-300 transition-all cursor-pointer">
+                                    @if($refSelfie)
+                                        <img src="{{ $refSelfie }}" alt="{{ $referral->referrer->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
+                                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">{{ strtoupper(substr($referral->referrer->name, 0, 1)) }}</span>
+                                        </div>
+                                    @endif
+                                </button>
+                                <div class="min-w-0">
+                                    <button type="button" onclick="openUserDetailModal({{ $referral->referrer->id }}" class="text-left hover:underline">
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $referral->referrer->name }}</p>
+                                    </button>
+                                    <p class="text-xs text-gray-400 truncate">{{ $referral->referrer->email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:w-64 shrink-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
+                            <div class="space-y-2">
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto a pagar</p>
+                                    <p class="text-lg font-bold text-gray-900 dark:text-white">
+                                        S/ {{ number_format($referral->payout?->amount ?? 0, 2) }}
+                                    </p>
+                                </div>
+                                @if($referral->payout?->notes)
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
+                                @endif
+                                <form action="{{ route('superadmin.referrals.payouts.confirm', $referral->payout) }}" method="POST" class="mt-3">
+                                    @csrf
+                                    <button type="submit"
+                                            class="w-full text-[11px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-4 py-2.5 transition-colors">
+                                        Confirmar pago
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
         @forelse($withdrawals as $withdrawal)
             <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-5 md:p-6 mb-4">
                 <div class="flex flex-col md:flex-row md:items-center gap-5">
@@ -119,13 +194,15 @@
                 </div>
             </div>
         @empty
+            @if(!$referrals || $referrals->count() === 0)
             <div class="text-center py-20">
                 <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                    <svg class="w-7 h-7 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <svg class="w-7 h-7 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402 2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <p class="text-sm font-medium text-gray-400">No hay retiros pendientes</p>
-                <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Cuando un referidor solicite un retiro, aparecerá aquí.</p>
+                <p class="text-sm font-medium text-gray-400">No hay pagos pendientes</p>
+                <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Los referidos con monto registrado aparecerán aquí.</p>
             </div>
+            @endif
         @endforelse
         @if($withdrawals && $withdrawals->hasPages())
             <div class="mt-6">{{ $withdrawals->links() }}</div>
