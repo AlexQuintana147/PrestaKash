@@ -1701,9 +1701,7 @@ class LoanController extends Controller
                         ->whereIn('status', ['pending', 'paid', 'withdrawn'])
                         ->exists();
                 });
-                if (!$paidLoan) {
-                    $paidLoan = $paidLoans->first();
-                }
+                if (!$paidLoan) $paidLoan = $paidLoans->first();
             } else {
                 $paidLoan = $referral->referred->loans()->where('status', 'paid')->latest()->first();
             }
@@ -1712,7 +1710,10 @@ class LoanController extends Controller
                 $paidLoan->installments_count = $paidLoan->installments()->count();
                 $paidLoan->total_interest = round($paidLoan->total_amount - $paidLoan->amount, 2);
             }
-            $referral->payout = $referral->payouts()->where('loan_id', $paidLoan?->id)->first();
+            $referral->payout = $referral->payouts()
+                ->where('loan_id', $paidLoan?->id)
+                ->when($filter === 'pending', fn($q) => $q->whereNotIn('status', ['reverted']))
+                ->first();
             $referral->referrer_has_loans = $referral->referrer->loans()->whereIn('status', ['approved', 'disbursed', 'active', 'paid'])->exists();
             $referral->referrer_has_investments = $referral->referrer->investorApplication !== null
                 && \DB::table('investor_opportunity')->where('user_id', $referral->referrer_id)->where('status', 'approved')->exists();
@@ -1757,8 +1758,10 @@ class LoanController extends Controller
             return back()->withErrors(['referral' => 'El referido no tiene préstamos pagados.']);
         }
 
+        $maxAmount = round($paidLoan->total_amount - $paidLoan->amount, 2);
+
         $data = $request->validate([
-            'amount' => 'required|numeric|min:0|max:' . $paidLoan->total_amount,
+            'amount' => 'required|numeric|min:0|max:' . $maxAmount,
             'notes' => 'nullable|string|max:500',
         ]);
 

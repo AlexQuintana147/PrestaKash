@@ -310,14 +310,14 @@
                                     <div class="relative">
                                         <span class="absolute left-0 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium">S/</span>
                                         <input type="text" required
-                                               data-max="{{ $referral->paid_loan?->total_amount ?? 0 }}"
+                                               data-max="{{ $referral->paid_loan?->total_interest ?? 0 }}"
                                                value="{{ $referral->payout ? number_format($referral->payout->amount, 2, '.', ',') : '' }}"
                                                class="referral-amount-input w-full pl-5 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors"
                                                oninput="formatReferralAmount(this)" onblur="validateReferralAmount(this)">
                                         <input type="hidden" name="amount" class="referral-amount-hidden"
                                                value="{{ $referral->payout ? number_format($referral->payout->amount, 2, '.', '') : '' }}">
                                     </div>
-                                    <p class="text-[10px] text-gray-400 mt-1">Máx: S/ {{ number_format($referral->paid_loan?->total_amount ?? 0, 2, '.', ',') }}</p>
+                                    <p class="text-[10px] text-gray-400 mt-1">Máx: S/ {{ number_format($referral->paid_loan?->total_interest ?? 0, 2, '.', ',') }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Notas (opcional)</label>
