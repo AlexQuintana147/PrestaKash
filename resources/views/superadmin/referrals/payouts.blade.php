@@ -177,7 +177,7 @@
                         <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Cuenta bancaria</p>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $withdrawal->bankAccount->bank_name }}</p>
                         <p class="text-xs text-gray-400">{{ ucfirst($withdrawal->bankAccount->account_type) }} — {{ $withdrawal->bankAccount->currency === 'USD' ? '$' : 'S/' }} {{ $withdrawal->bankAccount->account_number }}</p>
-                        <p class="text-[10px] text-gray-400 mt-1">CCI: {{ $withdrawal->bankAccount->cci_number ?? '—' }}</p>
+                        <p class="text-[10px] text-gray-400 mt-1">CCI: {{ $withdrawal->bankAccount->cci ?? '—' }}</p>
                     </div>
                     <div class="md:w-64 shrink-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
                         <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto a transferir</p>
@@ -422,7 +422,7 @@
                             <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Cuenta bancaria</p>
                             <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $w->bankAccount->bank_name }}</p>
                             <p class="text-xs text-gray-400">{{ ucfirst($w->bankAccount->account_type) }} — {{ $w->bankAccount->currency === 'USD' ? '$' : 'S/' }} {{ $w->bankAccount->account_number }}</p>
-                            <p class="text-[10px] text-gray-400 mt-1">CCI: {{ $w->bankAccount->cci_number ?? '—' }}</p>
+                            <p class="text-[10px] text-gray-400 mt-1">CCI: {{ $w->bankAccount->cci ?? '—' }}</p>
                         </div>
                         <div class="md:w-64 shrink-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
                             <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto transferido</p>
