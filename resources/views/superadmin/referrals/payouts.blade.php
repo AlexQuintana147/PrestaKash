@@ -118,31 +118,53 @@
                             </div>
                         </div>
                         <div class="md:w-64 shrink-0 md:border-l md:border-gray-100 md:dark:border-gray-800 md:pl-5">
-                            <div class="space-y-2">
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto a pagar</p>
-                                    <p class="text-lg font-bold text-gray-900 dark:text-white">
-                                        S/ {{ number_format($referral->payout?->amount ?? 0, 2) }}
-                                    </p>
+                            @if($referral->payout?->status === 'approved')
+                                <div class="space-y-3">
+                                    <div class="rounded-xl bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/30 p-4">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span class="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider">Hecho</span>
+                                        </div>
+                                        <p class="text-sm font-semibold text-green-800 dark:text-green-300">S/ {{ number_format($referral->payout->amount, 2) }}</p>
+                                        <p class="text-[11px] text-green-600 dark:text-green-500 mt-1">Sumado al cliente para retirar</p>
+                                    </div>
+                                    <form action="{{ route('superadmin.referrals.payouts.revert', $referral->payout) }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                                onclick="return confirm('¿Revertir este payout? Volverá a Pendientes.')"
+                                                class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
+                                            Revertir
+                                        </button>
+                                    </form>
                                 </div>
-                                @if($referral->payout?->notes)
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
-                                @endif
-                                <form action="{{ route('superadmin.referrals.payouts.confirm', $referral->payout) }}" method="POST" class="mt-3">
-                                    @csrf
-                                    <button type="submit"
-                                            class="w-full text-[11px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-4 py-2.5 transition-colors">
-                                        Confirmar pago
-                                    </button>
-                                </form>
-                                <form action="{{ route('superadmin.referrals.payouts.revert', $referral->payout) }}" method="POST" class="mt-2">
-                                    @csrf
-                                    <button type="submit"
-                                            onclick="return confirm('¿Estás seguro de revertir este payout? Volverá a Pendientes.')"
-                                            class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
-                                        Revertir
-                                    </button>
-                                </form>
+                            @else
+                                <div class="space-y-2">
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto a pagar</p>
+                                        <p class="text-lg font-bold text-gray-900 dark:text-white">
+                                            S/ {{ number_format($referral->payout?->amount ?? 0, 2) }}
+                                        </p>
+                                    </div>
+                                    @if($referral->payout?->notes)
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
+                                    @endif
+                                    <form action="{{ route('superadmin.referrals.payouts.confirm', $referral->payout) }}" method="POST" class="mt-3">
+                                        @csrf
+                                        <button type="submit"
+                                                class="w-full text-[11px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-4 py-2.5 transition-colors">
+                                            Confirmar pago
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('superadmin.referrals.payouts.revert', $referral->payout) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        <button type="submit"
+                                                onclick="return confirm('¿Estás seguro de revertir este payout? Volverá a Pendientes.')"
+                                                class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
+                                            Revertir
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                             </div>
                         </div>
                     </div>

@@ -1684,12 +1684,12 @@ class LoanController extends Controller
                       $sub->selectRaw(1)
                           ->from('referral_payouts')
                           ->whereColumn('referral_payouts.loan_id', 'loans.id')
-                          ->whereIn('referral_payouts.status', ['pending', 'paid', 'withdrawn']);
+                          ->whereIn('referral_payouts.status', ['pending', 'approved', 'paid', 'withdrawn']);
                   });
             });
         } elseif ($filter === 'withdrawals') {
             $query->whereHas('payouts', function ($q) {
-                $q->where('status', 'pending');
+                $q->whereIn('status', ['pending', 'approved']);
             });
         } elseif ($filter === 'paid') {
             $query->whereHas('payouts', function ($q) {
@@ -1728,13 +1728,13 @@ class LoanController extends Controller
                       $sub->selectRaw(1)
                           ->from('referral_payouts')
                           ->whereColumn('referral_payouts.loan_id', 'loans.id')
-                          ->whereIn('referral_payouts.status', ['pending', 'paid', 'withdrawn']);
+                          ->whereIn('referral_payouts.status', ['pending', 'approved', 'paid', 'withdrawn']);
                   });
             })->count(),
             'withdrawals' => \App\Models\Referral::whereHas('referred.loans', function ($q) {
                 $q->where('status', 'paid');
             })->whereHas('payouts', function ($q) {
-                $q->where('status', 'pending');
+                $q->whereIn('status', ['pending', 'approved']);
             })->count() + \App\Models\ReferralWithdrawal::where('status', 'pending')->count(),
             'paid' => \App\Models\Referral::whereHas('payouts', function ($q) {
                 $q->where('status', 'paid');
@@ -1782,11 +1782,10 @@ class LoanController extends Controller
     public function confirmReferralPayout(Request $request, \App\Models\ReferralPayout $payout)
     {
         $payout->update([
-            'status' => 'paid',
-            'paid_at' => now(),
+            'status' => 'approved',
         ]);
 
-        return back()->with('success', 'Pago a referidor confirmado correctamente.');
+        return back()->with('success', 'Hecho. Se le ha sumado S/ ' . number_format($payout->amount, 2) . ' al cliente para retirar.');
     }
 
     public function revertReferralPayout(Request $request, \App\Models\ReferralPayout $payout)

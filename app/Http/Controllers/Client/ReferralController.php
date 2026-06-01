@@ -49,7 +49,7 @@ class ReferralController extends Controller
         ];
 
         $totalEarnings = \App\Models\ReferralPayout::whereIn('referral_id', $user->referralRecords()->pluck('id'))
-            ->whereIn('status', ['paid', 'pending'])
+            ->whereIn('status', ['approved', 'pending'])
             ->sum('amount');
 
         $bankAccounts = $user->bankAccounts;
@@ -63,7 +63,7 @@ class ReferralController extends Controller
         $user = Auth::user();
 
         $totalEarnings = \App\Models\ReferralPayout::whereIn('referral_id', $user->referralRecords()->pluck('id'))
-            ->whereIn('status', ['paid', 'pending'])
+            ->whereIn('status', ['approved', 'pending'])
             ->sum('amount');
 
         if ($totalEarnings < 50) {
@@ -86,7 +86,7 @@ class ReferralController extends Controller
 
         // Mark payouts as withdrawn
         \App\Models\ReferralPayout::whereIn('referral_id', $user->referralRecords()->pluck('id'))
-            ->whereIn('status', ['paid', 'pending'])
+            ->whereIn('status', ['approved', 'pending'])
             ->update(['status' => 'withdrawn']);
 
         return back()->with('success', 'Solicitud de retiro enviada. El equipo de PrestaKash procesará tu pago en las próximas 24 horas hábiles.');
