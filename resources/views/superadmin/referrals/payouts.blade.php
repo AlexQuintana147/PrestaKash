@@ -245,6 +245,25 @@
                                     {{ $referral->payout ? 'Actualizar' : 'Guardar' }}
                                 </button>
                             </form>
+                        @elseif($filter === 'withdrawals')
+                            <div class="space-y-2">
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Monto a pagar</p>
+                                    <p class="text-lg font-bold text-gray-900 dark:text-white">
+                                        S/ {{ number_format($referral->payout?->amount ?? 0, 2) }}
+                                    </p>
+                                </div>
+                                @if($referral->payout?->notes)
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
+                                @endif
+                                <form action="{{ route('superadmin.referrals.payouts.confirm', $referral->payout) }}" method="POST" class="mt-3">
+                                    @csrf
+                                    <button type="submit"
+                                            class="w-full text-[11px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-4 py-2.5 transition-colors">
+                                        Confirmar pago
+                                    </button>
+                                </form>
+                            </div>
                         @else
                             <div class="space-y-2">
                                 <div>
