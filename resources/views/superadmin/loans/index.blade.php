@@ -512,11 +512,11 @@
                                         @if($loan->status === 'counter_accepted')
                                             <button type="button"
                                                 onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
-                                                class="text-amber-600 hover:text-amber-400 transition-colors active:scale-[0.95]"
-                                                title="Desembolsar">
-                                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg>
+                                                class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest bg-amber-500 hover:bg-amber-600 text-white transition-colors active:scale-[0.95]">
+                                                Desembolsar
                                             </button>
                                         @endif
+                                        @if($loan->status !== 'counter_accepted')
                                         <span class="text-xs font-black uppercase tracking-widest
                                                     {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
                                                     {{ $loan->status === 'counter_offered' ? 'text-purple-600' : '' }}
@@ -533,6 +533,7 @@
                                                 default    => $loan->status
                                             } }}
                                         </span>
+                                        @endif
                                         @php
                                             $hasProcessing = $loan->installments->where('status', 'processing')->count() > 0;
                                         @endphp
@@ -678,10 +679,11 @@
                                             @if($loan->status === 'counter_accepted')
                                                 <button type="button"
                                                     onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
-                                                    class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                                                    class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                                                     Desembolsar
                                                 </button>
                                             @endif
+                                            @if($loan->status !== 'counter_accepted')
                                             <span class="text-xs font-black uppercase tracking-widest
                                                         {{ $loan->status === 'approved' ? 'text-green-500' : '' }}
                                                         {{ $loan->status === 'counter_accepted' ? 'text-amber-500' : '' }}
@@ -697,6 +699,7 @@
                                                     default    => $loan->status
                                                 } }}
                                             </span>
+                                            @endif
                                             @php
                                                 $hasProcessing = $loan->installments->where('status', 'processing')->count() > 0;
                                             @endphp
