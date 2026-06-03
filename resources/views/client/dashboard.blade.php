@@ -238,37 +238,31 @@
     {{-- Alerta de Pagos Atrasados --}}
     <div class="px-4 md:px-8 pb-2">
         <div class="max-w-4xl mx-auto">
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500 to-red-600 p-4 md:p-5 shadow-lg shadow-red-500/20">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full pointer-events-none"></div>
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500 to-red-700 p-5 md:p-6 shadow-lg shadow-red-500/20 cursor-pointer transition-transform active:scale-[0.98]" onclick="openOverdueModal()">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
                 <div class="relative z-10">
-                    <div class="flex items-start gap-3">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between gap-2">
-                                <p class="text-sm font-bold text-white">Tienes pagos atrasados</p>
-                                <span class="flex-shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-bold text-white">
-                                    {{ $overdueCount }} cuota{{ $overdueCount > 1 ? 's' : '' }}
-                                </span>
-                            </div>
-                            <div class="mt-2 grid grid-cols-2 gap-3">
-                                <div>
-                                    <p class="text-[10px] text-white uppercase tracking-wider">Total a pagar</p>
-                                    <p class="text-lg font-black text-white">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($overdueTotal, 2, '.', ',') }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] text-white uppercase tracking-wider">Mora acumulada</p>
-                                    <p class="text-lg font-black text-yellow-300">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($overdueLateFees, 2, '.', ',') }}</p>
-                                </div>
-                            </div>
-                            @if($oldestOverdue)
-                            <p class="text-[10px] text-white mt-1.5">La cuota más antigua venció el {{ $oldestOverdue->due_date->format('d/m/Y') }} — hace {{ now()->startOfDay()->diffInDays($oldestOverdue->due_date) }} días</p>
-                            @endif
-                            <button type="button" onclick="openOverdueModal()" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-red-600 text-xs font-bold hover:bg-white/90 transition-colors">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                                Ver mis deudas
-                            </button>
-                        </div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                        <span class="text-xs font-medium text-white/70 uppercase tracking-wider">Pagos Atrasados</span>
                     </div>
-                </button>
+                    <p class="text-3xl md:text-4xl font-bold text-white tracking-tight">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($overdueTotal, 2, '.', ',') }}</p>
+                    <div class="mt-3 flex items-center gap-3 flex-wrap">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-medium text-white/90">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-300 animate-pulse"></span>
+                            {{ $overdueCount }} cuota{{ $overdueCount > 1 ? 's' : '' }}
+                        </span>
+                        @if($overdueLateFees > 0)
+                        <span class="text-[10px] text-yellow-200">+Mora: {{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($overdueLateFees, 2, '.', ',') }}</span>
+                        @endif
+                    </div>
+                    @if($oldestOverdue)
+                    <button type="button" onclick="event.stopPropagation(); openOverdueModal()" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition-colors">
+                        Ver mis deudas
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -390,34 +384,33 @@
                 </a>
 
                 @if($hasActiveLoans)
-                {{-- Card 4: Resumen (wide) --}}
-                <button type="button" onclick="openSummaryModal()" class="pk-card col-span-2 p-4 text-left cursor-pointer hover:border-[#E94560]/30 dark:hover:border-[#E94560]/30 transition-colors">
+                <a href="{{ route('client.loans.history') }}" class="pk-card col-span-2 p-4 text-left cursor-pointer hover:border-[#E94560]/30 dark:hover:border-[#E94560]/30 transition-colors block">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
                             <svg class="w-5 h-5 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                             <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Resumen</span>
                         </div>
-                        <a href="{{ route('client.loans') }}" class="text-xs text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todo</a>
+                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Deuda</p>
-                            <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($totalDebt, 2) }}</p>
+                            <p class="text-[8px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Deuda</p>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">S/ {{ number_format($totalDebt, 2) }}</p>
                         </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Cuota/Mes</p>
-                            <p class="text-lg md:text-xl font-bold text-[#006BFF] dark:text-[#4A90E2]">S/ {{ number_format($monthlyPayment, 2) }}</p>
+                        <div class="text-center">
+                            <p class="text-[8px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Cuota/Mes</p>
+                            <p class="text-sm font-bold text-[#006BFF] dark:text-[#4A90E2] tabular-nums">S/ {{ number_format($monthlyPayment, 2) }}</p>
                         </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Estado</p>
+                        <div class="text-right">
+                            <p class="text-[8px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Estado</p>
                             @if($hasOverdue)
-                            <p class="text-sm font-medium text-red-500 dark:text-red-400 flex items-center"><span class="pk-status-dot" style="background:#EF4444"></span>Atrasado</p>
+                            <p class="text-xs font-medium text-red-500 dark:text-red-400 flex items-center justify-end"><span class="pk-status-dot" style="background:#EF4444"></span>Atrasado</p>
                             @else
-                            <p class="text-sm font-medium text-[#00A854] dark:text-[#00D26A] flex items-center"><span class="pk-status-dot pk-status-confirmed"></span>Al día</p>
+                            <p class="text-xs font-medium text-[#00A854] dark:text-[#00D26A] flex items-center justify-end"><span class="pk-status-dot pk-status-confirmed"></span>Al día</p>
                             @endif
                         </div>
                     </div>
-                </button>
+                </a>
                 @endif
 
                 {{-- Card 5: Cuentas Banco --}}
