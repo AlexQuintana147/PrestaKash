@@ -19,10 +19,10 @@ class DashboardController extends Controller
     public function index()
     {
         $stats = [
-            'total'     => User::count(),
+            'total'     => User::whereHas('role', fn($q) => $q->where('name', 'usuario'))->count(),
             'pending'   => User::whereHas('documents', fn($q) => $q->where('status', 'pending'))->count(),
-            'completed' => User::where('profile_completed', true)->count(),
-            'today'     => User::whereDate('created_at', today())->count(),
+            'completed' => User::where('profile_completed', true)->whereHas('role', fn($q) => $q->where('name', 'usuario'))->count(),
+            'today'     => User::whereHas('role', fn($q) => $q->where('name', 'usuario'))->whereDate('created_at', today())->count(),
         ];
 
         $recentUsers = User::with(['documents'])
