@@ -295,7 +295,7 @@
             </div>
 
             <!-- Formulario manual -->
-            <form action="{{ route('register') }}" method="POST" class="space-y-3">
+            <form id="registerForm" action="{{ route('register') }}" method="POST" class="space-y-3">
                 @csrf
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Correo
@@ -349,6 +349,7 @@
                     </div>
                 </div>
                 <div class="pt-3">
+                    <div id="passwordMismatchError" class="hidden text-red-400 text-xs text-center mb-2">Las contraseñas no coinciden</div>
                     <button type="submit" id="registerSubmitBtn"
                         class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-lg transition-all text-sm">
                         Crear cuenta
@@ -485,6 +486,23 @@
     document.getElementById('registerModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'registerModal') closeRegisterModal();
     });
+
+    // Validación contraseñas registro
+    const registerForm = document.getElementById('registerForm');
+    const passwordMismatchError = document.getElementById('passwordMismatchError');
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', function (e) {
+            const pw = document.getElementById('registerPassword').value;
+            const pwConfirm = document.getElementById('registerPasswordConfirm').value;
+            if (pw !== pwConfirm) {
+                e.preventDefault();
+                passwordMismatchError.classList.remove('hidden');
+            } else {
+                passwordMismatchError.classList.add('hidden');
+            }
+        });
+    }
 
     // Login AJAX
     const loginForm = document.getElementById('loginForm');
