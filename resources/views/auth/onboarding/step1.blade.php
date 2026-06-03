@@ -264,7 +264,7 @@
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nro.
                         DNI</label>
                     <input type="text" id="dniInput" name="dni" value="{{ old('dni') }}" required placeholder="12345678"
-                        maxlength="8" oninput="this.value=this.value.replace(/\D/g,'')" class="input-field">
+                        maxlength="8" inputmode="numeric" pattern="[0-9]{8}" class="input-field">
                     <p id="dniError" class="text-red-500 text-xs mt-1 hidden">Este DNI ya está registrado</p>
                 </div>
                 <div>
@@ -589,6 +589,7 @@
 
         if (dniInput) {
             dniInput.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 8);
                 clearTimeout(dniCheckTimeout);
                 const dni = this.value;
 

@@ -309,16 +309,44 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Contraseña
                         <span class="text-gray-600 normal-case">(mínimo 8 caracteres)</span></label>
-                    <input type="password" name="password" required minlength="8"
-                        title="La contraseña debe tener al menos 8 caracteres"
-                        class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <div class="relative">
+                        <input type="password" name="password" id="registerPassword" required minlength="8"
+                            title="La contraseña debe tener al menos 8 caracteres"
+                            class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 pr-8 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                        <button type="button" onclick="toggleRegisterPassword()"
+                            class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors">
+                            <svg id="registerEyeOff" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                                <line x1="3" y1="3" x2="21" y2="21"/>
+                            </svg>
+                            <svg id="registerEyeOn" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Confirmar
                         contraseña</label>
-                    <input type="password" name="password_confirmation" required minlength="8"
-                        title="La contraseña debe tener al menos 8 caracteres"
-                        class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                    <div class="relative">
+                        <input type="password" name="password_confirmation" id="registerPasswordConfirm" required minlength="8"
+                            title="La contraseña debe tener al menos 8 caracteres"
+                            class="w-full bg-transparent border-b border-gray-800 text-white placeholder-gray-600 px-0 py-2 pr-8 focus:outline-none focus:border-green-500 transition-colors text-sm">
+                        <button type="button" onclick="toggleRegisterPasswordConfirm()"
+                            class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors">
+                            <svg id="registerConfirmEyeOff" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                                <line x1="3" y1="3" x2="21" y2="21"/>
+                            </svg>
+                            <svg id="registerConfirmEyeOn" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="pt-3">
                     <button type="submit" id="registerSubmitBtn"
@@ -341,6 +369,36 @@
         const input = document.getElementById('loginPassword');
         const eyeOff = document.getElementById('loginEyeOff');
         const eyeOn = document.getElementById('loginEyeOn');
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeOff.classList.add('hidden');
+            eyeOn.classList.remove('hidden');
+        } else {
+            input.type = 'password';
+            eyeOff.classList.remove('hidden');
+            eyeOn.classList.add('hidden');
+        }
+    }
+
+    function toggleRegisterPassword() {
+        const input = document.getElementById('registerPassword');
+        const eyeOff = document.getElementById('registerEyeOff');
+        const eyeOn = document.getElementById('registerEyeOn');
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeOff.classList.add('hidden');
+            eyeOn.classList.remove('hidden');
+        } else {
+            input.type = 'password';
+            eyeOff.classList.remove('hidden');
+            eyeOn.classList.add('hidden');
+        }
+    }
+
+    function toggleRegisterPasswordConfirm() {
+        const input = document.getElementById('registerPasswordConfirm');
+        const eyeOff = document.getElementById('registerConfirmEyeOff');
+        const eyeOn = document.getElementById('registerConfirmEyeOn');
         if (input.type === 'password') {
             input.type = 'text';
             eyeOff.classList.add('hidden');
