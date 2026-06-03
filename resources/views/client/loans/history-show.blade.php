@@ -111,6 +111,12 @@
                 <div class="flex-shrink-0 text-right">
                     <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 mb-1">N° Operación</p>
                     <p class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $loan->disbursement_operation_number }}</p>
+                    @if($loan->account_number)
+                    <p class="text-xs font-bold text-gray-600 dark:text-gray-300 mt-1">Cta: {{ $loan->account_number }}</p>
+                    @endif
+                    @if($loan->cci)
+                    <p class="text-xs font-bold text-gray-600 dark:text-gray-300">CCI: {{ $loan->cci }}</p>
+                    @endif
                 </div>
             </div>
         </div>
