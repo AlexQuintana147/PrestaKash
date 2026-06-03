@@ -80,7 +80,7 @@ class LoanController extends Controller
             'months' => 'nullable|integer|min:2|max:24',
             'payment_days' => 'nullable|in:15,30',
             'payment_frequency' => 'nullable|in:diario,semanal,quincenal,mensual',
-            'disbursement_date' => 'required|date|after_or_equal:today',
+            'disbursement_date' => 'required|date',
             'cashbox_id' => 'required|exists:cashboxes,id',
             'currency' => 'required|in:PEN,USD',
         ]);

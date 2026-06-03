@@ -1137,7 +1137,6 @@
                             <label class="text-[8px] sm:text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
                             <div class="relative" onclick="this.querySelector('input').showPicker()">
                                 <input type="date" name="disbursement_date_desktop" id="modal_disbursement_date_desktop"
-                                       min="{{ date('Y-m-d') }}"
                                        onchange="document.getElementById('modal_disbursement_date').value = this.value"
                                        class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1 pr-8 text-xs sm:text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
                                        style="color-scheme: dark;">
@@ -1206,7 +1205,6 @@
                         <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
                         <div class="relative" onclick="this.querySelector('input').showPicker()">
                             <input type="date" name="disbursement_date" id="modal_disbursement_date"
-                                   min="{{ date('Y-m-d') }}"
                                    onchange="document.getElementById('modal_disbursement_date_desktop').value = this.value"
                                    class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-1.5 sm:py-2 pr-10 text-base sm:text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors cursor-pointer appearance-none calendar-picker-indicator-none"
                                    style="color-scheme: dark;">
