@@ -145,6 +145,7 @@
                             </defs>
                         </svg>
                     </a>
+                    <span class="inline-flex items-center bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-[9px] px-2 py-1 rounded-lg">DNI: {{ $user->dni ?? '' }}</span>
                 </div>
             </div>
         </div>

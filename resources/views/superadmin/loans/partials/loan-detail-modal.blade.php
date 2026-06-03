@@ -77,6 +77,9 @@ function openLoanDetailModal(data) {
         const clean = data.phone.replace(/\D/g, '');
         badges += `<a href="https://wa.me/51${clean}" target="_blank" class="flex items-center gap-1 bg-green-500 hover:bg-green-600 transition-colors px-2 py-1 text-white font-bold text-[9px]">${data.phone} ${_wsspSvg}</a>`;
     }
+    if (data.dni) {
+        badges += `<span class="inline-flex items-center bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-[9px] px-2 py-1 rounded-lg">DNI: ${data.dni}</span>`;
+    }
     document.getElementById('ldm_badges').innerHTML = badges;
 
     // Datos personales
