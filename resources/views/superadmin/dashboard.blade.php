@@ -157,61 +157,112 @@
     </div>
     @endif
 
-    {{-- STATS ROW --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="pk-fade pk-card p-4">
-            <div class="flex items-center justify-between mb-3">
-                <svg class="w-9 h-9 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span class="text-[9px] font-bold text-[#00D26A] uppercase">+{{ $stats['today'] }} hoy</span>
-            </div>
-            <p class="text-2xl font-black text-gray-900 dark:text-white tabular-nums">{{ $stats['total'] }}</p>
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">Clientes</p>
-        </div>
 
-        <div class="pk-fade pk-card p-4">
-            <div class="flex items-center justify-between mb-3">
-                <svg class="w-9 h-9 {{ $collectionStats['due_today'] > 0 ? 'text-orange-500' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                @if($collectionStats['due_today'] > 0)
-                <span class="text-[9px] font-bold text-orange-500 uppercase pk-pulse">HOY</span>
+
+    {{-- PRÉSTAMOS POR DESEMBOLSAR --}}
+    @php
+        $allDisbursements = \App\Models\Loan::with(['user.documents'])
+            ->whereIn('status', ['pending', 'counter_accepted'])
+            ->whereNotNull('disbursement_date')
+            ->orderBy('disbursement_date', 'asc')
+            ->get();
+        $pendingDisbursements = $allDisbursements->where('deposit_made', false);
+        $depositedDisbursements = $allDisbursements->where('deposit_made', true);
+        $showDeposited = request()->get('disb') === 'deposited';
+        $visibleDisbursements = $showDeposited ? $depositedDisbursements : $pendingDisbursements;
+    @endphp
+    @if($visibleDisbursements->count() > 0)
+    <div class="pk-fade pk-card overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <svg class="w-8 h-8 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div>
+                    <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ $showDeposited ? 'Préstamos desembolsados' : 'Préstamos por desembolsar' }}</h3>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $pendingDisbursements->count() }} sin depositar</span>
+                        @if($depositedDisbursements->count() > 0)
+                        <span class="text-[9px] text-[#00D26A] font-bold">{{ $depositedDisbursements->count() }} depositados</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input id="disb-search" type="text" placeholder="Buscar nombre, DNI/RUC o código..."
+                        class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-[10px] font-medium text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-[#006BFF] focus:border-[#006BFF] w-48">
+                </div>
+                @if($showDeposited)
+                <a href="{{ url()->current() }}#disb-section" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:underline whitespace-nowrap">Ver pendientes</a>
+                @elseif($depositedDisbursements->count() > 0)
+                <a href="{{ url()->current() }}?disb=deposited#disb-section" class="text-[10px] font-bold text-[#00D26A] hover:underline whitespace-nowrap">Ver los desembolsados</a>
                 @endif
             </div>
-            <p class="text-2xl font-black {{ $collectionStats['due_today'] > 0 ? 'text-orange-500' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $collectionStats['due_today'] }}</p>
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">Cobrar hoy</p>
-            @if($collectionStats['due_today'] > 0)
-            <p class="text-[10px] text-orange-500/70 font-bold mt-1">S/{{ number_format($collectionStats['due_today_amount'], 0) }}</p>
-            @endif
         </div>
-
-        <div class="pk-fade pk-card p-4">
-            <div class="flex items-center justify-between mb-3">
-                <svg class="w-9 h-9 {{ $payoutStats['pending_payouts'] > 0 ? 'text-[#8247f5]' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                @if($payoutStats['pending_payouts'] > 0)
-                <span class="text-[9px] font-bold text-[#8247f5] uppercase">Pend.</span>
-                @endif
-            </div>
-            <p class="text-2xl font-black {{ $payoutStats['pending_payouts'] > 0 ? 'text-[#8247f5]' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $payoutStats['pending_payouts'] }}</p>
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">Pagar inversores</p>
-            @if($payoutStats['pending_payouts'] > 0)
-            <p class="text-[10px] text-[#8247f5]/70 font-bold mt-1">S/{{ number_format($payoutStats['pending_payouts_amount'], 0) }}</p>
-            @endif
+        <div id="disb-list" class="divide-y divide-gray-50 dark:divide-gray-800/50">
+            @foreach($visibleDisbursements as $loan)
+                @php
+                    $disbDate = \Carbon\Carbon::parse($loan->disbursement_date);
+                    $isToday = $disbDate->isToday();
+                    $isPast = $disbDate->isPast() && !$disbDate->isToday() && !$loan->deposit_made;
+                    $isTomorrow = $disbDate->isTomorrow();
+                    $selfie = $loan->user->documents?->selfie;
+                    $photo = $selfie ? Storage::url($selfie) : ($loan->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($loan->user->name));
+                    $curSymbol = $loan->currency === 'USD' ? '$' : 'S/';
+                @endphp
+                <div id="disb-{{ $loan->code }}" class="disb-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer {{ $loan->deposit_made ? 'bg-[#00D26A]/5 dark:bg-[#00D26A]/5' : '' }}"
+                     data-name="{{ strtolower($loan->user->name) }}"
+                     data-dni="{{ strtolower($loan->user->dni ?? '') }}"
+                     data-ruc="{{ strtolower($loan->user->ruc ?? '') }}"
+                     data-code="{{ strtolower($loan->code) }}"
+                     onclick="window.location.href='{{ route('superadmin.loans.index') }}?highlight={{ $loan->id }}#loan-{{ $loan->id }}'">
+                    <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-800">
+                        <img src="{{ $photo }}" class="w-full h-full object-cover" alt="">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $loan->user->name }}</p>
+                            @if($loan->status === 'pending')
+                                <span class="text-[7px] font-black text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Pendiente</span>
+                            @elseif($loan->status === 'counter_accepted')
+                                <span class="text-[7px] font-black text-purple-500 bg-purple-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Contra-oferta</span>
+                            @endif
+                        </div>
+                        <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan->code }}</p>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="text-right">
+                            <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">{{ $curSymbol }}{{ number_format($loan->amount, 2) }}</p>
+                            <div class="flex items-center justify-end gap-1">
+                                @if($loan->deposit_made)
+                                    <span class="text-[8px] font-black text-[#00D26A] uppercase">Depositado</span>
+                                @elseif($isPast)
+                                    <span class="text-[8px] font-black text-red-500 uppercase">Vencido</span>
+                                @elseif($isToday)
+                                    <span class="text-[8px] font-black text-amber-500 uppercase pk-pulse">Hoy debes depositar</span>
+                                @elseif($isTomorrow)
+                                    <span class="text-[8px] font-black text-orange-500 uppercase">Mañana</span>
+                                @endif
+                                <span class="text-[9px] text-gray-400 dark:text-gray-500">{{ $disbDate->format('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ route('superadmin.loans.toggle-deposit', $loan) }}" class="flex-shrink-0" onclick="event.stopPropagation()">
+                            @csrf
+                            <button type="submit" title="{{ $loan->deposit_made ? 'Desmarcar depósito' : 'Marcar depósito realizado' }}"
+                                class="w-7 h-7 rounded-lg border-2 transition-all flex items-center justify-center {{ $loan->deposit_made ? 'border-[#00D26A] bg-[#00D26A]/10 dark:bg-[#00D26A]/20' : 'border-gray-300 dark:border-gray-600 hover:border-[#00D26A] dark:hover:border-[#00D26A] hover:bg-[#00D26A]/10 dark:hover:bg-[#00D26A]/10' }}">
+                                <svg class="w-4 h-4 transition-colors {{ $loan->deposit_made ? 'text-[#00D26A]' : 'text-transparent group-hover:text-[#00D26A]/50' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
         </div>
-
-        <div class="pk-fade pk-card p-4">
-            <div class="flex items-center justify-between mb-3">
-                <svg class="w-9 h-9 {{ $loanStats['in_default'] > 0 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                @if($loanStats['in_default'] > 0)
-                <span class="text-[9px] font-bold text-red-500 uppercase pk-pulse">Mora</span>
-                @endif
-            </div>
-            <p class="text-2xl font-black {{ $loanStats['in_default'] > 0 ? 'text-red-500' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $loanStats['in_default'] }}</p>
-            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-0.5">En mora</p>
-        </div>
+        <div id="disb-pag" class="hidden px-5 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-center gap-1.5"></div>
     </div>
+    @endif
 
     {{-- COBRANZA + PAGOS INVERSORES --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-        {{-- COBRANZA PRÓXIMA --}}
         <div class="pk-fade pk-card overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
@@ -571,9 +622,72 @@ function switchCashboxTab(id){
             pag.appendChild(nextBtn);
         }
         render();
+        // Expose render for search integration
+        if(listId === 'disb-list') window._disbPagRender = render;
     }
     initPag('coll-list','coll-pag','coll-item',5);
     initPag('payout-list','payout-pag','payout-item',5);
+    initPag('disb-list','disb-pag','disb-item',5);
+
+    // Búsqueda en tiempo real para desembolsos
+    (function(){
+        const input = document.getElementById('disb-search');
+        const list = document.getElementById('disb-list');
+        const pag = document.getElementById('disb-pag');
+        if(!input || !list) return;
+        const allItems = Array.from(list.querySelectorAll('.disb-item'));
+        input.addEventListener('input', function(){
+            const q = this.value.toLowerCase().trim();
+            if(!q){
+                allItems.forEach(el => el.style.display = '');
+                if(pag) pag.classList.remove('hidden');
+                // Re-render pagination
+                if(window._disbPagRender) window._disbPagRender();
+                return;
+            }
+            allItems.forEach(el => {
+                const name = el.getAttribute('data-name') || '';
+                const dni = el.getAttribute('data-dni') || '';
+                const ruc = el.getAttribute('data-ruc') || '';
+                const code = el.getAttribute('data-code') || '';
+                const match = name.includes(q) || dni.includes(q) || ruc.includes(q) || code.includes(q);
+                el.style.display = match ? '' : 'none';
+            });
+            if(pag) pag.classList.add('hidden');
+        });
+    })();
+
+    // Highlight loan from URL param
+    (function(){
+        const params = new URLSearchParams(window.location.search);
+        const highlightCode = params.get('highlight');
+        if(!highlightCode) return;
+        const el = document.getElementById('disb-' + highlightCode);
+        if(!el) return;
+        const list = document.getElementById('disb-list');
+        const items = Array.from(list.querySelectorAll('.disb-item'));
+        const idx = items.indexOf(el);
+        const perPage = 5;
+        const targetPage = Math.floor(idx / perPage) + 1;
+        // Navigate to the right page by clicking page buttons
+        setTimeout(() => {
+            const pagBtns = document.querySelectorAll('#disb-pag button');
+            if(pagBtns.length > 0) {
+                // Click the target page number button (index: 1 prev + (targetPage-1) page)
+                const btnIdx = 1 + (targetPage - 1);
+                if(pagBtns[btnIdx]) pagBtns[btnIdx].click();
+            }
+            // Highlight the element
+            setTimeout(() => {
+                el.classList.add('ring-2', 'ring-amber-400', 'bg-amber-50', 'dark:bg-amber-900/20');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Remove highlight after 5s
+                setTimeout(() => {
+                    el.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-50', 'dark:bg-amber-900/20');
+                }, 5000);
+            }, 100);
+        }, 200);
+    })();
 })();
 </script>
 @endpush

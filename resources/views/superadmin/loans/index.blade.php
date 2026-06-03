@@ -29,7 +29,7 @@
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text" id="loans-search" placeholder="Buscar por nombre, DNI o código de préstamo..."
+                <input type="text" id="loans-search" placeholder="Buscar por nombre, DNI, RUC o código de préstamo..."
                        value="{{ request('search') }}"
                        class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors">
                 <button type="button" id="loans-search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors {{ request('search') ? '' : 'hidden' }}">
@@ -155,7 +155,7 @@
                             default => $loan->status
                         };
                     @endphp
-                    <div id="loan-{{ $loan->id }}" class="loan-row group transition-colors" data-search-name="{{ strtolower($rowName) }}" data-search-dni="{{ $loan->user->dni ?? '' }}" data-search-code="{{ strtolower($loan->code) }}">
+                    <div id="loan-{{ $loan->id }}" class="loan-row group transition-colors" data-search-name="{{ strtolower($rowName) }}" data-search-dni="{{ $loan->user->dni ?? '' }}" data-search-ruc="{{ $loan->user->ruc ?? '' }}" data-search-code="{{ strtolower($loan->code) }}">
                         <div class="flex items-center justify-between gap-3 py-4 md:py-5 cursor-pointer select-none hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors" onclick="toggleLoanRow({{ $loan->id }})">
                             <div class="flex items-center gap-3 min-w-0">
                                 <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-900 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-800">
@@ -479,6 +479,7 @@
                                         <button type="button"
                                                 onclick="openCounterOfferModal({{ json_encode([
                                                     'id' => $loan->id,
+                                                    'code' => $loan->code,
                                                     'amount' => $loan->amount,
                                                     'currency' => $loan->currency,
                                                     'type' => $loan->type,
@@ -488,7 +489,8 @@
                                                     'system' => $loan->amortization_system ?? 'frances',
                                                     'monthly_payment' => $loan->monthly_payment ?? 0,
                                                     'payment_frequency' => $loan->payment_frequency ?? 'mensual',
-                                                    'disbursement_date' => $loan->disbursement_date
+                                                    'disbursement_date' => $loan->disbursement_date,
+                                                    'deposit_made' => $loan->deposit_made
                                                 ]) }})"
                                                 class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]"
                                                 title="Contra-oferta">
@@ -551,6 +553,21 @@
                                                     {{ $loan->in_default ? 'EN MORA' : 'MARCAR MORA' }}
                                                 </button>
                                             </form>
+                                        @endif
+                                        @if($loan->status === 'approved')
+                                            <form method="POST" action="{{ route('superadmin.loans.toggle-deposit', $loan) }}" class="inline-block">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="px-2 py-0.5 text-[8px] font-black rounded-full transition-colors {{ $loan->deposit_made ? 'bg-[#00D26A]/10 text-[#00D26A] hover:bg-[#00D26A]/20' : 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20' }}">
+                                                    {{ $loan->deposit_made ? 'DEPOSITADO' : 'SIN DEPÓSITO' }}
+                                                </button>
+                                            </form>
+                                            @if($loan->deposit_made && !$loan->disbursement_voucher)
+                                                <button type="button" onclick="openUploadVoucherModal('{{ $loan->id }}', '{{ $loan->code }}')"
+                                                    class="px-2 py-0.5 text-[8px] font-black rounded-full bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-colors">
+                                                    SUBIR COMPROBANTE
+                                                </button>
+                                            @endif
                                         @endif
                                     </div>
                                 @endif
@@ -646,6 +663,7 @@
                                             <button type="button"
                                                 onclick="openCounterOfferModal({{ json_encode([
                                                     'id' => $loan->id,
+                                                    'code' => $loan->code,
                                                     'amount' => $loan->amount,
                                                     'currency' => $loan->currency,
                                                     'type' => $loan->type,
@@ -655,7 +673,8 @@
                                                     'system' => $loan->amortization_system ?? 'frances',
                                                     'monthly_payment' => $loan->monthly_payment ?? 0,
                                                     'payment_frequency' => $loan->payment_frequency ?? 'mensual',
-                                                    'disbursement_date' => $loan->disbursement_date
+                                                    'disbursement_date' => $loan->disbursement_date,
+                                                    'deposit_made' => $loan->deposit_made
                                                 ]) }})"
                                                     class="text-purple-600 hover:text-purple-400 transition-colors active:scale-[0.95]"
                                                     title="Contra-oferta">
@@ -717,6 +736,21 @@
                                                         {{ $loan->in_default ? 'EN MORA' : 'MARCAR MORA' }}
                                                     </button>
                                                 </form>
+                                            @endif
+                                            @if($loan->status === 'approved')
+                                                <form method="POST" action="{{ route('superadmin.loans.toggle-deposit', $loan) }}" class="inline-block">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="px-2 py-0.5 text-[8px] font-black rounded-full transition-colors {{ $loan->deposit_made ? 'bg-[#00D26A]/10 text-[#00D26A] hover:bg-[#00D26A]/20' : 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20' }}">
+                                                        {{ $loan->deposit_made ? 'DEPOSITADO' : 'SIN DEPÓSITO' }}
+                                                    </button>
+                                                </form>
+                                                @if($loan->deposit_made && !$loan->disbursement_voucher)
+                                                    <button type="button" onclick="openUploadVoucherModal('{{ $loan->id }}', '{{ $loan->code }}')"
+                                                        class="px-2 py-0.5 text-[8px] font-black rounded-full bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-colors">
+                                                        SUBIR COMPROBANTE
+                                                    </button>
+                                                @endif
                                             @endif
                                         </div>
                                     @endif
@@ -1402,6 +1436,12 @@
         }
 
         function openCounterOfferModal(loan) {
+            if (loan.deposit_made) {
+                document.getElementById('depositBlockLink').href = '{{ route('superadmin.dashboard') }}?disb=deposited&highlight=' + loan.code + '#disb-section';
+                document.getElementById('depositBlockModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                return;
+            }
             currentLoan = loan;
             const modal = document.getElementById('counterOfferModal');
             const form = document.getElementById('counterOfferForm');
@@ -1687,6 +1727,19 @@
         const loanData = @json($loans->items()).find(l => l.id == loanId);
         if (!loanData) return;
 
+        // Check deposit_made
+        const depositWarning = document.getElementById('approve_deposit_warning');
+        const approveForm = document.getElementById('approveConfirmForm');
+        const depositLink = document.getElementById('approve_deposit_link');
+        if (!loanData.deposit_made) {
+            depositWarning.classList.remove('hidden');
+            approveForm.classList.add('hidden');
+            depositLink.href = '{{ route("superadmin.dashboard") }}?highlight=' + loanData.code;
+        } else {
+            depositWarning.classList.add('hidden');
+            approveForm.classList.remove('hidden');
+        }
+
         document.getElementById('approve_modal_amount').textContent = amount;
         document.getElementById('approve_modal_user').textContent = user;
         document.getElementById('approveConfirmForm').action = `/gestion-interna/prestamos/${loanId}/approve`;
@@ -1903,15 +1956,6 @@
             document.getElementById('approve_cashbox_error').classList.add('hidden');
         }
 
-        const voucherInput = document.getElementById('approve_voucher');
-        if (!voucherInput.files || voucherInput.files.length === 0) {
-            e.preventDefault();
-            document.getElementById('approve_voucher_error').classList.remove('hidden');
-            hasError = true;
-        } else {
-            document.getElementById('approve_voucher_error').classList.add('hidden');
-        }
-
         const operationInput = document.getElementById('approve_operation_number');
         if (!operationInput.value.trim()) {
             e.preventDefault();
@@ -1948,15 +1992,6 @@
             hasError = true;
         } else {
             document.getElementById('disburse_cashbox_error').classList.add('hidden');
-        }
-
-        const voucherInput = document.getElementById('disburse_voucher');
-        if (!voucherInput.files || voucherInput.files.length === 0) {
-            e.preventDefault();
-            document.getElementById('disburse_voucher_error').classList.remove('hidden');
-            hasError = true;
-        } else {
-            document.getElementById('disburse_voucher_error').classList.add('hidden');
         }
 
         const operationInput = document.getElementById('disburse_operation_number');
@@ -1999,6 +2034,19 @@
     function openDisburseModal(loanId, amount, user, preselectedCashboxId) {
         const loanData = @json($loans->items()).find(l => l.id == loanId);
         if (!loanData) return;
+
+        // Check deposit_made
+        const depositWarning = document.getElementById('disburse_deposit_warning');
+        const disburseForm = document.getElementById('disburseConfirmForm');
+        const depositLink = document.getElementById('disburse_deposit_link');
+        if (!loanData.deposit_made) {
+            depositWarning.classList.remove('hidden');
+            disburseForm.classList.add('hidden');
+            depositLink.href = '{{ route("superadmin.dashboard") }}?highlight=' + loanData.code;
+        } else {
+            depositWarning.classList.add('hidden');
+            disburseForm.classList.remove('hidden');
+        }
 
         document.getElementById('disburse_modal_amount').textContent = amount;
         document.getElementById('disburse_modal_user').textContent = user;
@@ -2073,6 +2121,39 @@
         document.body.style.overflow = '';
     }
 
+    function openUploadVoucherModal(loanId, loanCode) {
+        document.getElementById('upload_voucher_code').textContent = loanCode;
+        document.getElementById('uploadVoucherForm').action = `/gestion-interna/prestamos/${loanId}/upload-voucher`;
+        document.getElementById('upload_voucher_input').value = '';
+        document.getElementById('upload_voucher_preview').classList.add('hidden');
+        document.getElementById('upload_voucher_preview_img').src = '';
+        document.getElementById('upload_operation_number').value = '';
+        document.getElementById('uploadVoucherModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeUploadVoucherModal() {
+        document.getElementById('uploadVoucherModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function previewUploadVoucher(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('upload_voucher_preview');
+        const previewImg = document.getElementById('upload_voucher_preview_img');
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+            previewImg.src = '';
+        }
+    }
+
     function validateDisburseCashbox() {
         const select = document.getElementById('disburse_cashbox_id');
         const btn = document.getElementById('disburse_submit_btn');
@@ -2138,6 +2219,11 @@
 
     function closeRejectModal() {
         document.getElementById('rejectConfirmModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function closeDepositBlockModal() {
+        document.getElementById('depositBlockModal').classList.add('hidden');
         document.body.style.overflow = '';
     }
 
@@ -2212,6 +2298,17 @@
             <p id="approve_no_bank_account" class="hidden text-[9px] font-bold text-red-500">El cliente no tiene cuentas bancarias registradas</p>
         </div>
 
+        <div id="approve_deposit_warning" class="hidden mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                <div>
+                    <p class="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-tight">Depósito pendiente</p>
+                    <p class="text-[10px] text-amber-600 dark:text-amber-500 mt-1">Primero debes confirmar que el depósito fue realizado al cliente.</p>
+                    <a id="approve_deposit_link" href="#" class="inline-block mt-2 text-[10px] font-black text-amber-700 dark:text-amber-400 underline hover:no-underline">Haz click aquí para gestionarlo</a>
+                </div>
+            </div>
+        </div>
+
         <form id="approveConfirmForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="text-left space-y-2">
@@ -2237,7 +2334,7 @@
 
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
-                <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf" required
+                <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf"
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:uppercase file:tracking-widest cursor-pointer"
                     onchange="previewApproveVoucher(event); document.getElementById('approve_voucher_error').classList.add('hidden');">
                 <div id="approve_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
@@ -2251,7 +2348,7 @@
 
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
-                <input type="text" name="disbursement_operation_number" id="approve_operation_number" required placeholder="Ej: 123456789"
+                <input type="text" name="disbursement_operation_number" id="approve_operation_number" placeholder="Ej: 123456789"
                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors tabular-nums"
                     maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                 <p id="approve_operation_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
@@ -2291,6 +2388,17 @@
             <p id="disburse_no_bank_account" class="hidden text-[9px] font-bold text-red-500">El cliente no tiene cuentas bancarias registradas</p>
         </div>
 
+        <div id="disburse_deposit_warning" class="hidden mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                <div>
+                    <p class="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-tight">Depósito pendiente</p>
+                    <p class="text-[10px] text-amber-600 dark:text-amber-500 mt-1">Primero debes confirmar que el depósito fue realizado al cliente.</p>
+                    <a id="disburse_deposit_link" href="#" class="inline-block mt-2 text-[10px] font-black text-amber-700 dark:text-amber-400 underline hover:no-underline">Haz click aquí para gestionarlo</a>
+                </div>
+            </div>
+        </div>
+
         <form id="disburseConfirmForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="text-left space-y-2">
@@ -2315,7 +2423,7 @@
 
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
-                <input type="file" name="disbursement_voucher" id="disburse_voucher" accept="image/*,.pdf" required
+                <input type="file" name="disbursement_voucher" id="disburse_voucher" accept="image/*,.pdf"
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 file:uppercase file:tracking-widest cursor-pointer"
                     onchange="previewDisburseVoucher(event); document.getElementById('disburse_voucher_error').classList.add('hidden');">
                 <div id="disburse_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
@@ -2329,7 +2437,7 @@
 
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
-                <input type="text" name="disbursement_operation_number" id="disburse_operation_number" required placeholder="Ej: 123456789"
+                <input type="text" name="disbursement_operation_number" id="disburse_operation_number" placeholder="Ej: 123456789"
                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors tabular-nums"
                     maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                 <p id="disburse_operation_error" class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1 text-center">
@@ -2343,6 +2451,49 @@
                 </button>
                 <button type="submit" id="disburse_submit_btn" class="flex-1 py-3 rounded-xl bg-amber-500 text-white text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20">
                     Desembolsar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Subir Comprobante -->
+<div id="uploadVoucherModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center">
+    <div class="bg-white dark:bg-gray-950 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl relative max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-center">
+        <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Subir Comprobante</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Préstamo <span id="upload_voucher_code" class="font-bold text-gray-900 dark:text-white"></span>
+        </p>
+
+        <form id="uploadVoucherForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
+                <input type="file" name="disbursement_voucher" id="upload_voucher_input" accept="image/*,.pdf" required
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:uppercase file:tracking-widest cursor-pointer"
+                    onchange="previewUploadVoucher(event)">
+                <div id="upload_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+                    <img id="upload_voucher_preview_img" src="" alt="Vista previa" class="w-full h-auto max-h-40 object-contain bg-gray-50 dark:bg-gray-900">
+                </div>
+                <p class="text-[8px] text-gray-400">Se convertirá automáticamente a formato WebP</p>
+            </div>
+
+            <div class="text-left space-y-2">
+                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
+                <input type="text" name="disbursement_operation_number" id="upload_operation_number" required placeholder="Ej: 123456789"
+                    class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors tabular-nums"
+                    maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="closeUploadVoucherModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 py-3 rounded-xl bg-blue-600 text-white text-xs font-black uppercase tracking-widest hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20">
+                    Subir
                 </button>
             </div>
         </form>
@@ -2369,6 +2520,27 @@
                     Rechazar
                 </button>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Bloqueo Depósito -->
+<div id="depositBlockModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative animate-in fade-in zoom-in duration-200 p-8 text-center">
+        <div class="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Préstamo desembolsado</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            No puedes hacer una contraoferta a este préstamo porque ya fue marcado como desembolsado.
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeDepositBlockModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                Cerrar
+            </button>
+            <a id="depositBlockLink" href="#" onclick="closeDepositBlockModal()" class="flex-1 py-3 rounded-xl bg-amber-500 text-white text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20 text-center block">
+                Ir y quitar check
+            </a>
         </div>
     </div>
 </div>
@@ -2543,6 +2715,10 @@
         if (e.target === document.getElementById('scheduleModal')) closeScheduleModal();
     });
 
+    document.getElementById('depositBlockModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('depositBlockModal')) closeDepositBlockModal();
+    });
+
     function toggleLoanRow(loanId) {
         const wrapper = document.getElementById('loan-details-' + loanId);
         const chevron = document.getElementById('loan-chevron-' + loanId);
@@ -2553,12 +2729,12 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const loanId = urlParams.get('loan_id');
-        if (loanId) {
-            const el = document.getElementById('loan-' + loanId);
+        const highlightId = urlParams.get('highlight') || urlParams.get('loan_id');
+        if (highlightId) {
+            const el = document.getElementById('loan-' + highlightId);
             if (el) {
-                const wrapper = document.getElementById('loan-details-' + loanId);
-                const chevron = document.getElementById('loan-chevron-' + loanId);
+                const wrapper = document.getElementById('loan-details-' + highlightId);
+                const chevron = document.getElementById('loan-chevron-' + highlightId);
                 if (wrapper) {
                     wrapper.classList.add('expanded');
                     if (chevron) chevron.style.transform = 'rotate(180deg)';
@@ -2567,7 +2743,7 @@
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(() => {
                     el.classList.remove('bg-yellow-50', 'dark:bg-yellow-900/10', 'ring-2', 'ring-yellow-400');
-                }, 3000);
+                }, 5000);
             }
         }
     });

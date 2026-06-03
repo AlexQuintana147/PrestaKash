@@ -37,11 +37,13 @@ class Loan extends Model
         'late_fee_daily_amount',
         'cashbox_id',
         'in_default',
+        'deposit_made',
     ];
 
     protected $casts = [
         'original_data' => 'array',
         'in_default' => 'boolean',
+        'deposit_made' => 'boolean',
     ];
 
     protected static function boot()

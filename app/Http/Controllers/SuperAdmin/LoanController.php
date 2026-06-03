@@ -32,11 +32,14 @@ class LoanController extends Controller
             }
 
             if ($search) {
-                $query->whereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('dni', 'like', "%{$search}%")
-                        ->orWhere('ruc', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q2) use ($search) {
+                            $q2->where('name', 'like', "%{$search}%")
+                                ->orWhere('dni', 'like', "%{$search}%")
+                                ->orWhere('ruc', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                        });
                 });
             }
 
@@ -72,6 +75,11 @@ class LoanController extends Controller
 
     public function counterOffer(Request $request, Loan $loan)
     {
+        if ($loan->deposit_made) {
+            $loan->update(['deposit_made' => false]);
+            return back()->with('error', 'No puedes hacer una contraoferta a un préstamo que ya fue marcado como desembolsado. Se ha quitado la marca de depósito.');
+        }
+
         $request->validate([
             'amount' => 'required|numeric|min:100',
             'type' => 'required|in:cuotas,unico',
@@ -117,6 +125,7 @@ class LoanController extends Controller
             'disbursement_date' => $request->disbursement_date,
             'currency' => $request->currency,
             'status' => 'counter_offered',
+            'deposit_made' => false,
         ];
 
         if (!$loan->original_data) {
@@ -182,8 +191,8 @@ class LoanController extends Controller
     {
         $request->validate([
             'cashbox_id' => 'required|exists:cashboxes,id',
-            'disbursement_voucher' => 'required|image|max:5120',
-            'disbursement_operation_number' => 'required|string|max:30',
+            'disbursement_voucher' => 'nullable|image|max:5120',
+            'disbursement_operation_number' => 'nullable|string|max:30',
         ]);
 
         $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
@@ -216,6 +225,7 @@ class LoanController extends Controller
         \DB::transaction(function () use ($loan, $cashbox, $amount, $voucherPath, $request) {
             $loan->update([
                 'status' => 'approved',
+                'deposit_made' => false,
                 'disbursement_voucher' => $voucherPath,
                 'disbursement_operation_number' => $request->disbursement_operation_number,
             ]);
@@ -327,8 +337,8 @@ class LoanController extends Controller
 
         $request->validate([
             'cashbox_id' => 'required|exists:cashboxes,id',
-            'disbursement_voucher' => 'required|image|max:5120',
-            'disbursement_operation_number' => 'required|string|max:30',
+            'disbursement_voucher' => 'nullable|image|max:5120',
+            'disbursement_operation_number' => 'nullable|string|max:30',
         ]);
 
         $cashbox = \App\Models\Cashbox::findOrFail($request->cashbox_id);
@@ -355,6 +365,7 @@ class LoanController extends Controller
         \DB::transaction(function () use ($loan, $cashbox, $amount, $voucherPath, $request) {
             $loan->update([
                 'status' => 'approved',
+                'deposit_made' => false,
                 'cashbox_id' => $cashbox->id,
                 'disbursement_voucher' => $voucherPath,
                 'disbursement_operation_number' => $request->disbursement_operation_number,
@@ -455,6 +466,46 @@ class LoanController extends Controller
         $loan->update(['in_default' => !$loan->in_default]);
         $status = $loan->in_default ? 'activado' : 'desactivado';
         return back()->with('success', "Estado de mora {$status} para el préstamo {$loan->code}.");
+    }
+
+    public function toggleDeposit(Loan $loan)
+    {
+        $loan->update(['deposit_made' => !$loan->deposit_made]);
+        $status = $loan->deposit_made ? 'realizado' : 'pendiente';
+        $url = route('superadmin.dashboard', array_filter([
+            'disb' => $loan->deposit_made ? 'deposited' : null,
+            'highlight' => $loan->deposit_made ? $loan->code : null,
+        ])) . '#disb-section';
+        return redirect($url)->with('success', "Depósito marcado como {$status} para el préstamo {$loan->code}.");
+    }
+
+    public function uploadVoucher(Request $request, Loan $loan)
+    {
+        $request->validate([
+            'disbursement_voucher' => 'required|image|max:5120',
+            'disbursement_operation_number' => 'required|string|max:30',
+        ]);
+
+        $voucherPath = null;
+        if ($request->hasFile('disbursement_voucher')) {
+            $file = $request->file('disbursement_voucher');
+            $filename = 'voucher_' . $loan->code . '_' . time() . '.webp';
+            $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+            $fullPath = storage_path('app/public/vouchers/' . $filename);
+            if (!is_dir(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
+            imagewebp($image, $fullPath, 85);
+            imagedestroy($image);
+            $voucherPath = 'vouchers/' . $filename;
+        }
+
+        $loan->update([
+            'disbursement_voucher' => $voucherPath,
+            'disbursement_operation_number' => $request->disbursement_operation_number,
+        ]);
+
+        return back()->with('success', "Comprobante subido correctamente para el préstamo {$loan->code}.");
     }
 
     public function installmentsIndex(Request $request)
