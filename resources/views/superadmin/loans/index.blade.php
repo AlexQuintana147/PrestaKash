@@ -511,7 +511,7 @@
                                     <div class="flex items-center gap-3">
                                         @if($loan->status === 'counter_accepted')
                                             <button type="button"
-                                                onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                                onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}', {{ $loan->cashbox_id ?? 'null' }})"
                                                 class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest bg-amber-500 hover:bg-amber-600 text-white transition-colors active:scale-[0.95]">
                                                 Desembolsar
                                             </button>
@@ -678,7 +678,7 @@
                                         <div class="pl-6 border-l border-gray-200 dark:border-gray-800 flex flex-col items-end gap-1">
                                             @if($loan->status === 'counter_accepted')
                                                 <button type="button"
-                                                    onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}')"
+                                                    onclick="openDisburseModal('{{ $loan->id }}', '{{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}', '{{ $loan->user->name }}', {{ $loan->cashbox_id ?? 'null' }})"
                                                     class="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest bg-amber-500 hover:bg-amber-600 text-white transition-colors">
                                                     Desembolsar
                                                 </button>
@@ -1922,6 +1922,8 @@
     });
 
     document.getElementById('disburseConfirmForm').addEventListener('submit', function(e) {
+        let hasError = false;
+
         const select = document.getElementById('disburse_cashbox_id');
         if (!select.value) {
             e.preventDefault();
@@ -1937,24 +1939,30 @@
         if (amount > balance) {
             e.preventDefault();
             document.getElementById('disburse_cashbox_error').classList.remove('hidden');
-            return;
+            hasError = true;
+        } else {
+            document.getElementById('disburse_cashbox_error').classList.add('hidden');
         }
 
         const voucherInput = document.getElementById('disburse_voucher');
         if (!voucherInput.files || voucherInput.files.length === 0) {
             e.preventDefault();
             document.getElementById('disburse_voucher_error').classList.remove('hidden');
-            return;
+            hasError = true;
+        } else {
+            document.getElementById('disburse_voucher_error').classList.add('hidden');
         }
-        document.getElementById('disburse_voucher_error').classList.add('hidden');
 
         const operationInput = document.getElementById('disburse_operation_number');
         if (!operationInput.value.trim()) {
             e.preventDefault();
             document.getElementById('disburse_operation_error').classList.remove('hidden');
-            return;
+            hasError = true;
+        } else {
+            document.getElementById('disburse_operation_error').classList.add('hidden');
         }
-        document.getElementById('disburse_operation_error').classList.add('hidden');
+
+        if (hasError) return;
 
         document.getElementById('disburse_submit_btn').disabled = true;
         document.getElementById('disburse_submit_btn').opacity = '0.5';
@@ -1982,7 +1990,7 @@
         }
     }
 
-    function openDisburseModal(loanId, amount, user) {
+    function openDisburseModal(loanId, amount, user, preselectedCashboxId) {
         const loanData = @json($loans->items()).find(l => l.id == loanId);
         if (!loanData) return;
 
@@ -2038,6 +2046,11 @@
             cashboxSelect.innerHTML = filteredCashboxes.map(cb =>
                 `<option value="${cb.id}" data-balance="${cb.balance}">${cb.name} (${cb.currency} ${parseFloat(cb.balance).toLocaleString('en-US', {minimumFractionDigits:2})})</option>`
             ).join('');
+            // Pre-seleccionar la caja del préstamo si existe y tiene fondos
+            const preselectedCb = preselectedCashboxId ? filteredCashboxes.find(cb => cb.id == preselectedCashboxId) : null;
+            if (preselectedCb && parseFloat(preselectedCb.balance) >= parseFloat(loanData.amount)) {
+                cashboxSelect.value = preselectedCashboxId;
+            }
             const addBtn = document.getElementById('disburse_add_cashbox_btn');
             if (addBtn) addBtn.classList.remove('hidden');
         }
@@ -2296,9 +2309,9 @@
 
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
-                <input type="file" name="disbursement_voucher" id="disburse_voucher" accept="image/*,.pdf"
+                <input type="file" name="disbursement_voucher" id="disburse_voucher" accept="image/*,.pdf" required
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 file:uppercase file:tracking-widest cursor-pointer"
-                    onchange="previewDisburseVoucher(event)">
+                    onchange="previewDisburseVoucher(event); document.getElementById('disburse_voucher_error').classList.add('hidden');">
                 <div id="disburse_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
                     <img id="disburse_voucher_preview_img" src="" alt="Vista previa" class="w-full h-auto max-h-40 object-contain bg-gray-50 dark:bg-gray-900">
                 </div>
