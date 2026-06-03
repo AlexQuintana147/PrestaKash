@@ -65,13 +65,13 @@
         <div class="flex items-center gap-3 flex-shrink-0">
             @if($loan->currency === 'PEN')
             <div class="text-right hidden sm:block">
-                <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Cuenta para Depósitos (Soles)</p>
+                <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Cuenta para Depósitos (Soles) <span class="text-[10px] font-bold text-green-600 dark:text-green-400">Interbank</span></p>
                 <p class="text-[9px] font-bold text-gray-500 leading-tight">CTA: 200-3008190320</p>
                 <p class="text-[9px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190320-32</p>
             </div>
             @else
             <div class="text-right hidden sm:block">
-                <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Cuenta para Depósitos (Dólares)</p>
+                <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-tight">Cuenta para Depósitos (Dólares) <span class="text-[10px] font-bold text-green-600 dark:text-green-400">Interbank</span></p>
                 <p class="text-[9px] font-bold text-gray-500 leading-tight">CTA: 200-3008190337</p>
                 <p class="text-[9px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190337-36</p>
             </div>
@@ -560,13 +560,13 @@
             </p>
             @if($loan->currency === 'PEN')
             <div class="text-right flex-shrink-0 pt-1">
-                <p class="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-tight">Depositar en</p>
+                <p class="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-tight">Depositar en <span class="text-[10px] font-bold text-green-600 dark:text-green-400">Interbank</span></p>
                 <p class="text-[8px] font-bold text-gray-500 leading-tight">CTA: 200-3008190320</p>
                 <p class="text-[8px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190320-32</p>
             </div>
             @else
             <div class="text-right flex-shrink-0 pt-1">
-                <p class="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-tight">Depositar en</p>
+                <p class="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-tight">Depositar en <span class="text-[10px] font-bold text-green-600 dark:text-green-400">Interbank</span></p>
                 <p class="text-[8px] font-bold text-gray-500 leading-tight">CTA: 200-3008190337</p>
                 <p class="text-[8px] font-bold text-gray-500 leading-tight">CCI: 003-200-003008190337-36</p>
             </div>
