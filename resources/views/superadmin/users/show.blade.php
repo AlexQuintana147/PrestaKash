@@ -968,10 +968,34 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
             </svg>
         </div>
-        <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-1">Bloquear usuario</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-5">
-            Se eliminarán sus documentos y no podrá volver a registrarse con sus datos.
-        </p>
+        <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-2">Bloquear usuario</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">Esta acción es <span class="font-bold text-red-500">irreversible</span>. Se eliminará permanentemente:</p>
+        <ul class="text-xs text-gray-500 dark:text-gray-400 space-y-1.5 mb-5 px-2">
+            <li class="flex items-start gap-2">
+                <span class="text-red-400 mt-0.5">✕</span>
+                <span>Todos sus <strong class="text-gray-700 dark:text-gray-300">préstamos</strong> y cuotas asociadas</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-400 mt-0.5">✕</span>
+                <span>Todas sus <strong class="text-gray-700 dark:text-gray-300">inversiones</strong> y pagos de inversión</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-400 mt-0.5">✕</span>
+                <span><strong class="text-gray-700 dark:text-gray-300">Comprobantes de pago</strong> (vouchers de cuotas y desembolsos)</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-400 mt-0.5">✕</span>
+                <span><strong class="text-gray-700 dark:text-gray-300">Documentos</strong> (selfie, DNI, recibo de servicio)</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-400 mt-0.5">✕</span>
+                <span><strong class="text-gray-700 dark:text-gray-300">Cuentas bancarias</strong> y perfil del cliente</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="text-red-400 mt-0.5">✕</span>
+                <span>Sus datos quedarán en <strong class="text-gray-700 dark:text-gray-300">lista negra</strong> para impedir un nuevo registro</span>
+            </li>
+        </ul>
 
         <form action="{{ route('superadmin.users.block', $user) }}" method="POST">
             @csrf
