@@ -341,7 +341,7 @@
                         $totalDebt = $installment->total_with_mora;
                         $severityClass = $daysOverdue > 30 ? 'text-red-500' : ($daysOverdue > 7 ? 'text-orange-500' : 'text-amber-500');
                     @endphp
-                    <a href="{{ $loan ? route('superadmin.installments.group', $loan) : '#' }}" class="pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer">
+                    <a href="{{ route('superadmin.installments.index', ['filter' => 'overdue']) }}" class="pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer">
                         <div class="w-8 h-8 rounded-full bg-red-500/10 dark:bg-red-500/20 flex items-center justify-center flex-shrink-0">
                             <span class="text-[8px] font-black {{ $severityClass }}">{{ $daysOverdue }}d</span>
                         </div>
