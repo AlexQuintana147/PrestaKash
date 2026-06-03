@@ -89,7 +89,7 @@
     @if($loan->status !== 'counter_accepted')
     <!-- Resumen financiero -->
     @php
-        $totalToPayNow = $accumulatedDebt + ($nextInst ? $nextInst->amount : 0);
+        $totalToPayNow = $accumulatedDebt;
     @endphp
 
     @if($loan->disbursement_voucher && $loan->status === 'approved')
@@ -195,7 +195,7 @@
                 <div class="flex-1 min-w-0">
                     <h3 class="text-xs sm:text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Deuda Acumulada</h3>
                     <p class="text-[10px] sm:text-[11px] text-red-500/80 leading-relaxed mb-3 sm:mb-4">
-                        Tienes cuotas vencidas. Para regularizar tu situación, debes pagar las cuotas atrasadas más la mora generada y, si lo deseas, la cuota actual.
+                        Tienes cuotas vencidas. Para regularizar tu situación, debes pagar las cuotas atrasadas más la mora generada. La siguiente cuota se muestra como referencia y vence en su fecha correspondiente.
                     </p>
 
                     <div class="space-y-2 mb-6">
@@ -214,7 +214,7 @@
                         </div>
                         @endif
                         <div class="flex justify-between text-xs pt-2 border-t border-red-200 dark:border-red-500/30">
-                            <span class="text-gray-900 dark:text-white uppercase font-black tracking-widest">Total a pagar hoy</span>
+                            <span class="text-gray-900 dark:text-white uppercase font-black tracking-widest">Total vencido (pagar hoy)</span>
                             <span class="font-black text-red-600 dark:text-red-400">{{ $cur }} {{ number_format($totalToPayNow, 2) }}</span>
                         </div>
                     </div>
@@ -230,7 +230,7 @@
                     <div class="bg-white/50 dark:bg-black/20 rounded-xl p-4">
                         <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">¿Cómo funciona?</p>
                         <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
-                            Al no pagar en la fecha correspondiente, se genera una mora diaria según lo acordado. La mora se acumula hasta la fecha de la siguiente cuota. Para evitar que la deuda siga creciendo, te recomendamos realizar el pago total lo antes posible.
+                            Al no pagar en la fecha correspondiente, se genera una mora diaria según lo acordado. La mora se acumula hasta la fecha de la siguiente cuota. Para evitar que la deuda siga creciendo, te recomendamos pagar el total vencido lo antes posible. La siguiente cuota se pagará en su fecha de vencimiento.
                         </p>
                     </div>
                 </div>
