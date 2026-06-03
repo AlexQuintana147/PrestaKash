@@ -256,7 +256,8 @@ class LoanController extends Controller
                 $periodicPayment = $loan->monthly_payment;
 
                 $remainingBalance = $amount;
-                $currentDate = now();
+                $startDate = $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date) : now();
+                $currentDate = clone $startDate;
 
                 for ($i = 1; $i <= $nTotal; $i++) {
                     if ($freq === 'diario')
@@ -297,12 +298,13 @@ class LoanController extends Controller
                 }
             } else {
                 $interest = $amount * $rate;
+                $startDate = $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date) : now();
                 $loan->installments()->create([
                     'installment_number' => 1,
                     'amount' => $amount + $interest,
                     'capital' => $amount,
                     'interest' => $interest,
-                    'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
+                    'due_date' => $startDate->addDays($loan->payment_days)->format('Y-m-d'),
                     'status' => 'pending',
                 ]);
             }
@@ -391,7 +393,8 @@ class LoanController extends Controller
                 $periodicPayment = $loan->monthly_payment;
 
                 $remainingBalance = $amount;
-                $currentDate = now();
+                $startDate = $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date) : now();
+                $currentDate = clone $startDate;
 
                 for ($i = 1; $i <= $nTotal; $i++) {
                     if ($freq === 'diario')
@@ -432,12 +435,13 @@ class LoanController extends Controller
                 }
             } else {
                 $interest = $amount * $rate;
+                $startDate = $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date) : now();
                 $loan->installments()->create([
                     'installment_number' => 1,
                     'amount' => $amount + $interest,
                     'capital' => $amount,
                     'interest' => $interest,
-                    'due_date' => now()->addDays($loan->payment_days)->format('Y-m-d'),
+                    'due_date' => $startDate->addDays($loan->payment_days)->format('Y-m-d'),
                     'status' => 'pending',
                 ]);
             }

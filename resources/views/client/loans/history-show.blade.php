@@ -60,7 +60,7 @@
                 </h1>
                 <span class="text-[10px] font-mono text-white dark:text-black bg-black dark:bg-white px-2 py-0.5 rounded">{{ $loan->code }}</span>
             </div>
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">{{ $loan->created_at->format('d M Y') }}</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">{{ $loan->disbursement_date ? \Carbon\Carbon::parse($loan->disbursement_date)->format('d M Y') : $loan->created_at->format('d M Y') }}</p>
         </div>
         <div class="flex items-center gap-3 flex-shrink-0">
             @if($loan->currency === 'PEN')

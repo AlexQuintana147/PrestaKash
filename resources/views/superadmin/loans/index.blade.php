@@ -1895,27 +1895,35 @@
         const amountStr = document.getElementById('approve_modal_amount').textContent.replace(/[^0-9.]/g, '');
         const amount = parseFloat(amountStr);
 
+        let hasError = false;
+
         if (amount > balance) {
             e.preventDefault();
             document.getElementById('approve_cashbox_error').classList.remove('hidden');
-            return;
+            hasError = true;
+        } else {
+            document.getElementById('approve_cashbox_error').classList.add('hidden');
         }
 
         const voucherInput = document.getElementById('approve_voucher');
         if (!voucherInput.files || voucherInput.files.length === 0) {
             e.preventDefault();
             document.getElementById('approve_voucher_error').classList.remove('hidden');
-            return;
+            hasError = true;
+        } else {
+            document.getElementById('approve_voucher_error').classList.add('hidden');
         }
-        document.getElementById('approve_voucher_error').classList.add('hidden');
 
         const operationInput = document.getElementById('approve_operation_number');
         if (!operationInput.value.trim()) {
             e.preventDefault();
             document.getElementById('approve_operation_error').classList.remove('hidden');
-            return;
+            hasError = true;
+        } else {
+            document.getElementById('approve_operation_error').classList.add('hidden');
         }
-        document.getElementById('approve_operation_error').classList.add('hidden');
+
+        if (hasError) return;
 
         document.getElementById('approve_submit_btn').disabled = true;
         document.getElementById('approve_submit_btn').opacity = '0.5';
@@ -2231,9 +2239,9 @@
 
             <div class="text-left space-y-2">
                 <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
-                <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf"
+                <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf" required
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:uppercase file:tracking-widest cursor-pointer"
-                    onchange="previewApproveVoucher(event)">
+                    onchange="previewApproveVoucher(event); document.getElementById('approve_voucher_error').classList.add('hidden');">
                 <div id="approve_voucher_preview" class="hidden mt-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
                     <img id="approve_voucher_preview_img" src="" alt="Vista previa" class="w-full h-auto max-h-40 object-contain bg-gray-50 dark:bg-gray-900">
                 </div>
