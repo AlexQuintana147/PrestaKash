@@ -370,7 +370,34 @@ class UsersController extends Controller
             ]
         );
 
-        // Eliminar imágenes
+        // Eliminar imágenes de comprobantes de pago de cuotas y préstamos
+        foreach ($user->loans as $loan) {
+            if ($loan->disbursement_voucher) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($loan->disbursement_voucher);
+            }
+            foreach ($loan->installments as $inst) {
+                if ($inst->payment_voucher) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($inst->payment_voucher);
+                }
+            }
+            \Illuminate\Support\Facades\Storage::disk('public')->deleteDirectory('vouchers/' . $loan->id);
+        }
+
+        // Eliminar imágenes de inversiones (vouchers de pago del pivot y de payouts)
+        foreach ($user->investmentOpportunities as $opp) {
+            if ($opp->pivot->voucher_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($opp->pivot->voucher_path);
+            }
+        }
+        $user->investmentOpportunities()->detach();
+
+        foreach (\App\Models\InvestorPayout::where('investor_user_id', $user->id)->get() as $payout) {
+            if ($payout->voucher_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($payout->voucher_path);
+            }
+        }
+
+        // Eliminar imágenes de documentos
         if ($doc = $user->documents) {
             foreach (['selfie', 'dni_front', 'dni_back', 'utility_bill'] as $field) {
                 if ($doc->$field) {
