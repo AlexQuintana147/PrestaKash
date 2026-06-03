@@ -484,7 +484,7 @@ class LoanController extends Controller
                   ->whereHas('installments', function ($iq) {
                       $iq->where('status', 'pending');
                   });
-            })->with(['documents']);
+            })->with(['documents', 'loans']);
 
             if ($search) {
                 $borrowersQuery->where(function ($q) use ($search) {
@@ -538,9 +538,17 @@ class LoanController extends Controller
                 'totalOverdueCount' => $totalOverdueCount,
             ]);
         } elseif ($filter === 'grouped') {
-            $loansPaginator = \App\Models\Loan::with(['user', 'user.documents'])
-                ->whereIn('status', ['approved', 'paid'])
-                ->latest()
+            $loansQuery = \App\Models\Loan::with(['user', 'user.documents'])
+                ->whereIn('status', ['approved', 'paid']);
+
+            if ($search) {
+                $loansQuery->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('dni', 'like', "%{$search}%");
+                })->orWhere('code', 'like', "%{$search}%");
+            }
+
+            $loansPaginator = $loansQuery->latest()
                 ->paginate(10)
                 ->withQueryString();
 
@@ -565,10 +573,20 @@ class LoanController extends Controller
                 'loansPaginator' => $loansPaginator,
                 'filter' => $filter,
                 'cashboxes' => $cashboxes,
+                'search' => $search,
                 'totalOverdueCount' => $totalOverdueCount,
             ]);
         } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
+
+            if ($search) {
+                $query->whereHas('loan.user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('dni', 'like', "%{$search}%");
+                })->orWhereHas('loan', function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%");
+                });
+            }
             // For each user/loan combination, only show the most recent installment
             $allProcessing = $query->orderBy('updated_at', 'desc')->get();
             $latestPerUserLoan = [];
@@ -590,14 +608,23 @@ class LoanController extends Controller
                 ['path' => LengthAwarePaginator::resolveCurrentPath()]
             );
             $installments->withQueryString();
-            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate', 'totalOverdueCount'));
+            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDateFrom', 'paidDateTo', 'search', 'totalOverdueCount'));
         } elseif ($filter === 'overdue') {
-            $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents'])
+            $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents', 'loan.user.loans'])
                 ->whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
                 ->whereNotIn('status', ['approved', 'paid'])
-                ->where('due_date', '<', now()->startOfDay())
-                ->orderBy('due_date', 'asc')
-                ->get();
+                ->where('due_date', '<', now()->startOfDay());
+
+            if ($search) {
+                $overdueInstallments->whereHas('loan.user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('dni', 'like', "%{$search}%");
+                })->orWhereHas('loan', function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%");
+                });
+            }
+
+            $overdueInstallments = $overdueInstallments->orderBy('due_date', 'asc')->get();
 
             $debtors = [];
             foreach ($overdueInstallments as $inst) {
@@ -635,6 +662,7 @@ class LoanController extends Controller
                 'overdueDebtors' => $overdueDebtors,
                 'filter' => $filter,
                 'cashboxes' => $cashboxes,
+                'search' => $search,
                 'totalOverdueCount' => $totalOverdueCount,
             ]);
         } elseif ($filter === 'paid') {
@@ -642,16 +670,37 @@ class LoanController extends Controller
                 $q->where('status', 'approved')
                   ->orWhere('interest_payments_count', '>', 0);
             });
+
+            if ($search) {
+                $query->whereHas('loan.user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('dni', 'like', "%{$search}%");
+                })->orWhereHas('loan', function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%");
+                });
+            }
         }
 
         $installments = $query->with('interestPayments')->orderBy('due_date', 'asc')
             ->get();
 
-        $paidDate = null;
+        $paidDateFrom = null;
+        $paidDateTo = null;
         if ($filter === 'paid') {
+            $pdf = $request->get('paid_date_from');
+            $pdt = $request->get('paid_date_to');
+            // Backward compat: single paid_date param
             $pd = $request->get('paid_date');
             if ($pd) {
-                $paidDate = $pd === 'today' ? today()->toDateString() : $pd;
+                $val = $pd === 'today' ? today()->toDateString() : $pd;
+                $paidDateFrom = $val;
+                $paidDateTo = $val;
+            }
+            if ($pdf) {
+                $paidDateFrom = $pdf === 'today' ? today()->toDateString() : $pdf;
+            }
+            if ($pdt) {
+                $paidDateTo = $pdt === 'today' ? today()->toDateString() : $pdt;
             }
         }
 
@@ -696,12 +745,18 @@ class LoanController extends Controller
             }
         }
 
-        if ($paidDate) {
-            $expandedInstallments = $expandedInstallments->filter(function ($row) use ($paidDate) {
+        if ($paidDateFrom || $paidDateTo) {
+            $expandedInstallments = $expandedInstallments->filter(function ($row) use ($paidDateFrom, $paidDateTo) {
+                $dateStr = null;
                 if (isset($row->is_interest_payment) && $row->is_interest_payment && isset($row->interest_payment) && $row->interest_payment) {
-                    return $row->interest_payment->paid_at?->toDateString() === $paidDate;
+                    $dateStr = $row->interest_payment->paid_at?->toDateString();
+                } else {
+                    $dateStr = $row->paid_at?->toDateString();
                 }
-                return $row->paid_at?->toDateString() === $paidDate;
+                if (!$dateStr) return false;
+                if ($paidDateFrom && $dateStr < $paidDateFrom) return false;
+                if ($paidDateTo && $dateStr > $paidDateTo) return false;
+                return true;
             })->values();
         }
 
@@ -718,7 +773,7 @@ class LoanController extends Controller
         );
         $installments->withQueryString();
 
-        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDate', 'totalOverdueCount'));
+        return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDateFrom', 'paidDateTo', 'search', 'totalOverdueCount'));
     }
 
     public function userLoans(\App\Models\User $user)
