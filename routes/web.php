@@ -229,6 +229,7 @@ Route::middleware(['auth', 'superadmin', 'worker.permission', 'prevent.back', 'c
     Route::post('/prestamos/{loan}/disburse', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'disburse'])->name('loans.disburse');
     Route::post('/prestamos/{loan}/reject', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'reject'])->name('loans.reject');
     Route::post('/prestamos/{loan}/toggle-default', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'toggleDefault'])->name('loans.toggle-default');
+    Route::post('/prestamos/{loan}/toggle-deposit', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'toggleDeposit'])->name('loans.toggle-deposit');
 
     // Gestión de pagos
     Route::get('/pagos', [\App\Http\Controllers\SuperAdmin\LoanController::class, 'installmentsIndex'])->name('installments.index');

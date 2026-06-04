@@ -99,25 +99,40 @@ class OnboardingController extends Controller
     {
         $request->validate([
             'selfie' => 'required|string',
-            'dni_front' => 'required|image|max:5120',
-            'dni_back' => 'required|image|max:5120',
-            'utility_bill' => 'required|image|max:5120',
+            'dni_front' => 'required|string',
+            'dni_back' => 'required|string',
+            'utility_bill' => 'required|string',
         ], [
             'selfie.required' => 'Debes tomar una foto selfie.',
+            'dni_front.required' => 'Debes capturar el DNI frontal.',
+            'dni_back.required' => 'Debes capturar el DNI trasero.',
+            'utility_bill.required' => 'Debes capturar el recibo de luz o agua.',
         ]);
 
         $user = Auth::user();
 
-        // Procesar selfie desde base64 y guardar como WebP
+        // Procesar todos desde base64 y guardar como WebP
         $selfiePath = $imageService->storeBase64AsWebp(
             $request->input('selfie'),
             'documents/' . $user->id,
             1200
         );
 
-        $dniFront = $imageService->storeAsWebp($request->file('dni_front'), 'documents/' . $user->id, 1200);
-        $dniBack = $imageService->storeAsWebp($request->file('dni_back'), 'documents/' . $user->id, 1200);
-        $utilityBill = $imageService->storeAsWebp($request->file('utility_bill'), 'documents/' . $user->id, 1200);
+        $dniFront = $imageService->storeBase64AsWebp(
+            $request->input('dni_front'),
+            'documents/' . $user->id,
+            1200
+        );
+        $dniBack = $imageService->storeBase64AsWebp(
+            $request->input('dni_back'),
+            'documents/' . $user->id,
+            1200
+        );
+        $utilityBill = $imageService->storeBase64AsWebp(
+            $request->input('utility_bill'),
+            'documents/' . $user->id,
+            1200
+        );
 
         UserDocument::updateOrCreate(
             ['user_id' => $user->id],
