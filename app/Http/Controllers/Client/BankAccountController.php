@@ -65,6 +65,29 @@ class BankAccountController extends Controller
             return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
         }
 
+        // Check linked operations before deleting
+        $linkedOps = [];
+
+        $referralWithdrawals = \App\Models\ReferralWithdrawal::where('bank_account_id', $bankAccount->id)->count();
+        if ($referralWithdrawals > 0) {
+            $linkedOps[] = $referralWithdrawals . ' retiro' . ($referralWithdrawals > 1 ? 's' : '') . ' de referidos';
+        }
+
+        $loans = \App\Models\Loan::where('user_id', $bankAccount->user_id)
+            ->where('account_number', $bankAccount->account_number)
+            ->count();
+        if ($loans > 0) {
+            $linkedOps[] = $loans . ' préstamo' . ($loans > 1 ? 's' : '');
+        }
+
+        if (!empty($linkedOps)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar esta cuenta porque está vinculada a: ' . implode(' y ', $linkedOps) . '.',
+                'linked' => $linkedOps,
+            ], 422);
+        }
+
         $bankAccount->delete();
 
         return response()->json([

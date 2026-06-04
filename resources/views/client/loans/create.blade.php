@@ -1300,6 +1300,23 @@
     </div>
 </div>
 
+<div id="deleteErrorModal" class="pk-modal-overlay" role="dialog" aria-modal="true" style="align-items:center;padding:1rem;">
+    <div onclick="closeDeleteError()" class="absolute inset-0 bg-black/60"></div>
+    <div class="pk-modal-content" style="max-width:360px;">
+        <div class="px-6 pt-8 pb-6 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white">No se puede eliminar</h3>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">Esta cuenta está vinculada a las siguientes operaciones:</p>
+            <ul id="deleteErrorList" class="mt-3 space-y-1.5 text-left"></ul>
+        </div>
+        <div class="px-6 pb-6">
+            <button type="button" onclick="closeDeleteError()" class="w-full py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Entendido</button>
+        </div>
+    </div>
+</div>
+
 <script>
     let bankAccounts = [];
 
@@ -1381,6 +1398,7 @@
 
     async function saveBankAccount(e) {
         e.preventDefault();
+        e.stopPropagation();
         const id = document.getElementById('editingId').value;
         const data = {
             alias: document.getElementById('f_alias').value,
@@ -1398,6 +1416,7 @@
             if (!response.ok) {
                 let msg = 'Error al guardar';
                 try { const err = await response.json(); if (err.message) msg = err.message; } catch (_) {}
+                pkHideLoading();
                 return alert(msg);
             }
             const result = await response.json();
@@ -1408,7 +1427,16 @@
             } else {
                 alert(result.message || 'Error al guardar');
             }
-        } catch (e) { console.error(e); alert('Error de conexión'); }
+            pkHideLoading();
+        } catch (e) { console.error(e); alert('Error de conexión'); pkHideLoading(); }
+    }
+
+    function pkHideLoading() {
+        var overlay = document.getElementById('pk-loading');
+        if (overlay) {
+            overlay.classList.remove('opacity-100', 'pointer-events-auto');
+            overlay.classList.add('opacity-0');
+        }
     }
 
     function refreshBankSelect(newAccount) {
@@ -1491,9 +1519,35 @@
             const result = await response.json();
             if (result.success) {
                 loadBankAccounts();
+                refreshBankSelect();
                 checkAccountsEmpty();
+            } else {
+                showDeleteError(result.message || 'No se pudo eliminar la cuenta', result.linked || []);
             }
-        } catch (e) { alert('Error al eliminar'); }
+        } catch (e) { showDeleteError('Error de conexión'); }
+    }
+
+    function showDeleteError(msg, linked) {
+        const list = document.getElementById('deleteErrorList');
+        list.innerHTML = '';
+        if (linked && linked.length > 0) {
+            linked.forEach(op => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 font-medium';
+                li.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' + op;
+                list.appendChild(li);
+            });
+        } else {
+            const li = document.createElement('li');
+            li.className = 'text-sm text-gray-400 dark:text-gray-500';
+            li.textContent = msg || 'Esta cuenta está asociada a otras operaciones.';
+            list.appendChild(li);
+        }
+        document.getElementById('deleteErrorModal').classList.add('active');
+    }
+
+    function closeDeleteError() {
+        document.getElementById('deleteErrorModal').classList.remove('active');
     }
 
     async function checkAccountsEmpty() {

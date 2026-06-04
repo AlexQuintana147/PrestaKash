@@ -354,6 +354,24 @@
             }
         });
 
+        // Hide loading overlay on page load (in case back button keeps it visible)
+        window.addEventListener('load', function() {
+            var overlay = document.getElementById('pk-loading');
+            if (overlay) {
+                overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                overlay.classList.add('opacity-0');
+            }
+        });
+
+        // Hide loading overlay on AJAX errors
+        document.addEventListener('ajaxError', function() {
+            var overlay = document.getElementById('pk-loading');
+            if (overlay) {
+                overlay.classList.remove('opacity-100', 'pointer-events-auto');
+                overlay.classList.add('opacity-0');
+            }
+        });
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');

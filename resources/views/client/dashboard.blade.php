@@ -852,6 +852,7 @@
 
     async function saveBankAccount(e) {
         e.preventDefault();
+        e.stopPropagation();
         const id = document.getElementById('editingId').value;
         const data = {
             alias: document.getElementById('f_alias').value,
@@ -870,6 +871,8 @@
             if (result.success) { await loadAccounts(); hideForm(); }
             else { alert(result.message || 'Error al guardar'); }
         } catch (e) { alert('Error de conexión'); }
+        var overlay = document.getElementById('pk-loading');
+        if (overlay) { overlay.classList.remove('opacity-100', 'pointer-events-auto'); overlay.classList.add('opacity-0'); }
     }
 
     let pendingDeleteId = null;
