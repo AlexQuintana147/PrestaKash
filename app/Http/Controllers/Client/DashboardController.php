@@ -117,6 +117,17 @@ class DashboardController extends Controller
             ];
         })->values();
 
+        // Notificaciones de préstamos (solo las no vistas)
+        $loansLastVisited = session('loans_last_visited_at');
+        $counterOfferLoans = $user->loans->where('status', 'counter_offered')
+            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+        $acceptedLoans = $user->loans->whereIn('status', ['approved', 'counter_accepted'])
+            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+        $rejectedLoans = $user->loans->where('status', 'rejected')
+            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+
+        $hasLoanNotifications = $counterOfferLoans->isNotEmpty() || $acceptedLoans->isNotEmpty() || $rejectedLoans->isNotEmpty();
+
         return view('client.dashboard', compact(
             'user', 'department', 'province', 'district',
             'activeLoans', 'pendingLoans', 'totalDebt', 'monthlyPayment',
@@ -125,7 +136,8 @@ class DashboardController extends Controller
             'overdueInstallments', 'hasOverdue', 'overdueCount', 'overdueTotal', 'overdueLateFees', 'oldestOverdue',
             'overdueByLoan',
             'upcomingInstallments', 'hasUpcoming', 'upcomingCount', 'upcomingByLoan',
-            'pendingInvestmentPayouts', 'hasPendingPayouts', 'pendingPayoutsCount', 'pendingPayoutsTotal', 'pendingPayoutsByOpportunity'
+            'pendingInvestmentPayouts', 'hasPendingPayouts', 'pendingPayoutsCount', 'pendingPayoutsTotal', 'pendingPayoutsByOpportunity',
+            'counterOfferLoans', 'acceptedLoans', 'rejectedLoans', 'hasLoanNotifications'
         ));
     }
 

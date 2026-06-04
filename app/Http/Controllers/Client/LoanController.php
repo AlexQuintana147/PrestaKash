@@ -46,6 +46,20 @@ class LoanController extends Controller
         }
 
         $loans = $user->loans()->with('installments')->latest()->take(5)->get();
+
+        // Asegurar que las contraofertas siempre estén incluidas
+        $counterOfferIds = $user->loans()->where('status', 'counter_offered')->pluck('id');
+        if ($counterOfferIds->isNotEmpty()) {
+            $missingIds = $counterOfferIds->diff($loans->pluck('id'));
+            if ($missingIds->isNotEmpty()) {
+                $missingLoans = $user->loans()->with('installments')->whereIn('id', $missingIds)->get();
+                $loans = $loans->merge($missingLoans);
+            }
+        }
+
+        // Marcar notificaciones de préstamos como vistas
+        session(['loans_last_visited_at' => now()]);
+
         return view('client.loans.index', compact('profile', 'loans'));
     }
 

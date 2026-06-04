@@ -726,4 +726,39 @@
             background: #4b5563;
         }
     </style>
+
+    @if(request()->has('open_counter'))
+    @php
+        $autoOpenCounterOffers = $loans->where('status', 'counter_offered')->values();
+    @endphp
+    @if($autoOpenCounterOffers->isNotEmpty())
+    <script>
+        (function() {
+            var counterOfferData = @json($autoOpenCounterOffers);
+            var targetId = {{ (int) request('open_counter') }};
+            var targetLoan = counterOfferData.find(function(l) { return l.id === targetId; }) || counterOfferData[0];
+
+            function tryOpen() {
+                var modal = document.getElementById('acceptCounterModal');
+                if (modal && typeof showCounterOffersList === 'function') {
+                    showCounterOffersList(counterOfferData);
+                    setTimeout(function() {
+                        if (typeof openCounterOfferDetail === 'function') {
+                            openCounterOfferDetail(targetLoan);
+                        }
+                    }, 200);
+                } else {
+                    setTimeout(tryOpen, 150);
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', tryOpen);
+            } else {
+                tryOpen();
+            }
+        })();
+    </script>
+    @endif
+    @endif
 @endsection

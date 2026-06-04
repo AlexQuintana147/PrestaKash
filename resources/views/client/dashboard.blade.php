@@ -207,6 +207,51 @@
     </div>
     @endif
 
+    @if($hasLoanNotifications)
+    <div class="px-4 md:px-8 {{ $rejectedChange || $pendingChange || $hasPendingLoans ? 'pt-2' : 'pt-4' }}">
+        <div class="max-w-4xl mx-auto space-y-2">
+            @foreach($counterOfferLoans as $loan)
+            <a href="{{ route('client.loans') }}?open_counter={{ $loan->id }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+                <div class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-purple-500 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900 dark:text-white">Tienes una contra-oferta</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $loan->code }} — {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                </div>
+                <span class="text-[9px] font-black text-purple-500 bg-purple-500/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Revisar</span>
+            </a>
+            @endforeach
+
+            @foreach($acceptedLoans as $loan)
+            <a href="{{ route('client.loans.history.show', $loan) }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+                <div class="w-8 h-8 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900 dark:text-white">¡Préstamo aprobado!</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $loan->code }} — {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                </div>
+                <span class="text-[9px] font-black text-[#00D26A] bg-[#00D26A]/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Aprobado</span>
+            </a>
+            @endforeach
+
+            @foreach($rejectedLoans as $loan)
+            <a href="{{ route('client.loans') }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
+                <div class="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-900 dark:text-white">Préstamo rechazado</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $loan->code }} — {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                </div>
+                <span class="text-[9px] font-black text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Rechazado</span>
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Header + Title --}}
     <div class="px-4 md:px-8 pt-6 pb-5">
         <div class="max-w-4xl mx-auto relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF]/5 via-transparent to-[#8247f5]/5 dark:from-[#006BFF]/10 dark:via-transparent dark:to-[#8247f5]/10 p-4 md:p-5">
