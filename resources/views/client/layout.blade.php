@@ -178,15 +178,13 @@
                         </svg>
                         <span class="truncate">Gestionar Préstamos</span>
                     </div>
-                    @if($hasCounterOffer)
-                        <div class="relative flex-shrink-0 ml-2">
-                            <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor"
+                    <div id="badge-counter-offers" class="relative flex-shrink-0 ml-2" @if(!$hasCounterOffer) style="display:none" @endif>
+                        <svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
-                        </div>
-                    @endif
+                    </div>
                 </a>
 
                 <a href="{{ route('client.referidos') }}" onclick="closeSidebar()"
@@ -220,11 +218,11 @@
                             <span class="truncate">Invertir</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            @if($hasInvestmentNotification)
+                            <span id="badge-invest-rejected" @if(!$hasInvestmentNotification) style="display:none" @endif>
                                 <svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
-                            @endif
+                            </span>
                             <svg id="invest-chevron" class="w-3.5 h-3.5 transition-transform duration-200 {{ $isInvestActive ? 'rotate-90' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </button>
@@ -236,11 +234,11 @@
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                                 Oportunidades
                             </div>
-                            @if($hasInvestmentNotification)
+                            <span id="badge-invest-rejected-sub" @if(!$hasInvestmentNotification) style="display:none" @endif>
                                 <svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
-                            @endif
+                            </span>
                         </a>
                         <a href="{{ route('client.investments.my-investments') }}" onclick="closeSidebar()"
                             class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
@@ -255,9 +253,9 @@
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 Mis Pagos
                             </div>
-                            @if($hasPendingPayouts)
+                            <span id="badge-pending-payouts" @if(!$hasPendingPayouts) style="display:none" @endif>
                                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                            @endif
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -418,6 +416,44 @@
         }
 
         updateThemeUI(document.documentElement.classList.contains('dark'));
+
+        // Auto-refresh sidebar badges
+        async function updateSidebarBadges() {
+            try {
+                const res = await fetch('{{ route("client.sidebar-stats") }}');
+                const d = await res.json();
+
+                const bellSvg = '<svg class="w-4 h-4 text-purple-600 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>';
+                const bellRedSvg = '<svg class="w-4 h-4 text-red-500 animate-swing origin-top" fill="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>';
+
+                function updateBadge(id, html, show) {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.innerHTML = html;
+                    el.style.display = show ? '' : 'none';
+                }
+
+                updateBadge('badge-counter-offers', bellSvg, d.counter_offers > 0);
+                updateBadge('badge-invest-rejected', bellRedSvg, d.investment_rejected > 0);
+                updateBadge('badge-invest-rejected-sub', bellRedSvg, d.investment_rejected > 0);
+                updateBadge('badge-pending-payouts', '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>', d.pending_payouts > 0);
+            } catch (e) {}
+        }
+
+        let _sidebarInterval;
+        function startSidebarAutoRefresh() {
+            if (_sidebarInterval) return;
+            _sidebarInterval = setInterval(() => {
+                if (document.visibilityState === 'visible') updateSidebarBadges();
+            }, 30000);
+        }
+        function stopSidebarAutoRefresh() {
+            if (_sidebarInterval) { clearInterval(_sidebarInterval); _sidebarInterval = null; }
+        }
+        document.addEventListener('DOMContentLoaded', startSidebarAutoRefresh);
+        document.addEventListener('visibilitychange', () => {
+            document.visibilityState === 'visible' ? startSidebarAutoRefresh() : stopSidebarAutoRefresh();
+        });
     </script>
 
     @include('partials.global-scripts')

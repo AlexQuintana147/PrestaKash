@@ -353,6 +353,7 @@ class LoanController extends Controller
             ->latest()
             ->get();
 
+        session(['loans_last_visited_at' => now()]);
         return view('client.loans.history', compact('loans'));
     }
 
@@ -361,6 +362,7 @@ class LoanController extends Controller
         if ($loan->user_id !== Auth::id())
             abort(403);
         $loan->load('installments.interestPayments');
+        session(['loans_last_visited_at' => now()]);
         return view('client.loans.history-show', compact('loan'));
     }
 

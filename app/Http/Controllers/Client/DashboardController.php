@@ -10,6 +10,7 @@ use App\Models\UbigeoDepartment;
 use App\Models\UbigeoDistrict;
 use App\Models\UbigeoProvince;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -146,5 +147,77 @@ class DashboardController extends Controller
         $rejectionReason = auth()->user()->investor_rejection_reason;
 
         return view('client.invest.index', compact('rejectionReason'));
+    }
+
+    public function sidebarStats()
+    {
+        $userId = Auth::id();
+
+        return response()->json(
+            Cache::remember("client_sidebar_stats_{$userId}", 30, function () use ($userId) {
+                $user = Auth::user();
+
+                return [
+                    'counter_offers' => $user->loans()->where('status', 'counter_offered')->count(),
+                    'pending_payouts' => $user->is_investor
+                        ? \App\Models\InvestorPayout::where('investor_user_id', $userId)->where('status', 'pending')->count()
+                        : 0,
+                    'investment_rejected' => $user->is_investor && $user->investment_rejection_reason ? 1 : 0,
+                ];
+            })
+        );
+    }
+
+    public function loanNotifications()
+    {
+        $user = Auth::user()->load('loans');
+        $loansLastVisited = session('loans_last_visited_at');
+
+        $counterOfferLoans = $user->loans->where('status', 'counter_offered')
+            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+        $acceptedLoans = $user->loans->whereIn('status', ['approved', 'counter_accepted'])
+            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+        $rejectedLoans = $user->loans->where('status', 'rejected')
+            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+
+        $notifications = [];
+
+        foreach ($counterOfferLoans as $loan) {
+            $notifications[] = [
+                'type' => 'counter_offer',
+                'id' => $loan->id,
+                'code' => $loan->code,
+                'amount' => $loan->amount,
+                'currency' => $loan->currency,
+                'url' => route('client.loans') . '?open_counter=' . $loan->id,
+            ];
+        }
+
+        foreach ($acceptedLoans as $loan) {
+            $notifications[] = [
+                'type' => 'accepted',
+                'id' => $loan->id,
+                'code' => $loan->code,
+                'amount' => $loan->amount,
+                'currency' => $loan->currency,
+                'url' => route('client.loans.history.show', $loan),
+            ];
+        }
+
+        foreach ($rejectedLoans as $loan) {
+            $notifications[] = [
+                'type' => 'rejected',
+                'id' => $loan->id,
+                'code' => $loan->code,
+                'amount' => $loan->amount,
+                'currency' => $loan->currency,
+                'url' => route('client.loans'),
+            ];
+        }
+
+        return response()->json([
+            'notifications' => $notifications,
+            'pending_loans' => $user->loans->where('status', 'pending')->count(),
+        ]);
     }
 }

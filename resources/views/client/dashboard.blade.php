@@ -191,24 +191,22 @@
     </div>
     @endif
 
-    @if($hasPendingLoans)
-    <div class="px-4 md:px-8 {{ $rejectedChange || $pendingChange ? 'pt-2' : 'pt-4' }}">
+    <div id="pending-loans-banner" class="px-4 md:px-8 {{ $rejectedChange || $pendingChange ? 'pt-2' : 'pt-4' }}" @if(!$hasPendingLoans) style="display:none" @endif>
         <button type="button" onclick="openPendingLoansModal()"
                 class="w-full max-w-4xl mx-auto pk-card px-4 py-3 flex items-center gap-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
             <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
                 <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm text-gray-900 dark:text-white">{{ $pendingLoans->count() }} solicitud(es) en revisión</p>
+                <p id="pending-loans-text" class="text-sm text-gray-900 dark:text-white">{{ $pendingLoans->count() }} solicitud(es) en revisión</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Toca para ver detalles</p>
             </div>
             <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
     </div>
-    @endif
 
     @if($hasLoanNotifications)
-    <div class="px-4 md:px-8 {{ $rejectedChange || $pendingChange || $hasPendingLoans ? 'pt-2' : 'pt-4' }}">
+    <div id="loan-notifications" class="px-4 md:px-8 {{ $rejectedChange || $pendingChange || $hasPendingLoans ? 'pt-2' : 'pt-4' }}">
         <div class="max-w-4xl mx-auto space-y-2">
             @foreach($counterOfferLoans as $loan)
             <a href="{{ route('client.loans') }}?open_counter={{ $loan->id }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
@@ -250,6 +248,8 @@
             @endforeach
         </div>
     </div>
+    @else
+    <div id="loan-notifications"></div>
     @endif
 
     {{-- Header + Title --}}
@@ -1105,6 +1105,94 @@ document.getElementById('overdueModal').addEventListener('keydown', function(e) 
 });
 </script>
 @endif
+
+<script>
+(function() {
+    function renderNotifications(notifications) {
+        const container = document.getElementById('loan-notifications');
+        if (!container) return;
+
+        if (notifications.length === 0) {
+            container.innerHTML = '';
+            container.className = '';
+            return;
+        }
+
+        container.className = 'px-4 md:px-8 pt-2';
+        let html = '<div class="max-w-4xl mx-auto space-y-2">';
+
+        notifications.forEach(function(n) {
+            const symbol = n.currency === 'USD' ? '$' : 'S/';
+            const formatted = parseFloat(n.amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            if (n.type === 'counter_offer') {
+                html += '<a href="' + n.url + '" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">' +
+                    '<div class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">' +
+                    '<svg class="w-4 h-4 text-purple-500 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>' +
+                    '</div>' +
+                    '<div class="flex-1 min-w-0"><p class="text-sm text-gray-900 dark:text-white">Tienes una contra-oferta</p>' +
+                    '<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">' + n.code + ' — ' + symbol + formatted + '</p></div>' +
+                    '<span class="text-[9px] font-black text-purple-500 bg-purple-500/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Revisar</span></a>';
+            } else if (n.type === 'accepted') {
+                html += '<a href="' + n.url + '" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">' +
+                    '<div class="w-8 h-8 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">' +
+                    '<svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+                    '</div>' +
+                    '<div class="flex-1 min-w-0"><p class="text-sm text-gray-900 dark:text-white">¡Préstamo aprobado!</p>' +
+                    '<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">' + n.code + ' — ' + symbol + formatted + '</p></div>' +
+                    '<span class="text-[9px] font-black text-[#00D26A] bg-[#00D26A]/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Aprobado</span></a>';
+            } else if (n.type === 'rejected') {
+                html += '<a href="' + n.url + '" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">' +
+                    '<div class="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">' +
+                    '<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+                    '</div>' +
+                    '<div class="flex-1 min-w-0"><p class="text-sm text-gray-900 dark:text-white">Préstamo rechazado</p>' +
+                    '<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">' + n.code + ' — ' + symbol + formatted + '</p></div>' +
+                    '<span class="text-[9px] font-black text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Rechazado</span></a>';
+            }
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    async function fetchNotifications() {
+        try {
+            const res = await fetch('{{ route("client.loan-notifications") }}');
+            const data = await res.json();
+            renderNotifications(data.notifications);
+
+            // Actualizar banner de préstamos pendientes
+            const pendingBanner = document.getElementById('pending-loans-banner');
+            const pendingText = document.getElementById('pending-loans-text');
+            if (pendingBanner && pendingText) {
+                if (data.pending_loans > 0) {
+                    pendingBanner.style.display = '';
+                    pendingText.textContent = data.pending_loans + ' solicitud(es) en revisión';
+                } else {
+                    pendingBanner.style.display = 'none';
+                }
+            }
+        } catch (e) {}
+    }
+
+    let _dashInterval;
+    function startDashRefresh() {
+        if (_dashInterval) return;
+        _dashInterval = setInterval(() => {
+            if (document.visibilityState === 'visible') fetchNotifications();
+        }, 30000);
+    }
+    function stopDashRefresh() {
+        if (_dashInterval) { clearInterval(_dashInterval); _dashInterval = null; }
+    }
+
+    document.addEventListener('DOMContentLoaded', startDashRefresh);
+    document.addEventListener('visibilitychange', () => {
+        document.visibilityState === 'visible' ? startDashRefresh() : stopDashRefresh();
+    });
+})();
+</script>
 @endsection
 
 @if($hasUpcoming)
