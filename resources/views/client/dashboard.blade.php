@@ -692,7 +692,7 @@
             </div>
             <div id="bankAccountForm" class="hidden pt-5 mt-5 border-t border-gray-100 dark:border-gray-800/50">
                 <h4 id="formTitle" class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-5">Nueva Cuenta</h4>
-                <form id="actualForm" onsubmit="saveBankAccount(event)" class="space-y-4">
+                <form id="actualForm" onsubmit="saveBankAccount(event)" data-no-loading class="space-y-4">
                     <input type="hidden" id="editingId" value="">
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Alias</label>

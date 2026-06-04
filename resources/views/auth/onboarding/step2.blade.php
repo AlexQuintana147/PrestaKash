@@ -606,6 +606,28 @@
 
     @include('partials.global-scripts')
 
+    <!-- Subtle loading overlay -->
+    <div id="pk-loading" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-gray-950/60 backdrop-blur-sm absolute inset-0"></div>
+        <div class="relative flex flex-col items-center gap-3">
+            <div class="w-8 h-8 border-2 border-gray-600 border-t-green-500 rounded-full animate-spin"></div>
+            <p class="text-xs font-medium text-gray-400">Subiendo documentos...</p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('submit', function(e) {
+            var form = e.target;
+            if (form.tagName === 'FORM' && !form.dataset.noLoading) {
+                var overlay = document.getElementById('pk-loading');
+                if (overlay) {
+                    overlay.classList.remove('opacity-0');
+                    overlay.classList.add('opacity-100');
+                    overlay.classList.add('pointer-events-auto');
+                }
+            }
+        });
+    </script>
+
 </body>
 
 </html>
