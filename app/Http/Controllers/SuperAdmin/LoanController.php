@@ -591,6 +591,11 @@ class LoanController extends Controller
                 'cashboxes' => $cashboxes,
                 'search' => $search,
                 'totalOverdueCount' => $totalOverdueCount,
+                'instId' => $instId,
+                'highlightInterest' => $highlightInterest,
+                'movementDate' => $movementDate,
+                'paidDateFrom' => null,
+                'paidDateTo' => null,
             ]);
         } elseif ($filter === 'grouped') {
             $loansQuery = \App\Models\Loan::with(['user', 'user.documents'])
@@ -630,6 +635,11 @@ class LoanController extends Controller
                 'cashboxes' => $cashboxes,
                 'search' => $search,
                 'totalOverdueCount' => $totalOverdueCount,
+                'instId' => $instId,
+                'highlightInterest' => $highlightInterest,
+                'movementDate' => $movementDate,
+                'paidDateFrom' => null,
+                'paidDateTo' => null,
             ]);
         } elseif ($filter === 'pending_validation') {
             $query->where('status', 'processing');
@@ -663,7 +673,7 @@ class LoanController extends Controller
                 ['path' => LengthAwarePaginator::resolveCurrentPath()]
             );
             $installments->withQueryString();
-            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'paidDateFrom', 'paidDateTo', 'search', 'totalOverdueCount'));
+            return view('superadmin.loans.installments', compact('installments', 'filter', 'cashboxes', 'instId', 'highlightInterest', 'movementDate', 'search', 'totalOverdueCount'))->with('paidDateFrom', null)->with('paidDateTo', null);
         } elseif ($filter === 'overdue') {
             $overdueInstallments = \App\Models\LoanInstallment::with(['loan.user', 'loan.user.documents', 'loan.user.loans'])
                 ->whereHas('loan', fn($q) => $q->whereIn('status', ['approved', 'paid']))
@@ -719,6 +729,11 @@ class LoanController extends Controller
                 'cashboxes' => $cashboxes,
                 'search' => $search,
                 'totalOverdueCount' => $totalOverdueCount,
+                'instId' => $instId,
+                'highlightInterest' => $highlightInterest,
+                'movementDate' => $movementDate,
+                'paidDateFrom' => null,
+                'paidDateTo' => null,
             ]);
         } elseif ($filter === 'paid') {
             $query->where(function ($q) {
