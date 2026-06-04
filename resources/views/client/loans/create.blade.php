@@ -257,7 +257,8 @@
                                             <p
                                                 class="text-sm font-semibold text-gray-700 dark:text-gray-300 peer-checked:text-green-600 dark:peer-checked:text-green-400">
                                                 15 días</p>
-                                            <p class="text-[10px] text-green-600 dark:text-green-400 mt-0.5">10% comisión
+                                            <p class="text-[10px] text-green-600 dark:text-green-400 mt-0.5">
+                                                <span id="unico15Rate">{{ number_format((Auth::user()->loan_interest_rate ?? 20) / 2, 2, '.', '') }}%</span> comisión
                                             </p>
                                         </div>
                                     </label>
@@ -908,7 +909,8 @@
                     plazoText = m + (m === 1 ? ' mes' : ' meses');
                 } else {
                     const days = parseInt(document.querySelector('input[name="payment_days"]:checked')?.value) || 15;
-                    interestRate = days === 15 ? 0.10 : (USER_CUSTOM_RATE / 100);
+                    const halfRate = Math.round((USER_CUSTOM_RATE / 2) * 100) / 100;
+                    interestRate = days === 15 ? (halfRate / 100) : (USER_CUSTOM_RATE / 100);
                     interest = a * interestRate;
                     total = a + interest;
                     periodicPayment = 0;

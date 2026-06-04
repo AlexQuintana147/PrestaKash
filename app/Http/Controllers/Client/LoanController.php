@@ -128,7 +128,7 @@ class LoanController extends Controller
         } else {
             $nTotal = 1;
             $paymentDays = (int) $request->payment_days;
-            $tasaInteres = $paymentDays === 15 ? 0.10 : $defaultRate;
+            $tasaInteres = $paymentDays === 15 ? round($defaultRate / 2, 4) : $defaultRate;
             $interes = $montoSolicitado * $tasaInteres;
             $totalAPagar = $montoSolicitado + $interes;
             $cuota = $totalAPagar; // un solo pago
