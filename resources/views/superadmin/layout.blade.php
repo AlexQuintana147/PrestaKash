@@ -139,7 +139,7 @@
                   transform -translate-x-full md:translate-x-0
                   transition-transform duration-300 ease-in-out">
 
-                <div id="sidebar-content">
+                <div id="sidebar-content" class="flex flex-col h-full overflow-hidden">
 
             <!-- Logo (desktop) -->
             <div class="hidden md:flex px-6 py-5 border-b border-gray-200 dark:border-gray-900 items-center gap-3">
