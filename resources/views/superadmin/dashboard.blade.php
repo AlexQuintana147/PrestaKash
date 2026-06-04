@@ -171,9 +171,8 @@
         $showDeposited = request()->get('disb') === 'deposited';
         $visibleDisbursements = $showDeposited ? $depositedDisbursements : $pendingDisbursements;
     @endphp
-    @if($visibleDisbursements->count() > 0)
     <div class="pk-fade pk-card overflow-hidden">
-        <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+        <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div class="flex items-center gap-2.5">
                 <svg class="w-8 h-8 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <div>
@@ -186,11 +185,11 @@
                     </div>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="relative">
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="relative flex-1 sm:flex-initial">
                     <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input id="disb-search" type="text" placeholder="Buscar nombre, DNI/RUC o código..."
-                        class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-[10px] font-medium text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-[#006BFF] focus:border-[#006BFF] w-48">
+                        class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-[10px] font-medium text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-[#006BFF] focus:border-[#006BFF] w-full sm:w-48">
                 </div>
                 @if($showDeposited)
                 <a href="{{ url()->current() }}#disb-section" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:underline whitespace-nowrap">Ver pendientes</a>
@@ -200,7 +199,7 @@
             </div>
         </div>
         <div id="disb-list" class="divide-y divide-gray-50 dark:divide-gray-800/50">
-            @foreach($visibleDisbursements as $loan)
+            @forelse($visibleDisbursements as $loan)
                 @php
                     $disbDate = \Carbon\Carbon::parse($loan->disbursement_date);
                     $isToday = $disbDate->isToday();
@@ -210,30 +209,32 @@
                     $photo = $selfie ? Storage::url($selfie) : ($loan->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($loan->user->name));
                     $curSymbol = $loan->currency === 'USD' ? '$' : 'S/';
                 @endphp
-                <div id="disb-{{ $loan->code }}" class="disb-item pk-list-row flex items-center gap-3 px-5 py-3 cursor-pointer {{ $loan->deposit_made ? 'bg-[#00D26A]/5 dark:bg-[#00D26A]/5' : '' }}"
+                <div id="disb-{{ $loan->code }}" class="disb-item pk-list-row flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 cursor-pointer {{ $loan->deposit_made ? 'bg-[#00D26A]/5 dark:bg-[#00D26A]/5' : '' }}"
                      data-name="{{ strtolower($loan->user->name) }}"
                      data-dni="{{ strtolower($loan->user->dni ?? '') }}"
                      data-ruc="{{ strtolower($loan->user->ruc ?? '') }}"
                      data-code="{{ strtolower($loan->code) }}"
                      onclick="window.location.href='{{ route('superadmin.loans.index') }}?highlight={{ $loan->id }}#loan-{{ $loan->id }}'">
-                    <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-800">
-                        <img src="{{ $photo }}" class="w-full h-full object-cover" alt="">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1.5">
-                            <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $loan->user->name }}</p>
-                            @if($loan->status === 'pending')
-                                <span class="text-[7px] font-black text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Pendiente</span>
-                            @elseif($loan->status === 'counter_accepted')
-                                <span class="text-[7px] font-black text-purple-500 bg-purple-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Contra-oferta</span>
-                            @endif
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-800">
+                            <img src="{{ $photo }}" class="w-full h-full object-cover" alt="">
                         </div>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan->code }}</p>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $loan->user->name }}</p>
+                                @if($loan->status === 'pending')
+                                    <span class="text-[7px] font-black text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Pendiente</span>
+                                @elseif($loan->status === 'counter_accepted')
+                                    <span class="text-[7px] font-black text-purple-500 bg-purple-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Contra-oferta</span>
+                                @endif
+                            </div>
+                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan->code }}</p>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3 flex-shrink-0">
-                        <div class="text-right">
+                    <div class="flex items-center gap-3 sm:flex-shrink-0 pl-12 sm:pl-0">
+                        <div class="text-right flex-1 sm:flex-initial">
                             <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">{{ $curSymbol }}{{ number_format($loan->amount, 2) }}</p>
-                            <div class="flex items-center justify-end gap-1">
+                            <div class="flex items-center sm:justify-end gap-1">
                                 @if($loan->deposit_made)
                                     <span class="text-[8px] font-black text-[#00D26A] uppercase">Depositado</span>
                                 @elseif($isPast)
@@ -243,7 +244,7 @@
                                 @elseif($isTomorrow)
                                     <span class="text-[8px] font-black text-orange-500 uppercase">Mañana</span>
                                 @endif
-                                <span class="text-[9px] text-gray-400 dark:text-gray-500">{{ $disbDate->format('d/m/Y') }}</span>
+                                <span class="text-[11px] text-gray-500 dark:text-gray-400 font-semibold">{{ $disbDate->format('d/m/Y') }}</span>
                             </div>
                         </div>
                         <form method="POST" action="{{ route('superadmin.loans.toggle-deposit', $loan) }}" class="flex-shrink-0" onclick="event.stopPropagation()">
@@ -255,11 +256,16 @@
                         </form>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="flex flex-col items-center justify-center py-10 px-4">
+                    <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                    <p class="text-xs font-bold text-gray-400 dark:text-gray-500">Aún no hay nada por aquí</p>
+                    <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-0.5">Los préstamos por desembolsar aparecerán aquí</p>
+                </div>
+            @endforelse
         </div>
         <div id="disb-pag" class="hidden px-5 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-center gap-1.5"></div>
     </div>
-    @endif
 
     {{-- COBRANZA + PAGOS INVERSORES --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
