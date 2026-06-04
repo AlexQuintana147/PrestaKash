@@ -26,4 +26,19 @@ class Cashbox extends Model
     {
         return $this->hasMany(CashboxMovement::class);
     }
+
+    /**
+     * Decrement balance safely — throws if it would go negative.
+     */
+    public function safeDecrement(string $column, float $amount): void
+    {
+        $fresh = static::lockForUpdate()->find($this->id);
+
+        if ($fresh->$column < $amount) {
+            throw new \Exception("Saldo insuficiente en la caja «{$this->name}». Disponible: {$fresh->$column}, requerido: {$amount}");
+        }
+
+        $fresh->decrement($column, $amount);
+        $this->$column = $fresh->$column - $amount;
+    }
 }

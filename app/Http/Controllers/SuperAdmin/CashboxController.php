@@ -171,7 +171,7 @@ class CashboxController extends Controller
             if ($request->type === 'income') {
                 $cashbox->increment('balance', $amount);
             } else {
-                $cashbox->decrement('balance', $amount);
+                $cashbox->safeDecrement('balance', $amount);
             }
         });
 
@@ -224,7 +224,7 @@ class CashboxController extends Controller
                 'date' => now(),
             ]);
 
-            $from->decrement('balance', $amount);
+            $from->safeDecrement('balance', $amount);
             $to->increment('balance', $amount);
         });
 
@@ -241,7 +241,7 @@ class CashboxController extends Controller
             $cashbox = $movement->cashbox;
 
             if ($movement->type === 'income') {
-                $cashbox->decrement('balance', $movement->amount);
+                $cashbox->safeDecrement('balance', $movement->amount);
             } else {
                 $cashbox->increment('balance', $movement->amount);
             }
@@ -257,7 +257,7 @@ class CashboxController extends Controller
                 if ($paired) {
                     $pairedCashbox = $paired->cashbox;
                     if ($paired->type === 'income') {
-                        $pairedCashbox->decrement('balance', $paired->amount);
+                        $pairedCashbox->safeDecrement('balance', $paired->amount);
                     } else {
                         $pairedCashbox->increment('balance', $paired->amount);
                     }

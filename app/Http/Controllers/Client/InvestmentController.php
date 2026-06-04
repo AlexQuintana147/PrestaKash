@@ -456,6 +456,10 @@ class InvestmentController extends Controller
 
             $cashbox = \App\Models\Cashbox::findOrFail($cashboxId);
 
+            if ($cashbox->balance < $payout->amount) {
+                return back()->withErrors(['error' => 'Saldo insuficiente en la caja para realizar este pago.']);
+            }
+
             \App\Models\CashboxMovement::create([
                 'user_id' => auth()->id(),
                 'cashbox_id' => $cashboxId,
@@ -468,7 +472,7 @@ class InvestmentController extends Controller
                 'date' => $scheduleDate ?? now(),
             ]);
 
-            $cashbox->decrement('balance', $payout->amount);
+            $cashbox->safeDecrement('balance', $payout->amount);
         });
 
         return back()->with('success', 'Pago aceptado correctamente.');

@@ -264,7 +264,7 @@ class UsersController extends Controller
             if ($request->type === 'income') {
                 $cashbox->increment('balance', $amount);
             } else {
-                $cashbox->decrement('balance', $amount);
+                $cashbox->safeDecrement('balance', $amount);
             }
         });
 

@@ -274,7 +274,7 @@ class InvestmentOpportunityController extends Controller
 
             if ($movement) {
                 $cashbox = $movement->cashbox;
-                $cashbox->decrement('balance', $movement->amount);
+                $cashbox->safeDecrement('balance', $movement->amount);
                 $movement->delete();
             }
 

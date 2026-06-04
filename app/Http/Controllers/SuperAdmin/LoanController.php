@@ -241,7 +241,7 @@ class LoanController extends Controller
                 'date' => now(),
             ]);
 
-            $cashbox->decrement('balance', $amount);
+            $cashbox->safeDecrement('balance', $amount);
 
             // Delete existing installments if any
             $loan->installments()->delete();
@@ -381,7 +381,7 @@ class LoanController extends Controller
                 'date' => now(),
             ]);
 
-            $cashbox->decrement('balance', $amount);
+            $cashbox->safeDecrement('balance', $amount);
 
             $loan->installments()->delete();
             $rate = $loan->interest_rate / 100;
@@ -1396,7 +1396,7 @@ class LoanController extends Controller
             if ($movement) {
                 $cashbox = $movement->cashbox;
                 if ($cashbox) {
-                    $cashbox->decrement('balance', $movement->amount);
+                    $cashbox->safeDecrement('balance', $movement->amount);
                 }
                 $movement->delete();
             }
@@ -1549,7 +1549,7 @@ class LoanController extends Controller
                 if ($movement) {
                     $cashbox = $movement->cashbox;
                     if ($cashbox) {
-                        $cashbox->decrement('balance', $movement->amount);
+                        $cashbox->safeDecrement('balance', $movement->amount);
                     }
                     $movement->delete();
                 }
@@ -1638,7 +1638,7 @@ class LoanController extends Controller
                 if ($movement) {
                     $cashbox = $movement->cashbox;
                     if ($cashbox) {
-                        $cashbox->decrement('balance', $movement->amount);
+                        $cashbox->safeDecrement('balance', $movement->amount);
                     }
                     $movement->delete();
                 }
@@ -1666,7 +1666,7 @@ class LoanController extends Controller
                 if ($movement) {
                     $cashbox = $movement->cashbox;
                     if ($cashbox) {
-                        $cashbox->decrement('balance', $movement->amount);
+                        $cashbox->safeDecrement('balance', $movement->amount);
                     }
                     $movement->delete();
                 }
@@ -1741,7 +1741,7 @@ class LoanController extends Controller
                 if ($movement) {
                     $cashbox = $movement->cashbox;
                     if ($cashbox) {
-                        $cashbox->decrement('balance', $movement->amount);
+                        $cashbox->safeDecrement('balance', $movement->amount);
                     }
                     $movement->delete();
                 }

@@ -517,6 +517,10 @@ class InvestmentPaymentController extends Controller
             return back()->withErrors(['cashbox_id' => 'La caja no corresponde a la moneda de la oportunidad.']);
         }
 
+        if ($cashbox->balance < $payout->amount) {
+            return back()->withErrors(['cashbox_id' => 'Saldo insuficiente en la caja seleccionada.']);
+        }
+
         \DB::transaction(function () use ($payout, $cashbox, $opportunity, $investor) {
             $payout->update([
                 'status' => 'confirmed',
@@ -535,7 +539,7 @@ class InvestmentPaymentController extends Controller
                 'date' => now(),
             ]);
 
-            $cashbox->decrement('balance', $payout->amount);
+            $cashbox->safeDecrement('balance', $payout->amount);
         });
 
         return back()->with('success', 'Pago confirmado y egreso registrado en caja.');
