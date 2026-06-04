@@ -2280,8 +2280,11 @@
 </div>
 
 <!-- Modal Confirmar Aprobación -->
-<div id="approveConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center">
+<div id="approveConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center" onclick="if(event.target===this)closeApproveModal()">
     <div class="bg-white dark:bg-gray-950 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl relative max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-center">
+        <button type="button" onclick="closeApproveModal()" class="absolute top-3 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
         <div class="w-16 h-16 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20,2H6A2,2,0,0,0,4,4V17H4a2,2,0,0,0-2,2H2a3,3,0,0,0,3,3H19.5A2.5,2.5,0,0,0,22,19.5V4A2,2,0,0,0,20,2Z" opacity="0.3"/><path d="M19,22v0H5a3,3,0,0,1-3-3H2a2,2,0,0,1,2-2H15a2,2,0,0,1,2,2v.5A2.52,2.52,0,0,0,19,22ZM12.71,11.71l4-4a1,1,0,1,0-1.42-1.42L12,9.59l-1.29-1.3A1,1,0,0,0,9.29,9.71l2,2a1,1,0,0,0,1.42,0Z"/></svg>
         </div>
@@ -2369,8 +2372,11 @@
 </div>
 
 <!-- Modal Confirmar Desembolso (Contra-oferta aceptada) -->
-<div id="disburseConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center">
+<div id="disburseConfirmModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-end sm:items-center justify-center" onclick="if(event.target===this)closeDisburseModal()">
     <div class="bg-white dark:bg-gray-950 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl relative max-h-[90vh] overflow-y-auto p-5 sm:p-6 text-center">
+        <button type="button" onclick="closeDisburseModal()" class="absolute top-3 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
         <div class="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg>
         </div>
