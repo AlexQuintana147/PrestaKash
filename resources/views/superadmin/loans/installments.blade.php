@@ -295,7 +295,7 @@
                     </div>
                 @empty
                     <div class="col-span-full py-24 text-center">
-                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay préstamos activos</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">No hay préstamos activos</p>
                     </div>
                 @endforelse
             </div>
@@ -344,11 +344,11 @@
                                 <span class="inline-flex items-center bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-[9px] px-2 py-1 rounded-lg">DNI: {{ $bw['user']->dni ?? '' }}</span>
                             </div>
                         </div>
-                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 @empty
                     <div class="py-24 text-center">
-                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay prestatarios registrados</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">No hay prestatarios registrados</p>
                     </div>
                 @endforelse
             </div>
@@ -405,7 +405,7 @@
                 @empty
                     <div class="py-24 text-center">
                         <svg class="w-12 h-12 mx-auto text-green-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">Sin cuotas vencidas</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">Sin cuotas vencidas</p>
                     </div>
                 @endforelse
             </div>
@@ -466,7 +466,7 @@
                     ])
                 @empty
                     <div class="py-24 text-center">
-                        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">No hay cuotas registradas</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">No hay cuotas registradas</p>
                     </div>
                 @endforelse
             </div>
@@ -508,7 +508,7 @@
 
             <div class="px-5 py-2.5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
                 <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input type="text" id="borrower-loans-search" placeholder="Buscar por código..." oninput="filterBorrowerLoans()" class="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-gray-300 dark:focus:border-gray-500 transition-colors">
                 </div>
             </div>
@@ -550,7 +550,7 @@
                 @method('PATCH')
                 <div>
                     <label
-                        class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">N°
+                        class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block mb-2">N°
                         de operación</label>
                     <input type="text" name="operation_number" id="edit_modal_operation_number" placeholder="Ej: 123456"
                         maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
@@ -618,12 +618,12 @@
                 html += '<div class="flex items-center gap-1.5 mb-1">';
                 html += '<span class="text-sm font-bold text-gray-900 dark:text-white">' + l.code + '</span>' + badges;
                 html += '</div>';
-                html += '<div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-400 dark:text-gray-500">';
+                html += '<div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-500 dark:text-gray-400">';
                 html += '<span>' + l.cur + '<strong class="text-gray-600 dark:text-gray-300 tabular-nums ml-0.5">' + Number(l.amount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
                 html += '<span>Pagado: <strong class="text-emerald-600 dark:text-emerald-400 tabular-nums">' + Number(l.paid).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
                 html += '<span>Deuda: <strong class="' + debtColor + ' tabular-nums">' + Number(l.debt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
                 html += '</div></div>';
-                html += '<svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+                html += '<svg class="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
                 html += '</a>';
             });
             container.innerHTML = html;

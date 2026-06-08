@@ -7,7 +7,7 @@
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-3">
             <div>
-                <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] mb-1">Panel
+                <p class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.3em] mb-1">Panel
                     Administrativo</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
                 </h1>
@@ -199,7 +199,7 @@
                                             Balance Total</p>
                                         <div class="flex items-baseline gap-1 md:gap-2">
                                             <span
-                                                class="text-lg md:text-2xl font-light text-gray-400 dark:text-gray-600 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
+                                                class="text-lg md:text-2xl font-light text-gray-500 dark:text-gray-400 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
                                             <span
                                                 class="cashbox-balance text-3xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
                                                 {{ number_format($cb->balance, 2) }}
@@ -345,7 +345,7 @@
                 </div>
 
                 <div id="noMovements" class="hidden py-32 text-center">
-                    <p class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-[0.3em]">Sin
+                    <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Sin
                         movimientos</p>
                 </div>
             </div>
@@ -430,7 +430,7 @@
                                 <!-- Color -->
                                 <div>
                                     <label
-                                        class="text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.3em] block mb-1">Color</label>
+                                        class="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.3em] block mb-1">Color</label>
                                     <div
                                         class="relative h-[60px] border-b-2 border-gray-100 dark:border-gray-900 group/color">
                                         <input type="color" name="color" id="cb_color" value="#000000"
@@ -506,7 +506,7 @@
                                 <input type="text" name="amount" id="mov_amount" required placeholder="0.00"
                                     class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-2xl md:text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                                 <span id="mov_currency_label"
-                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
+                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-400 dark:text-gray-500">PEN</span>
                             </div>
                             <p id="mov_error"
                                 class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
@@ -609,7 +609,7 @@
                                 <input type="text" name="amount" id="transfer_amount" required placeholder="0.00"
                                     class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-2xl md:text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all tabular-nums">
                                 <span id="transfer_currency_label"
-                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-300 dark:text-gray-700">PEN</span>
+                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-400 dark:text-gray-500">PEN</span>
                             </div>
                             <button type="button" onclick="setTransferMaxAmount()"
                                 class="mt-2 text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 border-b border-blue-600 dark:border-blue-400 pb-0.5 hover:opacity-60 transition-opacity">
@@ -1003,7 +1003,7 @@
                         <!-- JS populated -->
                     </div>
                     <div id="historyNoData" class="hidden py-24 text-center">
-                        <p class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-[0.3em]">Sin
+                        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Sin
                             movimientos</p>
                     </div>
                 </div>
@@ -3038,7 +3038,7 @@
                 const matches = cashboxNames.filter(function(c) { return c.name.toLowerCase().includes(q); });
 
                 if (matches.length === 0) {
-                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400 dark:text-gray-500">Sin resultados</div>';
+                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">Sin resultados</div>';
                 } else {
                     resultsDiv.innerHTML = matches.map(function(m) {
                         return '<button type="button" data-idx="' + m.index + '" class="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between"><span>' + m.name + '</span><svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';

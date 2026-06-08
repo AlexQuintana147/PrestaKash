@@ -54,16 +54,16 @@
     </div>
 
     <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6 mb-8">
-        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Descripción</p>
+        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Descripción</p>
         <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{{ $investment->description }}</p>
 
         @if($investment->risks)
-            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 mt-6">Riesgos</p>
+            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3 mt-6">Riesgos</p>
             <p class="text-sm text-red-600 dark:text-red-400 leading-relaxed whitespace-pre-line">{{ $investment->risks }}</p>
         @endif
 
         @if($investment->bank_accounts)
-            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 mt-6">Cuentas Bancarias</p>
+            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3 mt-6">Cuentas Bancarias</p>
             <div class="space-y-2">
                 @foreach($investment->bank_accounts as $acc)
                     <div class="p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
@@ -215,7 +215,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <p class="text-[9px] md:text-[10px] text-gray-400 dark:text-gray-600 font-medium flex-shrink-0">{{ $investor->pivot->created_at->format('d/m/Y') }}</p>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">{{ $investor->pivot->created_at->format('d/m/Y') }}</p>
                         </div>
                         <div class="flex items-center gap-2 md:gap-3 flex-wrap">
                             @if($investor->pivot->status === 'pending')
@@ -320,7 +320,7 @@
             </div>
         @endif
     @else
-        <p class="text-sm text-gray-400 dark:text-gray-600 text-center py-8">Aún no hay inversores participando</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">Aún no hay inversores participando</p>
     @endif
 
     <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
@@ -354,7 +354,7 @@
             ¿Estás seguro de rechazar la solicitud de <span id="reject_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="reject_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
         <div class="mb-8 text-left">
-            <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block mb-2">Motivo del rechazo (opcional)</label>
+            <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block mb-2">Motivo del rechazo (opcional)</label>
             <textarea id="reject_inv_reason" rows="2" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors resize-none"></textarea>
         </div>
         <div class="flex justify-center gap-8">
@@ -393,7 +393,7 @@
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
             ¿Desaprobar el pago de <span id="disapprove_pay_name" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
-        <p class="text-xs text-gray-400 dark:text-gray-500 mb-6">El pago volverá a estado pendiente y el inversor podrá subir un nuevo comprobante.</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">El pago volverá a estado pendiente y el inversor podrá subir un nuevo comprobante.</p>
         <div class="flex justify-center gap-6">
             <button onclick="closeDisapprovePaymentModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form id="disapprovePaymentForm" method="POST">
@@ -428,7 +428,7 @@
             </div>
             <div class="w-full md:w-3/5 p-8 md:p-10 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Información Personal</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Información Personal</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">DNI / Documento</p>
@@ -453,7 +453,7 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Detalles de Inversión</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Detalles de Inversión</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Ocupación</p>
@@ -474,7 +474,7 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Referido</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Referido</p>
                     <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"></p>
                 </div>
             </div>

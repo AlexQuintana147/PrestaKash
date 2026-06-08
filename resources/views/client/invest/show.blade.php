@@ -73,7 +73,7 @@
     </div>
 
     <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-sm">
-        <span class="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Descripción del Proyecto</span>
+        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Descripción del Proyecto</span>
         <p class="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-3">{{ $opportunity->description }}</p>
 
         @if($opportunity->risks)
@@ -129,7 +129,7 @@
 
                     @if($opportunity->bank_accounts)
                     <div class="mb-6">
-                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Datos para Depósito</p>
+                        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Datos para Depósito</p>
                         <div class="grid gap-3">
                             @foreach($opportunity->bank_accounts as $account)
                                 <div class="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800">
@@ -154,7 +154,7 @@
                     @endif
 
                     <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
-                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Subir Nuevo Comprobante de Pago</p>
+                        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Subir Nuevo Comprobante de Pago</p>
 
                         @if($errors->any())
                             <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -188,7 +188,7 @@
                                                maxlength="30" pattern="\d*" inputmode="numeric"
                                                placeholder="Ej: 123456789"
                                                oninput="this.value=this.value.replace(/\D/g,'').slice(0,30)"
-                                               class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                               class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
@@ -252,7 +252,7 @@
 
                         @if($opportunity->bank_accounts)
                             <div class="mb-6">
-                                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Datos para Depósito</p>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Datos para Depósito</p>
                                 <div class="grid gap-3">
                                     @foreach($opportunity->bank_accounts as $account)
                                         <div class="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800">
@@ -278,7 +278,7 @@
 
                         @if(!$existingRequest->pivot->payment_submitted_at)
                             <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
-                                <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Subir Comprobante de Pago</p>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Subir Comprobante de Pago</p>
 
                                 @if($errors->any())
                                     <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -312,7 +312,7 @@
                                                        maxlength="30" pattern="\d*" inputmode="numeric"
                                                        placeholder="Ej: 123456789"
                                                        oninput="this.value=this.value.replace(/\D/g,'').slice(0,30)"
-                                                       class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                                       class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
@@ -377,7 +377,7 @@
                 </div>
 
                 <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
 
                     @if($errors->any())
                         <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -397,7 +397,7 @@
                                     <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
                                    oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);let r=(v||'').replace(/[^\d]/g,'');if(r){let n=parseFloat(r)/100;let mx=parseFloat(document.getElementById('maxInvestment').value);if(n>mx){let p=mx.toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');v=p.join('.');}}if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
-                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                             </div>
                             <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
                             <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
@@ -457,7 +457,7 @@
 
     @else
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4 sm:p-6 shadow-sm">
-            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>
+            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>
 
             @if($errors->any())
                 <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -477,7 +477,7 @@
                             <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
                                    oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);let r=(v||'').replace(/[^\d]/g,'');if(r){let n=parseFloat(r)/100;let mx=parseFloat(document.getElementById('maxInvestment').value);if(n>mx){let p=mx.toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');v=p.join('.');}}if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
-                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                         </div>
                         <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
                         <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">

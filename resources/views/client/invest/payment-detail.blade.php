@@ -8,7 +8,7 @@
     <div class="mb-6 sm:mb-8">
         <div class="flex items-center gap-2 mb-3">
             <a href="{{ route('client.investments.payments') }}" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Mis Pagos</a>
-            <svg class="w-3 h-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
 
         <div class="flex items-start justify-between gap-3">
@@ -385,7 +385,7 @@
                                 <div class="flex items-center gap-1.5 sm:gap-2 mt-0.5">
                                     <span class="text-[9px] sm:text-[10px] text-gray-400 font-mono">{{ $payment->date ? \Carbon\Carbon::parse($payment->date)->format('d/m/Y') : '—' }}</span>
                                     @if($payment->cashbox)
-                                        <span class="text-[9px] sm:text-[10px] text-gray-300 dark:text-gray-600">·</span>
+                                        <span class="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400">·</span>
                                         <span class="text-[9px] sm:text-[10px] text-gray-400">{{ $payment->cashbox->name }}</span>
                                     @endif
                                 </div>

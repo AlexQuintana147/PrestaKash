@@ -115,7 +115,7 @@
                     </span>
 
                     @if($counts[$key] > 0)
-                        <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">
+                        <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">
                             {{ $counts[$key] }}
                         </span>
                     @endif
@@ -186,8 +186,8 @@
                             </div>
                             <div class="flex items-center gap-3 flex-shrink-0">
                                 <span class="text-xs font-black uppercase tracking-widest {{ $rowStatusColor }}">{{ $rowStatusLabel }}</span>
-                                <p class="hidden md:block text-[10px] text-gray-400 dark:text-gray-600 font-medium">{{ $loan->created_at->format('d/m/Y') }}</p>
-                                <svg id="loan-chevron-{{ $loan->id }}" class="w-4 h-4 text-gray-400 dark:text-gray-600 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                <p class="hidden md:block text-[10px] text-gray-500 dark:text-gray-400 font-medium">{{ $loan->created_at->format('d/m/Y') }}</p>
+                                <svg id="loan-chevron-{{ $loan->id }}" class="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </div>
                         </div>
                         <div id="loan-details-{{ $loan->id }}" class="loan-details-wrapper">
@@ -232,7 +232,7 @@
                                         </span>
                                         <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-bold tracking-wider">{{ $loan->code }}</span>
                                     </div>
-                                    <p class="text-[9px] text-gray-400 dark:text-gray-600 font-medium">
+                                    <p class="text-[9px] text-gray-500 dark:text-gray-400 font-medium">
                                         {{ $loan->created_at->format('d/m/Y H:i') }}
                                     </p>
                                     <div class="flex flex-wrap gap-1.5 mt-2">
@@ -273,7 +273,7 @@
                                 <div class="space-y-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4">
                                     <!-- Educación Mobile -->
                                     <div class="pb-4 border-b border-gray-200 dark:border-gray-800">
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Educación</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-2 tracking-widest">Educación</p>
                                         @php
                                             $mEduLabels = ['primaria' => 'Primaria', 'secundaria' => 'Secundaria', 'tecnico' => 'Técnico', 'universitario' => 'Universitario', 'postgrado' => 'Postgrado'];
                                             $mEduCfg = $mEduLabels[$profile->academic_status ?? ''] ?? $profile->academic_status;
@@ -302,7 +302,7 @@
 
                                     <!-- Info Laboral Mobile -->
                                     <div class="pb-4 border-b border-gray-200 dark:border-gray-800">
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-2 tracking-widest">Información Laboral</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-2 tracking-widest">Información Laboral</p>
                                         @if($profile->is_employed)
                                             @php
                                                 $mobileEmploymentLabels = ['dependiente' => 'Dependente', 'independiente' => 'Independiente', 'empresario' => 'Empresario', 'profesional' => 'Profesional'];
@@ -339,7 +339,7 @@
                                     <!-- Estado Civil + Familia Mobile -->
                                     <div class="pb-4 border-b border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-3">
                                         <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Estado Civil</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-widest">Estado Civil</p>
                                             @php
                                                 $mMaritalLabels = ['soltero' => ['l' => 'Soltero/a', 'c' => 'slate'], 'casado_separado' => ['l' => 'Casado (B.S)', 'c' => 'rose'], 'casado_compartido' => ['l' => 'Casado (B.C)', 'c' => 'pink'], 'divorciado' => ['l' => 'Divorciado/a', 'c' => 'orange'], 'viudo' => ['l' => 'Viudo/a', 'c' => 'stone']];
                                                 $mMarital = $mMaritalLabels[$profile->marital_status ?? ''] ?? ['l' => ucfirst($profile->marital_status), 'c' => 'gray'];
@@ -359,7 +359,7 @@
                                             @endif
                                         </div>
                                         <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Familia</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-widest">Familia</p>
                                             @if($profile->has_children)
                                                 <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20">
                                                     <span class="text-[9px] font-bold text-cyan-700 dark:text-cyan-300">{{ $profile->children_count }} {{ $profile->children_count == 1 ? 'hijo' : 'hijos' }}</span>
@@ -379,18 +379,18 @@
                                     <!-- Destino + Desembolso Mobile -->
                                     <div class="pb-4 border-b border-gray-200 dark:border-gray-800 grid grid-cols-2 gap-3">
                                         <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Destino</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-widest">Destino</p>
                                             <div class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-1">
                                                 <span class="text-[9px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">{{ $loan->bank_name }}</span>
                                             </div>
                                             <p class="text-[8px] text-gray-500 dark:text-gray-500 mt-0.5">{{ ucfirst($loan->account_type) }}</p>
                                             <p class="text-[8px] font-mono text-gray-600 dark:text-gray-400">{{ Str::limit($loan->account_number, 14) }}</p>
                                             @if($loan->cci)
-                                                <p class="text-[7px] font-mono text-gray-400 dark:text-gray-500 mt-0.5">CCI: {{ Str::limit($loan->cci, 16) }}</p>
+                                                <p class="text-[7px] font-mono text-gray-500 dark:text-gray-400 mt-0.5">CCI: {{ Str::limit($loan->cci, 16) }}</p>
                                             @endif
                                         </div>
                                         <div>
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Desembolso</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-widest">Desembolso</p>
                                             @if($loan->disbursement_date)
                                                 @php
                                                     $mDisbDate = \Carbon\Carbon::parse($loan->disbursement_date);
@@ -409,7 +409,7 @@
                                     <!-- Términos Mobile -->
                                     <div class="pb-4 border-b border-gray-200 dark:border-gray-800">
                                         <div class="flex items-center justify-between mb-2">
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-widest">Términos</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black tracking-widest">Términos</p>
                                             @if($loan->type === 'cuotas')
                                                 <button type="button"
                                                     onclick="openScheduleModal({{ json_encode([
@@ -459,7 +459,7 @@
 
                                     <!-- Motivo Mobile -->
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-widest">Motivo del Préstamo</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-widest">Motivo del Préstamo</p>
                                         <div class="p-2.5 rounded-xl bg-orange-50/50 dark:bg-orange-500/5 border border-orange-100 dark:border-orange-500/10">
                                             <p class="text-[9px] text-gray-600 dark:text-gray-400 italic leading-relaxed">"{{ Str::limit($loan->reason, 80) }}"</p>
                                         </div>
@@ -467,13 +467,13 @@
                                 </div>
                             @else
                                 <div class="text-center py-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl">
-                                    <p class="text-xs text-gray-400 dark:text-gray-600 italic">Perfil incompleto</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">Perfil incompleto</p>
                                 </div>
                             @endif
 
                             <!-- Acciones Mobile -->
                             <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                                <span class="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-600">Estado</span>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Estado</span>
                                 @if($loan->status === 'pending')
                                     <div class="flex items-center gap-4">
                                         <button type="button"
@@ -654,7 +654,7 @@
                                             </span>
                                             <span class="text-[8px] bg-black text-white dark:bg-white dark:text-black px-1.5 py-0.5 rounded font-bold tracking-wider">{{ $loan->code }}</span>
                                         </div>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                                             {{ $loan->created_at->format('d/m/Y H:i') }}
                                         </p>
                                     </div>
@@ -763,7 +763,7 @@
                                 <!-- Fila 2: Perfil Académico y Laboral -->
                                 <div class="grid grid-cols-4 gap-6 py-4 border-y border-gray-100 dark:border-gray-800">
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Educación</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Educación</p>
                                         @php
                                             $eduLabels = [
                                                 'primaria' => ['label' => 'Primaria', 'color' => 'gray'],
@@ -810,7 +810,7 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Información Laboral</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Información Laboral</p>
                                         @if($profile->is_employed)
                                             @php
                                                 $employmentLabels = [
@@ -893,7 +893,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Estado Civil</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Estado Civil</p>
                                         @php
                                             $maritalLabels = [
                                                 'soltero' => ['label' => 'Soltero/a', 'color' => 'slate', 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
@@ -934,7 +934,7 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Familia</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Familia</p>
                                         @if($profile->has_children)
                                             <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 mb-2">
                                                 <svg class="w-3 h-3 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -962,7 +962,7 @@
                                 <!-- Fila 3: Detalles del Préstamo -->
                                 <div class="grid grid-cols-4 gap-6">
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Destino de Fondos</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Destino de Fondos</p>
                                         <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-2">
                                             <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                             <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase">{{ $loan->bank_name }}</span>
@@ -994,7 +994,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Desembolso</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Desembolso</p>
                                         @if($loan->disbursement_date)
                                             @php
                                                 $disbDate = \Carbon\Carbon::parse($loan->disbursement_date);
@@ -1014,7 +1014,7 @@
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-1.5 mb-1.5">
-                                            <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black tracking-[0.15em]">Términos</p>
+                                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black tracking-[0.15em]">Términos</p>
                                             @if($loan->type === 'cuotas')
                                                 <button type="button"
                                                     onclick="openScheduleModal({{ json_encode([
@@ -1081,7 +1081,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <p class="text-[9px] text-gray-400 dark:text-gray-600 uppercase font-black mb-1.5 tracking-[0.15em]">Motivo del Préstamo</p>
+                                        <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase font-black mb-1.5 tracking-[0.15em]">Motivo del Préstamo</p>
                                         <div class="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-500/5 border border-orange-100 dark:border-orange-500/10">
                                             <div class="flex items-start gap-2">
                                                 <svg class="w-3.5 h-3.5 text-orange-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
@@ -1092,7 +1092,7 @@
                                 </div>
                             @else
                                 <div class="text-center py-6 border-y border-gray-100 dark:border-gray-800">
-                                    <p class="text-sm text-gray-400 dark:text-gray-600 italic">Perfil incompleto</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Perfil incompleto</p>
                                 </div>
                             @endif
                         </div>
@@ -1102,7 +1102,7 @@
                     </div>
                 @empty
                     <div class="py-16 text-center">
-                        <p class="text-sm text-gray-400 dark:text-gray-600 italic">No hay préstamos para mostrar.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 italic">No hay préstamos para mostrar.</p>
                     </div>
                 @endforelse
             </div>
@@ -1168,7 +1168,7 @@
                         </div>
                         <!-- Fecha Desembolso (Desktop) -->
                         <div class="hidden md:block w-40 space-y-1">
-                            <label class="text-[8px] sm:text-[9px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
+                            <label class="text-[8px] sm:text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Desembolso</label>
                             <div class="relative" onclick="this.querySelector('input').showPicker()">
                                 <input type="date" name="disbursement_date_desktop" id="modal_disbursement_date_desktop"
                                        onchange="document.getElementById('modal_disbursement_date').value = this.value"
@@ -1188,17 +1188,17 @@
                 <div id="modalInputsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 md:gap-6 mb-3 sm:mb-4 md:mb-6">
                     <!-- Tipo -->
                     <div class="space-y-1 sm:space-y-2 col-span-2 sm:col-span-1 md:col-span-1">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tipo</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Tipo</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="type" value="cuotas" class="hidden peer" onchange="toggleModalTypeFields(); calculatePreview()">
-                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     CUOTAS
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="type" value="unico" class="hidden peer" onchange="toggleModalTypeFields(); calculatePreview()">
-                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     ÚNICO
                                 </div>
                             </label>
@@ -1207,17 +1207,17 @@
 
                     <!-- Moneda -->
                     <div class="space-y-1 sm:space-y-2 col-span-1">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Moneda</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Moneda</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="currency" value="PEN" class="hidden peer" onchange="onCounterCurrencyChange()">
-                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     SOLES
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="currency" value="USD" class="hidden peer" onchange="onCounterCurrencyChange()">
-                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     DÓLARES
                                 </div>
                             </label>
@@ -1226,7 +1226,7 @@
 
                     <!-- Monto -->
                     <div class="space-y-1 sm:space-y-2 col-span-1 md:col-span-1">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Monto</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Monto</label>
                         <div class="relative">
                             <input type="text" name="amount" id="modal_amount"
                                    class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-1.5 sm:py-2 pr-6 text-base sm:text-lg font-black text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors text-right">
@@ -1236,7 +1236,7 @@
 
                     <!-- Fecha Desembolso (Mobile) -->
                     <div class="md:hidden space-y-1 sm:space-y-2 col-span-1">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Desembolso</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Desembolso</label>
                         <div class="relative" onclick="if(event.target.tagName!=='INPUT')this.querySelector('input').showPicker()">
                             <input type="date" name="disbursement_date" id="modal_disbursement_date"
                                    oninput="document.getElementById('modal_disbursement_date_desktop').value = this.value"
@@ -1252,7 +1252,7 @@
 
                     <!-- Meses -->
                     <div id="modalMonthsWrapper" class="space-y-1 sm:space-y-2 col-span-1">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Plazo (M)</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Plazo (M)</label>
                         <div class="relative">
                             <input type="number" name="months" id="modal_months" min="2" max="24" step="1"
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
@@ -1265,17 +1265,17 @@
 
                     <!-- Pago Único Días -->
                     <div id="modalDaysWrapper" class="space-y-1 sm:space-y-2 col-span-1 hidden">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Días</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Días</label>
                         <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="payment_days" value="15" class="hidden peer" onchange="calculatePreview()">
-                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     15 D
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="payment_days" value="30" class="hidden peer" onchange="calculatePreview()">
-                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     30 D
                                 </div>
                             </label>
@@ -1284,7 +1284,7 @@
 
                     <!-- Tasa -->
                     <div class="space-y-1 sm:space-y-2 col-span-1">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Tasa (%)</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Tasa (%)</label>
                         <div class="relative">
                             <input type="number" name="interest_rate" id="modal_interest_rate" step="0.01" min="0" max="100"
                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46)"
@@ -1314,17 +1314,17 @@
                     <div class="col-span-2 sm:col-span-1 md:col-span-1 space-y-3 sm:space-y-4">
                         <!-- Sistema -->
                         <div id="modalSystemWrapper" class="space-y-1 sm:space-y-2">
-                            <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Sistema</label>
+                            <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Sistema</label>
                             <div class="flex gap-2 border-b border-gray-100 dark:border-gray-900">
                                 <label class="flex-1 cursor-pointer group">
                                     <input type="radio" name="amortization_system" value="frances" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                    <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                         FRANCÉS
                                     </div>
                                 </label>
                                 <label class="flex-1 cursor-pointer group">
                                     <input type="radio" name="amortization_system" value="americano" class="hidden peer" onchange="toggleModalFrequency(); calculatePreview()">
-                                    <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                    <div class="py-1.5 sm:py-2 text-center text-[8px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                         AMERICANO
                                     </div>
                                 </label>
@@ -1333,12 +1333,12 @@
 
                         <!-- Frecuencia -->
                         <div id="modalFrequencyWrapper" class="space-y-1 sm:space-y-2">
-                            <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Frecuencia</label>
+                            <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Frecuencia</label>
                             <div class="flex gap-1 sm:gap-2 border-b border-gray-100 dark:border-gray-900">
                                 @foreach(['diario' => 'DÍA', 'semanal' => 'SEM', 'quincenal' => 'QUIN', 'mensual' => 'MES'] as $val => $label)
                                     <label class="flex-1 cursor-pointer group">
                                         <input type="radio" name="payment_frequency" value="{{ $val }}" class="hidden peer" onchange="calculatePreview()">
-                                        <div class="py-1.5 sm:py-2 text-center text-[7px] sm:text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                        <div class="py-1.5 sm:py-2 text-center text-[7px] sm:text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                                             {{ $label }}
                                         </div>
                                     </label>
@@ -1351,7 +1351,7 @@
                 <!-- Previews -->
                 <div class="flex-1 min-h-0 flex flex-col space-y-3 sm:space-y-4">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between px-1 flex-shrink-0 gap-2 sm:gap-3">
-                        <h4 class="text-[8px] sm:text-[9px] md:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
+                        <h4 class="text-[8px] sm:text-[9px] md:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Simulación de Resultados</h4>
                         <div class="grid grid-cols-2 sm:flex gap-x-3 sm:gap-x-4 gap-y-1 sm:gap-y-2">
                             <p class="text-[8px] sm:text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Total: <span id="previewTotal" class="text-gray-900 dark:text-white tabular-nums"></span></p>
                             <p class="text-[8px] sm:text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">Cuota: <span id="previewMonthly" class="text-gray-900 dark:text-white tabular-nums"></span></p>
@@ -1363,7 +1363,7 @@
                     <div id="previewCuotasContainer" class="flex-1 min-h-0 flex flex-col">
                         <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar">
                             <table class="w-full text-[8px] sm:text-[10px] text-left min-w-[280px] sm:min-w-[320px] md:min-w-0">
-                                <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-600 shadow-sm">
+                                <thead class="sticky top-0 bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 shadow-sm">
                                     <tr>
                                         <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">N°</th>
                                         <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Capital</th>
@@ -1395,7 +1395,7 @@
 
                 <div class="mt-3 sm:mt-4 md:mt-6 flex flex-col md:flex-row items-end justify-between gap-3 sm:gap-4 md:gap-6 flex-shrink-0">
                     <div class="w-full md:w-64 text-left space-y-1 sm:space-y-2">
-                        <label class="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                        <label class="text-[8px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Caja de Egreso</label>
                         <div id="counter_cashbox_container">
                             <select name="cashbox_id" id="counter_cashbox_id" required
                                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-1.5 sm:py-2 px-2 sm:px-3 text-xs sm:text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors appearance-none cursor-pointer">
@@ -1493,7 +1493,7 @@
         // Show amount
         const amountFormatted = parseFloat(loan.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const currencySymbol = loan.currency === 'USD' ? '$' : 'S/';
-        let subtitleText = `<span class="block text-[9px] md:text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">PEDIDO ORIGINAL: ${currencySymbol} ${amountFormatted}</span>`;
+        let subtitleText = `<span class="block text-[9px] md:text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest">PEDIDO ORIGINAL: ${currencySymbol} ${amountFormatted}</span>`;
         if (loan.type === 'cuotas' && loan.monthly_payment) {
             const monthlyFormatted = parseFloat(loan.monthly_payment).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             subtitleText += `<span class="block text-[9px] md:text-[10px] text-amber-500 dark:text-amber-400 uppercase tracking-widest">CUOTA ORIGINAL: ${currencySymbol} ${monthlyFormatted}</span>`;
@@ -1753,7 +1753,7 @@
             noBankAccount.classList.add('hidden');
             bankAccountsContainer.innerHTML =
                 `<div class="text-[9px] font-bold text-gray-600 dark:text-gray-300">
-                    <span class="text-gray-400 dark:text-gray-500">${loanData.bank_name || 'Banco'} (${loanData.currency}):</span>
+                    <span class="text-gray-500 dark:text-gray-400">${loanData.bank_name || 'Banco'} (${loanData.currency}):</span>
                     <span class="text-gray-700 dark:text-gray-200">CTA: ${loanData.account_number}</span>
                     <span class="ml-2 text-gray-700 dark:text-gray-200">CCI: ${loanData.cci}</span>
                 </div>`;
@@ -2060,7 +2060,7 @@
             noBankAccount.classList.add('hidden');
             bankAccountsContainer.innerHTML =
                 `<div class="text-[9px] font-bold text-gray-600 dark:text-gray-300">
-                    <span class="text-gray-400 dark:text-gray-500">${loanData.bank_name || 'Banco'} (${loanData.currency}):</span>
+                    <span class="text-gray-500 dark:text-gray-400">${loanData.bank_name || 'Banco'} (${loanData.currency}):</span>
                     <span class="text-gray-700 dark:text-gray-200">CTA: ${loanData.account_number}</span>
                     <span class="ml-2 text-gray-700 dark:text-gray-200">CCI: ${loanData.cci}</span>
                 </div>`;
@@ -2315,7 +2315,7 @@
         <form id="approveConfirmForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Caja de Egreso</label>
                 <div id="approve_cashbox_container">
                     <select name="cashbox_id" id="approve_cashbox_id" required
                             class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors appearance-none cursor-pointer">
@@ -2336,7 +2336,7 @@
             </div>
 
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
                 <input type="file" name="disbursement_voucher" id="approve_voucher" accept="image/*,.pdf"
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:uppercase file:tracking-widest cursor-pointer"
                     onchange="previewApproveVoucher(event); document.getElementById('approve_voucher_error').classList.add('hidden');">
@@ -2350,7 +2350,7 @@
             </div>
 
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Número de Operación</label>
                 <input type="text" name="disbursement_operation_number" id="approve_operation_number" placeholder="Ej: 123456789"
                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors tabular-nums"
                     maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
@@ -2408,7 +2408,7 @@
         <form id="disburseConfirmForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Caja de Egreso</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Caja de Egreso</label>
                 <div id="disburse_cashbox_container">
                     <select name="cashbox_id" id="disburse_cashbox_id" required
                             class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors appearance-none cursor-pointer">
@@ -2428,7 +2428,7 @@
             </div>
 
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
                 <input type="file" name="disbursement_voucher" id="disburse_voucher" accept="image/*,.pdf"
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 file:uppercase file:tracking-widest cursor-pointer"
                     onchange="previewDisburseVoucher(event); document.getElementById('disburse_voucher_error').classList.add('hidden');">
@@ -2442,7 +2442,7 @@
             </div>
 
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Número de Operación</label>
                 <input type="text" name="disbursement_operation_number" id="disburse_operation_number" placeholder="Ej: 123456789"
                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors tabular-nums"
                     maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
@@ -2477,7 +2477,7 @@
         <form id="uploadVoucherForm" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Comprobante de Depósito (Voucher)</label>
                 <input type="file" name="disbursement_voucher" id="upload_voucher_input" accept="image/*,.pdf" required
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs font-black file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:uppercase file:tracking-widest cursor-pointer"
                     onchange="previewUploadVoucher(event)">
@@ -2488,7 +2488,7 @@
             </div>
 
             <div class="text-left space-y-2">
-                <label class="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] block">Número de Operación</label>
+                <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Número de Operación</label>
                 <input type="text" name="disbursement_operation_number" id="upload_operation_number" required placeholder="Ej: 123456789"
                     class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors tabular-nums"
                     maxlength="30" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
@@ -2567,7 +2567,7 @@
 <div id="scheduleModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[130] flex items-center justify-center p-2 md:p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-2xl max-h-[95vh] md:max-h-[90vh] flex flex-col rounded-2xl md:rounded-[2.5rem] shadow-2xl relative animate-in fade-in zoom-in duration-200">
         <button onclick="closeScheduleModal()" class="absolute top-3 right-3 md:top-7 md:right-7 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors z-20">
-            <svg class="w-4 h-4 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
         <div class="p-4 md:p-8 flex flex-col min-h-0 overflow-hidden">
             <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white tracking-tight pr-8 md:pr-10">Cronograma de Pagos</h3>
@@ -2576,7 +2576,7 @@
             <div class="flex-1 min-h-0 overflow-x-auto overflow-y-auto custom-scrollbar">
                 <table class="w-full text-[10px] md:text-[11px] text-left min-w-[400px] md:min-w-0">
                     <thead class="sticky top-0 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-800">
-                        <tr class="text-gray-400 dark:text-gray-600">
+                        <tr class="text-gray-500 dark:text-gray-400">
                             <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">N°</th>
                             <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">Capital</th>
                             <th class="px-2 md:px-4 py-2 md:py-3 font-black uppercase tracking-tighter text-center">Interés</th>
@@ -2611,7 +2611,7 @@
         // Meta info
         meta.innerHTML = `
             <span class="text-[10px] text-gray-500 dark:text-gray-400 font-medium">${loan.user_name}</span>
-            <span class="text-gray-300 dark:text-gray-700">•</span>
+            <span class="text-gray-400 dark:text-gray-500">•</span>
             <span class="text-[10px] font-black text-gray-900 dark:text-white">${currency} ${amount.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
             <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase border border-gray-200 dark:border-gray-800">${system} · ${months} cuotas</span>
             <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-bold uppercase border border-gray-200 dark:border-gray-800">${freqLabel}</span>
@@ -2690,7 +2690,7 @@
             if (row === null) {
                 body.innerHTML += `
                     <tr class="bg-gray-50 dark:bg-gray-900/50">
-                        <td colspan="5" class="px-2 md:px-4 py-2 text-center text-[9px] md:text-[10px] text-gray-400 dark:text-gray-600 font-bold tracking-widest">
+                        <td colspan="5" class="px-2 md:px-4 py-2 text-center text-[9px] md:text-[10px] text-gray-500 dark:text-gray-400 font-bold tracking-widest">
                             · · · ${fullSchedule.length - SHOW_FIRST - SHOW_LAST} cuotas intermedias · · ·
                         </td>
                     </tr>

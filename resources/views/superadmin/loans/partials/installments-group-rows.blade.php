@@ -7,7 +7,7 @@
 @if($userInstallments->hasPages())
     <div class="mt-4 flex items-center justify-end gap-6">
         @if($userInstallments->onFirstPage())
-            <span class="text-[10px] font-black uppercase tracking-widest text-gray-300 dark:text-gray-700 cursor-default">← Anterior</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-default">← Anterior</span>
         @else
             <button type="button"
                 onclick="loadGroupPage(this)"
@@ -29,7 +29,7 @@
                 Siguiente →
             </button>
         @else
-            <span class="text-[10px] font-black uppercase tracking-widest text-gray-300 dark:text-gray-700 cursor-default">Siguiente →</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-default">Siguiente →</span>
         @endif
     </div>
 @endif

@@ -237,7 +237,7 @@
                 <svg class="w-7 h-7 text-gray-250 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <p class="text-sm font-medium text-gray-400">No hay pagos pendientes de revisión</p>
-            <p class="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Los comprobantes aprobados aparecerán aquí</p>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Los comprobantes aprobados aparecerán aquí</p>
         </div>
     @endforelse
 </div>

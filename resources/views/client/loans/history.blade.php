@@ -24,7 +24,7 @@
             <div
                 class="text-center">
                 <div class="w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor"
+                    <svg class="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -62,13 +62,13 @@
 
             @if($loans->isEmpty())
                 <div class="text-center py-12">
-                    <svg class="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Sin resultados para los filtros aplicados</p>
                     <a href="{{ route('client.loans.history') }}" class="text-xs font-bold text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-0.5 hover:opacity-60 transition-opacity mt-2 inline-block">Limpiar filtros</a>
                 </div>
             @else
             <div id="no-results" class="text-center py-12" style="display:none">
-                <svg class="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <svg class="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Sin resultados para la búsqueda</p>
             </div>
             <div class="grid grid-cols-1">
@@ -113,7 +113,7 @@
                                 <h3 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white truncate">
                                     {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}
                                 </h3>
-                                <p class="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-500">
+                                <p class="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400">
                                     {{ $loan->created_at->format('d M, Y') }}
                                 </p>
                             </div>
@@ -133,7 +133,7 @@
                                         <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400">Te quedan {{ $daysLeft }} día{{ $daysLeft !== 1 ? 's' : '' }} para pagar</span>
                                     @endif
                                 @endif
-                                <svg class="w-4 h-4 text-gray-300 dark:text-gray-700 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
                             </div>
@@ -142,7 +142,7 @@
                         <!-- Row 2: Progreso -->
                         <div class="mb-3">
                             <div class="flex justify-between items-center mb-1.5">
-                                <p class="text-[8px] sm:text-[9px] text-gray-400 dark:text-gray-600 uppercase font-bold tracking-widest">Progreso</p>
+                                <p class="text-[8px] sm:text-[9px] text-gray-500 dark:text-gray-400 uppercase font-bold tracking-widest">Progreso</p>
                                 <p class="text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400">{{ $paid_h }}/{{ $total_h }} cuotas</p>
                             </div>
                             <div class="h-1.5 sm:h-2 w-full bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden">
@@ -154,12 +154,12 @@
                         <div class="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs">
                             <div class="flex items-center gap-1.5">
                                 <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <span class="text-gray-400 dark:text-gray-600 uppercase font-bold">Frec.</span>
+                                <span class="text-gray-500 dark:text-gray-400 uppercase font-bold">Frec.</span>
                                 <span class="text-gray-700 dark:text-gray-300 capitalize font-medium">{{ $loan->payment_frequency ?? 'N/A' }}</span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                                <span class="text-gray-400 dark:text-gray-600 uppercase font-bold">Interés</span>
+                                <span class="text-gray-500 dark:text-gray-400 uppercase font-bold">Interés</span>
                                 <span class="text-gray-700 dark:text-gray-300 font-medium">{{ number_format($loan->interest_rate, 2) }}%</span>
                             </div>
                         </div>

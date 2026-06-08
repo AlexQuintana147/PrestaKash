@@ -46,19 +46,19 @@
 
         <div class="relative px-5 pt-5 pb-4 border-b border-gray-100 dark:border-gray-900 flex-shrink-0">
             <button type="button" onclick="closeVoucherCleanupModal()"
-                class="absolute top-4 right-4 text-gray-300 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white transition-colors">
+                class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Pagadas</p>
+            <p class="text-[8px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Pagadas</p>
             <h3 class="text-base font-black text-gray-900 dark:text-white tracking-tight">Limpiar comprobantes</h3>
         </div>
 
         <div class="px-5 py-4 space-y-3 flex-shrink-0">
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1.5">Desde</span>
+                    <span class="text-[8px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest block mb-1.5">Desde</span>
                     <label class="vc-date-box relative flex items-center justify-between gap-2 h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80 cursor-pointer hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
                         <input type="date" id="vc_from_date" onchange="syncVcDateDisplay('from')">
                         <span id="vc_from_display" class="text-xs font-bold text-gray-900 dark:text-white pointer-events-none truncate">—</span>
@@ -68,7 +68,7 @@
                     </label>
                 </div>
                 <div>
-                    <span class="text-[8px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-1.5">Hasta</span>
+                    <span class="text-[8px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest block mb-1.5">Hasta</span>
                     <label class="vc-date-box relative flex items-center justify-between gap-2 h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/80 cursor-pointer hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
                         <input type="date" id="vc_to_date" onchange="syncVcDateDisplay('to')">
                         <span id="vc_to_display" class="text-xs font-bold text-gray-900 dark:text-white pointer-events-none truncate">—</span>
@@ -89,22 +89,22 @@
                 <p id="vc_range_label" class="text-[10px] font-bold text-gray-500 dark:text-gray-400"></p>
                 <p class="text-xs font-black text-gray-900 dark:text-white">
                     <span id="vc_size_label" class="text-green-600 dark:text-green-400"></span>
-                    <span class="text-gray-300 dark:text-gray-700 mx-1">·</span>
+                    <span class="text-gray-400 dark:text-gray-500 mx-1">·</span>
                     <span id="vc_count_label"></span>
                 </p>
             </div>
             <div id="vc_items_scroll" class="flex-1 overflow-y-auto px-5 pb-3 min-h-0" style="max-height: 200px;">
-                <p class="text-[8px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-2 sticky top-0 bg-white dark:bg-gray-950 py-1 z-10">
+                <p class="text-[8px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 sticky top-0 bg-white dark:bg-gray-950 py-1 z-10">
                     Se eliminarán · click para ver
                 </p>
                 <ul id="vc_items_list" class="space-y-1.5"></ul>
-                <p id="vc_empty_msg" class="hidden text-[10px] text-gray-400 dark:text-gray-500 text-center py-8">Sin comprobantes en este rango.</p>
+                <p id="vc_empty_msg" class="hidden text-[10px] text-gray-500 dark:text-gray-400 text-center py-8">Sin comprobantes en este rango.</p>
             </div>
         </div>
 
         <div class="px-5 py-4 border-t border-gray-100 dark:border-gray-900 flex items-center justify-between flex-shrink-0">
             <button type="button" onclick="closeVoucherCleanupModal()"
-                class="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                class="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 Cancelar
             </button>
             <form id="vc_cleanup_form" method="POST" action="{{ route('superadmin.installments.vouchers.cleanup') }}">
@@ -135,10 +135,10 @@
         <p class="text-[8px] font-black uppercase tracking-widest text-red-500 dark:text-red-400 mb-1">Acción irreversible</p>
         <h4 class="text-base font-black text-gray-900 dark:text-white tracking-tight mb-3">¿Eliminar comprobantes?</h4>
         <p id="vc_confirm_message" class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-2"></p>
-        <p class="text-[10px] text-gray-400 dark:text-gray-500 mb-6">Los registros de cobro se mantienen; solo se borran las imágenes del servidor.</p>
+        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-6">Los registros de cobro se mantienen; solo se borran las imágenes del servidor.</p>
         <div class="flex items-center justify-between">
             <button type="button" onclick="closeVcConfirmModal()"
-                class="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                class="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 Cancelar
             </button>
             <button type="button" onclick="submitVcCleanup()"
@@ -267,11 +267,11 @@
                         <div class="min-w-0 flex-1">
                             <p class="text-[10px] font-black text-gray-900 dark:text-white truncate">${escapeHtml(item.client)}</p>
                             <p class="text-[9px] text-gray-500 dark:text-gray-400 truncate">${escapeHtml(item.label)} · #${item.loan_id}</p>
-                            <p class="text-[8px] text-gray-400 dark:text-gray-600 truncate">${escapeHtml(item.filename)}</p>
+                            <p class="text-[8px] text-gray-500 dark:text-gray-400 truncate">${escapeHtml(item.filename)}</p>
                         </div>
                         <div class="flex flex-col items-end gap-1 flex-shrink-0">
                             <span class="text-[9px] font-bold text-green-600 dark:text-green-400">${escapeHtml(item.size_human)}</span>
-                            ${canPreview ? `<svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>` : ''}
+                            ${canPreview ? `<svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>` : ''}
                         </div>
                     </div>
                 `;

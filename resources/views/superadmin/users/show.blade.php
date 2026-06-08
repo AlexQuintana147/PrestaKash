@@ -639,7 +639,7 @@
                             </script>
                         @endif
                     @else
-                        <p class="text-sm text-gray-400 dark:text-gray-500">Sin movimientos registrados.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Sin movimientos registrados.</p>
                     @endif
                 </div>
             @else
@@ -668,7 +668,7 @@
                                 </div>
                             </button>
                         @else
-                            <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 text-xs" style="aspect-ratio: 4/3;">
+                            <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs" style="aspect-ratio: 4/3;">
                                 Sin imagen
                             </div>
                         @endif
@@ -676,7 +676,7 @@
                     @endforeach
                 </div>
                 @else
-                    <p class="text-sm text-gray-400 dark:text-gray-500">Este usuario no ha subido documentos.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Este usuario no ha subido documentos.</p>
                 @endif
             @endif
         </div>
@@ -801,12 +801,12 @@
                         <span class="text-gray-400 font-medium">— Cancelada</span>
                     @endif
                 </div>
-                <button type="button" onclick='openReqDetailModal({{ json_encode($reqChanges) }})' class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">Ver detalles</button>
+                <button type="button" onclick='openReqDetailModal({{ json_encode($reqChanges) }})' class="text-[10px] font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Ver detalles</button>
             </div>
             @endforeach
             <div id="req-pagination" class="flex items-center justify-center gap-3 pt-2" style="display:none">
                 <button type="button" id="req-btn-prev" onclick="reqChangePage(-1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
-                <span id="req-page-info" class="text-xs font-medium text-gray-400 dark:text-gray-500"></span>
+                <span id="req-page-info" class="text-xs font-medium text-gray-500 dark:text-gray-400"></span>
                 <button type="button" id="req-btn-next" onclick="reqChangePage(1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Siguiente</button>
             </div>
         </div>
@@ -859,7 +859,7 @@
     <div class="bg-white dark:bg-gray-950 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Detalles del cambio</h3>
-            <button type="button" onclick="closeReqDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeReqDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -872,10 +872,10 @@ function openReqDetailModal(changes) {
     const container = document.getElementById('reqDetailContent');
     container.innerHTML = changes.map(c => `
         <div class="py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
-            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1.5">${c.label}</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">${c.label}</p>
             <div class="flex items-center gap-2 text-xs">
                 <span class="text-red-400 line-through flex-1">${c.old}</span>
-                <svg class="w-3 h-3 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 <span class="text-green-600 dark:text-green-400 font-medium flex-1">${c.new}</span>
             </div>
         </div>
@@ -943,7 +943,7 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
             <input type="hidden" name="field" id="editFieldName">
             <div class="mb-5">
                 <input type="text" name="value" id="editFieldValue"
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 py-2 focus:outline-none focus:border-blue-500 transition-colors">
+                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 py-2 focus:outline-none focus:border-blue-500 transition-colors">
                 <p id="editFieldError" class="text-[10px] text-red-500 mt-1 hidden"></p>
             </div>
             <div class="flex gap-3">
@@ -1002,7 +1002,7 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
             <div class="mb-5">
                 <label class="block text-xs text-gray-500 dark:text-gray-500 mb-2">Motivo <span class="text-gray-400">(opcional)</span></label>
                 <input type="text" name="reason" placeholder="Ej: Actividad sospechosa..."
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 py-2 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors">
+                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 py-2 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors">
             </div>
             <div class="flex gap-3">
                 <button type="button" onclick="closeBlockModal()"
@@ -1054,7 +1054,7 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
                 <!-- Motivo personalizado -->
                 <div class="pt-1">
                     <input type="text" id="customReason" placeholder="Otro motivo..."
-                           class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 py-2 focus:outline-none focus:border-red-400 transition-colors"
+                           class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 py-2 focus:outline-none focus:border-red-400 transition-colors"
                            oninput="uncheckRadios()">
                 </div>
             </div>

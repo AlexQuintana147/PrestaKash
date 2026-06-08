@@ -105,7 +105,7 @@
                             {{ $label }}
                         </span>
                         @if($counts[$key] > 0)
-                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
                         @endif
                         @if($filter === $key)
                             <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
@@ -191,8 +191,8 @@
         @endif
     @else
         <div class="text-center py-20">
-            <svg class="w-16 h-16 mx-auto text-gray-200 dark:text-gray-800 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            <p class="text-sm text-gray-400 dark:text-gray-600">No hay oportunidades de inversión</p>
+            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <p class="text-sm text-gray-500 dark:text-gray-400">No hay oportunidades de inversión</p>
             <a href="{{ route('superadmin.investments.create') }}" class="inline-block mt-4 text-sm font-bold text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-70 transition-opacity">Crear primera oportunidad</a>
         </div>
     @endif

@@ -58,7 +58,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ now()->translatedFormat('l, d \d\e F Y') }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ now()->translatedFormat('l, d \d\e F Y') }}</p>
         </div>
     </div>
 
@@ -178,7 +178,7 @@
                 <div>
                     <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ $showDeposited ? 'Préstamos desembolsados' : 'Préstamos por desembolsar' }}</h3>
                     <div class="flex items-center gap-2 mt-0.5">
-                        <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $pendingDisbursements->count() }} sin depositar</span>
+                        <span class="text-[9px] text-gray-500 dark:text-gray-400 font-bold">{{ $pendingDisbursements->count() }} sin depositar</span>
                         @if($depositedDisbursements->count() > 0)
                         <span class="text-[9px] text-[#00D26A] font-bold">{{ $depositedDisbursements->count() }} depositados</span>
                         @endif
@@ -187,12 +187,12 @@
             </div>
             <div class="flex items-center gap-3 flex-wrap">
                 <div class="relative flex-1 sm:flex-initial">
-                    <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input id="disb-search" type="text" placeholder="Buscar nombre, DNI/RUC o código..."
-                        class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-[10px] font-medium text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-[#006BFF] focus:border-[#006BFF] w-full sm:w-48">
+                        class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-[10px] font-medium text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#006BFF] focus:border-[#006BFF] w-full sm:w-48">
                 </div>
                 @if($showDeposited)
-                <a href="{{ url()->current() }}#disb-section" class="text-[10px] font-bold text-gray-400 dark:text-gray-500 hover:underline whitespace-nowrap">Ver pendientes</a>
+                <a href="{{ url()->current() }}#disb-section" class="text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:underline whitespace-nowrap">Ver pendientes</a>
                 @elseif($depositedDisbursements->count() > 0)
                 <a href="{{ url()->current() }}?disb=deposited#disb-section" class="text-[10px] font-bold text-[#00D26A] hover:underline whitespace-nowrap">Ver los desembolsados</a>
                 @endif
@@ -228,7 +228,7 @@
                                     <span class="text-[7px] font-black text-purple-500 bg-purple-500/10 px-1.5 py-0.5 rounded-full uppercase flex-shrink-0">Contra-oferta</span>
                                 @endif
                             </div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan->code }}</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 truncate">{{ $loan->code }}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 sm:flex-shrink-0 pl-12 sm:pl-0">
@@ -258,9 +258,9 @@
                 </div>
             @empty
                 <div class="flex flex-col items-center justify-center py-10 px-4">
-                    <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-                    <p class="text-xs font-bold text-gray-400 dark:text-gray-500">Aún no hay nada por aquí</p>
-                    <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-0.5">Los préstamos por desembolsar aparecerán aquí</p>
+                    <svg class="w-10 h-10 text-gray-500 dark:text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400">Aún no hay nada por aquí</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Los préstamos por desembolsar aparecerán aquí</p>
                 </div>
             @endforelse
         </div>
@@ -275,7 +275,7 @@
                     <svg class="w-8 h-8 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Cobrar esta semana</h3>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold" id="coll-count">{{ $upcomingCollections->count() }} cuotas próximas</p>
+                        <p class="text-[9px] text-gray-500 dark:text-gray-400 font-bold" id="coll-count">{{ $upcomingCollections->count() }} cuotas próximas</p>
                     </div>
                 </div>
                 <a href="{{ route('superadmin.installments.index') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todo</a>
@@ -295,25 +295,25 @@
                             @elseif($isTomorrow)
                                 <span class="text-[8px] font-black text-amber-500">MAÑ</span>
                             @else
-                                <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500">{{ $installment->due_date->format('d') }}</span>
+                                <span class="text-[9px] font-bold text-gray-500 dark:text-gray-400">{{ $installment->due_date->format('d') }}</span>
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $user?->name ?? 'Sin cliente' }}</p>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan?->code ?? '' }} · Cuota {{ $installment->installment_number }}</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 truncate">{{ $loan?->code ?? '' }} · Cuota {{ $installment->installment_number }}</p>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <div class="text-right">
                                 <p class="text-xs font-black text-gray-900 dark:text-white tabular-nums">S/{{ number_format($installment->amount, 2) }}</p>
-                                <p class="text-[9px] text-gray-400 dark:text-gray-500">{{ $installment->due_date->format('d/m') }}</p>
+                                <p class="text-[9px] text-gray-500 dark:text-gray-400">{{ $installment->due_date->format('d/m') }}</p>
                             </div>
-                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </a>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Sin cobros esta semana</p>
+                        <svg class="w-12 h-12 text-gray-500 dark:text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Sin cobros esta semana</p>
                     </div>
                 @endforelse
             </div>
@@ -327,7 +327,7 @@
                     <svg class="w-8 h-8 text-[#8247f5] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Pagar inversores</h3>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold" id="payout-count">{{ $payoutStats['pending_payouts'] }} pagos pendientes</p>
+                        <p class="text-[9px] text-gray-500 dark:text-gray-400 font-bold" id="payout-count">{{ $payoutStats['pending_payouts'] }} pagos pendientes</p>
                     </div>
                 </div>
                 <a href="{{ route('superadmin.investments.payouts') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todo</a>
@@ -338,20 +338,20 @@
                         <svg class="w-8 h-8 text-[#8247f5] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $payout->investor?->name ?? 'Sin inversor' }}</p>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $payout->opportunity?->code ?? '' }} · Mes {{ $payout->month_number }}</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 truncate">{{ $payout->opportunity?->code ?? '' }} · Mes {{ $payout->month_number }}</p>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <div class="text-right">
                                 <p class="text-xs font-black text-[#8247f5] tabular-nums">S/{{ number_format($payout->amount, 2) }}</p>
                                 <span class="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400">Pend.</span>
                             </div>
-                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </a>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Sin pagos pendientes a inversores</p>
+                        <svg class="w-12 h-12 text-gray-500 dark:text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Sin pagos pendientes a inversores</p>
                     </div>
                 @endforelse
             </div>
@@ -404,7 +404,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $user?->name ?? 'Sin cliente' }}</p>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $loan?->code ?? '' }} · Cuota {{ $installment->installment_number }}</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 truncate">{{ $loan?->code ?? '' }} · Cuota {{ $installment->installment_number }}</p>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <div class="text-right">
@@ -413,7 +413,7 @@
                                     <p class="text-[8px] text-red-400 font-bold">+S/{{ number_format($installment->late_fee, 2) }} mora</p>
                                 @endif
                             </div>
-                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </a>
                 @empty
@@ -432,7 +432,7 @@
                     <svg class="w-8 h-8 text-[#00D26A] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                     <div>
                         <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Inversiones activas</h3>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $fundedOpportunities->count() }} oportunidades financiadas</p>
+                        <p class="text-[9px] text-gray-500 dark:text-gray-400 font-bold">{{ $fundedOpportunities->count() }} oportunidades financiadas</p>
                     </div>
                 </div>
                 <a href="{{ route('superadmin.investments.payouts') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Pagos</a>
@@ -452,19 +452,19 @@
                             </div>
                             <div class="flex items-center gap-2 flex-shrink-0">
                                 <span class="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded {{ $opp->status === 'funded' ? 'bg-[#006BFF]/10 dark:bg-[#006BFF]/20 text-[#006BFF]' : 'bg-[#00D26A]/10 dark:bg-[#00D26A]/20 text-[#00D26A]' }}">{{ $opp->status === 'funded' ? 'Financiada' : 'Cerrada' }}</span>
-                                <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </div>
                         </div>
                         <div class="flex items-center gap-4 mt-2 pl-7">
-                            <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $opp->monthly_return_rate }}% · {{ $opp->term_months }}m</span>
-                            <span class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">{{ $investorCount }} inversor{{ $investorCount !== 1 ? 'es' : '' }}</span>
+                            <span class="text-[9px] text-gray-500 dark:text-gray-400 font-bold">{{ $opp->monthly_return_rate }}% · {{ $opp->term_months }}m</span>
+                            <span class="text-[9px] text-gray-500 dark:text-gray-400 font-bold">{{ $investorCount }} inversor{{ $investorCount !== 1 ? 'es' : '' }}</span>
                             <span class="text-[10px] font-black {{ $opp->currency === 'USD' ? 'text-[#006BFF]' : 'text-[#00D26A]' }} tabular-nums ml-auto">{{ $curSymbol }}{{ number_format($totalInvested, 2) }}</span>
                         </div>
                     </a>
                 @empty
                     <div class="px-5 py-10 text-center">
-                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Sin inversiones financiadas</p>
+                        <svg class="w-12 h-12 text-gray-500 dark:text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Sin inversiones financiadas</p>
                     </div>
                 @endforelse
             </div>
@@ -476,7 +476,7 @@
 
         {{-- ACCESOS RÁPIDOS --}}
         <div class="pk-fade space-y-3">
-            <h3 class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Accesos rápidos</h3>
+            <h3 class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">Accesos rápidos</h3>
             <div class="grid grid-cols-2 gap-2">
                 <a href="{{ route('superadmin.loans.index', ['filter' => 'pending']) }}" class="pk-card flex flex-col items-center gap-2 p-4 hover:border-[#006BFF]/40 dark:hover:border-[#006BFF]/30 transition-colors">
                     <svg class="w-9 h-9 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -498,7 +498,7 @@
 
             {{-- PENDIENTES --}}
             <div class="pk-card p-4 space-y-2.5">
-                <h4 class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Pendientes por aprobar</h4>
+                <h4 class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Pendientes por aprobar</h4>
                 @if($stats['pending'] > 0)
                 <a href="{{ route('superadmin.users.index') }}" class="flex items-center justify-between py-1 group">
                     <span class="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Usuarios</span>
@@ -531,7 +531,7 @@
             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
                 <div>
                     <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Usuarios recientes</h3>
-                    <p class="text-[9px] text-gray-400 dark:text-gray-500 font-bold">Últimos 5 registros</p>
+                    <p class="text-[9px] text-gray-500 dark:text-gray-400 font-bold">Últimos 5 registros</p>
                 </div>
                 <a href="{{ route('superadmin.users.index') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todos</a>
             </div>
@@ -545,7 +545,7 @@
                         <img src="{{ $userPhoto }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover border-2 border-gray-100 dark:border-gray-800 flex-shrink-0">
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ $user->name }}</p>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 truncate">{{ $user->email }}</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 truncate">{{ $user->email }}</p>
                         </div>
                         <div class="flex items-center gap-3 flex-shrink-0">
                             @if($user->profile_completed)
@@ -561,8 +561,8 @@
                                     <span class="w-1 h-1 rounded-full bg-gray-400"></span>Incompleto
                                 </span>
                             @endif
-                            <span class="text-[9px] text-gray-400 dark:text-gray-500 hidden sm:inline">{{ $user->created_at->diffForHumans() }}</span>
-                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            <span class="text-[9px] text-gray-500 dark:text-gray-400 hidden sm:inline">{{ $user->created_at->diffForHumans() }}</span>
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </a>
                 @endforeach
@@ -608,7 +608,7 @@ function switchCashboxTab(id){
             pag.classList.remove('hidden');
             pag.innerHTML = '';
             const prevBtn = document.createElement('button');
-            prevBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ' + (current === 1 ? 'text-gray-300 dark:text-gray-600 cursor-default' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
+            prevBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ' + (current === 1 ? 'text-gray-500 dark:text-gray-400 cursor-default' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
             prevBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>';
             prevBtn.disabled = current === 1;
             prevBtn.addEventListener('click', () => { if(current > 1){ current--; render(); }});
@@ -621,7 +621,7 @@ function switchCashboxTab(id){
                 pag.appendChild(btn);
             }
             const nextBtn = document.createElement('button');
-            nextBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ' + (current === totalPages ? 'text-gray-300 dark:text-gray-600 cursor-default' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
+            nextBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-colors ' + (current === totalPages ? 'text-gray-500 dark:text-gray-400 cursor-default' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5');
             nextBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
             nextBtn.disabled = current === totalPages;
             nextBtn.addEventListener('click', () => { if(current < totalPages){ current++; render(); }});

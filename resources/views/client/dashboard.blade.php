@@ -173,7 +173,7 @@
                     <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{{ $rejectedChange->rejection_reason }}</p>
                 @endif
             </div>
-            <button onclick="dismissRejected()" class="p-1 text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white flex-shrink-0">
+            <button onclick="dismissRejected()" class="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex-shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -201,7 +201,7 @@
                 <p id="pending-loans-text" class="text-sm text-gray-900 dark:text-white">{{ $pendingLoans->count() }} solicitud(es) en revisión</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Toca para ver detalles</p>
             </div>
-            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
     </div>
 
@@ -264,12 +264,12 @@
                         <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 {{ $hasOverdue ? 'bg-red-500' : 'bg-[#00D26A]' }} rounded-full border-2 border-white dark:border-gray-950"></span>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ $greeting }}</p>
+                        <p class="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $greeting }}</p>
                         <p class="text-base md:text-lg font-bold text-gray-900 dark:text-white truncate mt-0.5" title="{{ $fullName }}">{{ $fullName }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button type="button" onclick="openProfileModal()" title="Ver perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/10 dark:hover:bg-[#4A90E2]/10 transition-colors duration-200">
+                    <button type="button" onclick="openProfileModal()" title="Ver perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/10 dark:hover:bg-[#4A90E2]/10 transition-colors duration-200">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </button>
                 </div>
@@ -412,7 +412,7 @@
                     <div>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $isInvestor ? 'Mis Inversiones' : 'Invertir' }}</p>
                         <p class="text-lg font-bold text-[#8247f5] dark:text-[#9B59B6] mt-0.5">Hasta un 2%</p>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500">mensual</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400">mensual</p>
                     </div>
                 </a>
 
@@ -435,19 +435,19 @@
                             <svg class="w-5 h-5 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                             <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Resumen</span>
                         </div>
-                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-[8px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Deuda</p>
+                            <p class="text-[8px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Deuda</p>
                             <p class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">S/ {{ number_format($totalDebt, 2) }}</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-[8px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Cuota/Mes</p>
+                            <p class="text-[8px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cuota/Mes</p>
                             <p class="text-sm font-bold text-[#006BFF] dark:text-[#4A90E2] tabular-nums">S/ {{ number_format($monthlyPayment, 2) }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-[8px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Estado</p>
+                            <p class="text-[8px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estado</p>
                             @if($hasOverdue)
                             <p class="text-xs font-medium text-red-500 dark:text-red-400 flex items-center justify-end"><span class="pk-status-dot" style="background:#EF4444"></span>Atrasado</p>
                             @else
@@ -466,7 +466,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Cuentas</p>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Administrar</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Administrar</p>
                     </div>
                 </button>
 
@@ -478,7 +478,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Referidos</p>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Gana comisiones</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Gana comisiones</p>
                     </div>
                 </a>
             </div>
@@ -494,21 +494,21 @@
                     <svg class="w-5 h-5 text-[#006BFF] dark:text-[#4A90E2] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     <div>
                         <p class="text-sm font-medium text-gray-900 dark:text-white">Rápido y Simple</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500">Solicita en minutos, sin papeleos</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Solicita en minutos, sin papeleos</p>
                     </div>
                 </div>
                 <div class="pk-card p-3 flex items-center gap-3">
                     <svg class="w-5 h-5 text-[#8247f5] dark:text-[#9B59B6] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     <div>
                         <p class="text-sm font-medium text-gray-900 dark:text-white">Seguro y Transparente</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500">Sin letras pequeñas</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Sin letras pequeñas</p>
                     </div>
                 </div>
                 <div class="pk-card p-3 flex items-center gap-3">
                     <svg class="w-5 h-5 text-[#D4910E] dark:text-[#F5A623] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
                     <div>
                         <p class="text-sm font-medium text-gray-900 dark:text-white">Doble Oportunidad</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500">Préstamo o inversión</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Préstamo o inversión</p>
                     </div>
                 </div>
             </div>
@@ -527,10 +527,10 @@
                 <img src="{{ $profilePhoto }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-800">
                 <div>
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ $user->person_type === 'juridica' ? ($user->business_name ?? $user->name) : trim(($user->first_name ?? '').' '.($user->last_name ?? '')) }}</h3>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ $user->email }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $user->email }}</p>
                 </div>
             </div>
-            <button type="button" onclick="closeProfileModal()" class="p-1 text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white">
+            <button type="button" onclick="closeProfileModal()" class="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -541,7 +541,7 @@
 
             {{-- Datos Personales --}}
             <div>
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Datos Personales</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold mb-2">Datos Personales</p>
                 <div class="space-y-2">
                     <div class="pk-card px-4 py-2.5 flex items-center justify-between">
                         <span class="text-xs text-gray-500 dark:text-gray-400">Tipo de persona</span>
@@ -588,7 +588,7 @@
             @if($profile)
             {{-- Información Adicional --}}
             <div>
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Información Adicional</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold mb-2">Información Adicional</p>
                 <div class="space-y-2">
                     @if($profile->institution)
                     <div class="pk-card px-4 py-2.5 flex items-center justify-between">
@@ -627,7 +627,7 @@
 
             {{-- Información Laboral --}}
             <div>
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Información Laboral</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold mb-2">Información Laboral</p>
                 <div class="space-y-2">
                     <div class="pk-card px-4 py-2.5 flex items-center justify-between">
                         <span class="text-xs text-gray-500 dark:text-gray-400">Empleado</span>
@@ -672,7 +672,7 @@
             {{-- Cónyuge --}}
             @if($profile->marital_status && in_array($profile->marital_status, ['casado_separado', 'casado_compartido']))
             <div>
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Cónyuge</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold mb-2">Cónyuge</p>
                 <div class="space-y-2">
                     @if($profile->spouse_first_name)
                     <div class="pk-card px-4 py-2.5 flex items-center justify-between">
@@ -693,7 +693,7 @@
 
             {{-- Código de Referido --}}
             <div>
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-semibold mb-2">Referido</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold mb-2">Referido</p>
                 <div class="pk-card px-4 py-2.5 flex items-center justify-between">
                     <span class="text-xs text-gray-500 dark:text-gray-400">Mi código</span>
                     <span class="text-sm font-bold text-[#006BFF] dark:text-[#4A90E2]">{{ $user->referral_code ?? '—' }}</span>
@@ -720,10 +720,10 @@
                     </div>
                     <div>
                         <h3 class="text-base font-bold text-gray-900 dark:text-white">Cuentas Bancarias</h3>
-                        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Donde recibirás tus desembolsos</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Donde recibirás tus desembolsos</p>
                     </div>
                 </div>
-                <button type="button" onclick="closeBankModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <button type="button" onclick="closeBankModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -736,12 +736,12 @@
                 </div>
             </div>
             <div id="bankAccountForm" class="hidden pt-5 mt-5 border-t border-gray-100 dark:border-gray-800/50">
-                <h4 id="formTitle" class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-5">Nueva Cuenta</h4>
+                <h4 id="formTitle" class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-5">Nueva Cuenta</h4>
                 <form id="actualForm" onsubmit="saveBankAccount(event)" data-no-loading class="space-y-4">
                     <input type="hidden" id="editingId" value="">
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Alias</label>
-                        <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
+                        <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -769,16 +769,16 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Nro. Cuenta</label>
-                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
+                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
                         </div>
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">CCI</label>
-                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700">
+                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
                     </div>
                     <div class="flex gap-3 pt-3">
                         <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">Guardar</button>
-                        <button type="button" onclick="hideForm()" class="px-5 py-2.5 rounded-xl text-gray-400 dark:text-gray-500 text-sm font-medium hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
+                        <button type="button" onclick="hideForm()" class="px-5 py-2.5 rounded-xl text-gray-500 dark:text-gray-400 text-sm font-medium hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -801,10 +801,10 @@
                 <svg class="w-6 h-6 text-[#E94560]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </div>
             <h3 class="text-base font-bold text-gray-900 dark:text-white">Eliminar cuenta</h3>
-            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">¿Estás seguro? Esta acción no se puede deshacer.</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1.5">¿Estás seguro? Esta acción no se puede deshacer.</p>
         </div>
         <div class="px-6 pb-6 flex gap-3">
-            <button type="button" onclick="closeDeleteConfirm()" class="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
+            <button type="button" onclick="closeDeleteConfirm()" class="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
             <button type="button" onclick="confirmDelete()" class="flex-1 py-2.5 rounded-xl bg-[#E94560] text-white text-sm font-semibold hover:bg-[#d63d56] transition-colors">Eliminar</button>
         </div>
     </div>
@@ -818,7 +818,7 @@
                 <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
             </div>
             <h3 class="text-base font-bold text-gray-900 dark:text-white">No se puede eliminar</h3>
-            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1.5">Esta cuenta está vinculada a las siguientes operaciones:</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1.5">Esta cuenta está vinculada a las siguientes operaciones:</p>
             <ul id="deleteErrorList" class="mt-3 space-y-1.5 text-left"></ul>
         </div>
         <div class="px-6 pb-6">
@@ -858,7 +858,7 @@
             const response = await fetch('{{ route("client.bank-accounts.index") }}');
             accounts = await response.json();
             if (accounts.length === 0) {
-                list.innerHTML = '<div class="py-10 text-center"><svg class="w-10 h-10 mx-auto text-gray-200 dark:text-gray-800 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg><p class="text-sm text-gray-300 dark:text-gray-700">Sin cuentas registradas</p></div>';
+                list.innerHTML = '<div class="py-10 text-center"><svg class="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg><p class="text-sm text-gray-500 dark:text-gray-400">Sin cuentas registradas</p></div>';
                 return;
             }
             list.innerHTML = accounts.map(acc => `
@@ -866,15 +866,15 @@
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
                             <span class="text-sm font-medium text-gray-900 dark:text-white">${acc.alias || acc.bank_name}</span>
-                            <span class="text-[10px] font-medium text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-800/50 px-1.5 py-0.5 rounded">${acc.bank_name}</span>
+                            <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-1.5 py-0.5 rounded">${acc.bank_name}</span>
                         </div>
-                        <p class="text-[11px] text-gray-400 dark:text-gray-600 tabular-nums mt-0.5">${acc.account_type === 'ahorros' ? 'Ahorros' : 'Corriente'} · ${acc.currency === 'PEN' ? 'S/' : '$'} · ${acc.account_number}</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums mt-0.5">${acc.account_type === 'ahorros' ? 'Ahorros' : 'Corriente'} · ${acc.currency === 'PEN' ? 'S/' : '$'} · ${acc.account_number}</p>
                     </div>
                     <div class="flex gap-0.5 flex-shrink-0 ml-3">
-                        <button onclick="editAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors">
+                        <button onclick="editAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/5 dark:hover:bg-[#4A90E2]/5 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                         </button>
-                        <button onclick="deleteAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 dark:text-gray-700 hover:text-[#E94560] hover:bg-[#E94560]/5 transition-colors">
+                        <button onclick="deleteAccount(${acc.id})" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#E94560] hover:bg-[#E94560]/5 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                     </div>
@@ -976,7 +976,7 @@
             });
         } else {
             const li = document.createElement('li');
-            li.className = 'text-sm text-gray-400 dark:text-gray-500';
+            li.className = 'text-sm text-gray-500 dark:text-gray-400';
             li.textContent = msg || 'Esta cuenta está asociada a otras operaciones.';
             list.appendChild(li);
         }
@@ -1046,10 +1046,10 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-gray-900 dark:text-white">Deudas atrasadas</h3>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">{{ $overdueByLoan->count() }} préstamo{{ $overdueByLoan->count() > 1 ? 's' : '' }} con mora</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400">{{ $overdueByLoan->count() }} préstamo{{ $overdueByLoan->count() > 1 ? 's' : '' }} con mora</p>
                 </div>
             </div>
-            <button type="button" onclick="closeOverdueModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeOverdueModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -1067,16 +1067,16 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3 mb-2">
                         <div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Deuda total</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Deuda total</p>
                             <p class="text-sm font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($debt['total_with_fee'], 2, '.', ',') }}</p>
                         </div>
                         <div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Mora</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mora</p>
                             <p class="text-sm font-black text-yellow-500">{{ $cur }} {{ number_format($debt['total_late_fee'], 2, '.', ',') }}</p>
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500">Venció el {{ $debt['oldest_due_date']->format('d/m/Y') }} · hace {{ $debt['days_overdue'] }} días</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400">Venció el {{ $debt['oldest_due_date']->format('d/m/Y') }} · hace {{ $debt['days_overdue'] }} días</p>
                         <svg class="w-4 h-4 text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 </a>
@@ -1084,7 +1084,7 @@
         </div>
         <div class="flex-shrink-0 px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
             <div class="flex items-center justify-between">
-                <p class="text-[10px] text-gray-400 dark:text-gray-500">Total general</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400">Total general</p>
                 <p class="text-sm font-black text-red-600 dark:text-red-400">{{ $oldestOverdue->loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($overdueTotal, 2, '.', ',') }}</p>
             </div>
         </div>
@@ -1206,10 +1206,10 @@ document.getElementById('overdueModal').addEventListener('keydown', function(e) 
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-gray-900 dark:text-white">Pagos próximos</h3>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">{{ $upcomingByLoan->count() }} préstamo{{ $upcomingByLoan->count() > 1 ? 's' : '' }} con cuotas por vencer</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400">{{ $upcomingByLoan->count() }} préstamo{{ $upcomingByLoan->count() > 1 ? 's' : '' }} con cuotas por vencer</p>
                 </div>
             </div>
-            <button type="button" onclick="closeUpcomingModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeUpcomingModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -1228,11 +1228,11 @@ document.getElementById('overdueModal').addEventListener('keydown', function(e) 
                     </div>
                     <div class="grid grid-cols-2 gap-3 mb-2">
                         <div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Monto cuota</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Monto cuota</p>
                             <p class="text-sm font-black text-gray-900 dark:text-white">{{ $cur }} {{ number_format($item['next_amount'], 2, '.', ',') }}</p>
                         </div>
                         <div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Vence en</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vence en</p>
                             @if($daysLeft === 0)
                                 <p class="text-sm font-black text-red-500">Hoy</p>
                             @elseif($daysLeft === 1)
@@ -1243,7 +1243,7 @@ document.getElementById('overdueModal').addEventListener('keydown', function(e) 
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500">Vence el {{ $item['next_due_date']->format('d/m/Y') }}</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400">Vence el {{ $item['next_due_date']->format('d/m/Y') }}</p>
                         <svg class="w-4 h-4 text-amber-400 group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 </a>
@@ -1278,10 +1278,10 @@ document.getElementById('upcomingModal').addEventListener('keydown', function(e)
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-gray-900 dark:text-white">Solicitudes en revisión</h3>
-                    <p class="text-[10px] text-gray-400 dark:text-gray-500">{{ $pendingLoans->count() }} solicitud{{ $pendingLoans->count() > 1 ? 'es' : '' }} pendiente{{ $pendingLoans->count() > 1 ? 's' : '' }}</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400">{{ $pendingLoans->count() }} solicitud{{ $pendingLoans->count() > 1 ? 'es' : '' }} pendiente{{ $pendingLoans->count() > 1 ? 's' : '' }}</p>
                 </div>
             </div>
-            <button type="button" onclick="closePendingLoansModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closePendingLoansModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -1296,16 +1296,16 @@ document.getElementById('upcomingModal').addEventListener('keydown', function(e)
                     </div>
                     <div class="grid grid-cols-2 gap-3 mb-2">
                         <div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Monto</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Monto</p>
                             <p class="text-sm font-black text-gray-900 dark:text-white">{{ $loan->currency === 'USD' ? '$' : 'S/' }} {{ number_format($loan->amount, 2, '.', ',') }}</p>
                         </div>
                         <div>
-                            <p class="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Plazo</p>
+                            <p class="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plazo</p>
                             <p class="text-sm font-black text-gray-900 dark:text-white">{{ $loan->months }} meses</p>
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500">Solicitado el {{ $loan->created_at->format('d/m/Y') }}</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400">Solicitado el {{ $loan->created_at->format('d/m/Y') }}</p>
                     </div>
                 </div>
             @endforeach
@@ -1346,10 +1346,10 @@ function closeSummaryModal() {
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">Resumen de Préstamos</h3>
-                    <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $activeLoans->count() }} préstamo{{ $activeLoans->count() > 1 ? 's' : '' }} activo{{ $activeLoans->count() > 1 ? 's' : '' }}</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400">{{ $activeLoans->count() }} préstamo{{ $activeLoans->count() > 1 ? 's' : '' }} activo{{ $activeLoans->count() > 1 ? 's' : '' }}</p>
                 </div>
             </div>
-            <button type="button" onclick="closeSummaryModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-600 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeSummaryModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -1395,7 +1395,7 @@ function closeSummaryModal() {
             {{-- Préstamos activos --}}
             @if($activeLoans->isNotEmpty())
             <div>
-                <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Tus préstamos</p>
+                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Tus préstamos</p>
                 <div class="space-y-2.5">
                     @foreach($activeLoans->take(5) as $loan)
                     @php
@@ -1427,8 +1427,8 @@ function closeSummaryModal() {
                             <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 tabular-nums flex-shrink-0">{{ $paid_i }}/{{ $total_i }}</span>
                         </div>
                         <div class="flex items-center justify-between mt-2">
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500">{{ number_format($loan->interest_rate, 1) }}% interés</span>
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 flex items-center gap-0.5 group-hover:text-[#E94560] transition-colors">
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400">{{ number_format($loan->interest_rate, 1) }}% interés</span>
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400 flex items-center gap-0.5 group-hover:text-[#E94560] transition-colors">
                                 Ver cronograma
                                 <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </span>

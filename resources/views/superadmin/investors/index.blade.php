@@ -94,7 +94,7 @@
                             @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top flex-shrink-0 relative top-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif{{ $label }}
                         </span>
                         @if($counts[$key] > 0)
-                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
                         @endif
                         @if($filter === $key)
                             <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
@@ -245,7 +245,7 @@
     </div>
     @empty
     <div class="py-20 text-center">
-        <p class="text-gray-400 dark:text-gray-500 text-sm">No hay solicitudes en esta categoría.</p>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">No hay solicitudes en esta categoría.</p>
     </div>
     @endforelse
 
@@ -335,7 +335,7 @@
 
             <div id="investorDetailsScroll" class="w-full md:w-3/5 p-8 md:p-10 space-y-6 max-h-[70vh] overflow-y-auto modal-scroll">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Información Personal</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Información Personal</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">DNI / Documento</p>
@@ -393,7 +393,7 @@
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Detalles de Postulación</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Detalles de Postulación</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Ocupación</p>
@@ -419,12 +419,12 @@
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Experiencia</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Experiencia</p>
                     <p id="modalExperience" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed italic"></p>
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Referido</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Referido</p>
                     <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"></p>
                 </div>
 

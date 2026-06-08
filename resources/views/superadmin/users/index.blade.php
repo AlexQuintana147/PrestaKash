@@ -128,7 +128,7 @@
                                 @endif
                             </span>
                             @if($counts[$key] > 0)
-                                <span class="ml-2 text-xs {{ $isActive ? 'text-gray-500 dark:text-gray-400' : 'text-gray-300 dark:text-gray-500' }}">{{ $counts[$key] }}</span>
+                                <span class="ml-2 text-xs {{ $isActive ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
                             @endif
                             @if($isActive)
                                 <span class="absolute bottom-0 left-0 right-0 h-px {{ $lineClass }}"></span>
@@ -220,7 +220,7 @@
                 </div>
             @empty
                 <div class="py-20 text-center">
-                    <p class="text-gray-400 dark:text-gray-500 text-sm">No hay usuarios bloqueados.</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">No hay usuarios bloqueados.</p>
                 </div>
             @endforelse
 
@@ -347,7 +347,7 @@
                                     </button>
                                 </form>
                             @else
-                                <span class="text-xs text-gray-300 dark:text-gray-700">—</span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
                             @endif
                         </div>
                     @endif
@@ -380,13 +380,13 @@
                                     {{ $user->referrer->first_name }} {{ Str::substr($user->referrer->last_name, 0, 1) }}.
                                 </span>
                             @else
-                                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">—</span>
                             @endif
                         </div>
                     @endif
 
                     <a href="{{ route('superadmin.users.show', $user) }}" class="flex justify-end">
-                        <svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors hidden md:block"
+                        <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors hidden md:block"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -395,7 +395,7 @@
                 </div>
             @empty
                 <div class="py-20 text-center">
-                    <p class="text-gray-400 dark:text-gray-500 text-sm">No hay usuarios en esta categoría.</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">No hay usuarios en esta categoría.</p>
                 </div>
             @endforelse
 

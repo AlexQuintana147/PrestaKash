@@ -37,7 +37,7 @@
     @if($pendingInstallments->isEmpty())
         <div class="py-24 text-center">
             <svg class="w-12 h-12 mx-auto text-green-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-sm text-gray-400 dark:text-gray-500 font-medium uppercase tracking-widest">Sin deudas pendientes</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">Sin deudas pendientes</p>
         </div>
     @else
 
@@ -139,7 +139,7 @@
                             @if($inst->late_fee > 0)
                                 <p class="text-xs font-bold text-orange-500">{{ $cur }} {{ number_format($inst->late_fee, 2) }}</p>
                             @else
-                                <p class="text-xs text-gray-300 dark:text-gray-600">—</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">—</p>
                             @endif
                         </div>
                         <div class="col-span-2 text-right">
@@ -244,7 +244,7 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Mora</span>
-                            <p class="text-sm font-bold {{ $inst->late_fee > 0 ? 'text-orange-500' : 'text-gray-300 dark:text-gray-600' }}">{{ $inst->late_fee > 0 ? $cur . ' ' . number_format($inst->late_fee, 2) : '—' }}</p>
+                            <p class="text-sm font-bold {{ $inst->late_fee > 0 ? 'text-orange-500' : 'text-gray-500 dark:text-gray-400' }}">{{ $inst->late_fee > 0 ? $cur . ' ' . number_format($inst->late_fee, 2) : '—' }}</p>
                         </div>
                         <div class="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total</span>

@@ -46,7 +46,7 @@
             <a href="{{ route('client.loans.create') }}"
                 class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                 <div class="flex items-center justify-between">
-                    <svg class="w-5 h-5 text-gray-400 dark:text-gray-500" viewBox="0 0 297.085 297.085" fill="currentColor">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" viewBox="0 0 297.085 297.085" fill="currentColor">
                         <g>
                             <g>
                                 <g>
@@ -106,7 +106,7 @@
             <a href="{{ route('client.loans.history') }}"
                 class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                 <div class="flex items-center justify-between">
-                    <svg class="w-5 h-5 text-gray-400 dark:text-gray-500" viewBox="0 0 16 16" fill="currentColor">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" viewBox="0 0 16 16" fill="currentColor">
                         <path fill-rule="evenodd" clip-rule="evenodd"
                             d="M1.5 14H15v-1H2V0H1v13.5l.5.5zM3 11.5v-8l.5-.5h2l.5.5v8l-.5.5h-2l-.5-.5zm2-.5V4H4v7h1zm6-9.5v10l.5.5h2l.5-.5v-10l-.5-.5h-2l-.5.5zm2 .5v9h-1V2h1zm-6 9.5v-6l.5-.5h2l.5.5v6l-.5.5h-2l-.5-.5zm2-.5V6H8v5h1z" />
                     </svg>
@@ -182,7 +182,7 @@
                                         <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">
                                             {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}
                                         </h3>
-                                        <p class="text-[10px] sm:text-[11px] text-gray-400 dark:text-gray-500">
+                                        <p class="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400">
                                             {{ $loan->created_at->format('d M, Y') }}
                                         </p>
                                     </div>
@@ -210,7 +210,7 @@
                                         @elseif($loan->status === 'counter_accepted')
                                             <span class="text-[10px] font-black text-amber-500 uppercase tracking-wider">En espera</span>
                                         @endif
-                                        <svg class="w-4 h-4 text-gray-300 dark:text-gray-700 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     </div>
@@ -220,7 +220,7 @@
                                 @if($loan->status === 'approved' || $loan->status === 'paid')
                                 <div class="mb-3">
                                     <div class="flex justify-between items-center mb-1.5">
-                                        <p class="text-[8px] sm:text-[9px] text-gray-400 dark:text-gray-600 uppercase font-bold tracking-widest">Progreso</p>
+                                        <p class="text-[8px] sm:text-[9px] text-gray-500 dark:text-gray-400 uppercase font-bold tracking-widest">Progreso</p>
                                         <p class="text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400">{{ $paid_h }}/{{ $total_h }} cuotas</p>
                                     </div>
                                     <div class="h-1.5 sm:h-2 w-full bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden">
@@ -233,12 +233,12 @@
                                 <div class="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs">
                                     <div class="flex items-center gap-1.5">
                                         <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span class="text-gray-400 dark:text-gray-600 uppercase font-bold">Frec.</span>
+                                        <span class="text-gray-500 dark:text-gray-400 uppercase font-bold">Frec.</span>
                                         <span class="text-gray-700 dark:text-gray-300 capitalize font-medium">{{ $loan->payment_frequency ?? 'N/A' }}</span>
                                     </div>
                                     <div class="flex items-center gap-1.5">
                                         <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                                        <span class="text-gray-400 dark:text-gray-600 uppercase font-bold">Interés</span>
+                                        <span class="text-gray-500 dark:text-gray-400 uppercase font-bold">Interés</span>
                                         <span class="text-gray-700 dark:text-gray-300 font-medium">{{ number_format($loan->interest_rate, 2) }}%</span>
                                     </div>
                                 </div>
@@ -369,7 +369,7 @@
             </div>
             <div class="flex-1 overflow-y-auto schedule-scrollbar px-2 sm:px-6 py-3 sm:py-4">
                 <table class="w-full text-[8px] sm:text-[10px] text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-600 sticky top-0">
+                    <thead class="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 sticky top-0">
                         <tr>
                             <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">N°</th>
                             <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Capital</th>

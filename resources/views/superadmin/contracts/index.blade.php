@@ -41,13 +41,13 @@
                     <span class="text-xs font-mono px-2 py-1 rounded-md {{ $contract->is_active ? 'bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500' }}">
                         {{ $contract->is_active ? 'Activo' : 'Inactivo' }}
                     </span>
-                    <span class="text-[10px] text-gray-400 dark:text-gray-600 font-medium">{{ $contract->clauses_count }} cláusula{{ $contract->clauses_count != 1 ? 's' : '' }}</span>
-                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-700 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{{ $contract->clauses_count }} cláusula{{ $contract->clauses_count != 1 ? 's' : '' }}</span>
+                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </div>
             </a>
         @empty
             <div class="flex flex-col items-center justify-center py-16 text-center">
-                <svg class="w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <svg class="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <p class="text-sm text-gray-500 dark:text-gray-500 font-medium">No hay contratos aún</p>
                 <a href="{{ route('superadmin.contracts.create') }}" class="mt-3 text-xs text-blue-500 hover:text-blue-600 font-medium">Crear primer contrato</a>
             </div>

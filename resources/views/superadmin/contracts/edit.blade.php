@@ -263,7 +263,7 @@
                                       onclick="insertVariable('[{{ $varKey }}]')" title="{{ $varData['desc'] }}">
                                     {{ str_replace('_', ' ', $varKey) }}
                                 </span>
-                                <p class="text-[9px] text-gray-400 dark:text-gray-600 mt-0.5 ml-0.5 hidden group-hover:block leading-tight">{{ $varData['desc'] }}</p>
+                                <p class="text-[9px] text-gray-500 dark:text-gray-400 mt-0.5 ml-0.5 hidden group-hover:block leading-tight">{{ $varData['desc'] }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -500,7 +500,7 @@
                 </div>
                 <div>
                     <h3 id="preview-modal-title" class="text-sm font-bold text-gray-900 dark:text-white leading-tight">Vista Previa del Contrato</h3>
-                    <p id="preview-contract-name" class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{{ $contract?->name ?? 'Sin título' }}</p>
+                    <p id="preview-contract-name" class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{{ $contract?->name ?? 'Sin título' }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">

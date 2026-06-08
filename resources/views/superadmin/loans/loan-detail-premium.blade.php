@@ -248,7 +248,7 @@
                     <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $i }}&source=modal"
                         class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 transition-colors">{{ $i }}</a>
                 @elseif(abs($i - $userInstallments->currentPage()) == 3)
-                    <span class="text-gray-300 dark:text-gray-700 text-[10px]">...</span>
+                    <span class="text-gray-400 dark:text-gray-500 text-[10px]">...</span>
                 @endif
             @endfor
         </div>
@@ -385,7 +385,7 @@
 
         <div class="px-5 py-2.5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
             <div class="relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" id="loans-search" placeholder="Buscar por código..." oninput="filterLoans()" class="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-gray-300 dark:focus:border-gray-500 transition-colors">
             </div>
         </div>
@@ -473,13 +473,13 @@ function renderLoansPage() {
                 <div class="flex items-center gap-1.5 mb-1">
                     <span class="text-sm font-bold ${codeColor}">${l.code}</span>${badges}
                 </div>
-                <div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-400 dark:text-gray-500">
+                <div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-500 dark:text-gray-400">
                     <span>${l.cur}<strong class="text-gray-600 dark:text-gray-300 tabular-nums ml-0.5">${Number(l.amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
                     <span>Pagado: <strong class="text-emerald-600 dark:text-emerald-400 tabular-nums">${Number(l.paid).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
                     <span>Deuda: <strong class="${debtColor} tabular-nums">${Number(l.debt).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
                 </div>
             </div>
-            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>`;
     });
     container.innerHTML = html;

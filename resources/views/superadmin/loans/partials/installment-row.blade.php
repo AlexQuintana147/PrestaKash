@@ -72,7 +72,7 @@
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                     <span
                         class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $loan->code }}</span>
-                    <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
+                    <span class="text-[9px] text-gray-400 dark:text-gray-500">•</span>
                     <span class="text-[9px] text-purple-500 font-bold uppercase tracking-widest">
                         @if(isset($inst->is_interest_payment) && $inst->is_interest_payment)
                             Interés pago {{ $inst->interest_payment_number }} de {{ $inst->total_interest_payments }}
@@ -82,12 +82,12 @@
                             Cuota #{{ $inst->installment_number }}
                         @endif
                     </span>
-                    <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
+                    <span class="text-[9px] text-gray-400 dark:text-gray-500">•</span>
                     <span
                         class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ $inst->bank_name ?? $loan->bank_name }}</span>
                     
                     @if(in_array($inst->status, ['approved', 'processing']) && $inst->payment_method !== 'cash')
-                        <span class="text-[9px] text-gray-300 dark:text-gray-700">•</span>
+                        <span class="text-[9px] text-gray-400 dark:text-gray-500">•</span>
                         @php
                             $displayOp = (isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment))
                                 ? ($inst->interest_payment->operation_number ?? null)

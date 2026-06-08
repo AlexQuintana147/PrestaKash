@@ -229,7 +229,7 @@
                     <div id="invest-submenu" class="mt-1 ml-4 space-y-0.5 {{ $isInvestActive ? '' : 'hidden' }}">
                         <a href="{{ route('client.investments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
-                            {{ request()->routeIs('client.investments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            {{ request()->routeIs('client.investments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-2.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                                 Oportunidades
@@ -242,13 +242,13 @@
                         </a>
                         <a href="{{ route('client.investments.my-investments') }}" onclick="closeSidebar()"
                             class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
-                            {{ request()->routeIs('client.investments.my-investments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            {{ request()->routeIs('client.investments.my-investments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                             <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             Mis Inversiones
                         </a>
                         <a href="{{ route('client.investments.payments') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
-                            {{ request()->routeIs('client.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            {{ request()->routeIs('client.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-2.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 Mis Pagos
@@ -334,7 +334,7 @@
         <div class="bg-white/60 dark:bg-gray-950/60 backdrop-blur-sm absolute inset-0"></div>
         <div class="relative flex flex-col items-center gap-3">
             <div class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-green-500 rounded-full animate-spin"></div>
-            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Procesando...</p>
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">Procesando...</p>
         </div>
     </div>
 

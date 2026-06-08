@@ -399,7 +399,7 @@
                     <div class="text-right">
                         <span class="block text-[8px] font-black uppercase tracking-widest
                             {{ $inst->status === 'approved'   ? 'text-green-500' : '' }}
-                            {{ $inst->status === 'pending'    ? 'text-gray-300 dark:text-gray-700' : '' }}
+                            {{ $inst->status === 'pending'    ? 'text-gray-400 dark:text-gray-500' : '' }}
                             {{ $inst->status === 'processing' ? 'text-yellow-500' : '' }}
                             {{ $inst->status === 'rejected'   ? 'text-red-500' : '' }}">
                             {{ match($inst->status) {
@@ -553,7 +553,7 @@
     onclick="if(event.target===this) closeUploadModal()">
     <div class="bg-white dark:bg-gray-950 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto">
         <button onclick="closeUploadModal()"
-            class="absolute top-5 right-5 text-gray-300 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
+            class="absolute top-5 right-5 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -598,28 +598,28 @@
                 <div class="flex gap-2">
                     <label class="flex-1 cursor-pointer group">
                         <input type="radio" name="requested_type" value="full" class="hidden peer" checked onchange="updateModalAmount('full')">
-                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-purple-600 transition-all border-b-2 border-transparent peer-checked:border-purple-600 hover:text-gray-600 dark:hover:text-gray-400">
                             CUOTA COMPLETA
                         </div>
                     </label>
                     @if($loan->type === 'cuotas' && $loan->amortization_system === 'frances')
                     <label id="interest-only-option" class="flex-1 cursor-pointer group">
                         <input type="radio" name="requested_type" value="interest" class="hidden peer" onchange="updateModalAmount('interest')">
-                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-amber-600 transition-all border-b-2 border-transparent peer-checked:border-amber-600 hover:text-gray-600 dark:hover:text-gray-400">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-amber-600 transition-all border-b-2 border-transparent peer-checked:border-amber-600 hover:text-gray-600 dark:hover:text-gray-400">
                             SOLO INTERÉS
                         </div>
                     </label>
                     @endif
                     <label id="total-payment-option" class="flex-1 cursor-pointer group hidden">
                         <input type="radio" name="requested_type" value="total" class="hidden peer" onchange="updateModalAmount('total')">
-                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-green-600 transition-all border-b-2 border-transparent peer-checked:border-green-600 hover:text-gray-600 dark:hover:text-gray-400">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-green-600 transition-all border-b-2 border-transparent peer-checked:border-green-600 hover:text-gray-600 dark:hover:text-gray-400">
                             PAGO TOTAL
                         </div>
                     </label>
                     @if($loan->type === 'cuotas' && $loan->amortization_system === 'frances')
                     <label id="partial-amortization-option" class="flex-1 cursor-pointer group hidden">
                         <input type="radio" name="requested_type" value="partial" class="hidden peer" onchange="updateModalAmount('partial')">
-                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
                             AMORTIZAR
                         </div>
                     </label>
@@ -649,13 +649,13 @@
                         <div class="flex gap-2">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="amortization_type" value="reduce_amount" class="hidden peer" checked>
-                                <div class="py-2 text-center text-[9px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-2 text-center text-[9px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     REDUCIR CUOTAS
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="amortization_type" value="reduce_term" class="hidden peer">
-                                <div class="py-2 text-center text-[9px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                                <div class="py-2 text-center text-[9px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
                                     REDUCIR PLAZO
                                 </div>
                             </label>
@@ -672,13 +672,13 @@
                 <div class="flex gap-2">
                     <label class="flex-1 cursor-pointer group">
                         <input type="radio" name="payment_method" value="transfer" class="hidden peer" checked onchange="togglePaymentFields(this.value)">
-                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-blue-600 transition-all border-b-2 border-transparent peer-checked:border-blue-600 hover:text-gray-600 dark:hover:text-gray-400">
                             TRANSFERENCIA
                         </div>
                     </label>
                     <label class="flex-1 cursor-pointer group">
                         <input type="radio" name="payment_method" value="cash" class="hidden peer" onchange="togglePaymentFields(this.value)">
-                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 peer-checked:text-green-600 transition-all border-b-2 border-transparent peer-checked:border-green-600 hover:text-gray-600 dark:hover:text-gray-400">
+                        <div class="py-2 text-center text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 peer-checked:text-green-600 transition-all border-b-2 border-transparent peer-checked:border-green-600 hover:text-gray-600 dark:hover:text-gray-400">
                             EFECTIVO
                         </div>
                     </label>
@@ -692,12 +692,12 @@
                     <select name="bank_name" id="modal_bank_name"
                             onchange="toggleCustomBank(this.value)"
                             class="w-full bg-transparent border-0 border-b border-gray-100 dark:border-gray-900 py-2 pr-6 text-xs font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all appearance-none cursor-pointer relative z-10">
-                        <option value="" disabled selected class="bg-white dark:bg-gray-950 text-gray-400 dark:text-gray-500">Elegir banco</option>
+                        <option value="" disabled selected class="bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400">Elegir banco</option>
                         @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'Banco de la Nación', 'Yape', 'Plin', 'Otros'] as $bank)
                             <option value="{{ $bank }}" class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-2">{{ $bank }}</option>
                         @endforeach
                     </select>
-                    <div class="absolute right-0 bottom-2 pointer-events-none text-gray-400 dark:text-gray-500 z-0">
+                    <div class="absolute right-0 bottom-2 pointer-events-none text-gray-500 dark:text-gray-400 z-0">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                         </svg>
