@@ -246,7 +246,7 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Nombres</label>
                     <input type="text" name="first_name" value="{{ old('first_name', Auth::user()->first_name ?? '') }}" required
-                        placeholder="Mateo Pedro" oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
+                        placeholder="Mateo Pedro" oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'').toLowerCase().replace(/(^|\s)\S/g,l=>l.toUpperCase())"
                         class="input-field">
                 </div>
                 <div>
@@ -254,7 +254,7 @@
                         class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Apellidos</label>
                     <input type="text" name="last_name" value="{{ old('last_name', Auth::user()->last_name ?? '') }}" required
                         placeholder="Ej: Castillo Villa"
-                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/(^|\s)\S/g,l=>l.toUpperCase())" class="input-field">
+                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'').toLowerCase().replace(/(^|\s)\S/g,l=>l.toUpperCase())" class="input-field">
                     <p class="text-[10px] text-gray-400 mt-1">Ingresa tus dos apellidos separados por un espacio.</p>
                 </div>
             </div>
@@ -270,8 +270,8 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Teléfono
                         celular</label>
-                    <input type="text" id="phoneInput" name="phone" value="{{ old('phone', Auth::user()->phone ?? '') }}" required
-                        placeholder="987654321" maxlength="9" oninput="this.value=this.value.replace(/\D/g,'')"
+                    <input type="tel" id="phoneInput" name="phone" value="{{ old('phone', Auth::user()->phone ?? '') }}" required
+                        placeholder="987654321" maxlength="9" inputmode="numeric" pattern="[0-9]{9}" oninput="this.value=this.value.replace(/\D/g,'')"
                         class="input-field">
                     <p id="phoneError" class="text-red-500 text-xs mt-1 hidden">Este celular ya está registrado</p>
                 </div>
