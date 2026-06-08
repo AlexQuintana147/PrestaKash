@@ -19,8 +19,6 @@
         .doc-card.captured:hover { border-color: #059669; }
         #cameraModal { display: none; }
         #cameraModal.active { display: flex !important; }
-        #videoPreview { transform: scaleX(-1); }
-        #capturedImage { transform: scaleX(-1); }
         @keyframes pulse-check { 0%,100%{transform:scale(1)}50%{transform:scale(1.15)} }
         .check-pulse { animation: pulse-check 0.4s ease-out; }
     </style>
@@ -169,12 +167,19 @@
                     <h3 class="text-sm md:text-base font-bold text-white" id="cameraTitle">Selfie</h3>
                     <p class="text-[10px] md:text-[11px] text-gray-500" id="cameraHint">Centra tu rostro en el círculo</p>
                 </div>
-                <button type="button" onclick="closeCamera()"
-                    class="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="switchCameraBtn" onclick="switchCamera()" class="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors" title="Cambiar cámara">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </button>
+                    <button type="button" onclick="closeCamera()"
+                        class="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Preview cámara -->
@@ -215,6 +220,7 @@
         let stream = null;
         let capturedBlob = null;
         let currentDoc = null; // 'selfie' | 'dni-front' | 'dni-back' | 'utility'
+        let facingMode = 'user'; // 'user' (frontal) o 'environment' (trasera)
         const docStates = { selfie: false, 'dni-front': false, 'dni-back': false, utility: false };
 
         function updateProgress() {
@@ -253,6 +259,7 @@
 
         function openCamera() {
             currentDoc = 'selfie';
+            facingMode = 'user'; // Selfie usa cámara frontal por defecto
             document.getElementById('cameraTitle').textContent = 'Foto Selfie';
             document.getElementById('cameraHint').textContent = 'Centra tu rostro en el círculo';
             document.getElementById('guideOval').classList.remove('hidden');
@@ -263,6 +270,7 @@
 
         function openDniCamera(side) {
             currentDoc = 'dni-' + side;
+            facingMode = 'environment'; // DNI usa cámara trasera por defecto
             document.getElementById('cameraTitle').textContent = side === 'front' ? 'DNI — Parte Frontal' : 'DNI — Parte Trasera';
             document.getElementById('cameraHint').textContent = 'Encuadra bien todo el documento';
             document.getElementById('guideOval').classList.add('hidden');
@@ -273,6 +281,7 @@
 
         function openUtilityCamera() {
             currentDoc = 'utility';
+            facingMode = 'environment'; // Recibo usa cámara trasera por defecto
             document.getElementById('cameraTitle').textContent = 'Recibo de Luz o Agua';
             document.getElementById('cameraHint').textContent = 'Enfoca el recibo completo';
             document.getElementById('guideOval').classList.add('hidden');
@@ -316,12 +325,13 @@
             // Detener stream anterior si existe
             stopStream();
 
-            // Intentar cámara trasera primero, luego cualquier cámara
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } })
+            // Intentar cámara según facingMode, luego cualquier cámara
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } } })
                 .then(function(s) {
                     stream = s;
                     video.srcObject = s;
                     video.play();
+                    updateMirrorState();
                 })
                 .catch(function() {
                     // Fallback: cualquier cámara disponible
@@ -330,10 +340,56 @@
                             stream = s;
                             video.srcObject = s;
                             video.play();
+                            updateMirrorState();
                         })
                         .catch(function(err) {
                             alert('No se pudo acceder a la cámara. Verifica los permisos del navegador.');
                             closeCamera();
+                        });
+                });
+        }
+
+        function updateMirrorState() {
+            var video = document.getElementById('videoPreview');
+            var canvas = document.getElementById('capturedImage');
+            // Espejar solo si es cámara frontal (selfie)
+            if (facingMode === 'user') {
+                video.style.transform = 'scaleX(-1)';
+                canvas.style.transform = 'scaleX(-1)';
+            } else {
+                video.style.transform = 'scaleX(1)';
+                canvas.style.transform = 'scaleX(1)';
+            }
+        }
+
+        function switchCamera() {
+            facingMode = facingMode === 'user' ? 'environment' : 'user';
+            stopStream();
+            var video = document.getElementById('videoPreview');
+            var canvas = document.getElementById('capturedImage');
+
+            canvas.classList.add('hidden');
+            video.classList.remove('hidden');
+            document.getElementById('captureBtn').classList.remove('hidden');
+            document.getElementById('actionButtons').classList.add('hidden');
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } } })
+                .then(function(s) {
+                    stream = s;
+                    video.srcObject = s;
+                    video.play();
+                    updateMirrorState();
+                })
+                .catch(function() {
+                    navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } })
+                        .then(function(s) {
+                            stream = s;
+                            video.srcObject = s;
+                            video.play();
+                            updateMirrorState();
+                        })
+                        .catch(function() {
+                            alert('No se pudo cambiar de cámara.');
                         });
                 });
         }
