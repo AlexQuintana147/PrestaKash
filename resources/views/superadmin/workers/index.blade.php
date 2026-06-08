@@ -6,7 +6,7 @@
 <div class="min-h-screen px-5 md:px-10 py-8">
     <div class="flex items-end justify-between mb-8">
         <div>
-            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Gestión</p>
+            <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-1">Gestión</p>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Trabajadores</h1>
         </div>
         <a href="{{ route('superadmin.workers.create') }}"

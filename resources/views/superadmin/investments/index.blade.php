@@ -7,7 +7,7 @@
 
     <div class="flex items-end justify-between mb-8">
         <div>
-            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Finanzas</p>
+            <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-1">Finanzas</p>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Control de Inversiones</h1>
         </div>
         <a href="{{ route('superadmin.investments.create') }}" class="text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:opacity-60 transition-opacity">
@@ -50,19 +50,19 @@
     </div>
 
     @if(request('search'))
-        <div id="investments-search-badge" class="mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div id="investments-search-badge" class="mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-100">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
             </svg>
-            Mostrando resultados para "<span class="font-medium text-gray-700 dark:text-gray-300">{{ request('search') }}</span>"
+            Mostrando resultados para "<span class="font-medium text-gray-700 dark:text-gray-100">{{ request('search') }}</span>"
             — <span id="investments-search-count">{{ $opportunities->total() }}</span> encontrado(s)
         </div>
     @else
-        <div id="investments-search-badge" class="hidden mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div id="investments-search-badge" class="hidden mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-100">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
             </svg>
-            Mostrando resultados para "<span id="investments-search-term" class="font-medium text-gray-700 dark:text-gray-300"></span>"
+            Mostrando resultados para "<span id="investments-search-term" class="font-medium text-gray-700 dark:text-gray-100"></span>"
             — <span id="investments-search-count">{{ $opportunities->total() }}</span> encontrado(s)
         </div>
     @endif
@@ -98,14 +98,14 @@
                 @foreach(['all' => 'Todas', 'open' => 'Abiertas', 'funded' => 'Financiadas', 'closed' => 'Cerradas'] as $key => $label)
                     <a href="{{ route('superadmin.investments.index', ['filter' => $key, 'search' => request('search')]) }}"
                        class="relative flex items-center gap-2 flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors overflow-visible
-                              {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                              {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-400' }}">
                         <span class="flex items-center gap-1">
                             @if($key === 'open' && $pendingRequests > 0)<svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top overflow-visible flex-shrink-0 relative top-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341(C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif
                             @if($key === 'open' && $pendingVouchers > 0)<svg class="w-3.5 h-3.5 text-green-600 animate-swing origin-top overflow-visible flex-shrink-0 relative top-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341(C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif
                             {{ $label }}
                         </span>
                         @if($counts[$key] > 0)
-                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
+                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-100' : 'text-gray-400 dark:text-gray-100' }}">{{ $counts[$key] }}</span>
                         @endif
                         @if($filter === $key)
                             <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
@@ -116,7 +116,7 @@
         </div>
 
         @if($pendingRequests > 0 || $pendingVouchers > 0)
-            <div class="flex items-center gap-5 px-4 py-2.5 text-[10px] text-gray-500 dark:text-gray-400 overflow-visible">
+            <div class="flex items-center gap-5 px-4 py-2.5 text-[10px] text-gray-500 dark:text-gray-100 overflow-visible">
                 <span class="font-bold uppercase tracking-widest">Leyenda:</span>
                 <span class="flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top overflow-visible flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341(C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
@@ -139,11 +139,11 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-3 mb-1">
-                                <span class="px-2 py-1 rounded-md text-xs font-mono font-bold bg-gray-900 text-white dark:bg-white dark:text-gray-900">{{ $opp->code }}</span>
+                                <span class="px-2 py-1 rounded-md text-xs font-mono font-bold bg-gray-900 text-white dark:bg-white dark:text-white">{{ $opp->code }}</span>
                                 <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest
                                     {{ $opp->status === 'open' ? 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' : '' }}
                                     {{ $opp->status === 'funded' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : '' }}
-                                    {{ $opp->status === 'closed' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' : '' }}
+                                    {{ $opp->status === 'closed' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' : '' }}
                                     {{ $opp->status === 'cancelled' ? 'bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400' : '' }}">
                                     {{ $opp->status === 'open' ? 'Abierta' : ($opp->status === 'funded' ? 'Financiada' : ($opp->status === 'closed' ? 'Cerrada' : 'Cancelada')) }}
                                 </span>
@@ -155,7 +155,7 @@
                                 @endif
                             </div>
                             <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
                         </div>
 
                         <div class="flex items-center gap-6 text-right">
@@ -191,8 +191,8 @@
         @endif
     @else
         <div class="text-center py-20">
-            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">No hay oportunidades de inversión</p>
+            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-100 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <p class="text-sm text-gray-500 dark:text-gray-100">No hay oportunidades de inversión</p>
             <a href="{{ route('superadmin.investments.create') }}" class="inline-block mt-4 text-sm font-bold text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-70 transition-opacity">Crear primera oportunidad</a>
         </div>
     @endif

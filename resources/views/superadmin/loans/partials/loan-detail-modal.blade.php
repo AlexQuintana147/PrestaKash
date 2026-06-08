@@ -21,7 +21,7 @@
                 <p id="ldm_name" class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate"></p>
                 <p id="ldm_meta" class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5"></p>
             </div>
-            <button onclick="closeLoanDetailModal()" class="text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+            <button onclick="closeLoanDetailModal()" class="text-gray-400 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>

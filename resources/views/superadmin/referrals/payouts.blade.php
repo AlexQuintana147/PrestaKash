@@ -8,9 +8,9 @@
     <!-- Header -->
     <div class="flex items-end justify-between mb-8">
         <div>
-            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo</p>
+            <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-1">Panel Administrativo</p>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Referidos</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Usuarios que pagaron su préstamo completo y sus referidores.</p>
+            <p class="text-sm text-gray-500 dark:text-gray-100 mt-1">Usuarios que pagaron su préstamo completo y sus referidores.</p>
         </div>
     </div>
 
@@ -37,13 +37,13 @@
         @foreach(['pending' => 'Pendientes', 'withdrawals' => 'Por pagar', 'paid' => 'Pagados'] as $key => $label)
             <a href="{{ route('superadmin.referrals.payouts', ['filter' => $key]) }}"
                 class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors flex items-center gap-2
-                          {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                          {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-400' }}">
                 {{ $label }}
                 @if($filter === $key)
                     <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 dark:bg-white rounded-full"></span>
                 @endif
                 @if(isset($counts[$key]) && $counts[$key] > 0)
-                    <span class="text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full px-2 py-0.5">{{ $counts[$key] }}</span>
+                    <span class="text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-100 rounded-full px-2 py-0.5">{{ $counts[$key] }}</span>
                 @endif
             </a>
         @endforeach
@@ -58,7 +58,7 @@
                           {{ $filter === $key ? 'bg-gray-900 text-white dark:bg-white dark:text-black border-transparent' : 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800' }}">
                     {{ $label }}
                     @if(isset($counts[$key]) && $counts[$key] > 0)
-                        <span class="ml-1.5 text-[9px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full px-1.5 py-0.5">{{ $counts[$key] }}</span>
+                        <span class="ml-1.5 text-[9px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-100 rounded-full px-1.5 py-0.5">{{ $counts[$key] }}</span>
                     @endif
                 </a>
             @endforeach
@@ -68,7 +68,7 @@
     @if($filter === 'withdrawals')
         @if($referrals && $referrals->count() > 0)
             <div class="mb-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold">Referidos por pagar</p>
+                <p class="text-xs text-gray-500 dark:text-gray-100 uppercase tracking-widest font-semibold">Referidos por pagar</p>
             </div>
             @foreach($referrals as $referral)
                 <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-5 md:p-6 mb-4">
@@ -132,7 +132,7 @@
                                         @csrf
                                         <button type="submit"
                                                 onclick="return confirm('¿Revertir este payout? Volverá a Pendientes.')"
-                                                class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
+                                                class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
                                             Revertir
                                         </button>
                                     </form>
@@ -146,7 +146,7 @@
                                         </p>
                                     </div>
                                     @if($referral->payout?->notes)
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-100 italic">{{ $referral->payout->notes }}</p>
                                     @endif
                                     <form action="{{ route('superadmin.referrals.payouts.confirm', $referral->payout) }}" method="POST" class="mt-3">
                                         @csrf
@@ -159,7 +159,7 @@
                                         @csrf
                                         <button type="submit"
                                                 onclick="return confirm('¿Estás seguro de revertir este payout? Volverá a Pendientes.')"
-                                                class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
+                                                class="w-full text-[11px] font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 rounded-lg px-4 py-2.5 transition-colors">
                                             Revertir
                                         </button>
                                     </form>
@@ -210,7 +210,7 @@
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Comprobante de pago</label>
                                 <input type="file" name="voucher" accept="image/*" required
-                                       class="block w-full text-xs text-gray-500 dark:text-gray-400
+                                       class="block w-full text-xs text-gray-500 dark:text-gray-100
                                               file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0
                                               file:text-xs file:font-semibold file:bg-gray-100 dark:file:bg-gray-800 file:text-gray-700 dark:file:text-gray-300
                                               hover:file:bg-gray-200 dark:hover:file:bg-gray-700 transition-colors">
@@ -227,10 +227,10 @@
             @if(!$referrals || $referrals->count() === 0)
             <div class="text-center py-20">
                 <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                    <svg class="w-7 h-7 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402 2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <svg class="w-7 h-7 text-gray-400 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402 2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <p class="text-sm font-medium text-gray-400">No hay pagos pendientes</p>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Los referidos con monto registrado aparecerán aquí.</p>
+                <p class="text-[11px] text-gray-500 dark:text-gray-100 mt-1">Los referidos con monto registrado aparecerán aquí.</p>
             </div>
             @endif
         @endforelse
@@ -276,13 +276,13 @@
                                     </span>
                                     <span class="text-gray-400 text-[10px]">{{ $referral->paid_loan->code }}</span>
                                 </div>
-                                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-gray-500 dark:text-gray-400">
-                                    <div class="flex justify-between"><span>Interés:</span><span class="font-medium text-gray-700 dark:text-gray-300 tabular-nums">{{ number_format($referral->paid_loan->interest_rate, 2) }}%</span></div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-gray-500 dark:text-gray-100">
+                                    <div class="flex justify-between"><span>Interés:</span><span class="font-medium text-gray-700 dark:text-gray-100 tabular-nums">{{ number_format($referral->paid_loan->interest_rate, 2) }}%</span></div>
                                     <div class="flex justify-between"><span>Interés cobrado:</span><span class="font-medium text-amber-600 dark:text-amber-400 tabular-nums">{{ $referral->paid_loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($referral->paid_loan->total_interest, 2) }}</span></div>
                                     @if($referral->paid_loan->type === 'cuotas')
-                                        <div class="flex justify-between"><span>Cuotas:</span><span class="font-medium text-gray-700 dark:text-gray-300 tabular-nums">{{ $referral->paid_loan->installments_count }}</span></div>
+                                        <div class="flex justify-between"><span>Cuotas:</span><span class="font-medium text-gray-700 dark:text-gray-100 tabular-nums">{{ $referral->paid_loan->installments_count }}</span></div>
                                     @else
-                                        <div class="flex justify-between"><span>Tipo:</span><span class="font-medium text-gray-700 dark:text-gray-300">Pago único</span></div>
+                                        <div class="flex justify-between"><span>Tipo:</span><span class="font-medium text-gray-700 dark:text-gray-100">Pago único</span></div>
                                     @endif
                                     <div class="flex justify-between"><span>Total pagado:</span><span class="font-medium text-green-600 dark:text-green-400 tabular-nums">{{ $referral->paid_loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($referral->paid_loan->total_amount, 2) }}</span></div>
                                 </div>
@@ -345,10 +345,10 @@
                                     <label class="block text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-1">Notas (opcional)</label>
                                     <input type="text" name="notes" maxlength="500"
                                            value="{{ $referral->payout?->notes ?? '' }}"
-                                           class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                                           class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                                 </div>
                                 <button type="submit"
-                                        class="w-full text-[11px] font-semibold text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg px-4 py-2.5 transition-colors">
+                                        class="w-full text-[11px] font-semibold text-white bg-gray-900 dark:bg-white dark:text-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg px-4 py-2.5 transition-colors">
                                     {{ $referral->payout ? 'Actualizar' : 'Guardar' }}
                                 </button>
                             </form>
@@ -361,7 +361,7 @@
                                     </p>
                                 </div>
                                 @if($referral->payout?->notes)
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-100 italic">{{ $referral->payout->notes }}</p>
                                 @endif
                                 <form action="{{ route('superadmin.referrals.payouts.confirm', $referral->payout) }}" method="POST" class="mt-3">
                                     @csrf
@@ -383,7 +383,7 @@
                                     <p class="text-xs text-gray-400">Pagado el {{ $referral->payout->paid_at->format('d/m/Y') }}</p>
                                 @endif
                                 @if($referral->payout?->notes)
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 italic">{{ $referral->payout->notes }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-100 italic">{{ $referral->payout->notes }}</p>
                                 @endif
                             </div>
                         @endif
@@ -395,12 +395,12 @@
             @if(!($filter === 'paid' && $paidWithdrawals && $paidWithdrawals->count() > 0))
                 <div class="text-center py-20">
                     <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                        <svg class="w-7 h-7 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-7 h-7 text-gray-400 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </div>
                     <p class="text-sm font-medium text-gray-400">No hay referidos en este estado</p>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Los usuarios con préstamos pagados aparecerán aquí.</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-100 mt-1">Los usuarios con préstamos pagados aparecerán aquí.</p>
                 </div>
             @endif
         @endforelse
@@ -414,7 +414,7 @@
 
         @if($filter === 'paid' && $paidWithdrawals && $paidWithdrawals->count() > 0)
             <div class="mt-10 mb-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest font-semibold">Retiros de referidos pagados</p>
+                <p class="text-xs text-gray-500 dark:text-gray-100 uppercase tracking-widest font-semibold">Retiros de referidos pagados</p>
             </div>
             @foreach($paidWithdrawals as $w)
                 <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-5 md:p-6 mb-4">
@@ -479,7 +479,7 @@
                     <p id="modalEmail" class="text-[10px] text-gray-400"></p>
                 </div>
             </div>
-            <button type="button" onclick="closeUserDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeUserDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -513,7 +513,7 @@ async function openUserDetailModal(userId) {
         document.getElementById('modalEmail').textContent = data.email;
         document.getElementById('modalAvatar').innerHTML = data.selfie
             ? `<img src="${data.selfie}" alt="${data.name}" class="w-full h-full object-cover">`
-            : `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">${data.initials}</div>`;
+            : `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-100">${data.initials}</div>`;
 
         const debtColor = data.has_debt ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400';
         const debtBg = data.has_debt ? 'bg-red-50 dark:bg-red-950/20 border-red-100 dark:border-red-900/30' : 'bg-green-50 dark:bg-green-950/20 border-green-100 dark:border-green-900/30';
@@ -604,7 +604,7 @@ async function openUserDetailModal(userId) {
                         </div>
                         <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Rechazados</p>
                     </div>
-                    <p class="text-xl font-bold text-gray-700 dark:text-gray-300">${data.rejected_loans}</p>
+                    <p class="text-xl font-bold text-gray-700 dark:text-gray-100">${data.rejected_loans}</p>
                     <p class="text-[10px] text-gray-400 mt-0.5">denegados</p>
                 </div>
             </div>

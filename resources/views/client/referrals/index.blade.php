@@ -7,14 +7,14 @@
 
     <!-- Header -->
     <div class="mb-10">
-        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">Gana dinero</p>
+        <p class="text-xs text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-0.5">Gana dinero</p>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Mis Referidos</h1>
     </div>
 
     <!-- Link -->
     <section class="mb-8">
         <span id="referralLink" class="hidden">{{ $referralLink }}</span>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Comparte tu link de referido y gana dinero por cada amigo que se registre y complete un préstamo.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-2">Comparte tu link de referido y gana dinero por cada amigo que se registre y complete un préstamo.</p>
         <button onclick="copyReferralLink()"
                 class="text-green-600 dark:text-green-400 hover:text-green-500 dark:hover:text-green-300 text-sm font-medium transition-colors border-b border-green-600 dark:border-green-400 pb-0.5">
             <span id="copyText">Copiar link de referido</span>
@@ -24,19 +24,19 @@
     <!-- Stats -->
     <section class="grid grid-cols-2 gap-4 sm:gap-6 mb-10">
         <div>
-            <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Referidos</p>
+            <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-1">Referidos</p>
             <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalReferrals }}</p>
         </div>
         <div>
-            <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Ganancias</p>
+            <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-1">Ganancias</p>
             <p class="text-2xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($totalEarnings, 2) }}</p>
             @if($latestWithdrawal && ($latestWithdrawal->status === 'pending' || $latestWithdrawal->status === 'paid'))
                 @if($latestWithdrawal->status === 'pending')
                     <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium">Retiro en proceso</p>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400">S/ {{ number_format($latestWithdrawal->amount, 2) }} solicitados</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100">S/ {{ number_format($latestWithdrawal->amount, 2) }} solicitados</p>
                 @else
                     <p class="text-[10px] text-green-600 dark:text-green-400 mt-1 font-medium">Retiro pagado</p>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400">S/ {{ number_format($latestWithdrawal->amount, 2) }} — {{ $latestWithdrawal->paid_at?->format('d/m/Y') }}</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100">S/ {{ number_format($latestWithdrawal->amount, 2) }} — {{ $latestWithdrawal->paid_at?->format('d/m/Y') }}</p>
                     @if($latestWithdrawal->voucher_path)
                         <button type="button" onclick="openVoucherModal()" class="mt-2 w-full text-[10px] font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg px-3 py-1.5 transition-colors">
                             Ver comprobante
@@ -49,7 +49,7 @@
                 </button>
             @else
                 @php $remaining = max(0, 50 - $totalEarnings); @endphp
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Te falta S/ {{ number_format($remaining, 2) }} para retirar</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-100 mt-1">Te falta S/ {{ number_format($remaining, 2) }} para retirar</p>
                 <div class="mt-1.5 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                     <div class="h-full bg-green-500 rounded-full transition-all" style="width: {{ min(($totalEarnings / 50) * 100, 100) }}%"></div>
                 </div>
@@ -65,10 +65,10 @@
                    class="relative flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors
                           {{ $filter === $key
                               ? 'text-gray-900 dark:text-white'
-                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                              : 'text-gray-600 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-400' }}">
                     {{ $label }}
                     @if(isset($counts[$key]) && $counts[$key] > 0)
-                        <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
+                        <span class="ml-1.5 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-100' : 'text-gray-400 dark:text-gray-100' }}">{{ $counts[$key] }}</span>
                     @endif
                     @if($filter === $key)
                         <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
@@ -82,7 +82,7 @@
     <section>
         @if($referrals->isEmpty())
             <div class="py-12 text-center">
-                <p class="text-sm text-gray-500 dark:text-gray-400">No hay referidos con este filtro</p>
+                <p class="text-sm text-gray-500 dark:text-gray-100">No hay referidos con este filtro</p>
             </div>
         @else
             <div class="space-y-0">
@@ -117,7 +117,7 @@
                             @endif
                             <div>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $referred->name }}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $referred->email }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-100">{{ $referred->email }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -134,12 +134,12 @@
                                     {{ $referred->referralStatus['label'] }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                                <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-100">
                                     {{ $referred->referralStatus['label'] }}
                                 </span>
                             @endif
-                            <span class="hidden sm:inline text-[10px] text-gray-500 dark:text-gray-400">{{ $record->created_at->diffForHumans() }}</span>
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <span class="hidden sm:inline text-[10px] text-gray-500 dark:text-gray-100">{{ $record->created_at->diffForHumans() }}</span>
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
                             </svg>
                         </div>
@@ -167,7 +167,7 @@
                     <p id="refModalEmail" class="text-[10px] text-gray-400"></p>
                 </div>
             </div>
-            <button type="button" onclick="closeReferralDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeReferralDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -185,7 +185,7 @@
                 <h3 class="text-sm font-bold text-gray-900 dark:text-white">Solicitar retiro</h3>
                 <p class="text-[10px] text-gray-400">Revisa los datos antes de confirmar</p>
             </div>
-            <button type="button" onclick="closeWithdrawModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeWithdrawModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -221,7 +221,7 @@
             @else
                 <div class="rounded-2xl p-4 border bg-red-50 dark:bg-red-950/20 border-red-100 dark:border-red-900/30">
                     <p class="text-sm font-medium text-red-600 dark:text-red-400">No tienes cuentas bancarias registradas</p>
-                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Agrega una cuenta bancaria en tu dashboard para poder recibir el retiro.</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-100 mt-1">Agrega una cuenta bancaria en tu dashboard para poder recibir el retiro.</p>
                     <a href="{{ route('client.dashboard', ['open_bank' => 1]) }}" class="mt-3 inline-block text-xs font-semibold text-green-600 dark:text-green-400 hover:underline">Ir a agregar cuenta →</a>
                 </div>
             @endif
@@ -238,7 +238,7 @@
                 <h3 class="text-sm font-bold text-gray-900 dark:text-white">Comprobante de pago</h3>
                 <p class="text-[10px] text-gray-400">Verifica la transferencia antes de confirmar</p>
             </div>
-            <button type="button" onclick="closeVoucherModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeVoucherModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -264,7 +264,7 @@ function openReferralDetailModal(data) {
     document.getElementById('refModalEmail').textContent = data.email;
     document.getElementById('refModalAvatar').innerHTML = data.selfie
         ? `<img src="${data.selfie}" alt="${data.name}" class="w-full h-full object-cover">`
-        : `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">${data.name.charAt(0).toUpperCase()}</div>`;
+        : `<div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-100">${data.name.charAt(0).toUpperCase()}</div>`;
 
     let html = '';
 
@@ -285,7 +285,7 @@ function openReferralDetailModal(data) {
         if (data.notes) {
             html += `<div class="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-4">
                 <p class="text-[10px] uppercase tracking-widest font-semibold text-gray-400 mb-2">Mensaje del admin</p>
-                <p class="text-sm text-gray-700 dark:text-gray-300 italic">${data.notes}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-100 italic">${data.notes}</p>
             </div>`;
         }
     } else {

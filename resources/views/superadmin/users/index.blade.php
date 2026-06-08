@@ -8,7 +8,7 @@
         <!-- Header -->
         <div class="flex items-end justify-between mb-8">
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-1">Panel</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Clientes</h1>
             </div>
             <div class="flex items-center gap-4">
@@ -16,7 +16,7 @@
                     class="text-blue-600 hover:text-blue-700 border-b border-blue-600 hover:border-blue-700 pb-0.5 text-sm font-medium transition-colors flex items-center gap-2">
                     Crear usuario personalizado
                 </a>
-                <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
+                <p class="hidden md:block text-sm text-gray-600 dark:text-gray-100">{{ now()->format('d M Y') }}</p>
             </div>
         </div>
 
@@ -52,11 +52,11 @@
             </div>
         </div>
 
-        <div id="users-search-badge" class="{{ request('search') ? '' : 'hidden' }} mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div id="users-search-badge" class="{{ request('search') ? '' : 'hidden' }} mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-100">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
             </svg>
-            Mostrando resultados para "<span id="users-search-term" class="font-medium text-gray-700 dark:text-gray-300">{{ request('search') }}</span>"
+            Mostrando resultados para "<span id="users-search-term" class="font-medium text-gray-700 dark:text-gray-100">{{ request('search') }}</span>"
             — <span id="users-search-count">{{ $filter === 'blocked' ? $blockedUsers->total() : $users->total() }}</span> encontrado(s)
         </div>
 
@@ -105,10 +105,10 @@
                         @php
                             $isActive = $filter === $key;
                             $colorClass = match($key) {
-                                'profile-changes' => $isActive ? 'text-amber-600' : 'text-gray-500 dark:text-gray-500 hover:text-amber-500',
-                                'ghosts'  => $isActive ? 'text-purple-600' : 'text-gray-500 dark:text-gray-500 hover:text-purple-500',
-                                'blocked' => $isActive ? 'text-red-500'    : 'text-gray-500 dark:text-gray-500 hover:text-red-500',
-                                default   => $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400',
+                                'profile-changes' => $isActive ? 'text-amber-600' : 'text-gray-500 dark:text-gray-100 hover:text-amber-500',
+                                'ghosts'  => $isActive ? 'text-purple-600' : 'text-gray-500 dark:text-gray-100 hover:text-purple-500',
+                                'blocked' => $isActive ? 'text-red-500'    : 'text-gray-500 dark:text-gray-100 hover:text-red-500',
+                                default   => $isActive ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-400',
                             };
                             $lineClass = match($key) {
                                 'profile-changes' => 'bg-amber-500',
@@ -128,7 +128,7 @@
                                 @endif
                             </span>
                             @if($counts[$key] > 0)
-                                <span class="ml-2 text-xs {{ $isActive ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
+                                <span class="ml-2 text-xs {{ $isActive ? 'text-gray-500 dark:text-gray-100' : 'text-gray-400 dark:text-gray-100' }}">{{ $counts[$key] }}</span>
                             @endif
                             @if($isActive)
                                 <span class="absolute bottom-0 left-0 right-0 h-px {{ $lineClass }}"></span>
@@ -192,7 +192,7 @@
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $blocked->name }}</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $blocked->email }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-100 truncate">{{ $blocked->email }}</p>
                             @if($blocked->reason)
                                 <p class="text-xs text-red-400 truncate mt-0.5">{{ $blocked->reason }}</p>
                             @endif
@@ -200,7 +200,7 @@
                     </div>
 
                     <div class="hidden md:flex justify-center">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ ($blocked->person_type ?? 'natural') === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ ($blocked->person_type ?? 'natural') === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' }}">
                             {{ ($blocked->person_type ?? 'natural') === 'juridica' ? 'JUR' : 'NAT' }}
                         </span>
                     </div>
@@ -220,7 +220,7 @@
                 </div>
             @empty
                 <div class="py-20 text-center">
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">No hay usuarios bloqueados.</p>
+                    <p class="text-gray-500 dark:text-gray-100 text-sm">No hay usuarios bloqueados.</p>
                 </div>
             @endforelse
 
@@ -257,12 +257,12 @@
                                     <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium">✎ Cambio</span>
                                 @endif
                             </div>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-100 truncate">{{ $user->email }}</p>
                         </div>
                     </a>
 
                     <div class="hidden md:flex justify-center">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ $user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ $user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' }}">
                             {{ $user->person_type === 'juridica' ? 'JUR' : 'NAT' }}
                         </span>
                     </div>
@@ -347,7 +347,7 @@
                                     </button>
                                 </form>
                             @else
-                                <span class="text-xs text-gray-400 dark:text-gray-500">—</span>
+                                <span class="text-xs text-gray-400 dark:text-gray-100">—</span>
                             @endif
                         </div>
                     @endif
@@ -368,7 +368,7 @@
                             <span class="text-xs text-red-500 hidden sm:inline">Rechazado</span>
                         @else
                             <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700 flex-shrink-0"></span>
-                            <span class="text-xs text-gray-600 dark:text-gray-400 hidden sm:inline">Sin docs</span>
+                            <span class="text-xs text-gray-600 dark:text-gray-100 hidden sm:inline">Sin docs</span>
                         @endif
                     </div>
 
@@ -376,17 +376,17 @@
                     @if(!$user->is_ghost)
                         <div class="hidden md:flex items-center justify-center h-full">
                             @if($user->referrer)
-                                <span class="text-xs text-gray-600 dark:text-gray-400 font-medium" title="{{ $user->referrer->name }}">
+                                <span class="text-xs text-gray-600 dark:text-gray-100 font-medium" title="{{ $user->referrer->name }}">
                                     {{ $user->referrer->first_name }} {{ Str::substr($user->referrer->last_name, 0, 1) }}.
                                 </span>
                             @else
-                                <span class="text-xs text-gray-500 dark:text-gray-400">—</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-100">—</span>
                             @endif
                         </div>
                     @endif
 
                     <a href="{{ route('superadmin.users.show', $user) }}" class="flex justify-end">
-                        <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors hidden md:block"
+                        <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-100 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors hidden md:block"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -395,7 +395,7 @@
                 </div>
             @empty
                 <div class="py-20 text-center">
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">No hay usuarios en esta categoría.</p>
+                    <p class="text-gray-500 dark:text-gray-100 text-sm">No hay usuarios en esta categoría.</p>
                 </div>
             @endforelse
 
@@ -403,7 +403,7 @@
 
         <!-- Paginación -->
         @if($filter === 'blocked' && $blockedUsers->hasPages())
-            <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+            <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-100">
                 <span>{{ $blockedUsers->firstItem() }}–{{ $blockedUsers->lastItem() }} de {{ $blockedUsers->total() }}</span>
                 <div class="flex items-center gap-5">
                     @if($blockedUsers->onFirstPage())
@@ -421,7 +421,7 @@
                 </div>
             </div>
         @elseif($filter !== 'blocked' && $users->hasPages())
-            <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+            <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-100">
                 <span>{{ $users->firstItem() }}–{{ $users->lastItem() }} de {{ $users->total() }}</span>
                 <div class="flex items-center gap-5">
                     @if($users->onFirstPage())

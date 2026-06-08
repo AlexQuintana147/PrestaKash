@@ -6,7 +6,7 @@
 <div class="min-h-screen px-5 md:px-10 py-8 max-w-5xl">
 
     <div class="mb-8">
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Inversiones</p>
+        <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-0.5">Inversiones</p>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Control de Inversiones</h1>
     </div>
 
@@ -39,7 +39,7 @@
             @endif
         </button>
         <button onclick="switchTab('my-investments')" id="tab-my-investments"
-            class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+            class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
             Mis Inversiones
             @php
                 $notificationCount = $myInvestments->filter(function($inv) {
@@ -53,7 +53,7 @@
             @endif
         </button>
         <button onclick="switchTab('my-payments')" id="tab-my-payments"
-            class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+            class="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
             Mis Pagos
         </button>
     </div>
@@ -75,7 +75,7 @@
                                     @endif
                                 </div>
                                 <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
                             </div>
                             <div class="flex items-center gap-6 text-right">
                                 <div>
@@ -110,8 +110,8 @@
             @endif
         @else
             <div class="text-center py-20">
-                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                <p class="text-sm text-gray-500 dark:text-gray-400">No hay oportunidades disponibles</p>
+                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-100 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                <p class="text-sm text-gray-500 dark:text-gray-100">No hay oportunidades disponibles</p>
             </div>
         @endif
     </div>
@@ -179,8 +179,8 @@
             @endif
         @else
             <div class="text-center py-20">
-                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Aún no tienes inversiones</p>
+                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-100 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <p class="text-sm text-gray-500 dark:text-gray-100">Aún no tienes inversiones</p>
                 <button onclick="switchTab('opportunities')" class="mt-4 text-sm font-bold text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-0.5 hover:opacity-70 transition-opacity">Explorar oportunidades</button>
             </div>
         @endif
@@ -190,7 +190,7 @@
         @if($paymentInvestments->isEmpty())
             <div class="text-center py-20">
                 <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                    <svg class="w-7 h-7 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <svg class="w-7 h-7 text-gray-400 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
                 <p class="text-sm font-bold text-gray-900 dark:text-white">Sin pagos aún</p>
                 <p class="text-xs text-gray-400 mt-1">Tus pagos aparecerán cuando confirmen tu inversión.</p>
@@ -226,7 +226,7 @@
                                     </div>
                                     <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
                                 </div>
-                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-100 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </div>
 
                             <div class="space-y-3">
@@ -243,7 +243,7 @@
                                 <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
 
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-3 text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center gap-3 text-gray-500 dark:text-gray-100">
                                         <span>{{ $opp->monthly_return_rate }}%/mes</span>
                                         <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
                                         <span>{{ $opp->term_months }}m</span>
@@ -265,7 +265,7 @@
 
 <script>
 function switchTab(tab) {
-    const inactiveClass = 'flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors';
+    const inactiveClass = 'flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 transition-colors';
     const activeClass = 'flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white transition-colors';
 
     document.getElementById('panel-opportunities').classList.toggle('hidden', tab !== 'opportunities');

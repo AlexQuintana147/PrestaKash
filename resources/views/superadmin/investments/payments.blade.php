@@ -111,7 +111,7 @@
                 ${{ number_format($totalUSD, 2) }} USD
             </span>
         @endif
-        <span class="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-semibold bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-800 pk-mono">
+        <span class="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-semibold bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-100 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-800 pk-mono">
             {{ $totalInvestors }} pendiente{{ $totalInvestors !== 1 ? 's' : '' }}
         </span>
     </div>
@@ -125,7 +125,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
                     <h2 class="text-[13px] font-semibold text-gray-900 dark:text-white tracking-tight">{{ $opportunity->title }}</h2>
-                    <span class="text-[10px] font-mono text-gray-350 dark:text-gray-600 bg-gray-100 dark:bg-gray-900 px-2 py-0.5 rounded-md">{{ $opportunity->code }}</span>
+                    <span class="text-[10px] font-mono text-gray-350 dark:text-gray-100 bg-gray-100 dark:bg-gray-900 px-2 py-0.5 rounded-md">{{ $opportunity->code }}</span>
                 </div>
                 <span class="text-[10px] font-medium tabular-nums {{ $opportunity->currency === 'USD' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400' }}">
                     {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($opportunity->investors->sum(fn($i) => $i->pivot->amount), 2) }}
@@ -169,14 +169,14 @@
                                         @if($investor->pivot->operation_number)
                                             <p class="text-sm font-mono font-semibold text-gray-900 dark:text-white">{{ $investor->pivot->operation_number }}</p>
                                         @else
-                                            <p class="text-sm text-gray-350 dark:text-gray-600">—</p>
+                                            <p class="text-sm text-gray-350 dark:text-gray-100">—</p>
                                         @endif
                                     </div>
 
                                     {{-- Fecha envío --}}
                                     <div class="py-1.5 border-b border-dashed border-gray-100 dark:border-gray-850">
                                         <p class="text-[9px] uppercase tracking-widest font-semibold text-gray-400 mb-0.5">Enviado</p>
-                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 pk-mono">{{ $investor->pivot->payment_submitted_at ? \Carbon\Carbon::parse($investor->pivot->payment_submitted_at)->format('d/m/y H:i') : '—' }}</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-100 pk-mono">{{ $investor->pivot->payment_submitted_at ? \Carbon\Carbon::parse($investor->pivot->payment_submitted_at)->format('d/m/y H:i') : '—' }}</p>
                                     </div>
 
                                     {{-- Comprobante --}}
@@ -189,7 +189,7 @@
                                                 Ver archivo
                                             </a>
                                         @else
-                                            <p class="text-sm text-gray-350 dark:text-gray-600">Sin adjunto</p>
+                                            <p class="text-sm text-gray-350 dark:text-gray-100">Sin adjunto</p>
                                         @endif
                                     </div>
                                 </div>
@@ -234,10 +234,10 @@
     @empty
         <div class="text-center py-20 pk-fade-up" style="animation-delay:120ms">
             <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <svg class="w-7 h-7 text-gray-250 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg class="w-7 h-7 text-gray-250 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <p class="text-sm font-medium text-gray-400">No hay pagos pendientes de revisión</p>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Los comprobantes aprobados aparecerán aquí</p>
+            <p class="text-[11px] text-gray-500 dark:text-gray-100 mt-1">Los comprobantes aprobados aparecerán aquí</p>
         </div>
     @endforelse
 </div>

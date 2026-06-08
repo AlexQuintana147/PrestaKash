@@ -27,7 +27,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Nombres</label>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">Nombres</label>
                     <input type="text" name="first_name" required value="{{ old('first_name') }}"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white placeholder:text-gray-300 transition-colors"
                         placeholder="Juan Carlos">
@@ -36,7 +36,7 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Apellidos completos</label>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">Apellidos completos</label>
                     <input type="text" name="last_name" required value="{{ old('last_name') }}"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white placeholder:text-gray-300 transition-colors"
                         placeholder="Pérez García">
@@ -48,7 +48,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DNI</label>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">DNI</label>
                     <input type="text" name="dni" required maxlength="8" value="{{ old('dni') }}"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
                         placeholder="8 dígitos numéricos">
@@ -57,7 +57,7 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Celular</label>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">Celular</label>
                     <input type="tel" name="phone" maxlength="9" inputmode="numeric" value="{{ old('phone') }}"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
                         placeholder="912345678"
@@ -69,7 +69,7 @@
             </div>
 
             <div>
-                <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Correo electrónico</label>
+                <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">Correo electrónico</label>
                 <input type="email" name="email" required value="{{ old('email') }}"
                     class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white placeholder:text-gray-300 transition-colors"
                     placeholder="trabajador@ejemplo.com">
@@ -80,7 +80,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Contraseña</label>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">Contraseña</label>
                     <input type="password" name="password" required minlength="8"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
                         placeholder="Mayúscula, minúscula, número (8+)">
@@ -89,7 +89,7 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Confirmar contraseña</label>
+                    <label class="block text-xs font-medium text-gray-600 dark:text-gray-100 mb-1">Confirmar contraseña</label>
                     <input type="password" name="password_confirmation" required minlength="8"
                         class="w-full px-0 py-2.5 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors"
                         placeholder="Repetir contraseña">
@@ -111,7 +111,7 @@
                         <input type="hidden" name="{{ $base }}[section]" value="{{ $key }}">
                         <input type="checkbox" name="{{ $base }}[enabled]" value="1" checked
                             class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-orange-500 focus:ring-orange-500 dark:bg-gray-800">
-                        <span class="text-xs font-bold text-gray-700 dark:text-gray-300">{{ $label }}</span>
+                        <span class="text-xs font-bold text-gray-700 dark:text-gray-100">{{ $label }}</span>
                     </label>
                 </div>
                 @endforeach
@@ -123,7 +123,7 @@
 
         <div class="pt-6 flex flex-col sm:flex-row gap-6 justify-end">
             <button type="button" onclick="window.location='{{ route('superadmin.workers.index') }}'"
-                class="px-0 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-transparent border-0 border-b border-gray-300 dark:border-gray-700 hover:border-gray-500 dark:hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors text-left sm:text-right">
+                class="px-0 py-2 text-sm font-medium text-gray-500 dark:text-gray-100 bg-transparent border-0 border-b border-gray-300 dark:border-gray-700 hover:border-gray-500 dark:hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors text-left sm:text-right">
                 Cancelar
             </button>
             <button type="submit"

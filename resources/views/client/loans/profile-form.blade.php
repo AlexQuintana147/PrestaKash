@@ -260,7 +260,7 @@
                                 value="{{ old('institution', $profile->institution ?? '') }}" required
                                 placeholder="Ej: UNMSM"
                                 oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
-                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400 @error('institution') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('institution') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
                             @error('institution') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -270,7 +270,7 @@
                                 value="{{ old('career', $profile->career ?? '') }}" required
                                 placeholder="Ej: Ingeniería de Sistemas"
                                 oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
-                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400 @error('career') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('career') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
                             @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -316,7 +316,7 @@
                                     placeholder="0" min="1" max="20"
                                     onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                     oninput="if(this.value && this.value < 1) this.value = 1; if(this.value > 20) this.value = 20;"
-                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400">
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                 @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
@@ -379,14 +379,14 @@
                                         <input type="text" name="workplace" value="{{ old('workplace', $profile->workplace ?? '') }}"
                                             placeholder="Nombre de empresa"
                                             oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400">
+                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Cargo</label>
                                         <input type="text" name="job_title" value="{{ old('job_title', $profile->job_title ?? '') }}"
                                             placeholder="Puesto que ocupa"
                                             oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400">
+                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                     </div>
                                 </div>
                             </div>
@@ -418,17 +418,17 @@
                                 <input type="text" id="monthly_income_display" value="{{ old('monthly_income', isset($profile) ? number_format($profile->monthly_income, 2, '.', ',') : '') }}"
                                     placeholder="100.00" step="0.01" min="100"
                                     oninput="formatCurrency(this)"
-                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400">
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                 @error('monthly_income') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">Instagram <span
-                                    class="text-gray-500 dark:text-gray-400">(opcional)</span></label>
+                                    class="text-gray-500 dark:text-gray-100">(opcional)</span></label>
                             <input type="text" name="instagram" value="{{ old('instagram', $profile->instagram ?? '') }}"
                                 placeholder="@usuario"
-                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400 @error('instagram') border-red-500 @enderror">
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('instagram') border-red-500 @enderror">
                             @error('instagram') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -461,7 +461,7 @@
                                         value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}"
                                         placeholder="Nombres"
                                         oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400 @error('spouse_first_name') border-red-500 @enderror">
+                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_first_name') border-red-500 @enderror">
                                     @error('spouse_first_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -471,7 +471,7 @@
                                         value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}"
                                         placeholder="Apellidos"
                                         oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400 @error('spouse_last_name') border-red-500 @enderror">
+                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_last_name') border-red-500 @enderror">
                                     @error('spouse_last_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -481,7 +481,7 @@
                                 <input type="text" name="spouse_dni"
                                     value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678"
                                     maxlength="8" oninput="this.value=this.value.replace(/\D/g,'')"
-                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-400 @error('spouse_dni') border-red-500 @enderror">
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_dni') border-red-500 @enderror">
                                 @error('spouse_dni') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>

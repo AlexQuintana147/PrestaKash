@@ -7,13 +7,13 @@
 @if($userInstallments->hasPages())
     <div class="mt-4 flex items-center justify-end gap-6">
         @if($userInstallments->onFirstPage())
-            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-default">← Anterior</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-100 cursor-default">← Anterior</span>
         @else
             <button type="button"
                 onclick="loadGroupPage(this)"
                 data-loan-id="{{ $loan->id }}"
                 data-page="{{ $userInstallments->currentPage() - 1 }}"
-                class="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 border-b border-gray-400 dark:border-gray-500 pb-px hover:text-gray-900 dark:hover:text-white hover:border-gray-900 dark:hover:border-white transition-colors">
+                class="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-100 border-b border-gray-400 dark:border-gray-500 pb-px hover:text-gray-900 dark:hover:text-white hover:border-gray-900 dark:hover:border-white transition-colors">
                 ← Anterior
             </button>
         @endif
@@ -25,11 +25,11 @@
                 onclick="loadGroupPage(this)"
                 data-loan-id="{{ $loan->id }}"
                 data-page="{{ $userInstallments->currentPage() + 1 }}"
-                class="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 border-b border-gray-400 dark:border-gray-500 pb-px hover:text-gray-900 dark:hover:text-white hover:border-gray-900 dark:hover:border-white transition-colors">
+                class="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-100 border-b border-gray-400 dark:border-gray-500 pb-px hover:text-gray-900 dark:hover:text-white hover:border-gray-900 dark:hover:border-white transition-colors">
                 Siguiente →
             </button>
         @else
-            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-default">Siguiente →</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-100 cursor-default">Siguiente →</span>
         @endif
     </div>
 @endif

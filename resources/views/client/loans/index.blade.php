@@ -8,7 +8,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-12 gap-4 flex-nowrap">
             <div class="min-w-0 flex-1">
-                <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Panel</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-0.5">Panel</p>
                 <h1 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-tight truncate">Gestionar Préstamos
                 </h1>
             </div>
@@ -46,7 +46,7 @@
             <a href="{{ route('client.loans.create') }}"
                 class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                 <div class="flex items-center justify-between">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" viewBox="0 0 297.085 297.085" fill="currentColor">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-100" viewBox="0 0 297.085 297.085" fill="currentColor">
                         <g>
                             <g>
                                 <g>
@@ -88,14 +88,14 @@
                 </div>
                 <div>
                     <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1.5">Pedir un préstamo</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Solicita financiamiento rápido y
+                    <p class="text-xs text-gray-500 dark:text-gray-100 leading-relaxed">Solicita financiamiento rápido y
                         seguro. Elige el monto y plazo que mejor se adapte a ti.</p>
                 </div>
                 <div class="relative group/self-start self-start">
                     <span
                         class="text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all cursor-pointer">Solicitar
                         ahora</span>
-                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/self-start:opacity-100 group-hover/self-start:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
+                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-white text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/self-start:opacity-100 group-hover/self-start:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
                         Completa el formulario de solicitud
                         <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
                     </div>
@@ -106,21 +106,21 @@
             <a href="{{ route('client.loans.history') }}"
                 class="bg-white dark:bg-gray-950 p-8 flex flex-col gap-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                 <div class="flex items-center justify-between">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" viewBox="0 0 16 16" fill="currentColor">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-100" viewBox="0 0 16 16" fill="currentColor">
                         <path fill-rule="evenodd" clip-rule="evenodd"
                             d="M1.5 14H15v-1H2V0H1v13.5l.5.5zM3 11.5v-8l.5-.5h2l.5.5v8l-.5.5h-2l-.5-.5zm2-.5V4H4v7h1zm6-9.5v10l.5.5h2l.5-.5v-10l-.5-.5h-2l-.5.5zm2 .5v9h-1V2h1zm-6 9.5v-6l.5-.5h2l.5.5v6l-.5.5h-2l-.5-.5zm2-.5V6H8v5h1z" />
                     </svg>
                 </div>
                 <div>
                     <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1.5">Historial crediticio</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Consulta tus préstamos anteriores,
+                    <p class="text-xs text-gray-500 dark:text-gray-100 leading-relaxed">Consulta tus préstamos anteriores,
                         pagos realizados y tu estado crediticio actual.</p>
                 </div>
                 <div class="relative group/history self-start">
                     <span
                         class="text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all cursor-pointer">Ver
                         historial</span>
-                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/history:opacity-100 group-hover/history:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
+                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-white text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/history:opacity-100 group-hover/history:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
                         Revisa tus préstamos y pagos
                         <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
                     </div>
@@ -131,11 +131,11 @@
         <div class="space-y-12">
             <!-- Historial de préstamos -->
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-6">Tus solicitudes recientes - Últimos 5 préstamos</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-6">Tus solicitudes recientes - Últimos 5 préstamos</p>
 
                 @if($loans->isEmpty())
                     <div class="p-10 text-center">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Aún no has solicitado ningún préstamo.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-100">Aún no has solicitado ningún préstamo.</p>
                         <a href="{{ route('client.loans.create') }}"
                             class="inline-block mt-4 text-xs font-bold text-green-600 dark:text-green-400 hover:underline">Solicita
                             el primero aquí</a>
@@ -182,7 +182,7 @@
                                         <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">
                                             {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}
                                         </h3>
-                                        <p class="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400">
+                                        <p class="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-100">
                                             {{ $loan->created_at->format('d M, Y') }}
                                         </p>
                                     </div>
@@ -197,7 +197,7 @@
                                             @elseif($daysLeft <= 3)
                                                 <span class="text-[10px] font-black text-orange-500">Te quedan {{ $daysLeft }} día{{ $daysLeft !== 1 ? 's' : '' }} para pagar</span>
                                             @else
-                                                <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400">Te quedan {{ $daysLeft }} día{{ $daysLeft !== 1 ? 's' : '' }} para pagar</span>
+                                                <span class="text-[10px] font-bold text-gray-500 dark:text-gray-100">Te quedan {{ $daysLeft }} día{{ $daysLeft !== 1 ? 's' : '' }} para pagar</span>
                                             @endif
                                         @elseif($loan->status === 'approved')
                                             <span class="text-[10px] font-black text-green-500 uppercase tracking-wider">Aprobado</span>
@@ -210,7 +210,7 @@
                                         @elseif($loan->status === 'counter_accepted')
                                             <span class="text-[10px] font-black text-amber-500 uppercase tracking-wider">En espera</span>
                                         @endif
-                                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-100 group-hover:text-green-500 transition-all ml-auto mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     </div>
@@ -220,8 +220,8 @@
                                 @if($loan->status === 'approved' || $loan->status === 'paid')
                                 <div class="mb-3">
                                     <div class="flex justify-between items-center mb-1.5">
-                                        <p class="text-[8px] sm:text-[9px] text-gray-500 dark:text-gray-400 uppercase font-bold tracking-widest">Progreso</p>
-                                        <p class="text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400">{{ $paid_h }}/{{ $total_h }} cuotas</p>
+                                        <p class="text-[8px] sm:text-[9px] text-gray-500 dark:text-gray-100 uppercase font-bold tracking-widest">Progreso</p>
+                                        <p class="text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-100">{{ $paid_h }}/{{ $total_h }} cuotas</p>
                                     </div>
                                     <div class="h-1.5 sm:h-2 w-full bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden">
                                         <div class="h-full bg-green-500 rounded-full transition-all duration-1000" style="width: {{ $percent_inst }}%"></div>
@@ -233,13 +233,13 @@
                                 <div class="flex items-center gap-4 sm:gap-6 text-[10px] sm:text-xs">
                                     <div class="flex items-center gap-1.5">
                                         <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span class="text-gray-500 dark:text-gray-400 uppercase font-bold">Frec.</span>
-                                        <span class="text-gray-700 dark:text-gray-300 capitalize font-medium">{{ $loan->payment_frequency ?? 'N/A' }}</span>
+                                        <span class="text-gray-500 dark:text-gray-100 uppercase font-bold">Frec.</span>
+                                        <span class="text-gray-700 dark:text-gray-100 capitalize font-medium">{{ $loan->payment_frequency ?? 'N/A' }}</span>
                                     </div>
                                     <div class="flex items-center gap-1.5">
                                         <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                                        <span class="text-gray-500 dark:text-gray-400 uppercase font-bold">Interés</span>
-                                        <span class="text-gray-700 dark:text-gray-300 font-medium">{{ number_format($loan->interest_rate, 2) }}%</span>
+                                        <span class="text-gray-500 dark:text-gray-100 uppercase font-bold">Interés</span>
+                                        <span class="text-gray-700 dark:text-gray-100 font-medium">{{ number_format($loan->interest_rate, 2) }}%</span>
                                     </div>
                                 </div>
                             </a>
@@ -265,9 +265,9 @@
             <div class="text-center">
                 <div id="loanStatusIcon" class="mx-auto mb-4"></div>
                 <h3 id="loanStatusTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-2"></h3>
-                <p id="loanStatusDesc" class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6"></p>
+                <p id="loanStatusDesc" class="text-sm text-gray-500 dark:text-gray-100 leading-relaxed mb-6"></p>
                 <button onclick="closeLoanStatusModal()"
-                    class="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold uppercase tracking-widest rounded-lg hover:opacity-80 transition-opacity">
+                    class="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:opacity-80 transition-opacity">
                     Entendido
                 </button>
             </div>
@@ -295,7 +295,7 @@
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <h3 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white">Contra-ofertas Recibidas</h3>
-                    <p class="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">Selecciona una solicitud para ver los cambios.
+                    <p class="text-[10px] sm:text-sm text-gray-500 dark:text-gray-100 mt-0.5 sm:mt-1">Selecciona una solicitud para ver los cambios.
                     </p>
                 </div>
                 <div id="counterOfferListItems" class="space-y-2 sm:space-y-3 max-h-[35vh] sm:max-h-[40vh] overflow-y-auto custom-scrollbar pr-1 sm:pr-2">
@@ -313,7 +313,7 @@
 
                 <div class="text-center mb-4 sm:mb-8">
                     <h3 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white">Comparación de Términos</h3>
-                    <p class="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1">Revisa los cambios realizados por el administrador.</p>
+                    <p class="text-[10px] sm:text-sm text-gray-500 dark:text-gray-100 mt-0.5 sm:mt-1">Revisa los cambios realizados por el administrador.</p>
                 </div>
 
                 <div class="space-y-2 sm:space-y-4 mb-4 sm:mb-8">
@@ -369,7 +369,7 @@
             </div>
             <div class="flex-1 overflow-y-auto schedule-scrollbar px-2 sm:px-6 py-3 sm:py-4">
                 <table class="w-full text-[8px] sm:text-[10px] text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 sticky top-0">
+                    <thead class="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-100 sticky top-0">
                         <tr>
                             <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">N°</th>
                             <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Capital</th>
@@ -378,7 +378,7 @@
                             <th class="px-2 sm:px-4 py-2 sm:py-3 font-black uppercase tracking-tighter text-center">Saldo</th>
                         </tr>
                     </thead>
-                    <tbody id="scheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-400">
+                    <tbody id="scheduleBody" class="divide-y divide-gray-50 dark:divide-gray-900 text-gray-600 dark:text-gray-100">
                     </tbody>
                     <tfoot id="scheduleFoot" class="bg-gray-50 dark:bg-gray-900 font-black text-gray-900 dark:text-white sticky bottom-0">
                     </tfoot>

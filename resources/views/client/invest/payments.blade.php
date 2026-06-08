@@ -8,9 +8,9 @@
     <div class="mb-8">
         <div class="flex items-center gap-2 mb-1">
             <a href="{{ route('client.investments.index') }}" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Invertir</a>
-            <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-3 h-3 text-gray-500 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Pagos</p>
+        <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-0.5">Pagos</p>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Mis Pagos</h1>
     </div>
 
@@ -31,7 +31,7 @@
     @if($investments->isEmpty())
         <div class="text-center py-20">
             <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <svg class="w-7 h-7 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <svg class="w-7 h-7 text-gray-400 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
             <p class="text-sm font-bold text-gray-900 dark:text-white">Sin inversiones confirmadas</p>
             <p class="text-xs text-gray-400 mt-1">Tus pagos aparecerán cuando confirmen tu inversión.</p>
@@ -118,7 +118,7 @@
                                     <p class="text-[9px] text-gray-400 uppercase tracking-wider font-semibold">Progreso</p>
                                     <p class="text-sm font-bold {{ $progressPercent >= 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white' }}">{{ $progressPercent }}%</p>
                                 </div>
-                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-100 group-hover:text-indigo-400 dark:group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </div>
                         </div>
 

@@ -8,10 +8,10 @@
         <!-- Header -->
         <div class="flex items-end justify-between mb-8">
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-1">Panel Administrativo</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Cobranzas</h1>
             </div>
-            <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
+            <p class="hidden md:block text-sm text-gray-600 dark:text-gray-100">{{ now()->format('d M Y') }}</p>
         </div>
 
         @if(session('success'))
@@ -98,13 +98,13 @@
         @if($filter === 'paid')
         <div class="md:hidden flex flex-wrap items-center gap-2 mb-6">
             <div class="flex items-center gap-1 flex-1 min-w-[140px]">
-                <label class="text-[10px] text-gray-500 dark:text-gray-400 whitespace-nowrap">Desde:</label>
+                <label class="text-[10px] text-gray-500 dark:text-gray-100 whitespace-nowrap">Desde:</label>
                 <input type="date" id="paid-date-from-mobile"
                     value="{{ request('paid_date_from') ?? '' }}"
                     class="flex-1 px-2 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
             </div>
             <div class="flex items-center gap-1 flex-1 min-w-[140px]">
-                <label class="text-[10px] text-gray-500 dark:text-gray-400 whitespace-nowrap">Hasta:</label>
+                <label class="text-[10px] text-gray-500 dark:text-gray-100 whitespace-nowrap">Hasta:</label>
                 <input type="date" id="paid-date-to-mobile"
                     value="{{ request('paid_date_to') ?? '' }}"
                     class="flex-1 px-2 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
@@ -127,7 +127,7 @@
             @foreach(['all' => 'Personas', 'grouped' => 'Por Grupo', 'pending_validation' => 'Por Validar', 'paid' => 'Pagadas', 'overdue' => 'Cuotas vencidas'] as $key => $label)
                 <a href="{{ route('superadmin.installments.index', array_filter(['filter' => $key, 'search' => request('search')])) }}"
                     class="relative flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors flex items-center gap-2
-                              {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                              {{ $filter === $key ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-400' }}">
                     {{ $label }}
                     @if($key === 'pending_validation' && $pendingCount > 0)
                         <svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,13 +147,13 @@
         @if($filter === 'paid')
         <div class="hidden md:flex items-center gap-3 mb-6">
             <div class="flex items-center gap-2">
-                <label class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">Desde:</label>
+                <label class="text-xs text-gray-500 dark:text-gray-100 whitespace-nowrap">Desde:</label>
                 <input type="date" id="paid-date-from"
                     value="{{ request('paid_date_from') ?? '' }}"
                     class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
             </div>
             <div class="flex items-center gap-2">
-                <label class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">Hasta:</label>
+                <label class="text-xs text-gray-500 dark:text-gray-100 whitespace-nowrap">Hasta:</label>
                 <input type="date" id="paid-date-to"
                     value="{{ request('paid_date_to') ?? '' }}"
                     class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors">
@@ -295,7 +295,7 @@
                     </div>
                 @empty
                     <div class="col-span-full py-24 text-center">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">No hay préstamos activos</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-100 font-medium uppercase tracking-widest">No hay préstamos activos</p>
                     </div>
                 @endforelse
             </div>
@@ -344,11 +344,11 @@
                                 <span class="inline-flex items-center bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-[9px] px-2 py-1 rounded-lg">DNI: {{ $bw['user']->dni ?? '' }}</span>
                             </div>
                         </div>
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-100 group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 @empty
                     <div class="py-24 text-center">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">No hay prestatarios registrados</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-100 font-medium uppercase tracking-widest">No hay prestatarios registrados</p>
                     </div>
                 @endforelse
             </div>
@@ -381,7 +381,7 @@
                                     <span class="text-[10px] font-medium text-red-600 dark:text-red-400">
                                         {{ $debtor['first_due_date']->format('d/m/Y') }} ({{ $daysOverdue }}d)
                                     </span>
-                                    <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                                    <span class="text-[10px] font-bold text-gray-500 dark:text-gray-100">
                                         · {{ $debtor['installments_count'] }} cuota{{ $debtor['installments_count'] > 1 ? 's' : '' }}
                                     </span>
                                 </div>
@@ -405,7 +405,7 @@
                 @empty
                     <div class="py-24 text-center">
                         <svg class="w-12 h-12 mx-auto text-green-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">Sin cuotas vencidas</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-100 font-medium uppercase tracking-widest">Sin cuotas vencidas</p>
                     </div>
                 @endforelse
             </div>
@@ -466,7 +466,7 @@
                     ])
                 @empty
                     <div class="py-24 text-center">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">No hay cuotas registradas</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-100 font-medium uppercase tracking-widest">No hay cuotas registradas</p>
                     </div>
                 @endforelse
             </div>
@@ -508,7 +508,7 @@
 
             <div class="px-5 py-2.5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
                 <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-100 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input type="text" id="borrower-loans-search" placeholder="Buscar por código..." oninput="filterBorrowerLoans()" class="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-gray-300 dark:focus:border-gray-500 transition-colors">
                 </div>
             </div>
@@ -522,10 +522,10 @@
             <div id="borrower-loans-pagination" class="px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0 hidden">
                 <div class="flex items-center justify-between gap-3">
                     <button onclick="borrowerLoansPrevPage()" id="borrower-loans-prev-btn"
-                        class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 transition-colors disabled:opacity-30 disabled:pointer-events-none">← Anterior</button>
+                        class="px-3 py-1.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-[10px] font-bold text-gray-700 dark:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">← Anterior</button>
                     <div id="borrower-loans-page-dots" class="flex items-center gap-1"></div>
                     <button onclick="borrowerLoansNextPage()" id="borrower-loans-next-btn"
-                        class="px-3 py-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-gray-200 rounded-lg text-[10px] font-bold text-white dark:text-gray-900 transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
+                        class="px-3 py-1.5 bg-[#006BFF] dark:bg-[#006BFF] hover:bg-[#0056CC] dark:hover:bg-[#0056CC] border border-[#006BFF] dark:border-[#006BFF] rounded-lg text-[10px] font-bold text-white dark:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
                 </div>
             </div>
         </div>
@@ -550,7 +550,7 @@
                 @method('PATCH')
                 <div>
                     <label
-                        class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block mb-2">N°
+                        class="text-[10px] font-black text-gray-500 dark:text-gray-100 uppercase tracking-[0.2em] block mb-2">N°
                         de operación</label>
                     <input type="text" name="operation_number" id="edit_modal_operation_number" placeholder="Ej: 123456"
                         maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
@@ -559,7 +559,7 @@
 
                 <div class="flex gap-3 pt-4">
                     <button type="button" onclick="closeEditOperationModal()"
-                        class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                        class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-100 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                         Cancelar
                     </button>
                     <button type="submit"
@@ -618,12 +618,12 @@
                 html += '<div class="flex items-center gap-1.5 mb-1">';
                 html += '<span class="text-sm font-bold text-gray-900 dark:text-white">' + l.code + '</span>' + badges;
                 html += '</div>';
-                html += '<div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-500 dark:text-gray-400">';
-                html += '<span>' + l.cur + '<strong class="text-gray-600 dark:text-gray-300 tabular-nums ml-0.5">' + Number(l.amount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
+                html += '<div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-500 dark:text-gray-100">';
+                html += '<span>' + l.cur + '<strong class="text-gray-600 dark:text-gray-100 tabular-nums ml-0.5">' + Number(l.amount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
                 html += '<span>Pagado: <strong class="text-emerald-600 dark:text-emerald-400 tabular-nums">' + Number(l.paid).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
                 html += '<span>Deuda: <strong class="' + debtColor + ' tabular-nums">' + Number(l.debt).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) + '</strong></span>';
                 html += '</div></div>';
-                html += '<svg class="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+                html += '<svg class="w-4 h-4 text-gray-500 dark:text-gray-100 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
                 html += '</a>';
             });
             container.innerHTML = html;
@@ -637,7 +637,7 @@
                 dotsContainer.innerHTML = '';
                 for (let i = 1; i <= totalPages; i++) {
                     const dot = document.createElement('button');
-                    dot.className = 'w-7 h-7 flex items-center justify-center rounded-md text-[10px] font-bold transition-colors ' + (i === _borrowerLoansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400');
+                    dot.className = 'w-7 h-7 flex items-center justify-center rounded-md text-[10px] font-bold transition-colors ' + (i === _borrowerLoansPage ? 'bg-[#006BFF] dark:bg-[#006BFF] text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-200');
                     dot.textContent = i;
                     dot.onclick = function() { _borrowerLoansPage = i; renderBorrowerLoansPage(); };
                     dotsContainer.appendChild(dot);
@@ -962,14 +962,14 @@
                     </svg>
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">¿Revertir pago?</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed mb-6">
+                <p class="text-sm text-gray-600 dark:text-gray-100 text-center leading-relaxed mb-6">
                     Esta acción eliminará el ingreso de caja y el pago volverá a estar en revisión. Solo se puede revertir el último pago aprobado.
                 </p>
                 <form id="unapproveForm" method="POST" action="{{ route('superadmin.installments.unapprove', 0) }}">
                     @csrf
                     <div class="flex flex-col sm:flex-row gap-3">
                         <button type="button" onclick="closeUnapproveModal()"
-                            class="flex-1 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                            class="flex-1 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                             Cancelar
                         </button>
                         <button type="submit"

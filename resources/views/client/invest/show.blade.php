@@ -60,7 +60,7 @@
 
     <div class="mb-6 sm:mb-8">
         <div class="flex items-center justify-between mb-2">
-            <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Progreso de Financiamiento</span>
+            <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-100">Progreso de Financiamiento</span>
             <span class="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">{{ $opportunity->progress_percent }}%</span>
         </div>
         <div class="relative h-2 sm:h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
@@ -73,8 +73,8 @@
     </div>
 
     <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-sm">
-        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Descripción del Proyecto</span>
-        <p class="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line mt-3">{{ $opportunity->description }}</p>
+        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest">Descripción del Proyecto</span>
+        <p class="text-sm sm:text-base text-gray-700 dark:text-gray-100 leading-relaxed whitespace-pre-line mt-3">{{ $opportunity->description }}</p>
 
         @if($opportunity->risks)
             <div class="mt-6 pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
@@ -100,36 +100,36 @@
             @if($existingRequest->pivot->status === 'pending')
                 <div class="border-l-4 border-yellow-500 pl-4 py-2">
                     <p class="text-sm font-bold text-yellow-600 dark:text-yellow-400">Solicitud Pendiente</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tu solicitud de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} está siendo revisada.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Tu solicitud de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} está siendo revisada.</p>
                 </div>
 
             @elseif($existingRequest->pivot->status === 'approved')
                 <div class="border-l-4 border-green-500 pl-4 py-2 mb-6">
                     <p class="text-sm font-bold text-green-600 dark:text-green-400">Solicitud Aprobada</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tu inversión de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} ha sido aprobada.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Tu inversión de {{ $opportunity->currency === 'USD' ? '$' : 'S/' }} {{ number_format($existingRequest->pivot->amount, 2) }} ha sido aprobada.</p>
                 </div>
 
                 @if($existingRequest->pivot->payment_status === 'confirmed')
                     <div class="border-l-4 border-green-500 pl-4 py-2">
                         <p class="text-sm font-bold text-green-600 dark:text-green-400">Pago Confirmado</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tu inversión está activa y generando rendimientos.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Tu inversión está activa y generando rendimientos.</p>
                     </div>
 
                 @elseif($existingRequest->pivot->payment_status === 'expired')
                     <div class="border-l-4 border-red-500 pl-4 py-2">
                         <p class="text-sm font-bold text-red-600 dark:text-red-400">Tiempo de Pago Vencido</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Contacta al administrador para reiniciar el proceso.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Contacta al administrador para reiniciar el proceso.</p>
                     </div>
 
                 @elseif($existingRequest->pivot->payment_status === 'rejected')
                     <div class="border-l-4 border-red-500 pl-4 py-2 mb-6">
                         <p class="text-sm font-bold text-red-600 dark:text-red-400">Pago Rechazado</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Verifica los datos del comprobante y vuelve a intentar.</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Verifica los datos del comprobante y vuelve a intentar.</p>
                     </div>
 
                     @if($opportunity->bank_accounts)
                     <div class="mb-6">
-                        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Datos para Depósito</p>
+                        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-3">Datos para Depósito</p>
                         <div class="grid gap-3">
                             @foreach($opportunity->bank_accounts as $account)
                                 <div class="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800">
@@ -154,7 +154,7 @@
                     @endif
 
                     <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
-                        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Subir Nuevo Comprobante de Pago</p>
+                        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Subir Nuevo Comprobante de Pago</p>
 
                         @if($errors->any())
                             <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -175,7 +175,7 @@
                                         Transferencia / Depósito
                                     </button>
                                     <button type="button" onclick="selectPaymentMethod('cash')" id="btn-cash"
-                                        class="px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300">
+                                        class="px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300">
                                         Efectivo
                                     </button>
                                     <input type="hidden" name="payment_method" id="payment_method" value="transfer">
@@ -188,13 +188,13 @@
                                                maxlength="30" pattern="\d*" inputmode="numeric"
                                                placeholder="Ej: 123456789"
                                                oninput="this.value=this.value.replace(/\D/g,'').slice(0,30)"
-                                               class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                               class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
                                         <div onclick="document.getElementById('voucherInput').click()" id="dropzoneTransfer" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
                                             <div id="placeholderTransfer" class="flex flex-col items-center justify-center py-4">
-                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Arrastra y suelta aquí</p>
+                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-100">Arrastra y suelta aquí</p>
                                                 <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                             </div>
                                             <img id="previewImg" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
@@ -210,7 +210,7 @@
                                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante de Efectivo (imagen)</label>
                                         <div onclick="document.getElementById('voucherInput').click()" id="dropzoneCash" class="hidden flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
                                             <div id="placeholderCash" class="flex flex-col items-center justify-center py-4">
-                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
+                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-100">Foto del dinero</p>
                                                 <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                             </div>
                                             <img id="previewImgCash" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
@@ -238,7 +238,7 @@
                     @if($isExpired && !$existingRequest->pivot->payment_submitted_at)
                         <div class="border-l-4 border-red-500 pl-4 py-2">
                             <p class="text-sm font-bold text-red-600 dark:text-red-400">Tiempo de Pago Vencido</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Contacta al administrador para reiniciar el proceso.</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Contacta al administrador para reiniciar el proceso.</p>
                         </div>
 
                     @else
@@ -247,12 +247,12 @@
                                 <p class="text-sm font-bold text-amber-600 dark:text-amber-400">Tiempo Restante</p>
                                 <p class="text-lg font-bold text-amber-600 dark:text-amber-400">{{ floor($hoursLeft) }}h</p>
                             </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Vence: {{ $deadline->format('d/m/Y H:i') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Vence: {{ $deadline->format('d/m/Y H:i') }}</p>
                         </div>
 
                         @if($opportunity->bank_accounts)
                             <div class="mb-6">
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Datos para Depósito</p>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-3">Datos para Depósito</p>
                                 <div class="grid gap-3">
                                     @foreach($opportunity->bank_accounts as $account)
                                         <div class="p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-800">
@@ -278,7 +278,7 @@
 
                         @if(!$existingRequest->pivot->payment_submitted_at)
                             <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Subir Comprobante de Pago</p>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Subir Comprobante de Pago</p>
 
                                 @if($errors->any())
                                     <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -299,7 +299,7 @@
                                                 Transferencia / Depósito
                                             </button>
                                             <button type="button" onclick="selectPaymentMethod('cash')" id="btn-cash"
-                                                class="px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300">
+                                                class="px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300">
                                                 Efectivo
                                             </button>
                                             <input type="hidden" name="payment_method" id="payment_method" value="transfer">
@@ -312,13 +312,13 @@
                                                        maxlength="30" pattern="\d*" inputmode="numeric"
                                                        placeholder="Ej: 123456789"
                                                        oninput="this.value=this.value.replace(/\D/g,'').slice(0,30)"
-                                                       class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                                       class="w-full px-3 sm:px-4 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                                             </div>
                                             <div>
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante (imagen)</label>
                                                 <div onclick="document.getElementById('voucherInput').click()" id="dropzoneTransfer" class="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
                                                     <div id="placeholderTransfer" class="flex flex-col items-center justify-center py-4">
-                                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Arrastra y suelta aquí</p>
+                                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-100">Arrastra y suelta aquí</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
                                                     <img id="previewImg" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
@@ -334,7 +334,7 @@
                                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Comprobante de Efectivo (imagen)</label>
                                                 <div onclick="document.getElementById('voucherInput').click()" id="dropzoneCash" class="hidden flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl cursor-pointer hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-500/5">
                                                     <div id="placeholderCash" class="flex flex-col items-center justify-center py-4">
-                                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Foto del dinero</p>
+                                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-100">Foto del dinero</p>
                                                         <p class="text-[10px] text-gray-400 mt-1">o haz clic para seleccionar</p>
                                                     </div>
                                                     <img id="previewImgCash2" src="" alt="" class="hidden w-full h-full object-contain rounded-lg p-2">
@@ -354,7 +354,7 @@
                         @else
                             <div class="border-l-4 border-yellow-500 pl-4 py-2 mb-4">
                                 <p class="text-sm font-bold text-yellow-600 dark:text-yellow-400">Comprobante Enviado</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Esperando verificación del administrador.</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-100 mt-1">Esperando verificación del administrador.</p>
                             </div>
                             @if($existingRequest->pivot->voucher_path)
                                 <div class="mt-4">
@@ -377,7 +377,7 @@
                 </div>
 
                 <div class="pt-4 sm:pt-6 border-t border-gray-100 dark:border-gray-800">
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Intentar de Nuevo</p>
 
                     @if($errors->any())
                         <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -397,7 +397,7 @@
                                     <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
                                    oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);let r=(v||'').replace(/[^\d]/g,'');if(r){let n=parseFloat(r)/100;let mx=parseFloat(document.getElementById('maxInvestment').value);if(n>mx){let p=mx.toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');v=p.join('.');}}if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
-                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                             </div>
                             <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
                             <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
@@ -414,7 +414,7 @@
                                         Francés
                                     </button>
                                     <button type="button" onclick="selectAmortization('americano')" id="btn-americano"
-                                        class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300">
+                                        class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-100 transition-all hover:border-gray-300">
                                         Americano
                                     </button>
                                 </div>
@@ -457,7 +457,7 @@
 
     @else
         <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-4 sm:p-6 shadow-sm">
-            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>
+            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Participar en esta Oportunidad</p>
 
             @if($errors->any())
                 <div class="mb-4 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
@@ -477,7 +477,7 @@
                             <input type="text" name="amount" id="investAmount" required inputmode="numeric"
                                    placeholder="{{ number_format($opportunity->min_investment, 2) }}"
                                    oninput="if(window.formatInvestAmount){let v=window.formatInvestAmount(this.value);let r=(v||'').replace(/[^\d]/g,'');if(r){let n=parseFloat(r)/100;let mx=parseFloat(document.getElementById('maxInvestment').value);if(n>mx){let p=mx.toFixed(2).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');v=p.join('.');}}if(this.value!==v)this.value=v;} if(typeof updateSchedule==='function')updateSchedule();"
-                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
+                                   class="w-full pl-8 sm:pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl text-base font-semibold text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500">
                         </div>
                         <input type="hidden" id="minInvestment" value="{{ $opportunity->min_investment }}">
                         <input type="hidden" id="maxInvestment" value="{{ $opportunity->remaining_amount }}">
@@ -494,7 +494,7 @@
                                 Francés
                             </button>
                             <button type="button" onclick="selectAmortization('americano')" id="btn-americano"
-                                class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300">
+                                class="amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-100 transition-all hover:border-gray-300">
                                 Americano
                             </button>
                         </div>
@@ -566,7 +566,7 @@ function selectPaymentMethod(method) {
     if (method === 'cash') {
         transferFields.classList.add('hidden');
         cashFields.classList.remove('hidden');
-        btnTransfer.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
+        btnTransfer.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
         btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-900 dark:text-white border-b-2 border-green-500';
         if (dropzoneTransfer) dropzoneTransfer.classList.add('hidden');
         if (dropzoneCash) dropzoneCash.classList.remove('hidden');
@@ -575,7 +575,7 @@ function selectPaymentMethod(method) {
         transferFields.classList.remove('hidden');
         cashFields.classList.add('hidden');
         btnTransfer.className = 'px-4 py-2 text-sm font-bold text-gray-900 dark:text-white border-b-2 border-green-500';
-        btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
+        btnCash.className = 'px-4 py-2 text-sm font-bold text-gray-500 dark:text-gray-100 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300';
         if (dropzoneTransfer) dropzoneTransfer.classList.remove('hidden');
         if (dropzoneCash) dropzoneCash.classList.add('hidden');
         if (operationNumber) operationNumber.setAttribute('required', '');
@@ -672,11 +672,11 @@ function selectAmortization(type) {
 
     if (type === 'frances') {
         btnFrances.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-all';
-        btnAmericano.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300';
+        btnAmericano.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-100 transition-all hover:border-gray-300';
         amortDesc.textContent = 'Cuotas fijas: recibes lo mismo cada mes (capital + interés)';
     } else {
         btnAmericano.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 transition-all';
-        btnFrances.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300';
+        btnFrances.className = 'amort-btn px-4 py-3 rounded-xl text-sm font-bold border-2 border-gray-200 dark:border-gray-800 bg-transparent text-gray-500 dark:text-gray-100 transition-all hover:border-gray-300';
         amortDesc.textContent = 'Solo intereses cada mes, capital completo en la última cuota';
     }
 
@@ -751,11 +751,11 @@ function updateSchedule() {
         totalPayment += payment;
 
         rows += '<tr class="border-b border-gray-50 dark:border-gray-900">' +
-            '<td class="px-3 py-1.5 text-gray-700 dark:text-gray-300">' + i + '</td>' +
+            '<td class="px-3 py-1.5 text-gray-700 dark:text-gray-100">' + i + '</td>' +
             '<td class="px-3 py-1.5 text-right font-medium text-gray-900 dark:text-white">' + symbol + ' ' + fmt(payment) + '</td>' +
             '<td class="px-3 py-1.5 text-right text-amber-600 dark:text-amber-400">' + symbol + ' ' + fmt(interest) + '</td>' +
             '<td class="px-3 py-1.5 text-right text-indigo-600 dark:text-indigo-400">' + symbol + ' ' + fmt(principal) + '</td>' +
-            '<td class="px-3 py-1.5 text-right text-gray-500 dark:text-gray-400">' + symbol + ' ' + fmt(balance) + '</td>' +
+            '<td class="px-3 py-1.5 text-right text-gray-500 dark:text-gray-100">' + symbol + ' ' + fmt(balance) + '</td>' +
             '</tr>';
     }
 

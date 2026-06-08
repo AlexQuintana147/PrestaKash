@@ -8,9 +8,9 @@
     <div class="mb-8">
         <div class="flex items-center gap-2 mb-1">
             <a href="{{ route('client.investments.index') }}" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Invertir</a>
-            <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-3 h-3 text-gray-500 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Oportunidades</p>
+        <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-0.5">Oportunidades</p>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Oportunidades de Inversión</h1>
     </div>
 
@@ -44,7 +44,7 @@
                                 @endif
                             </div>
                             <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $opp->title }}</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5 line-clamp-1">{{ $opp->description }}</p>
                         </div>
                         <div class="flex items-center gap-6 text-right">
                             <div>
@@ -79,8 +79,8 @@
         @endif
     @else
         <div class="text-center py-20">
-            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400">No hay oportunidades disponibles</p>
+            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-100 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <p class="text-sm text-gray-500 dark:text-gray-100">No hay oportunidades disponibles</p>
         </div>
     @endif
 </div>

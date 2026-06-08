@@ -8,7 +8,7 @@
     <!-- Header -->
     <div class="flex items-center gap-3 mb-6 md:mb-8">
         <a href="{{ route('superadmin.installments.index', ['filter' => 'overdue']) }}"
-           class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+           class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -37,7 +37,7 @@
     @if($pendingInstallments->isEmpty())
         <div class="py-24 text-center">
             <svg class="w-12 h-12 mx-auto text-green-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-widest">Sin deudas pendientes</p>
+            <p class="text-sm text-gray-500 dark:text-gray-100 font-medium uppercase tracking-widest">Sin deudas pendientes</p>
         </div>
     @else
 
@@ -139,7 +139,7 @@
                             @if($inst->late_fee > 0)
                                 <p class="text-xs font-bold text-orange-500">{{ $cur }} {{ number_format($inst->late_fee, 2) }}</p>
                             @else
-                                <p class="text-xs text-gray-500 dark:text-gray-400">—</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-100">—</p>
                             @endif
                         </div>
                         <div class="col-span-2 text-right">
@@ -159,9 +159,9 @@
             </div>
 
             <!-- Total final desktop -->
-            <div class="grid grid-cols-12 gap-4 px-4 py-4 bg-gray-100 dark:bg-white text-gray-900 dark:text-gray-900 items-center">
+            <div class="grid grid-cols-12 gap-4 px-4 py-4 bg-gray-100 dark:bg-white text-gray-900 dark:text-white items-center">
                 <div class="col-span-8 text-right pr-4">
-                    <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-600">Total a cobrar</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-100">Total a cobrar</span>
                 </div>
                 <div class="col-span-4 text-right">
                     <p class="text-lg font-black">S/ {{ number_format($totalDebt + $totalLateFee, 2, '.', ',') }}</p>
@@ -244,7 +244,7 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Mora</span>
-                            <p class="text-sm font-bold {{ $inst->late_fee > 0 ? 'text-orange-500' : 'text-gray-500 dark:text-gray-400' }}">{{ $inst->late_fee > 0 ? $cur . ' ' . number_format($inst->late_fee, 2) : '—' }}</p>
+                            <p class="text-sm font-bold {{ $inst->late_fee > 0 ? 'text-orange-500' : 'text-gray-500 dark:text-gray-100' }}">{{ $inst->late_fee > 0 ? $cur . ' ' . number_format($inst->late_fee, 2) : '—' }}</p>
                         </div>
                         <div class="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Total</span>
@@ -256,8 +256,8 @@
 
             <!-- Total final mobile -->
             <div class="bg-gray-100 dark:bg-white border border-gray-200 dark:border-gray-300 rounded-2xl p-4 flex items-center justify-between shadow-sm">
-                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-700">Total a cobrar</span>
-                <p class="text-xl font-black text-gray-900 dark:text-gray-900">S/ {{ number_format($totalDebt + $totalLateFee, 2, '.', ',') }}</p>
+                <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-200">Total a cobrar</span>
+                <p class="text-xl font-black text-gray-900 dark:text-white">S/ {{ number_format($totalDebt + $totalLateFee, 2, '.', ',') }}</p>
             </div>
         </div>
     @endif
@@ -461,7 +461,7 @@
                     Ver préstamo completo
                     <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
-                <button onclick="closeInstallmentModal()" class="text-[9px] sm:text-[10px] font-bold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 uppercase tracking-widest px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-colors">
+                <button onclick="closeInstallmentModal()" class="text-[9px] sm:text-[10px] font-bold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-white uppercase tracking-widest px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-colors">
                     Cerrar
                 </button>
             </div>
@@ -499,7 +499,7 @@ function openInstallmentModal(el) {
     statusEl.textContent = statusMap[d.loanStatus] || d.loanStatus;
     statusEl.className = 'text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ' +
         (d.loanStatus === 'approved' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
-         d.loanStatus === 'paid' ? 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300' :
+         d.loanStatus === 'paid' ? 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-100' :
          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400');
 
     document.getElementById('modal-inst-number').textContent = '#' + d.instNumber;

@@ -8,7 +8,7 @@
     <!-- Header -->
     <div class="flex items-center gap-3 mb-8">
         <a href="{{ route('superadmin.users.index') }}"
-           class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+           class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -30,7 +30,7 @@
                 @endif
             </div>
             <div class="flex items-center gap-1.5 mt-1">
-                <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ $user->email }}</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 truncate">{{ $user->email }}</p>
                 <a href="mailto:{{ $user->email }}" class="hover:opacity-80 transition-opacity">
                     <svg class="w-4 h-4" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
                         <rect x="7.904" y="119.947" style="fill:#5EBAE7;" width="496.195" height="272.109"/>
@@ -85,7 +85,7 @@
 
             <div>
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest">Datos personales</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest">Datos personales</p>
                     @if(!$user->is_ghost)
                         <button type="button" onclick="openEditWarningModal()"
                                 class="text-[10px] font-bold text-blue-500 hover:text-blue-600 uppercase tracking-wider transition-colors">
@@ -231,8 +231,8 @@
                         @if(is_array($data) && isset($data['is_referrer']))
                             <a href="{{ $data['link'] }}"
                                class="flex justify-between items-start py-3 px-3 -mx-3 bg-gray-900 dark:bg-white mb-2 hover:opacity-90 transition-opacity cursor-pointer">
-                                <span class="text-xs text-white dark:text-gray-900 flex-shrink-0">Referido por</span>
-                                <span class="text-xs font-semibold text-white dark:text-gray-900 text-right ml-4">
+                                <span class="text-xs text-white dark:text-white flex-shrink-0">Referido por</span>
+                                <span class="text-xs font-semibold text-white dark:text-white text-right ml-4">
                                     {{ $value }}
                                 </span>
                             </a>
@@ -295,7 +295,7 @@
                             </a>
                         @else
                             <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-900 pb-3">
-                                <span class="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">{{ $label }}</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-100 flex-shrink-0">{{ $label }}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs text-gray-900 dark:text-white text-right">
                                         {{ is_array($data) && isset($data['prefix']) ? $data['prefix'] : '' }}{{ $value ?? '—' }}{{ is_array($data) && isset($data['suffix']) ? $data['suffix'] : '' }}
@@ -317,7 +317,7 @@
 
             @if($user->documents && !$user->is_ghost)
             <div>
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Acciones</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-4">Acciones</p>
 
                 @if($user->documents->status === 'rejected')
                 <div class="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 mb-3">
@@ -383,7 +383,7 @@
                 {{-- Bloquear: disponible para pending y approved --}}
                 @if(in_array($user->documents->status, ['pending', 'approved']))
                 <button type="button" onclick="openBlockModal()"
-                        class="mt-2 w-full py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-500 hover:border-gray-900 dark:hover:border-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center gap-2">
+                        class="mt-2 w-full py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-100 hover:border-gray-900 dark:hover:border-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                     </svg>
@@ -426,18 +426,18 @@
                         <p class="text-lg font-bold text-red-700 dark:text-red-300">{{ $user->ghost_currency }} {{ number_format($totalExpense, 2) }}</p>
                     </div>
                     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-600 dark:text-gray-400 mb-1">Balance</p>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-600 dark:text-gray-100 mb-1">Balance</p>
                         <p class="text-lg font-bold {{ $balance >= 0 ? 'text-gray-900 dark:text-white' : 'text-red-600 dark:text-red-400' }}">{{ $user->ghost_currency }} {{ number_format($balance, 2) }}</p>
                     </div>
                 </div>
 
                 <div class="mb-8">
-                    <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Registrar movimiento</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-4">Registrar movimiento</p>
                     <form action="{{ route('superadmin.users.ghost-movement', $user) }}" method="POST" class="p-5 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
                         @csrf
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Tipo de movimiento</label>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-100 mb-1.5">Tipo de movimiento</label>
                                 <select name="type" id="ghost-type" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="">Seleccionar</option>
                                     <option value="income">Ingreso</option>
@@ -445,7 +445,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Razón</label>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-100 mb-1.5">Razón</label>
                                 <select name="reason" id="ghost-reason" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="">Seleccionar</option>
                                     <option value="loan">Préstamo</option>
@@ -454,7 +454,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Moneda</label>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-100 mb-1.5">Moneda</label>
                                 <select name="currency" id="ghost-currency" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="PEN">PEN (Soles)</option>
                                     <option value="USD">USD (Dólares)</option>
@@ -469,13 +469,13 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Monto</label>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-100 mb-1.5">Monto</label>
                                 <input type="hidden" name="amount" id="ghost-amount-hidden" value="">
                                 <input type="text" id="ghost-amount-display" inputmode="numeric" required placeholder="0.00" autocomplete="off"
                                     class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors text-right font-mono">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Caja</label>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-100 mb-1.5">Caja</label>
                                 <select name="cashbox_id" id="ghost-cashbox" required class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
                                     @foreach($cashboxes as $cb)
                                         <option value="{{ $cb->id }}" data-currency="{{ $cb->currency }}" {{ $cb->id === $user->ghost_cashbox_id ? 'selected' : '' }}>{{ $cb->name }} ({{ $cb->currency }})</option>
@@ -483,7 +483,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-1.5">Descripción</label>
+                                <label class="block text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-100 mb-1.5">Descripción</label>
                                 <input type="text" name="description" required maxlength="255" placeholder="Descripción del movimiento" class="w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg text-sm px-3 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                         </div>
@@ -594,7 +594,7 @@
                 </div>
 
                 <div id="ghost-movements-section">
-                    <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-4">Historial de movimientos</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-4">Historial de movimientos</p>
                     @if($ghostMovements->count() > 0)
                         <div class="space-y-2">
                             @foreach($ghostMovements as $mov)
@@ -610,7 +610,7 @@
                                         </div>
                                         <div>
                                             <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $mov->description }}</p>
-                                            <p class="text-[10px] text-gray-500 dark:text-gray-500">{{ $mov->created_at->format('d/m/Y H:i') }} · {{ $mov->cashbox->name ?? '—' }}</p>
+                                            <p class="text-[10px] text-gray-500 dark:text-gray-100">{{ $mov->created_at->format('d/m/Y H:i') }} · {{ $mov->cashbox->name ?? '—' }}</p>
                                         </div>
                                     </div>
                                     <p class="text-sm font-bold {{ $mov->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
@@ -639,11 +639,11 @@
                             </script>
                         @endif
                     @else
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Sin movimientos registrados.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-100">Sin movimientos registrados.</p>
                     @endif
                 </div>
             @else
-                <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-5">Documentos</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-5">Documentos</p>
 
                 @if($user->documents)
                 <div class="grid grid-cols-2 gap-3 md:gap-5">
@@ -654,7 +654,7 @@
                         'DNI — Posterior'     => $user->documents->dni_back,
                     ] as $label => $path)
                     <div>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">{{ $label }}</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-100 mb-2">{{ $label }}</p>
                         @if($path)
                             <button onclick="openLightbox('{{ Storage::url($path) }}', '{{ $label }}')" class="block w-full group text-left">
                                 <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900" style="aspect-ratio: 4/3;">
@@ -668,7 +668,7 @@
                                 </div>
                             </button>
                         @else
-                            <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs" style="aspect-ratio: 4/3;">
+                            <div class="rounded-lg bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-100 text-xs" style="aspect-ratio: 4/3;">
                                 Sin imagen
                             </div>
                         @endif
@@ -676,7 +676,7 @@
                     @endforeach
                 </div>
                 @else
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Este usuario no ha subido documentos.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-100">Este usuario no ha subido documentos.</p>
                 @endif
             @endif
         </div>
@@ -737,7 +737,7 @@
                         @endphp
                         @foreach($changed as $field => $newValue)
                         <tr>
-                            <td class="py-2 pr-4 text-gray-700 dark:text-gray-300 font-medium text-xs">{{ $labels[$field] ?? $field }}</td>
+                            <td class="py-2 pr-4 text-gray-700 dark:text-gray-100 font-medium text-xs">{{ $labels[$field] ?? $field }}</td>
                             <td class="py-2 pr-4 text-red-600 dark:text-red-400 text-xs line-through">{{ \App\Models\ProfileChangeRequest::formatValue($field, $req->old_data[$field] ?? null) }}</td>
                             <td class="py-2 text-green-600 dark:text-green-400 text-xs font-medium">{{ \App\Models\ProfileChangeRequest::formatValue($field, $newValue) }}</td>
                         </tr>
@@ -771,7 +771,7 @@
     </div>
     @endif
     <details class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl">
-        <summary class="px-5 py-3 cursor-pointer text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+        <summary class="px-5 py-3 cursor-pointer text-xs font-semibold text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
             Historial de solicitudes ({{ $profileChangeRequests->where('status', '!=', 'pending')->count() }})
         </summary>
         <div class="px-5 pb-4 space-y-3">
@@ -791,7 +791,7 @@
                 }
             @endphp
             <div class="req-row flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-gray-100 dark:border-gray-800' : '' }}">
-                <div class="text-xs text-gray-600 dark:text-gray-400">
+                <div class="text-xs text-gray-600 dark:text-gray-100">
                     {{ $req->created_at->format('d/m/Y H:i') }}
                     @if($req->status === 'approved')
                         <span class="text-green-600 font-medium">— Aprobada</span>
@@ -801,13 +801,13 @@
                         <span class="text-gray-400 font-medium">— Cancelada</span>
                     @endif
                 </div>
-                <button type="button" onclick='openReqDetailModal({{ json_encode($reqChanges) }})' class="text-[10px] font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Ver detalles</button>
+                <button type="button" onclick='openReqDetailModal({{ json_encode($reqChanges) }})' class="text-[10px] font-semibold text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors">Ver detalles</button>
             </div>
             @endforeach
             <div id="req-pagination" class="flex items-center justify-center gap-3 pt-2" style="display:none">
-                <button type="button" id="req-btn-prev" onclick="reqChangePage(-1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
-                <span id="req-page-info" class="text-xs font-medium text-gray-500 dark:text-gray-400"></span>
-                <button type="button" id="req-btn-next" onclick="reqChangePage(1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Siguiente</button>
+                <button type="button" id="req-btn-prev" onclick="reqChangePage(-1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
+                <span id="req-page-info" class="text-xs font-medium text-gray-500 dark:text-gray-100"></span>
+                <button type="button" id="req-btn-next" onclick="reqChangePage(1)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">Siguiente</button>
             </div>
         </div>
     </details>
@@ -859,7 +859,7 @@
     <div class="bg-white dark:bg-gray-950 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Detalles del cambio</h3>
-            <button type="button" onclick="closeReqDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button type="button" onclick="closeReqDetailModal()" class="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
@@ -872,10 +872,10 @@ function openReqDetailModal(changes) {
     const container = document.getElementById('reqDetailContent');
     container.innerHTML = changes.map(c => `
         <div class="py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
-            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">${c.label}</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-100 mb-1.5">${c.label}</p>
             <div class="flex items-center gap-2 text-xs">
                 <span class="text-red-400 line-through flex-1">${c.old}</span>
-                <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <svg class="w-3 h-3 text-gray-500 dark:text-gray-100 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 <span class="text-green-600 dark:text-green-400 font-medium flex-1">${c.new}</span>
             </div>
         </div>
@@ -896,12 +896,12 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
 <div id="rejectChangeModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
         <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Rechazar solicitud</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Indica el motivo del rechazo (opcional).</p>
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-4">Indica el motivo del rechazo (opcional).</p>
         <form id="rejectChangeForm" method="POST">
             @csrf
             <textarea name="rejection_reason" rows="3" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Motivo del rechazo..."></textarea>
             <div class="flex gap-3 mt-4">
-                <button type="button" onclick="closeRejectChangeModal()" class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button type="button" onclick="closeRejectChangeModal()" class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
                 <button type="submit" class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">Rechazar</button>
             </div>
         </form>
@@ -917,12 +917,12 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
             </svg>
         </div>
         <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Datos sensibles</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-6">
             Si vas a modificar estos datos, son muy sensibles, así que procede con cuidado.
         </p>
         <div class="flex gap-3">
             <button onclick="closeEditWarningModal()"
-                    class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                 Cancelar
             </button>
             <button onclick="enableEditMode()"
@@ -943,12 +943,12 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
             <input type="hidden" name="field" id="editFieldName">
             <div class="mb-5">
                 <input type="text" name="value" id="editFieldValue"
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 py-2 focus:outline-none focus:border-blue-500 transition-colors">
+                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 py-2 focus:outline-none focus:border-blue-500 transition-colors">
                 <p id="editFieldError" class="text-[10px] text-red-500 mt-1 hidden"></p>
             </div>
             <div class="flex gap-3">
                 <button type="button" onclick="closeEditFieldModal()"
-                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     Cancelar
                 </button>
                 <button type="submit"
@@ -964,49 +964,49 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
 <div id="blockModal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
         <div class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 mx-auto mb-4">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-gray-600 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
             </svg>
         </div>
         <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-2">Bloquear usuario</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">Esta acción es <span class="font-bold text-red-500">irreversible</span>. Se eliminará permanentemente:</p>
-        <ul class="text-xs text-gray-500 dark:text-gray-400 space-y-1.5 mb-5 px-2">
+        <p class="text-sm text-gray-500 dark:text-gray-100 text-center mb-4">Esta acción es <span class="font-bold text-red-500">irreversible</span>. Se eliminará permanentemente:</p>
+        <ul class="text-xs text-gray-500 dark:text-gray-100 space-y-1.5 mb-5 px-2">
             <li class="flex items-start gap-2">
                 <span class="text-red-400 mt-0.5">✕</span>
-                <span>Todos sus <strong class="text-gray-700 dark:text-gray-300">préstamos</strong> y cuotas asociadas</span>
+                <span>Todos sus <strong class="text-gray-700 dark:text-gray-100">préstamos</strong> y cuotas asociadas</span>
             </li>
             <li class="flex items-start gap-2">
                 <span class="text-red-400 mt-0.5">✕</span>
-                <span>Todas sus <strong class="text-gray-700 dark:text-gray-300">inversiones</strong> y pagos de inversión</span>
+                <span>Todas sus <strong class="text-gray-700 dark:text-gray-100">inversiones</strong> y pagos de inversión</span>
             </li>
             <li class="flex items-start gap-2">
                 <span class="text-red-400 mt-0.5">✕</span>
-                <span><strong class="text-gray-700 dark:text-gray-300">Comprobantes de pago</strong> (vouchers de cuotas y desembolsos)</span>
+                <span><strong class="text-gray-700 dark:text-gray-100">Comprobantes de pago</strong> (vouchers de cuotas y desembolsos)</span>
             </li>
             <li class="flex items-start gap-2">
                 <span class="text-red-400 mt-0.5">✕</span>
-                <span><strong class="text-gray-700 dark:text-gray-300">Documentos</strong> (selfie, DNI, recibo de servicio)</span>
+                <span><strong class="text-gray-700 dark:text-gray-100">Documentos</strong> (selfie, DNI, recibo de servicio)</span>
             </li>
             <li class="flex items-start gap-2">
                 <span class="text-red-400 mt-0.5">✕</span>
-                <span><strong class="text-gray-700 dark:text-gray-300">Cuentas bancarias</strong> y perfil del cliente</span>
+                <span><strong class="text-gray-700 dark:text-gray-100">Cuentas bancarias</strong> y perfil del cliente</span>
             </li>
             <li class="flex items-start gap-2">
                 <span class="text-red-400 mt-0.5">✕</span>
-                <span>Sus datos quedarán en <strong class="text-gray-700 dark:text-gray-300">lista negra</strong> para impedir un nuevo registro</span>
+                <span>Sus datos quedarán en <strong class="text-gray-700 dark:text-gray-100">lista negra</strong> para impedir un nuevo registro</span>
             </li>
         </ul>
 
         <form action="{{ route('superadmin.users.block', $user) }}" method="POST">
             @csrf
             <div class="mb-5">
-                <label class="block text-xs text-gray-500 dark:text-gray-500 mb-2">Motivo <span class="text-gray-400">(opcional)</span></label>
+                <label class="block text-xs text-gray-500 dark:text-gray-100 mb-2">Motivo <span class="text-gray-400">(opcional)</span></label>
                 <input type="text" name="reason" placeholder="Ej: Actividad sospechosa..."
-                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 py-2 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors">
+                       class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 py-2 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors">
             </div>
             <div class="flex gap-3">
                 <button type="button" onclick="closeBlockModal()"
-                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     Cancelar
                 </button>
                 <button type="submit"
@@ -1027,7 +1027,7 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
             </svg>
         </div>
         <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-1">Rechazar usuario</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-5">
+        <p class="text-sm text-gray-500 dark:text-gray-100 text-center mb-5">
             Esta acción es <span class="font-semibold text-red-500">irreversible</span>. Indica el motivo del rechazo.
         </p>
 
@@ -1047,21 +1047,21 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
                     <input type="radio" name="reason" value="{{ $motivo }}"
                            class="accent-red-500 flex-shrink-0"
                            onchange="document.getElementById('customReason').value = ''">
-                    <span class="text-xs text-gray-700 dark:text-gray-300">{{ $motivo }}</span>
+                    <span class="text-xs text-gray-700 dark:text-gray-100">{{ $motivo }}</span>
                 </label>
                 @endforeach
 
                 <!-- Motivo personalizado -->
                 <div class="pt-1">
                     <input type="text" id="customReason" placeholder="Otro motivo..."
-                           class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 py-2 focus:outline-none focus:border-red-400 transition-colors"
+                           class="w-full bg-transparent border-b border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-100 py-2 focus:outline-none focus:border-red-400 transition-colors"
                            oninput="uncheckRadios()">
                 </div>
             </div>
 
             <div class="flex gap-3 mt-5">
                 <button type="button" onclick="closeRejectModal()"
-                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     Cancelar
                 </button>
                 <button type="submit" onclick="return setCustomReason()"
@@ -1082,12 +1082,12 @@ document.getElementById('reqDetailModal').addEventListener('keydown', function(e
             </svg>
         </div>
         <h3 class="text-base font-bold text-gray-900 dark:text-white text-center mb-1">Aprobar usuario</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-100 text-center mb-6">
             ¿Confirmas que quieres aprobar a <span class="font-medium text-gray-900 dark:text-white">{{ $user->name }}</span>?
         </p>
         <div class="flex gap-3">
             <button onclick="closeApproveModal()"
-                    class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                 Cancelar
             </button>
             <form action="{{ route('superadmin.users.approve', $user) }}" method="POST" class="flex-1">
@@ -1881,7 +1881,7 @@ function closeRejectChangeModal() {
                 </svg>
             </div>
             <h3 class="text-base font-bold text-gray-900 dark:text-white mb-1">Eliminar usuario fantasma</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            <p class="text-sm text-gray-500 dark:text-gray-100 mb-6">
                 ¿Estás seguro de que deseas eliminar permanentemente a este usuario fantasma? Esta acción no se puede
                 deshacer.
             </p>
@@ -1891,7 +1891,7 @@ function closeRejectChangeModal() {
                 @method('DELETE')
                 <div class="flex gap-3">
                     <button type="button" onclick="closeDeleteGhostModal()"
-                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                         Cancelar
                     </button>
                     <button type="submit"
@@ -2771,8 +2771,8 @@ function closeRejectChangeModal() {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
                                 </svg>
                             </div>
-                            <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Préstamo</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">Crédito personal</span>
+                            <span class="text-sm font-bold text-gray-900 dark:text-white">Préstamo</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-100">Crédito personal</span>
                         </button>
                         <button type="button" onclick="selectContractType('investment')"
                                 class="contract-type-card" data-type="investment">
@@ -2781,8 +2781,8 @@ function closeRejectChangeModal() {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                                 </svg>
                             </div>
-                            <span class="text-sm font-bold text-gray-900 dark:text-gray-900">Inversión</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">Depósito a plazo</span>
+                            <span class="text-sm font-bold text-gray-900 dark:text-white">Inversión</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-100">Depósito a plazo</span>
                         </button>
                     </div>
                 </div>

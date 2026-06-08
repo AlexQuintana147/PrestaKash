@@ -7,7 +7,7 @@
 
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-3">
             <div>
-                <p class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.3em] mb-1">Panel
+                <p class="text-[10px] font-black text-gray-500 dark:text-gray-100 uppercase tracking-[0.3em] mb-1">Panel
                     Administrativo</p>
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Gestión de Cajas
                 </h1>
@@ -199,7 +199,7 @@
                                             Balance Total</p>
                                         <div class="flex items-baseline gap-1 md:gap-2">
                                             <span
-                                                class="text-lg md:text-2xl font-light text-gray-500 dark:text-gray-400 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
+                                                class="text-lg md:text-2xl font-light text-gray-500 dark:text-gray-100 tabular-nums">{{ $cb->currency === 'USD' ? '$' : 'S/' }}</span>
                                             <span
                                                 class="cashbox-balance text-3xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-tighter tabular-nums leading-none">
                                                 {{ number_format($cb->balance, 2) }}
@@ -215,7 +215,7 @@
                                                 <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">N° Cuenta
                                                 </p>
                                                 <p
-                                                    class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tighter">
+                                                    class="text-xs font-bold text-gray-900 dark:text-gray-100 font-mono tracking-tighter">
                                                     {{ $cb->account_number }}
                                                 </p>
                                             </div>
@@ -224,7 +224,7 @@
                                             <div class="space-y-1">
                                                 <p class="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">CCI</p>
                                                 <p
-                                                    class="text-xs font-bold text-gray-900 dark:text-gray-300 font-mono tracking-tighter">
+                                                    class="text-xs font-bold text-gray-900 dark:text-gray-100 font-mono tracking-tighter">
                                                     {{ $cb->cci }}
                                                 </p>
                                             </div>
@@ -285,52 +285,52 @@
                 <div id="filterBar" class="mb-6 space-y-3">
                     <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
                         <button onclick="setFilter('type','all')" data-filter-type="all"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex-shrink-0">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-white flex-shrink-0">
                             Todos
                         </button>
                         <button onclick="setFilter('type','income')" data-filter-type="income"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 flex-shrink-0">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 flex-shrink-0">
                             Ingresos
                         </button>
                         <button onclick="setFilter('type','expense')" data-filter-type="expense"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 flex-shrink-0">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 flex-shrink-0">
                             Egresos
                         </button>
 
                         <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 flex-shrink-0"></div>
 
                         <button onclick="setFilter('ref','all')" data-filter-ref="all"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-white flex-shrink-0">
                             Todo
                         </button>
                         <button onclick="setFilter('ref','loan')" data-filter-ref="loan"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 flex-shrink-0">
                             Préstamos
                         </button>
                         <button onclick="setFilter('ref','loan_installment')" data-filter-ref="loan_installment"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 flex-shrink-0">
                             Cobranzas
                         </button>
                         <button onclick="setFilter('ref','investment')" data-filter-ref="investment"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 flex-shrink-0">
                             Inversiones
                         </button>
                         <button onclick="setFilter('ref','manual')" data-filter-ref="manual"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 flex-shrink-0">
                             Manual
                         </button>
                         <button onclick="setFilter('ref','transfer')" data-filter-ref="transfer"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 hover:text-cyan-600 dark:hover:text-cyan-400 flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 hover:text-cyan-600 dark:hover:text-cyan-400 flex-shrink-0">
                             Desplazamientos
                         </button>
                     </div>
 
                     <div class="flex items-center gap-1.5">
                         <input type="date" id="filter_from_date" onchange="recentCurrentPage = 1; renderMovements()"
-                            class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
+                            class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-100 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
                         <span class="text-[9px] text-gray-400 font-bold flex-shrink-0">→</span>
                         <input type="date" id="filter_to_date" onchange="recentCurrentPage = 1; renderMovements()"
-                            class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-300 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
+                            class="bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-600 dark:text-gray-100 rounded-lg px-2 py-1.5 border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-600 flex-1 min-w-0 sm:flex-none sm:w-[120px]">
                         <button onclick="clearDateFilter()" id="clearDateBtn" class="hidden px-2 py-1.5 rounded-lg text-[9px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0">✕</button>
                     </div>
                 </div>
@@ -345,7 +345,7 @@
                 </div>
 
                 <div id="noMovements" class="hidden py-32 text-center">
-                    <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Sin
+                    <p class="text-[10px] font-black text-gray-400 dark:text-gray-100 uppercase tracking-[0.3em]">Sin
                         movimientos</p>
                 </div>
             </div>
@@ -430,7 +430,7 @@
                                 <!-- Color -->
                                 <div>
                                     <label
-                                        class="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.3em] block mb-1">Color</label>
+                                        class="text-[9px] font-black text-gray-500 dark:text-gray-100 uppercase tracking-[0.3em] block mb-1">Color</label>
                                     <div
                                         class="relative h-[60px] border-b-2 border-gray-100 dark:border-gray-900 group/color">
                                         <input type="color" name="color" id="cb_color" value="#000000"
@@ -506,7 +506,7 @@
                                 <input type="text" name="amount" id="mov_amount" required placeholder="0.00"
                                     class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-2xl md:text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all tabular-nums">
                                 <span id="mov_currency_label"
-                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-400 dark:text-gray-500">PEN</span>
+                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-400 dark:text-gray-100">PEN</span>
                             </div>
                             <p id="mov_error"
                                 class="hidden text-[10px] font-bold text-red-500 uppercase tracking-widest mt-2">
@@ -521,7 +521,7 @@
                             @if($tags->count() > 0)
                             <select name="cashbox_tag_id" id="mov_tag" required
                                 class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all">
-                                <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>
+                                <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-100">Seleccionar etiqueta</option>
                                 @foreach($tags as $tag)
                                     <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
                                 @endforeach
@@ -609,7 +609,7 @@
                                 <input type="text" name="amount" id="transfer_amount" required placeholder="0.00"
                                     class="w-full bg-transparent border-0 border-b-2 border-gray-100 dark:border-gray-900 py-3 md:py-4 text-2xl md:text-4xl font-black text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all tabular-nums">
                                 <span id="transfer_currency_label"
-                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-400 dark:text-gray-500">PEN</span>
+                                    class="absolute right-0 bottom-3 md:bottom-4 text-base md:text-xl font-bold text-gray-400 dark:text-gray-100">PEN</span>
                             </div>
                             <button type="button" onclick="setTransferMaxAmount()"
                                 class="mt-2 text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 border-b border-blue-600 dark:border-blue-400 pb-0.5 hover:opacity-60 transition-opacity">
@@ -627,7 +627,7 @@
                             @if($tags->count() > 0)
                             <select name="cashbox_tag_id" id="transfer_tag" required
                                 class="w-full bg-white dark:bg-gray-950 border-0 border-b-2 border-gray-100 dark:border-gray-900 py-4 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all">
-                                <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>
+                                <option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-100">Seleccionar etiqueta</option>
                                 @foreach($tags as $tag)
                                     <option value="{{ $tag->id }}" class="dark:bg-gray-950 dark:text-white">{{ $tag->name }}</option>
                                 @endforeach
@@ -706,7 +706,7 @@
                             <div class="flex items-center gap-4">
                                 <input type="color" name="color" id="tag_color" value="#6366f1"
                                     class="w-12 h-12 rounded cursor-pointer border-0 bg-transparent">
-                                <span id="tag_color_hex" class="text-sm font-mono font-bold text-gray-500 dark:text-gray-400">#6366f1</span>
+                                <span id="tag_color_hex" class="text-sm font-mono font-bold text-gray-500 dark:text-gray-100">#6366f1</span>
                             </div>
                         </div>
                     </div>
@@ -1003,7 +1003,7 @@
                         <!-- JS populated -->
                     </div>
                     <div id="historyNoData" class="hidden py-24 text-center">
-                        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Sin
+                        <p class="text-[10px] font-black text-gray-400 dark:text-gray-100 uppercase tracking-[0.3em]">Sin
                             movimientos</p>
                     </div>
                 </div>
@@ -1138,7 +1138,7 @@
                 document.querySelectorAll('.filter-type-btn').forEach(btn => {
                     const isActive = btn.dataset.filterType === value;
                     btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
                     }`;
                 });
             } else if (group === 'ref') {
@@ -1146,7 +1146,7 @@
                 document.querySelectorAll('.filter-ref-btn').forEach(btn => {
                     const isActive = btn.dataset.filterRef === value;
                     btn.className = `filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
                     }`;
                 });
             }
@@ -1228,12 +1228,12 @@
                 recentCurrentPage = 1;
                 document.querySelectorAll('.filter-type-btn').forEach(btn => {
                     btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        btn.dataset.filterType === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+                        btn.dataset.filterType === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
                     }`;
                 });
                 document.querySelectorAll('.filter-ref-btn').forEach(btn => {
                     btn.className = `filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        btn.dataset.filterRef === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        btn.dataset.filterRef === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
                     }`;
                 });
                 renderMovements();
@@ -1346,7 +1346,7 @@
                                                                 ` : ''))}
                                                             </div>
                                                             <p class="text-[7px] md:text-[9px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1 leading-none truncate">
-                                                                ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                                ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} <span class="hidden md:inline">• Registrado por:</span><span class="md:hidden"> • </span><span class="text-gray-600 dark:text-gray-100 font-bold">${userName}</span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -1600,7 +1600,7 @@
             const sym = currency === 'PEN' ? 'S/' : '$';
             balanceEl.textContent = `${sym} ${parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
 
-            select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar caja destino</option>';
+            select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-100">Seleccionar caja destino</option>';
             allCashboxesData.forEach(cb => {
                 if (cb.id !== cashboxId && cb.currency === currency) {
                     const opt = document.createElement('option');
@@ -1793,7 +1793,7 @@
 
                 if (select) {
                     const currentVal = select.value;
-                    select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-400">Seleccionar etiqueta</option>';
+                    select.innerHTML = '<option value="" disabled selected class="dark:bg-gray-950 dark:text-gray-100">Seleccionar etiqueta</option>';
                     allTagsData.forEach(tag => {
                         const opt = document.createElement('option');
                         opt.value = tag.id;
@@ -1928,7 +1928,7 @@
 
             for (let i = startPage; i <= endPage; i++) {
                 const isActive = i === codesCurrentPage;
-                html += `<button onclick="changeCodesPage(${i})" class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">${i}</button>`;
+                html += `<button onclick="changeCodesPage(${i})" class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-white' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">${i}</button>`;
             }
 
             html += `<button onclick="changeCodesPage(${codesCurrentPage + 1})" ${codesCurrentPage === totalPages ? 'disabled' : ''} class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>`;
@@ -2486,7 +2486,7 @@
                                                         ` : ''))}
                                                     </div>
                                                     <p class="text-[7px] md:text-[8px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.2em] mt-0.5 md:mt-1 leading-none truncate">
-                                                        ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-300 font-bold">${userName}</span>
+                                                        ${displayType}${m.tag ? ` <span class="inline-flex items-center gap-1 ml-1"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background-color:${m.tag.color}"></span><span style="color:${m.tag.color}">${m.tag.name}</span></span>` : ''} • <span class="text-gray-600 dark:text-gray-100 font-bold">${userName}</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -2554,7 +2554,7 @@
                                                 </div>
                                                 <div class="col-span-1 md:col-span-2">
                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo del Préstamo</p>
-                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
+                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-100 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
                                                 </div>
                                                 <div>
                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Destino</p>
@@ -2716,7 +2716,7 @@
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Estado</p>
                         <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${inv.status === 'open' ? 'Abierta' : inv.status === 'funded' ? 'Financiada' : inv.status === 'closed' ? 'Cerrada' : 'Cancelada'}</p>
                     </div>
-                    ${inv.description ? `<div class="md:col-span-2"><p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Descripción</p><p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${inv.description}"</p></div>` : ''}
+                    ${inv.description ? `<div class="md:col-span-2"><p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Descripción</p><p class="text-sm font-medium text-gray-600 dark:text-gray-100 italic">"${inv.description}"</p></div>` : ''}
                 </div>
             `;
 
@@ -2758,7 +2758,7 @@
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Estado</p>
                         <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">${inv.status === 'open' ? 'Abierta' : inv.status === 'funded' ? 'Financiada' : inv.status === 'closed' ? 'Cerrada' : 'Cancelada'}</p>
                     </div>
-                    ${inv.description ? `<div class="md:col-span-2"><p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Descripción</p><p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${inv.description}"</p></div>` : ''}
+                    ${inv.description ? `<div class="md:col-span-2"><p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Descripción</p><p class="text-sm font-medium text-gray-600 dark:text-gray-100 italic">"${inv.description}"</p></div>` : ''}
                 </div>
             `;
 
@@ -2798,7 +2798,7 @@
                                                                                 </div>
                                                                                 <div class="col-span-1 md:col-span-2">
                                                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Motivo del Préstamo</p>
-                                                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
+                                                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-100 italic">"${loan.reason || 'Sin motivo especificado'}"</p>
                                                                                 </div>
                                                                                 <div>
                                                                                     <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Banco Destino</p>
@@ -3038,7 +3038,7 @@
                 const matches = cashboxNames.filter(function(c) { return c.name.toLowerCase().includes(q); });
 
                 if (matches.length === 0) {
-                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">Sin resultados</div>';
+                    resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-500 dark:text-gray-100">Sin resultados</div>';
                 } else {
                     resultsDiv.innerHTML = matches.map(function(m) {
                         return '<button type="button" data-idx="' + m.index + '" class="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between"><span>' + m.name + '</span><svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';

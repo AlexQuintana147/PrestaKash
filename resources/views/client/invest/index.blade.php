@@ -7,7 +7,7 @@
 
     <!-- Header -->
     <div class="mb-12">
-        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-widest mb-0.5">Oportunidad</p>
+        <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-0.5">Oportunidad</p>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Invertir en PrestaKash</h1>
     </div>
 
@@ -17,7 +17,7 @@
             <h2 class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
                 Haz crecer tu patrimonio <span class="text-green-600 dark:text-green-400 text-nowrap">con seguridad.</span>
             </h2>
-            <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg leading-relaxed mb-8">
+            <p class="text-gray-500 dark:text-gray-100 text-base md:text-lg leading-relaxed mb-8">
                 Únete como inversor y financia préstamos evaluados bajo rigurosos estándares. Obtén rentabilidades superiores y genera ingresos pasivos mes a mes.
             </p>
             

@@ -38,7 +38,7 @@
                         <input type="text" name="first_name" value="{{ old('first_name') }}" required
                             placeholder="Ej: Juan Pedro"
                             oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g,'')"
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
 
                     <!-- Apellidos -->
@@ -48,7 +48,7 @@
                         <input type="text" name="last_name" value="{{ old('last_name') }}" required
                             placeholder="Ej: Perez Garcia"
                             oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ ]/g,'')"
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                         <p class="text-[10px] text-gray-500 mt-1">Ingresa tus dos apellidos separados por un espacio.</p>
                     </div>
 
@@ -57,7 +57,7 @@
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">DNI</label>
                         <input type="text" name="dni" value="{{ old('dni') }}" required maxlength="8" placeholder="12345678"
                             oninput="this.value=this.value.replace(/\D/g,'')"
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
 
                     <!-- Teléfono -->
@@ -66,7 +66,7 @@
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Teléfono</label>
                         <input type="text" name="phone" value="{{ old('phone') }}" required maxlength="9"
                             placeholder="987654321" oninput="this.value=this.value.replace(/\D/g,'')"
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
 
                     <!-- Email -->
@@ -75,7 +75,7 @@
                             electrónico</label>
                         <input type="email" name="email" value="{{ old('email') }}" required
                             placeholder="usuario@ejemplo.com"
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
 
                     <!-- Ubigeo -->
@@ -142,7 +142,7 @@
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">Dirección</label>
                         <input type="text" name="address" value="{{ old('address') }}" required
                             placeholder="Av. Principal 123"
-                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-500">
+                            class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white px-0 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
                 </div>
 

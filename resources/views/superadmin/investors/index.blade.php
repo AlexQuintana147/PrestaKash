@@ -8,10 +8,10 @@
     <!-- Header -->
     <div class="flex items-end justify-between mb-8">
         <div>
-            <p class="text-xs text-gray-600 dark:text-gray-600 uppercase tracking-widest mb-1">Panel</p>
+            <p class="text-xs text-gray-600 dark:text-gray-100 uppercase tracking-widest mb-1">Panel</p>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Inversores</h1>
         </div>
-        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
+        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-100">{{ now()->format('d M Y') }}</p>
     </div>
 
     @if(session('success'))
@@ -45,19 +45,19 @@
     </div>
 
     @if(request('search'))
-        <div id="investors-search-badge" class="mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div id="investors-search-badge" class="mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-100">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
             </svg>
-            Mostrando resultados para "<span class="font-medium text-gray-700 dark:text-gray-300">{{ request('search') }}</span>"
+            Mostrando resultados para "<span class="font-medium text-gray-700 dark:text-gray-100">{{ request('search') }}</span>"
             — <span id="investors-search-count">{{ $applications->total() }}</span> encontrado(s)
         </div>
     @else
-        <div id="investors-search-badge" class="hidden mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div id="investors-search-badge" class="hidden mb-4 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-100">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
             </svg>
-            Mostrando resultados para "<span id="investors-search-term" class="font-medium text-gray-700 dark:text-gray-300"></span>"
+            Mostrando resultados para "<span id="investors-search-term" class="font-medium text-gray-700 dark:text-gray-100"></span>"
             — <span id="investors-search-count">{{ $applications->total() }}</span> encontrado(s)
         </div>
     @endif
@@ -89,12 +89,12 @@
                        class="relative flex items-center gap-2 flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors
                               {{ $filter === $key
                                   ? 'text-gray-900 dark:text-white'
-                                  : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-400' }}">
+                                  : 'text-gray-500 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-400' }}">
                         <span class="flex items-center gap-1">
                             @if($key === 'pending' && $counts['pending'] > 0)<svg class="w-3.5 h-3.5 text-purple-600 animate-swing origin-top flex-shrink-0 relative top-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>@endif{{ $label }}
                         </span>
                         @if($counts[$key] > 0)
-                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400 dark:text-gray-400' }}">{{ $counts[$key] }}</span>
+                            <span class="ml-2 text-xs {{ $filter === $key ? 'text-gray-500 dark:text-gray-100' : 'text-gray-400 dark:text-gray-100' }}">{{ $counts[$key] }}</span>
                         @endif
                         @if($filter === $key)
                             <span class="absolute bottom-0 left-0 right-0 h-px bg-gray-900 dark:bg-white"></span>
@@ -245,13 +245,13 @@
     </div>
     @empty
     <div class="py-20 text-center">
-        <p class="text-gray-500 dark:text-gray-400 text-sm">No hay solicitudes en esta categoría.</p>
+        <p class="text-gray-500 dark:text-gray-100 text-sm">No hay solicitudes en esta categoría.</p>
     </div>
     @endforelse
 
     <!-- Paginación -->
     @if($applications->hasPages())
-    <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+    <div class="mt-8 flex items-center justify-between text-xs text-gray-600 dark:text-gray-100">
         <span>{{ $applications->firstItem() }}–{{ $applications->lastItem() }} de {{ $applications->total() }}</span>
         <div class="flex items-center gap-5">
             @if($applications->onFirstPage())
@@ -276,7 +276,7 @@
 <div id="actionModal" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-[2rem] p-8 shadow-2xl relative">
         <h2 id="actionTitle" class="text-xl font-bold text-gray-900 dark:text-white mb-2"></h2>
-        <p id="actionDescription" class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-8"></p>
+        <p id="actionDescription" class="text-xs text-gray-500 dark:text-gray-100 leading-relaxed mb-8"></p>
         
         <form id="actionForm" method="POST" class="space-y-4">
             @csrf
@@ -335,7 +335,7 @@
 
             <div id="investorDetailsScroll" class="w-full md:w-3/5 p-8 md:p-10 space-y-6 max-h-[70vh] overflow-y-auto modal-scroll">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Información Personal</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Información Personal</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">DNI / Documento</p>
@@ -393,7 +393,7 @@
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Detalles de Postulación</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Detalles de Postulación</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Ocupación</p>
@@ -419,13 +419,13 @@
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Experiencia</p>
-                    <p id="modalExperience" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed italic"></p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-2">Experiencia</p>
+                    <p id="modalExperience" class="text-xs text-gray-600 dark:text-gray-100 leading-relaxed italic"></p>
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Referido</p>
-                    <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"></p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-2">Referido</p>
+                    <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-100 leading-relaxed"></p>
                 </div>
 
                 <div id="modalActions" class="pt-4 flex gap-6">

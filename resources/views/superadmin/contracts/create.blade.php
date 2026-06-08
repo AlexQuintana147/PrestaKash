@@ -326,8 +326,8 @@
                                 'calendar' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
                             ];
                         @endphp
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $iconMap[$category['icon']] ?? $iconMap['file-text'] }}"/></svg>
-                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex-1 truncate">{{ $category['label'] }}</span>
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-100 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $iconMap[$category['icon']] ?? $iconMap['file-text'] }}"/></svg>
+                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-100 flex-1 truncate">{{ $category['label'] }}</span>
                         <span class="text-[9px] font-mono mr-1 opacity-40 hidden xl:inline">{{ count($category['variables']) }}</span>
                         <svg class="w-3 h-3 text-gray-400 category-chevron transition-transform {{ $loop->first ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
@@ -340,7 +340,7 @@
                                       onclick="insertVariable('[{{ $varKey }}]')" title="{{ $varData['desc'] }}">
                                     {{ str_replace('_', ' ', $varKey) }}
                                 </span>
-                                <p class="text-[9px] text-gray-500 dark:text-gray-400 mt-0.5 ml-0.5 hidden group-hover:block leading-tight">{{ $varData['desc'] }}</p>
+                                <p class="text-[9px] text-gray-500 dark:text-gray-100 mt-0.5 ml-0.5 hidden group-hover:block leading-tight">{{ $varData['desc'] }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -357,15 +357,15 @@
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 md:mb-8">
                 <div class="flex-1 max-w-md min-w-0">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-600 uppercase tracking-widest mb-1">Panel Administrativo</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-1">Panel Administrativo</p>
                     <input type="text" name="name" value="" required placeholder="Nombre del contrato..."
                            class="w-full text-lg sm:text-xl md:text-2xl font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 truncate">
                     <input type="text" name="description" value="" placeholder="Descripción opcional..."
-                           class="w-full mt-2 text-sm bg-transparent border-none outline-none text-gray-500 dark:text-gray-400 placeholder:text-gray-300 dark:placeholder:text-gray-700 p-0">
+                           class="w-full mt-2 text-sm bg-transparent border-none outline-none text-gray-500 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-700 p-0">
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    <button type="button" onclick="openMobileVars()" class="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900">
+                    <button type="button" onclick="openMobileVars()" class="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         <span class="hidden xs:inline">Variables</span>
                     </button>
@@ -404,7 +404,7 @@
                     <div class="clause-card" data-index="0">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2 flex-1 min-w-0">
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400">1</span>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-100">1</span>
                                 <input type="text" name="clauses[0][title]" value=""
                                        placeholder="Título de la cláusula (ej: Primera, Segunda, Objeto...)"
                                        class="flex-1 text-sm font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 min-w-0">
@@ -423,10 +423,10 @@
                         </div>
                         <div class="editor-wrapper">
                             <textarea name="clauses[0][content]"
-                                      class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
+                                      class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0"
                                       placeholder="Escribe el contenido de esta cláusula aquí... Usa [nombre_completo], [dni], etc."
                                       rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
-                            <div class="editor-highlight text-base text-gray-700 dark:text-gray-300"></div>
+                            <div class="editor-highlight text-base text-gray-700 dark:text-gray-100"></div>
                         </div>
                         <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
                             <span class="text-[10px] text-gray-400 word-count">0 palabras</span>
@@ -474,7 +474,7 @@
                 </div>
                 <div>
                     <h3 id="preview-modal-title" class="text-sm font-bold text-gray-900 dark:text-white leading-tight">Vista Previa del Contrato</h3>
-                    <p id="preview-contract-name" class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Sin título</p>
+                    <p id="preview-contract-name" class="text-[10px] text-gray-500 dark:text-gray-100 mt-0.5">Sin título</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -673,7 +673,7 @@ function addClause() {
     div.innerHTML = `
         <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2 flex-1 min-w-0">
-                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400">${clauseIndex+1}</span>
+                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-100">${clauseIndex+1}</span>
                 <input type="text" name="clauses[${clauseIndex}][title]" value="" placeholder="Título de la cláusula..." class="flex-1 text-sm font-bold bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0 min-w-0">
             </div>
             <div class="flex items-center gap-1 ml-3">
@@ -683,8 +683,8 @@ function addClause() {
             </div>
         </div>
         <div class="editor-wrapper">
-            <textarea name="clauses[${clauseIndex}][content]" class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0" placeholder="Escribe el contenido..." rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
-            <div class="editor-highlight text-base text-gray-700 dark:text-gray-300"></div>
+            <textarea name="clauses[${clauseIndex}][content]" class="clause-content editor-textarea w-full bg-transparent border-none outline-none text-base text-gray-700 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 p-0" placeholder="Escribe el contenido..." rows="4" onfocus="activeEditor(this)" oninput="updateHighlight(this);updateStats(this)"></textarea>
+            <div class="editor-highlight text-base text-gray-700 dark:text-gray-100"></div>
         </div>
         <div class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800/50 flex items-center justify-between">
             <span class="text-[10px] text-gray-400 word-count">0 palabras</span>

@@ -40,7 +40,7 @@
                     <form action="{{ route('superadmin.settings.name') }}" method="POST" class="space-y-6">
                         @csrf
                         <div class="group">
-                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nombre completo</label>
+                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nombre completo</label>
                             <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}" required
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('name') border-red-400 @enderror">
                             @error('name') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
@@ -80,7 +80,7 @@
                     <form action="{{ route('superadmin.settings.company') }}" method="POST" class="space-y-6">
                         @csrf
                         <div class="group">
-                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">Nombres Completos</label>
+                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1">Nombres Completos</label>
                             <input type="text" name="representative_name" value="{{ old('representative_name', $representative_name) }}"
                                    placeholder="Carlos Antonio" required
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_name') border-red-400 @enderror">
@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="group">
-                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">Apellidos Completos (Mínimo 2 apellidos)</label>
+                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1">Apellidos Completos (Mínimo 2 apellidos)</label>
                             <input type="text" name="representative_last_name" value="{{ old('representative_last_name', $representative_last_name) }}"
                                    placeholder="Vega García" required
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_last_name') border-red-400 @enderror">
@@ -96,7 +96,7 @@
                         </div>
 
                         <div class="group">
-                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">DNI</label>
+                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1">DNI</label>
                             <input type="text" name="representative_dni" value="{{ old('representative_dni', $representative_dni) }}" maxlength="8"
                                    placeholder="12345678"
                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
@@ -105,7 +105,7 @@
                         </div>
 
                         <div class="group">
-                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">Correo Electrónico</label>
+                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1">Correo Electrónico</label>
                             <input type="email" name="representative_email" value="{{ old('representative_email', $representative_email) }}"
                                    placeholder="representante@empresa.com"
                                    class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all @error('representative_email') border-red-400 @enderror">
@@ -113,7 +113,7 @@
                         </div>
 
                         <div class="group">
-                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">Teléfono</label>
+                            <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1">Teléfono</label>
                             <input type="text" name="representative_phone" value="{{ old('representative_phone', $representative_phone) }}"
                                    maxlength="9"
                                    placeholder="Ej: 987654321"
@@ -160,23 +160,23 @@
                 <form action="{{ route('superadmin.settings.password') }}" method="POST" class="space-y-6">
                     @csrf
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Contraseña actual</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Contraseña actual</label>
                         <input type="password" name="current_password" required
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('current_password') border-red-400 @enderror"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('current_password') border-red-400 @enderror"
                                placeholder="••••••••">
                         @error('current_password') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nueva contraseña</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Nueva contraseña</label>
                         <input type="password" name="password" required minlength="8"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('password') border-red-400 @enderror"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('password') border-red-400 @enderror"
                                placeholder="Mínimo 8 caracteres">
                         @error('password') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Confirmar contraseña</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Confirmar contraseña</label>
                         <input type="password" name="password_confirmation" required
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100"
                                placeholder="••••••••">
                     </div>
                     <button type="submit"
@@ -215,14 +215,14 @@
                     @csrf
 
                     <div>
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Logo de la empresa</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-3 uppercase tracking-wider">Logo de la empresa</label>
                         <div class="flex flex-col gap-4">
                             <label for="company_logo" class="relative group cursor-pointer w-32 h-32 border-2 border-dashed border-gray-100 dark:border-gray-800 flex items-center justify-center overflow-hidden hover:border-gray-300 dark:hover:border-gray-600 transition-all">
                                 @if($company_logo)
                                     <img src="{{ Storage::url($company_logo) }}" id="logo-preview" alt="Logo" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 @else
                                     <img id="logo-preview" class="hidden w-full h-full object-contain">
-                                    <svg id="logo-placeholder" class="w-8 h-8 text-gray-400 dark:text-gray-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg id="logo-placeholder" class="w-8 h-8 text-gray-400 dark:text-gray-100 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                 @endif
@@ -243,14 +243,14 @@
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Firma digital</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-3 uppercase tracking-wider">Firma digital</label>
                         <div class="flex flex-col gap-4">
                             <label for="company_signature" class="relative group cursor-pointer w-48 h-20 border-2 border-dashed border-gray-100 dark:border-gray-800 flex items-center justify-center overflow-hidden hover:border-gray-300 dark:hover:border-gray-600 transition-all">
                                 @if($company_signature)
                                     <img src="{{ Storage::url($company_signature) }}" id="signature-preview" alt="Firma" class="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 @else
                                     <img id="signature-preview" class="hidden w-full h-full object-contain">
-                                    <svg id="signature-placeholder" class="w-8 h-8 text-gray-400 dark:text-gray-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg id="signature-placeholder" class="w-8 h-8 text-gray-400 dark:text-gray-100 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                     </svg>
                                 @endif
@@ -271,46 +271,46 @@
                     </div>
 
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Razón Social</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Razón Social</label>
                         <input type="text" name="company_razon_social" value="{{ old('company_razon_social', $company_razon_social) }}"
                                oninput="this.value = this.value.replace(/[^a-zA-Z\sñÑáéíóúÁÉÍÓÚ]/g, '')"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('company_razon_social') border-red-400 @enderror"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('company_razon_social') border-red-400 @enderror"
                                placeholder="Nombre legal de la empresa">
                         @error('company_razon_social') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">RUC</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">RUC</label>
                         <input type="text" name="company_ruc" value="{{ old('company_ruc', $company_ruc) }}" maxlength="20"
                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('company_ruc') border-red-400 @enderror"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('company_ruc') border-red-400 @enderror"
                                placeholder="Solo números">
                         @error('company_ruc') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Dirección de Empresa</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Dirección de Empresa</label>
                         <input type="text" name="company_address" value="{{ old('company_address', $company_address) }}"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('company_address') border-red-400 @enderror"
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('company_address') border-red-400 @enderror"
                                placeholder="Dirección legal">
                         @error('company_address') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Correo de Empresa</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Correo de Empresa</label>
                         <input type="email" name="company_email" value="{{ old('company_email', $company_email) }}"
                                placeholder="contacto@empresa.com"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('company_email') border-red-400 @enderror">
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('company_email') border-red-400 @enderror">
                         @error('company_email') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="group">
-                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Teléfono de Empresa</label>
+                        <label class="block text-[10px] font-medium text-gray-500 dark:text-gray-100 mb-1 transition-colors group-focus-within:text-gray-900 dark:group-focus-within:text-white">Teléfono de Empresa</label>
                         <input type="text" name="company_phone" value="{{ old('company_phone', $company_phone) }}"
                                maxlength="9"
                                placeholder="987654321"
                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
-                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-500 @error('company_phone') border-red-400 @enderror">
+                               class="w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white text-sm py-2 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all placeholder-gray-400 dark:placeholder-gray-100 @error('company_phone') border-red-400 @enderror">
                         @error('company_phone') <p class="text-red-400 text-[10px] mt-1">{{ $message }}</p> @enderror
                     </div>
 

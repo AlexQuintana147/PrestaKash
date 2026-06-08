@@ -7,10 +7,10 @@
 
     <div class="flex items-end justify-between mb-6 sm:mb-8">
         <div>
-            <p class="text-[9px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Panel Administrativo</p>
+            <p class="text-[9px] sm:text-xs text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-1">Panel Administrativo</p>
             <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Pagos a inversores</h1>
         </div>
-        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-400">{{ now()->format('d M Y') }}</p>
+        <p class="hidden md:block text-sm text-gray-600 dark:text-gray-100">{{ now()->format('d M Y') }}</p>
     </div>
 
     @if(session('success'))
@@ -34,10 +34,10 @@
     @if($opportunitiesData->isEmpty())
         <div class="text-center py-20">
             <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <svg class="w-7 h-7 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <svg class="w-7 h-7 text-gray-400 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
             <p class="text-sm font-medium text-gray-400">No hay inversiones financiadas o cerradas con inversores</p>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Aparecerán cuando se financie o cierre una oportunidad con inversores confirmados</p>
+            <p class="text-[11px] text-gray-500 dark:text-gray-100 mt-1">Aparecerán cuando se financie o cierre una oportunidad con inversores confirmados</p>
         </div>
     @else
 
@@ -80,8 +80,8 @@
             </div>
             <div class="flex items-center gap-2">
                 <button type="button" data-filter-paid="all" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-gray-900 dark:bg-white text-white dark:text-black border-transparent">Todos</button>
-                <button type="button" data-filter-paid="paid" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800 hover:border-emerald-300 dark:hover:border-emerald-700">Pagado</button>
-                <button type="button" data-filter-paid="pending" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800 hover:border-amber-300 dark:hover:border-amber-700">Con deuda</button>
+                <button type="button" data-filter-paid="paid" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-100 border-gray-200 dark:border-gray-800 hover:border-emerald-300 dark:hover:border-emerald-700">Pagado</button>
+                <button type="button" data-filter-paid="pending" class="paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-100 border-gray-200 dark:border-gray-800 hover:border-amber-300 dark:hover:border-amber-700">Con deuda</button>
             </div>
         </div>
 
@@ -104,7 +104,7 @@
                             @if($oppData->overdue_count > 0)
                                 <span class="text-[8px] sm:text-[9px] text-red-500 font-black">{{ $oppData->overdue_count }} venc.</span>
                             @endif
-                            <span class="ml-auto text-[9px] sm:text-[10px] font-bold text-gray-500 dark:text-gray-400">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
+                            <span class="ml-auto text-[9px] sm:text-[10px] font-bold text-gray-500 dark:text-gray-100">{{ $oppData->investors->count() }} inversor{{ $oppData->investors->count() !== 1 ? 'es' : '' }}</span>
                             <span class="text-[10px] sm:text-[11px] font-black {{ $opportunity->currency === 'USD' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400' }} tabular-nums">
                                 {{ $curSymbol }}{{ number_format($oppData->investors->sum(fn($i) => $i->amount), 2) }}
                             </span>
@@ -155,12 +155,12 @@
                                             <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-0.5">Progreso</p>
                                             <p class="text-sm font-black {{ $progressPct >= 100 ? 'text-emerald-600' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $progressPct }}%</p>
                                         </div>
-                                        <span class="text-gray-500 dark:text-gray-400 group-hover:text-indigo-500 transition-colors">
+                                        <span class="text-gray-500 dark:text-gray-100 group-hover:text-indigo-500 transition-colors">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                         </span>
                                     </div>
 
-                                    <span class="sm:hidden text-gray-500 dark:text-gray-400 group-hover:text-indigo-500 transition-colors flex-shrink-0">
+                                    <span class="sm:hidden text-gray-500 dark:text-gray-100 group-hover:text-indigo-500 transition-colors flex-shrink-0">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </span>
                                 </div>
@@ -384,7 +384,7 @@
 
             <div>
                 <label class="text-[9px] text-gray-400 uppercase font-black tracking-widest block mb-2">Número de operación <span class="text-gray-300">(opcional)</span></label>
-                <input type="text" id="pay_operation_number" name="operation_number" maxlength="50" placeholder="Ej: OP-123456" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-xs text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors tabular-nums">
+                <input type="text" id="pay_operation_number" name="operation_number" maxlength="50" placeholder="Ej: OP-123456" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-xs text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors tabular-nums">
             </div>
 
             <div>
@@ -611,16 +611,16 @@ function renderSchedulePage() {
         const isPendingPayout = item.payout_status === 'pending';
         const isPayable = !item.is_paid && !isPendingPayout && item.month === _scheduleNextPayable;
         const rowClass = isPendingPayout ? 'bg-amber-50/50 dark:bg-amber-500/5' : (isOverdue ? 'bg-red-600 text-white' : (item.is_paid ? 'bg-emerald-50/50 dark:bg-emerald-500/5' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/20'));
-        const textClass = isOverdue ? 'text-white' : 'text-gray-500 dark:text-gray-400';
+        const textClass = isOverdue ? 'text-white' : 'text-gray-500 dark:text-gray-100';
         const boldClass = isOverdue ? 'text-white font-bold' : 'text-gray-900 dark:text-white font-bold';
 
         html += `<tr data-month="${item.month}" class="${rowClass} border-t border-gray-100 dark:border-gray-900 transition-colors">`;
         html += `<td class="px-3 py-2.5 font-bold ${isOverdue ? 'text-white' : 'text-gray-900 dark:text-white'} tabular-nums">${item.month}</td>`;
-        html += `<td class="px-3 py-2.5 ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} tabular-nums">${item.date || '—'}</td>`;
+        html += `<td class="px-3 py-2.5 ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-100'} tabular-nums">${item.date || '—'}</td>`;
         html += `<td class="px-3 py-2.5 text-right ${textClass} tabular-nums">${data.currency}${item.interest}</td>`;
         html += `<td class="px-3 py-2.5 text-right ${textClass} tabular-nums">${data.currency}${item.principal}</td>`;
         html += `<td class="px-3 py-2.5 text-right ${boldClass} tabular-nums">${data.currency}${item.payment}</td>`;
-        html += `<td class="px-3 py-2.5 text-right ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'} tabular-nums">${data.currency}${item.balance}</td>`;
+        html += `<td class="px-3 py-2.5 text-right ${isOverdue ? 'text-white/80' : 'text-gray-500 dark:text-gray-100'} tabular-nums">${data.currency}${item.balance}</td>`;
         html += '<td class="px-3 py-2.5 text-center">';
         if (item.is_paid) {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>';
@@ -629,14 +629,14 @@ function renderSchedulePage() {
         } else if (isOverdue) {
             html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
         } else {
-            html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+            html += '<span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-100">Pendiente</span>';
         }
         html += '</td>';
         html += '<td class="px-3 py-2.5 text-center">';
         if (item.is_paid && item.paid_at) {
             html += `<span class="text-[9px] font-bold ${isOverdue ? 'text-white/80' : 'text-emerald-600 dark:text-emerald-400'} tabular-nums">${item.paid_at}</span>`;
         } else {
-            html += `<span class="text-[9px] ${isOverdue ? 'text-white/40' : 'text-gray-400 dark:text-gray-500'}">—</span>`;
+            html += `<span class="text-[9px] ${isOverdue ? 'text-white/40' : 'text-gray-400 dark:text-gray-100'}">—</span>`;
         }
         html += '</td>';
         html += '<td class="px-3 py-2.5 text-center">';
@@ -657,7 +657,7 @@ function renderSchedulePage() {
         const isPayable = !item.is_paid && !isPendingPayout && item.month === _scheduleNextPayable;
         const cardBg = isPendingPayout ? 'bg-amber-50/80 dark:bg-amber-500/5' : (isOverdue ? 'bg-red-600' : (item.is_paid ? 'bg-emerald-50/80 dark:bg-emerald-500/5' : 'bg-gray-50/50 dark:bg-gray-900/20'));
         const textColor = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
-        const subTextColor = isOverdue ? 'text-white/70' : 'text-gray-500 dark:text-gray-400';
+        const subTextColor = isOverdue ? 'text-white/70' : 'text-gray-500 dark:text-gray-100';
         const monoText = isOverdue ? 'text-white' : 'text-gray-900 dark:text-white';
 
         let badge = '';
@@ -668,7 +668,7 @@ function renderSchedulePage() {
         } else if (isOverdue) {
             badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>';
         } else {
-            badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>';
+            badge = '<span class="px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-wider bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-100">Pendiente</span>';
         }
 
         html += `<div data-month="${item.month}" class="${cardBg} rounded-xl p-3 border ${isPendingPayout ? 'border-amber-200 dark:border-amber-500/20' : (isOverdue ? 'border-red-500' : 'border-gray-100 dark:border-gray-900')}">`;
@@ -699,17 +699,17 @@ function renderSchedulePage() {
 
     if (totalPages > 1) {
         html += '<div class="flex items-center justify-center gap-1.5 mt-4">';
-        html += `<button onclick="goSchedulePage(0)" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
+        html += `<button onclick="goSchedulePage(0)" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
         html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg></button>';
-        html += `<button onclick="goSchedulePage(${_schedulePage - 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
+        html += `<button onclick="goSchedulePage(${_schedulePage - 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === 0 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === 0 ? 'disabled' : ''}>`;
         html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>';
         for (let p = 0; p < totalPages; p++) {
             const active = p === _schedulePage;
             html += `<button onclick="goSchedulePage(${p})" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${active ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}">${p + 1}</button>`;
         }
-        html += `<button onclick="goSchedulePage(${_schedulePage + 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === totalPages - 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === totalPages - 1 ? 'disabled' : ''}>`;
+        html += `<button onclick="goSchedulePage(${_schedulePage + 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === totalPages - 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === totalPages - 1 ? 'disabled' : ''}>`;
         html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
-        html += `<button onclick="goSchedulePage(${totalPages - 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === totalPages - 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === totalPages - 1 ? 'disabled' : ''}>`;
+        html += `<button onclick="goSchedulePage(${totalPages - 1})" class="shrink-0 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-colors ${_schedulePage === totalPages - 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-default' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600'}" ${_schedulePage === totalPages - 1 ? 'disabled' : ''}>`;
         html += '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg></button>';
         html += '</div>';
     }
@@ -781,9 +781,9 @@ function openPayModal(month, totalAmount, interestAmount) {
             bankHtml += `<span class="text-[10px] font-bold text-gray-900 dark:text-white">${ba.bank_name}</span>`;
             bankHtml += `<span class="text-[7px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">${ba.account_type}</span>`;
             bankHtml += `</div>`;
-            bankHtml += `<p class="text-[9px] text-gray-500 dark:text-gray-400">Cuenta: <span class="font-bold text-gray-900 dark:text-white tabular-nums">${ba.account_number}</span></p>`;
+            bankHtml += `<p class="text-[9px] text-gray-500 dark:text-gray-100">Cuenta: <span class="font-bold text-gray-900 dark:text-white tabular-nums">${ba.account_number}</span></p>`;
             if (ba.cci) {
-                bankHtml += `<p class="text-[9px] text-gray-500 dark:text-gray-400">CCI: <span class="font-bold text-gray-900 dark:text-white tabular-nums">${ba.cci}</span></p>`;
+                bankHtml += `<p class="text-[9px] text-gray-500 dark:text-gray-100">CCI: <span class="font-bold text-gray-900 dark:text-white tabular-nums">${ba.cci}</span></p>`;
             }
             bankHtml += `<p class="text-[8px] text-gray-400 mt-1">${ba.currency}</p>`;
             bankHtml += `</div>`;
@@ -1001,9 +1001,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let html = '';
 
-        html += '<button onclick="window._invPag.goTo(1)" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg></button>';
+        html += '<button onclick="window._invPag.goTo(1)" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"/></svg></button>';
 
-        html += '<button onclick="window._invPag.goTo(' + (currentPage - 1) + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>';
+        html += '<button onclick="window._invPag.goTo(' + (currentPage - 1) + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === 1 ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>';
 
         var startPage = Math.max(1, currentPage - 2);
         var endPage = Math.min(totalPages, startPage + 4);
@@ -1014,9 +1014,9 @@ document.addEventListener('DOMContentLoaded', function() {
             html += '<button onclick="window._invPag.goTo(' + p + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (isActive ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '">' + p + '</button>';
         }
 
-        html += '<button onclick="window._invPag.goTo(' + (currentPage + 1) + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === totalPages ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
+        html += '<button onclick="window._invPag.goTo(' + (currentPage + 1) + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === totalPages ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>';
 
-        html += '<button onclick="window._invPag.goTo(' + totalPages + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === totalPages ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg></button>';
+        html += '<button onclick="window._invPag.goTo(' + totalPages + ')" class="shrink-0 px-2.5 sm:px-3 py-2 rounded-lg text-[9px] sm:text-[10px] font-bold transition-colors ' + (currentPage === totalPages ? 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 cursor-not-allowed' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600') + '"><svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7"/></svg></button>';
 
         html += '<span class="text-[9px] sm:text-[10px] text-gray-400 font-bold ml-2">' + filteredRows.length + ' resultado' + (filteredRows.length !== 1 ? 's' : '') + '</span>';
 
@@ -1045,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             currentPaidFilter = this.dataset.filterPaid;
             filterBtns.forEach(function(b) {
-                b.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800';
+                b.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-100 border-gray-200 dark:border-gray-800';
             });
             this.className = 'paid-filter-btn px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider border transition-all bg-gray-900 dark:bg-white text-white dark:text-black border-transparent';
             applyFilters();

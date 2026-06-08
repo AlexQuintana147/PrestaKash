@@ -112,7 +112,7 @@
             <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
         </a>
         <button onclick="toggleSidebar()"
-            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
+            class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
             <svg id="menuOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -139,7 +139,7 @@
                 <a href="{{ route('client.dashboard') }}" class="block">
                     <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
                 </a>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">Mi Panel</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 mt-1 uppercase tracking-widest">Mi Panel</p>
             </div>
 
             <!-- Logo (mobile) -->
@@ -147,7 +147,7 @@
                 <a href="{{ route('client.dashboard') }}" class="block">
                     <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
                 </a>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 uppercase tracking-widest">Mi Panel</p>
+                <p class="text-xs text-gray-600 dark:text-gray-100 mt-1 uppercase tracking-widest">Mi Panel</p>
             </div>
 
             <!-- Nav -->
@@ -156,7 +156,7 @@
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                       {{ request()->routeIs('client.dashboard')
     ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white'
-    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+    : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -170,7 +170,7 @@
 
                 <a href="{{ route('client.loans') }}" onclick="closeSidebar()"
                     class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('client.loans*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                      {{ request()->routeIs('client.loans*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                     <div class="flex items-center gap-3 min-w-0">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -189,7 +189,7 @@
 
                 <a href="{{ route('client.referidos') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('client.referidos') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                      {{ request()->routeIs('client.referidos') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -210,7 +210,7 @@
                 <div>
                     <button onclick="toggleInvestMenu()" id="invest-toggle-btn"
                         class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                        {{ $isInvestActive ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                        {{ $isInvestActive ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                         <div class="flex items-center gap-3 min-w-0">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -229,7 +229,7 @@
                     <div id="invest-submenu" class="mt-1 ml-4 space-y-0.5 {{ $isInvestActive ? '' : 'hidden' }}">
                         <a href="{{ route('client.investments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
-                            {{ request()->routeIs('client.investments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            {{ request()->routeIs('client.investments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-2.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
                                 Oportunidades
@@ -242,13 +242,13 @@
                         </a>
                         <a href="{{ route('client.investments.my-investments') }}" onclick="closeSidebar()"
                             class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
-                            {{ request()->routeIs('client.investments.my-investments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            {{ request()->routeIs('client.investments.my-investments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                             <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             Mis Inversiones
                         </a>
                         <a href="{{ route('client.investments.payments') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors
-                            {{ request()->routeIs('client.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                            {{ request()->routeIs('client.investments.payments') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-2.5">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 Mis Pagos
@@ -262,7 +262,7 @@
                 @else
                 <a href="{{ route('client.invertir') }}" onclick="closeSidebar()"
                     class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('client.invertir*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
+                      {{ request()->routeIs('client.invertir*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900' }}">
                     <div class="flex items-center gap-3 min-w-0">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -278,7 +278,7 @@
 
                 <!-- Theme toggle -->
                 <button onclick="toggleTheme()" id="themeBtn"
-                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                     <svg id="iconSun" class="w-4 h-4 flex-shrink-0 hidden" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -303,7 +303,7 @@
                     <div class="min-w-0">
                         <p class="text-xs font-medium text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}
                         </p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{{ Auth::user()->email }}</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-100 truncate">{{ Auth::user()->email }}</p>
                     </div>
                 </div>
 
@@ -311,7 +311,7 @@
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit"
-                        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -334,7 +334,7 @@
         <div class="bg-white/60 dark:bg-gray-950/60 backdrop-blur-sm absolute inset-0"></div>
         <div class="relative flex flex-col items-center gap-3">
             <div class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-green-500 rounded-full animate-spin"></div>
-            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">Procesando...</p>
+            <p class="text-xs font-medium text-gray-600 dark:text-gray-100">Procesando...</p>
         </div>
     </div>
 

@@ -10,7 +10,7 @@
 <div class="px-4 md:px-10 py-6 md:py-8 max-w-5xl mx-auto">
     <div class="flex items-center gap-3 mb-6 md:mb-8">
         <a href="{{ route('superadmin.installments.index') }}"
-           class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
+           class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>

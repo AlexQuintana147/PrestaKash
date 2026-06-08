@@ -6,7 +6,7 @@
 <div class="min-h-screen px-5 md:px-10 py-8 max-w-4xl mx-auto">
 
     <div class="mb-10">
-        <a href="{{ route('superadmin.investments.index') }}" class="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-4">
+        <a href="{{ route('superadmin.investments.index') }}" class="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors mb-4">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Volver
         </a>
@@ -29,52 +29,52 @@
             <div class="lg:col-span-3 space-y-10">
 
                 <section>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Proyecto</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Proyecto</p>
 
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Título</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Título</label>
                             <input type="text" name="title" value="{{ old('title') }}" required placeholder="Ej: Cartera de préstamos Q2 2026"
                                    pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]+"
                                    oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]/g,'')"
-                                   class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors">
+                                   class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors">
                         </div>
 
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Descripción</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Descripción</label>
                             <textarea name="description" rows="3" required placeholder="Describe el proyecto de inversión..."
                                       oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]/g,'')"
-                                      class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('description') }}</textarea>
+                                      class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('description') }}</textarea>
                         </div>
                     </div>
                 </section>
 
                 <section>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Importe y moneda</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Importe y moneda</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Monto objetivo</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Monto objetivo</label>
                             <div class="relative">
-                                <span id="currencySymbol" class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 dark:text-gray-400 pointer-events-none">S/</span>
+                                <span id="currencySymbol" class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 dark:text-gray-100 pointer-events-none">S/</span>
                                 <input type="text" name="target_amount" value="{{ old('target_amount') }}" required placeholder="0.00" inputmode="decimal"
-                                       class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors">
+                                       class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Moneda</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Moneda</label>
                             <div class="flex gap-2 mt-1">
                                 <label class="cursor-pointer flex-1">
                                     <input type="radio" name="currency" value="PEN" class="hidden peer" {{ old('currency', 'PEN') === 'PEN' ? 'checked' : '' }}>
-                                    <div class="flex items-center justify-center gap-2 py-2.5 text-sm text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
+                                    <div class="flex items-center justify-center gap-2 py-2.5 text-sm text-gray-500 dark:text-gray-100 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                         <span>🇵🇪</span>
                                         <span class="font-medium">Soles</span>
                                     </div>
                                 </label>
                                 <label class="cursor-pointer flex-1">
                                     <input type="radio" name="currency" value="USD" class="hidden peer" {{ old('currency') === 'USD' ? 'checked' : '' }}>
-                                    <div class="flex items-center justify-center gap-2 py-2.5 text-sm text-gray-500 dark:text-gray-400 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
+                                    <div class="flex items-center justify-center gap-2 py-2.5 text-sm text-gray-500 dark:text-gray-100 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
                                         <span>🇺🇸</span>
                                         <span class="font-medium">Dólares</span>
                                     </div>
@@ -84,21 +84,21 @@
                     </div>
 
                     <div class="mt-6">
-                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Inversión mínima</label>
+                        <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Inversión mínima</label>
                         <div class="relative">
-                            <span class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 dark:text-gray-400 pointer-events-none min-symbol">S/</span>
+                            <span class="absolute left-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 dark:text-gray-100 pointer-events-none min-symbol">S/</span>
                             <input type="text" name="min_investment" value="{{ old('min_investment', '500') }}" required placeholder="500.00" inputmode="decimal"
-                                   class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors">
+                                   class="w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors">
                         </div>
                     </div>
                 </section>
 
                 <section>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Retorno y plazo</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Retorno y plazo</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Tasa de retorno mensual</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Tasa de retorno mensual</label>
                             <div class="relative">
                                 <input type="number" name="monthly_return_rate" id="returnRateInput" step="0.01" min="0" max="100"
                                        value="{{ old('monthly_return_rate', '2.00') }}"
@@ -120,19 +120,19 @@
                                                     this.setSelectionRange(start, start);
                                                 }
                                                 updatePreview();"
-                                       class="w-full pl-0 pr-8 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors text-right">
-                                <span class="absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 dark:text-gray-400 pointer-events-none">%</span>
+                                       class="w-full pl-0 pr-8 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-xl font-semibold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors text-right">
+                                <span class="absolute right-0 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500 dark:text-gray-100 pointer-events-none">%</span>
                             </div>
                         </div>
 
                         <div>
                             <div class="flex items-center justify-between mb-3">
-                                <label class="text-xs text-gray-500 dark:text-gray-400">Plazo</label>
+                                <label class="text-xs text-gray-500 dark:text-gray-100">Plazo</label>
                                 <span id="monthsDisplay" class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">{{ old('term_months', 12) }} meses</span>
                             </div>
                             <input type="range" name="term_months" id="termMonths" min="1" max="36" value="{{ old('term_months', 12) }}"
                                    class="w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer">
-                            <div class="relative h-4 text-[10px] text-gray-400 dark:text-gray-500 mt-1.5">
+                            <div class="relative h-4 text-[10px] text-gray-400 dark:text-gray-100 mt-1.5">
                                 <span class="absolute left-0">1</span>
                                 <span class="absolute left-[14.28%] -translate-x-1/2">6</span>
                                 <span class="absolute left-[42.85%] -translate-x-1/2">12</span>
@@ -144,18 +144,18 @@
                 </section>
 
                 <section>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Riesgos y cierre</p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Riesgos y cierre</p>
 
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Riesgos asociados</label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Riesgos asociados</label>
                             <textarea name="risks" rows="3" placeholder="Describe los riesgos potenciales..."
                                       oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s]/g,'')"
-                                      class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('risks') }}</textarea>
+                                      class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('risks') }}</textarea>
                         </div>
 
                         <div>
-                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Fecha límite <span class="text-gray-400 dark:text-gray-500">(opcional)</span></label>
+                            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Fecha límite <span class="text-gray-400 dark:text-gray-100">(opcional)</span></label>
                             <div class="relative cursor-pointer" onclick="document.querySelector('input[name=\'deadline\']').showPicker()">
                                 <input type="date" name="deadline" value="{{ old('deadline') }}"
                                        class="w-full pl-0 pr-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors cursor-pointer appearance-none">
@@ -166,7 +166,7 @@
 
                 <section>
                     <div class="flex items-center justify-between mb-4">
-                        <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest">Cuentas Bancarias para Depósitos</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest">Cuentas Bancarias para Depósitos</p>
                         <button type="button" onclick="addBankAccount()" class="text-xs font-bold text-green-600 border-b border-green-600 pb-0.5 hover:opacity-70 transition-opacity">+ Agregar cuenta</button>
                     </div>
                     
@@ -183,7 +183,7 @@
             <div class="lg:col-span-2">
                 <div class="lg:sticky lg:top-8 space-y-6">
                     <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6">
-                        <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Vista previa</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Vista previa</p>
 
                         <div class="space-y-4">
                             <div>
@@ -224,7 +224,7 @@
                     <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-5">
                         <div class="flex items-start gap-3">
                             <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">La tasa de retorno es mensual y fija. El retorno estimado se calcula sobre el monto objetivo completo durante el plazo definido.</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-100 leading-relaxed">La tasa de retorno es mensual y fija. El retorno estimado se calcula sobre el monto objetivo completo durante el plazo definido.</p>
                         </div>
                     </div>
                 </div>
@@ -380,7 +380,7 @@ function addBankAccount() {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
         <div>
-            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Nombre del Banco *</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Nombre del Banco *</label>
             <select name="bank_name[${idx}]" required
                     class="w-full pl-0 pr-0 py-2 bg-white dark:bg-gray-900 border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-green-500 transition-colors cursor-pointer">
                 <option value="">Seleccionar banco...</option>
@@ -421,16 +421,16 @@ function addBankAccount() {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">Número de Cuenta *</label>
+                <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">Número de Cuenta *</label>
                 <input type="text" name="account_number[${idx}]" required placeholder="000-000000-0" maxlength="30"
                        oninput="this.value=this.value.replace(/\D/g,'')"
-                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors">
+                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors">
             </div>
             <div>
-                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">CCI *</label>
+                <label class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">CCI *</label>
                 <input type="text" name="cci[${idx}]" required placeholder="000-000-000000-00" maxlength="30"
                        oninput="this.value=this.value.replace(/\D/g,'')"
-                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-green-500 transition-colors">
+                       class="w-full pl-0 pr-0 py-2 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors">
             </div>
         </div>
     `;

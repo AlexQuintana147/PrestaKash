@@ -15,7 +15,7 @@
             <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest
                 {{ $investment->status === 'open' ? 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' : '' }}
                 {{ $investment->status === 'funded' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : '' }}
-                {{ $investment->status === 'closed' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' : '' }}
+                {{ $investment->status === 'closed' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' : '' }}
                 {{ $investment->status === 'cancelled' ? 'bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400' : '' }}">
                 {{ $investment->status === 'open' ? 'Abierta' : ($investment->status === 'funded' ? 'Financiada' : ($investment->status === 'closed' ? 'Cerrada' : 'Cancelada')) }}
             </span>
@@ -54,16 +54,16 @@
     </div>
 
     <div class="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-900 rounded-2xl p-6 mb-8">
-        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Descripción</p>
-        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{{ $investment->description }}</p>
+        <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-3">Descripción</p>
+        <p class="text-sm text-gray-700 dark:text-gray-100 leading-relaxed whitespace-pre-line">{{ $investment->description }}</p>
 
         @if($investment->risks)
-            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3 mt-6">Riesgos</p>
+            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-3 mt-6">Riesgos</p>
             <p class="text-sm text-red-600 dark:text-red-400 leading-relaxed whitespace-pre-line">{{ $investment->risks }}</p>
         @endif
 
         @if($investment->bank_accounts)
-            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3 mt-6">Cuentas Bancarias</p>
+            <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-3 mt-6">Cuentas Bancarias</p>
             <div class="space-y-2">
                 @foreach($investment->bank_accounts as $acc)
                     <div class="p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
@@ -162,7 +162,7 @@
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5 mb-1 flex-wrap">
                                 <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $investor->name }}</p>
-                                <span class="px-1.5 py-0.5 rounded text-[7px] md:text-[8px] font-black uppercase tracking-widest flex-shrink-0 {{ $investor->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                                <span class="px-1.5 py-0.5 rounded text-[7px] md:text-[8px] font-black uppercase tracking-widest flex-shrink-0 {{ $investor->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' }}">
                                     {{ $investor->person_type === 'juridica' ? 'JURÍDICA' : 'NATURAL' }}
                                 </span>
                                 <button onclick='openInvestorModal({{ $investorData }})' class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0 p-0.5">
@@ -170,7 +170,7 @@
                                 </button>
                             </div>
                             <div class="flex flex-col gap-1 text-[10px] md:flex-row md:flex-wrap md:items-center md:gap-2">
-                                <span class="text-gray-500 dark:text-gray-500">
+                                <span class="text-gray-500 dark:text-gray-100">
                                     @if($investor->person_type === 'juridica')
                                         RUC: <span class="font-bold text-gray-900 dark:text-white">{{ $investor->ruc ?? '—' }}</span>
                                     @else
@@ -205,7 +205,7 @@
                                         {{ $investor->pivot->payment_status === 'pending' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' : '' }}
                                         {{ $investor->pivot->payment_status === 'confirmed' ? 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' : '' }}
                                         {{ $investor->pivot->payment_status === 'rejected' ? 'bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400' : '' }}
-                                        {{ $investor->pivot->payment_status === 'expired' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' : '' }}">
+                                        {{ $investor->pivot->payment_status === 'expired' ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' : '' }}">
                                         {{ $investor->pivot->payment_status === 'pending' ? 'Pago Pend.' : ($investor->pivot->payment_status === 'confirmed' ? 'Pago OK' : ($investor->pivot->payment_status === 'rejected' ? 'Pago Rech.' : 'Pago Exp.')) }}
                                     </span>
                                 @endif
@@ -215,7 +215,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <p class="text-[9px] md:text-[10px] text-gray-500 dark:text-gray-400 font-medium flex-shrink-0">{{ $investor->pivot->created_at->format('d/m/Y') }}</p>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 dark:text-gray-100 font-medium flex-shrink-0">{{ $investor->pivot->created_at->format('d/m/Y') }}</p>
                         </div>
                         <div class="flex items-center gap-2 md:gap-3 flex-wrap">
                             @if($investor->pivot->status === 'pending')
@@ -320,7 +320,7 @@
             </div>
         @endif
     @else
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">Aún no hay inversores participando</p>
+        <p class="text-sm text-gray-500 dark:text-gray-100 text-center py-8">Aún no hay inversores participando</p>
     @endif
 
     <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
@@ -333,14 +333,14 @@
 <div id="approveInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aprobar Inversor</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-2">
             ¿Confirmas la aprobación de <span id="approve_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="approve_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
         <p class="text-xs text-amber-600 dark:text-amber-400 mb-6">El inversor deberá subir su comprobante de pago para completar el proceso.</p>
         <form id="approveInvestorForm" method="POST">
             @csrf
             <div class="flex justify-center gap-8">
-                <button type="button" onclick="closeApproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                <button type="button" onclick="closeApproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="submit" id="approve_inv_submit_btn" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar</button>
             </div>
         </form>
@@ -350,15 +350,15 @@
 <div id="rejectInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Rechazar Inversor</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-4">
             ¿Estás seguro de rechazar la solicitud de <span id="reject_inv_name" class="font-bold text-gray-900 dark:text-white"></span> por <span id="reject_inv_amount" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
         <div class="mb-8 text-left">
-            <label class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block mb-2">Motivo del rechazo (opcional)</label>
+            <label class="text-[10px] font-black text-gray-500 dark:text-gray-100 uppercase tracking-[0.2em] block mb-2">Motivo del rechazo (opcional)</label>
             <textarea id="reject_inv_reason" rows="2" class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors resize-none"></textarea>
         </div>
         <div class="flex justify-center gap-8">
-            <button onclick="closeRejectInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <button onclick="closeRejectInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form id="rejectInvestorForm" method="POST">
                 @csrf
                 <input type="hidden" name="reason" id="reject_inv_reason_input" value="">
@@ -371,11 +371,11 @@
 <div id="disapproveInvestorModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Desaprobar Inversor</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-8">
             ¿Desaprobar a <span id="disapprove_inv_name" class="font-bold text-gray-900 dark:text-white"></span>? Volverá a estado pendiente.
         </p>
         <div class="flex justify-center gap-8">
-            <button onclick="closeDisapproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <button onclick="closeDisapproveInvestorModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form id="disapproveInvestorForm" method="POST">
                 @csrf
                 <button type="submit" class="text-xs font-bold text-amber-600 border-b-2 border-amber-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar</button>
@@ -390,12 +390,12 @@
             <svg class="w-7 h-7 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
         </div>
         <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400 mb-2">Desaprobar Pago</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-2">
             ¿Desaprobar el pago de <span id="disapprove_pay_name" class="font-bold text-gray-900 dark:text-white"></span>?
         </p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">El pago volverá a estado pendiente y el inversor podrá subir un nuevo comprobante.</p>
+        <p class="text-xs text-gray-500 dark:text-gray-100 mb-6">El pago volverá a estado pendiente y el inversor podrá subir un nuevo comprobante.</p>
         <div class="flex justify-center gap-6">
-            <button onclick="closeDisapprovePaymentModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <button onclick="closeDisapprovePaymentModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form id="disapprovePaymentForm" method="POST">
                 @csrf
                 <button type="submit" class="text-xs font-bold text-orange-600 border-b-2 border-orange-600 pb-0.5 hover:opacity-70 transition-opacity">Desaprobar Pago</button>
@@ -428,7 +428,7 @@
             </div>
             <div class="w-full md:w-3/5 p-8 md:p-10 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Información Personal</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Información Personal</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">DNI / Documento</p>
@@ -453,7 +453,7 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Detalles de Inversión</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Detalles de Inversión</p>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-3">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Ocupación</p>
@@ -474,8 +474,8 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Referido</p>
-                    <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"></p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-2">Referido</p>
+                    <p id="modalReferral" class="text-xs text-gray-600 dark:text-gray-100 leading-relaxed"></p>
                 </div>
             </div>
         </div>
@@ -485,11 +485,11 @@
 <div id="closeOpportunityModal" class="hidden fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $investment->isFunded() ? 'Marcar como Financiada' : 'Cerrar Oportunidad' }}</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-8">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-8">
             ¿Confirmas que deseas {{ $investment->isFunded() ? 'marcar como financiada' : 'cerrar' }} la oportunidad <span class="font-bold text-gray-900 dark:text-white">{{ $investment->title }}</span>? {{ $investment->isFunded() ? 'Ya no se aceptarán más inversores.' : 'Las solicitudes pendientes serán rechazadas automáticamente.' }}
         </p>
         <div class="flex justify-center gap-8">
-            <button onclick="closeCloseOpportunityModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <button onclick="closeCloseOpportunityModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form action="{{ route('superadmin.investments.update', $investment) }}" method="POST">
                 @csrf @method('PUT')
                 <input type="hidden" name="status" value="{{ $investment->isFunded() ? 'funded' : 'closed' }}">
@@ -505,7 +505,7 @@
             <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
         </div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Eliminar Oportunidad</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <p class="text-sm text-gray-500 dark:text-gray-100 mb-2">
             ¿Estás seguro de eliminar <span class="font-bold text-gray-900 dark:text-white">{{ $investment->title }}</span>?
         </p>
         <div class="bg-red-50 dark:bg-red-500/10 rounded-xl p-3 mb-6 text-left">
@@ -517,7 +517,7 @@
             </ul>
         </div>
         <div class="flex justify-center gap-8">
-            <button onclick="closeDeleteOpportunityModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+            <button onclick="closeDeleteOpportunityModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
             <form action="{{ route('superadmin.investments.destroy', $investment) }}" method="POST">
                 @csrf @method('DELETE')
                 <button type="submit" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Eliminar Definitivamente</button>
@@ -533,7 +533,7 @@
         </button>
         <div class="p-8">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Comprobante de Pago</h3>
-            <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_investor_name" class="font-bold text-gray-700 dark:text-gray-300"></span></p>
+            <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_investor_name" class="font-bold text-gray-700 dark:text-gray-100"></span></p>
             <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 flex items-center justify-center mb-6 min-h-[300px] border border-gray-200 dark:border-gray-800 cursor-zoom-in group relative" onclick="openVoucherLightbox()" style="min-height: 300px;">
                 <img id="voucher_image" src="" class="max-w-full max-h-[400px] rounded-xl object-contain shadow-sm group-hover:opacity-80 transition-opacity" draggable="false">
                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -563,7 +563,7 @@
                 </select>
             </div>
             <div class="flex justify-end gap-4">
-                <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                <button type="button" onclick="closeVoucherModal()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="button" onclick="openVoucherConfirm('reject')" class="text-xs font-bold text-red-600 border-b-2 border-red-600 pb-0.5 hover:opacity-70 transition-opacity">Rechazar Comprobante</button>
                 <button type="button" onclick="openVoucherConfirm('approve')" class="text-xs font-bold text-green-600 border-b-2 border-green-600 pb-0.5 hover:opacity-70 transition-opacity">Aprobar Pago</button>
             </div>
@@ -581,7 +581,7 @@
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Comprobante de Pago</h3>
                 <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">Aprobado</span>
             </div>
-            <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_view_investor_name" class="font-bold text-gray-700 dark:text-gray-300"></span></p>
+            <p class="text-xs text-gray-400 mb-4">Inversor: <span id="voucher_view_investor_name" class="font-bold text-gray-700 dark:text-gray-100"></span></p>
             <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 flex items-center justify-center mb-6 min-h-[300px] border border-gray-200 dark:border-gray-800 cursor-zoom-in group relative" onclick="openVoucherLightboxView()" style="min-height: 300px;">
                 <img id="voucher_view_image" src="" class="max-w-full max-h-[400px] rounded-xl object-contain shadow-sm group-hover:opacity-80 transition-opacity" draggable="false">
                 <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -591,7 +591,7 @@
             </div>
             <div class="mb-4">
                 <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1.5">Número de Operación</label>
-                <div class="w-full px-4 py-2.5 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-mono font-bold text-gray-700 dark:text-gray-300">{{ $investor->pivot->operation_number ?? '—' }}</div>
+                <div class="w-full px-4 py-2.5 text-xs bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-mono font-bold text-gray-700 dark:text-gray-100">{{ $investor->pivot->operation_number ?? '—' }}</div>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <div class="p-3 bg-green-50 dark:bg-green-500/10 rounded-xl border border-green-100 dark:border-green-500/20">
@@ -653,7 +653,7 @@
     <div class="bg-white dark:bg-gray-950 w-full max-w-sm rounded-3xl shadow-2xl relative p-8 text-center">
         <div id="voucher_confirm_icon" class="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4"></div>
         <h3 id="voucher_confirm_title" class="text-xl font-bold text-gray-900 dark:text-white mb-2"></h3>
-        <p id="voucher_confirm_text" class="text-sm text-gray-500 dark:text-gray-400 mb-2"></p>
+        <p id="voucher_confirm_text" class="text-sm text-gray-500 dark:text-gray-100 mb-2"></p>
         <div id="voucher_confirm_op_row" class="hidden bg-indigo-50 dark:bg-indigo-500/10 rounded-xl p-3 mb-6">
             <p class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">Nº de Operación</p>
             <p id="voucher_confirm_op_value" class="text-xs font-mono font-bold text-gray-900 dark:text-white mt-0.5"></p>
@@ -663,7 +663,7 @@
             <input type="hidden" name="action" id="confirm_action_input">
             <input type="hidden" name="operation_number" id="confirm_op_input">
             <div class="flex justify-center gap-6">
-                <button type="button" onclick="closeVoucherConfirm()" class="text-xs font-bold text-gray-500 dark:text-gray-400 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
+                <button type="button" onclick="closeVoucherConfirm()" class="text-xs font-bold text-gray-500 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-700 pb-0.5 hover:opacity-70 transition-opacity">Cancelar</button>
                 <button type="submit" id="voucher_confirm_submit_btn" class="text-xs font-bold border-b-2 pb-0.5 hover:opacity-70 transition-opacity"></button>
             </div>
         </form>

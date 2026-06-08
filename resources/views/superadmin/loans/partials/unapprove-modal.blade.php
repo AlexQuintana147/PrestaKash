@@ -13,7 +13,7 @@
 
         <p class="text-[8px] font-black uppercase tracking-widest text-orange-500 mb-1">Acción irreversible</p>
         <h3 class="text-base font-black text-gray-900 dark:text-white tracking-tight mb-2">Revertir pago</h3>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-6">
+        <p class="text-xs text-gray-500 dark:text-gray-100 leading-relaxed mb-6">
             El pago volverá al estado <span class="font-bold text-gray-900 dark:text-white">En revisión</span>.
             El cliente deberá volver a subir su comprobante si es necesario.
         </p>

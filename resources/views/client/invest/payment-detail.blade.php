@@ -8,7 +8,7 @@
     <div class="mb-6 sm:mb-8">
         <div class="flex items-center gap-2 mb-3">
             <a href="{{ route('client.investments.payments') }}" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Mis Pagos</a>
-            <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-3 h-3 text-gray-500 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
 
         <div class="flex items-start justify-between gap-3">
@@ -122,7 +122,7 @@
                                 </div>
                                 @if($payout->voucher_path)
                                     <div class="mt-2 flex items-center gap-1.5">
-                                        <button onclick="openVoucherModal('{{ \Storage::url($payout->voucher_path) }}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                        <button onclick="openVoucherModal('{{ \Storage::url($payout->voucher_path) }}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                             Ver comprobante
                                         </button>
@@ -200,13 +200,13 @@
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-900 dark:text-white' }}">Cuota {{ $item->month }}</span>
                             @if(!($isClosed || $isFunded))
-                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pend.</span>
+                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-100">Pend.</span>
                             @elseif($isPaid)
                                 <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>
                             @elseif($isOverdue)
                                 <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-white/20 text-white">Vencida</span>
                             @else
-                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
+                                <span class="px-1.5 py-px rounded text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-100">Por vencer</span>
                             @endif
                         </div>
                         <span class="text-[10px] {{ $isOverdue && !$isPaid ? 'text-white/70' : 'text-gray-400' }} font-mono">{{ $item->date ? $item->date->format('d/m/y') : '—' }}</span>
@@ -214,11 +214,11 @@
                     <div class="grid grid-cols-3 gap-2">
                         <div>
                             <p class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Interés</p>
-                            <p class="text-[11px] font-medium {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</p>
+                            <p class="text-[11px] font-medium {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-600 dark:text-gray-100' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</p>
                         </div>
                         <div>
                             <p class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Capital</p>
-                            <p class="text-[11px] font-medium {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</p>
+                            <p class="text-[11px] font-medium {{ $isOverdue && !$isPaid ? 'text-white' : 'text-gray-600 dark:text-gray-100' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</p>
                         </div>
                         <div>
                             <p class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Total</p>
@@ -228,7 +228,7 @@
                     <div class="mt-2 pt-2 border-t {{ $isOverdue && !$isPaid ? 'border-white/20' : 'border-gray-50 dark:border-gray-900/50' }}">
                         <div class="flex items-center justify-between">
                             <span class="text-[8px] {{ $isOverdue && !$isPaid ? 'text-white/60' : 'text-gray-400' }} uppercase tracking-wider">Saldo</span>
-                            <span class="text-[11px] {{ $isOverdue && !$isPaid ? 'text-white/80' : 'text-gray-500 dark:text-gray-400' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</span>
+                            <span class="text-[11px] {{ $isOverdue && !$isPaid ? 'text-white/80' : 'text-gray-500 dark:text-gray-100' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</span>
                         </div>
                     </div>
                     @if($isPendingPayout)
@@ -253,7 +253,7 @@
                         </div>
                         @if($payoutItem->voucher_path)
                             <div class="flex items-center gap-1.5 mb-2">
-                                <button onclick="openVoucherModal('{{ Storage::url($payoutItem->voucher_path) }}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <button onclick="openVoucherModal('{{ Storage::url($payoutItem->voucher_path) }}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     Ver comprobante
                                 </button>
@@ -311,11 +311,11 @@
                             @endphp
                             <tr class="schedule-item border-b {{ $overdueRow ? 'border-red-500/30' : 'border-gray-50 dark:border-gray-900/50' }} {{ $overdueRow ? 'bg-red-600' : 'hover:bg-gray-50/50 dark:hover:bg-gray-900/30' }} transition-colors" data-idx="{{ $i }}" style="display:none">
                                 <td class="px-4 py-3 font-bold {{ $overdueRow ? 'text-white' : 'text-gray-900 dark:text-white' }}">{{ $item->month }}</td>
-                                <td class="px-4 py-3 {{ $overdueRow ? 'text-white/80' : 'text-gray-500 dark:text-gray-400' }} font-mono">{{ $item->date ? $item->date->format('d/m/Y') : '—' }}</td>
-                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</td>
-                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white' : 'text-gray-600 dark:text-gray-300' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</td>
+                                <td class="px-4 py-3 {{ $overdueRow ? 'text-white/80' : 'text-gray-500 dark:text-gray-100' }} font-mono">{{ $item->date ? $item->date->format('d/m/Y') : '—' }}</td>
+                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white' : 'text-gray-600 dark:text-gray-100' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->interest, 2) }}</td>
+                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white' : 'text-gray-600 dark:text-gray-100' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->principal, 2) }}</td>
                                 <td class="px-4 py-3 text-right font-bold {{ $overdueRow ? 'text-white' : 'text-gray-900 dark:text-white' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->payment, 2) }}</td>
-                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white/80' : 'text-gray-500 dark:text-gray-400' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</td>
+                                <td class="px-4 py-3 text-right {{ $overdueRow ? 'text-white/80' : 'text-gray-500 dark:text-gray-100' }} tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($item->balance, 2) }}</td>
                                 <td class="px-4 py-3 text-center">
                                     @if($isPendingPayout)
                                         <div class="flex flex-col items-center gap-1.5">
@@ -330,7 +330,7 @@
                                             @endif
                                             @if($payoutItem->voucher_path)
                                                 <div class="flex items-center gap-1">
-                                                    <button onclick="openVoucherModal('{{ Storage::url($payoutItem->voucher_path) }}')" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                                    <button onclick="openVoucherModal('{{ Storage::url($payoutItem->voucher_path) }}')" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                                         <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                                         Comprobante
                                                     </button>
@@ -345,7 +345,7 @@
                                             </div>
                                         </div>
                                     @elseif(!($isClosed || $isFunded))
-                                        <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Pendiente</span>
+                                        <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-100">Pendiente</span>
                                     @elseif($isPaid)
                                         <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Pagada</span>
                                     @elseif($isOverdue)
@@ -357,7 +357,7 @@
                                             </a>
                                         </div>
                                     @else
-                                        <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500">Por vencer</span>
+                                        <span class="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-100">Por vencer</span>
                                     @endif
                                 </td>
                             </tr>
@@ -385,7 +385,7 @@
                                 <div class="flex items-center gap-1.5 sm:gap-2 mt-0.5">
                                     <span class="text-[9px] sm:text-[10px] text-gray-400 font-mono">{{ $payment->date ? \Carbon\Carbon::parse($payment->date)->format('d/m/Y') : '—' }}</span>
                                     @if($payment->cashbox)
-                                        <span class="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400">·</span>
+                                        <span class="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-100">·</span>
                                         <span class="text-[9px] sm:text-[10px] text-gray-400">{{ $payment->cashbox->name }}</span>
                                     @endif
                                 </div>
@@ -404,48 +404,48 @@
         <h3 class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 sm:mb-4">Resumen de la Inversión</h3>
         <div class="space-y-2.5 sm:space-y-3">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Capital invertido</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Capital invertido</span>
                 <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($amount, 2) }}</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Tasa de retorno mensual</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Tasa de retorno mensual</span>
                 <span class="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">{{ $opportunity->monthly_return_rate }}%</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Retorno estimado total</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Retorno estimado total</span>
                 <span class="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalExpectedReturn - $amount, 2) }}</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Intereses ganados hasta ahora</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Intereses ganados hasta ahora</span>
                 <span class="text-[11px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $opportunity->currency === 'USD' ? '$' : 'S/' }}{{ number_format($totalInterestEarned, 2) }}</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Cuotas pagadas</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Cuotas pagadas</span>
                 <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $totalPaidQuotas }} / {{ $opportunity->term_months }}</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Sistema de amortización</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Sistema de amortización</span>
                 <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $amortizationType === 'frances' ? 'Francés' : 'Americano' }}</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Moneda</span>
+                <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Moneda</span>
                 <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $opportunity->currency }}</span>
             </div>
             @if($startDate)
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Inicio de pagos</span>
+                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Inicio de pagos</span>
                     <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ $startDate->format('d/m/Y') }}</span>
                 </div>
             @endif
             @if($nextPayoutDate)
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Próximo pago estimado</span>
+                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Próximo pago estimado</span>
                     <span class="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400">{{ $nextPayoutDate->format('d/m/Y') }}</span>
                 </div>
             @endif
             @if($investor->pivot->approved_at)
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Fecha de aprobación</span>
+                    <span class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-100">Fecha de aprobación</span>
                     <span class="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($investor->pivot->approved_at)->format('d/m/Y') }}</span>
                 </div>
             @endif
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.textContent = p;
                 btn.className = p === currentPage
                     ? 'w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-bold bg-indigo-600 text-white'
-                    : 'w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors';
+                    : 'w-8 h-8 flex items-center justify-center rounded-lg text-[11px] font-medium text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors';
                 btn.addEventListener('click', function() { showPage(p); });
                 paginationEl.appendChild(btn);
             }
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="closeAcceptModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button onclick="closeAcceptModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
                 <form id="accept-form" method="POST" class="flex-1">
                     @csrf
                     <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Aceptar pago</button>
@@ -606,9 +606,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-[10px] text-gray-400">Esta acción no se puede deshacer</p>
                 </div>
             </div>
-            <p class="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed mb-4">¿Estás seguro de que deseas rechazar este pago? El comprobante será eliminado y el administrador deberá registrar el pago nuevamente.</p>
+            <p class="text-[11px] text-gray-600 dark:text-gray-100 leading-relaxed mb-4">¿Estás seguro de que deseas rechazar este pago? El comprobante será eliminado y el administrador deberá registrar el pago nuevamente.</p>
             <div class="flex gap-2">
-                <button onclick="closeRejectModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button onclick="closeRejectModal()" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-600 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancelar</button>
                 <form id="reject-form" method="POST" class="flex-1">
                     @csrf
                     <button type="submit" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider transition-colors">Rechazar pago</button>

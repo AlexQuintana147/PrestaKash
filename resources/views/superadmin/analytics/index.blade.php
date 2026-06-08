@@ -43,14 +43,14 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
             <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Análisis</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Métricas y estadísticas del sistema</p>
+            <p class="text-sm text-gray-500 dark:text-gray-100 mt-0.5">Métricas y estadísticas del sistema</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                 En vivo
             </span>
-            <button onclick="location.reload()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            <button onclick="location.reload()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 Actualizar
             </button>
@@ -70,7 +70,7 @@
                     </span>
                 @endif
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Desembolsado mes</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100 mb-1">Desembolsado mes</p>
             <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($loanStats['disbursedThisMonth'], 0) }}</p>
         </div>
 
@@ -81,7 +81,7 @@
                 </div>
                 <span class="text-xs font-medium text-green-600 dark:text-green-400">{{ $collectionStats['collectionRate'] }}%</span>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Cobrado mes</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100 mb-1">Cobrado mes</p>
             <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($collectionStats['totalCollected'], 0) }}</p>
         </div>
 
@@ -91,7 +91,7 @@
                     <svg class="w-4.5 h-4.5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Caja total</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100 mb-1">Caja total</p>
             <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">S/ {{ number_format($cashboxStats['totalBalance'], 0) }}</p>
         </div>
 
@@ -101,7 +101,7 @@
                     <svg class="w-4.5 h-4.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Inversores activos</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100 mb-1">Inversores activos</p>
             <p class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">{{ $investmentStats['activeInvestors'] }}</p>
         </div>
     </div>
@@ -109,27 +109,27 @@
     {{-- Secondary KPIs --}}
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">Préstamos activos</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100">Préstamos activos</p>
             <p class="text-base font-bold text-gray-900 dark:text-white mt-1">{{ $loanStats['activeLoans'] }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">Pendientes</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100">Pendientes</p>
             <p class="text-base font-bold text-amber-600 dark:text-amber-400 mt-1">{{ $loanStats['pendingLoans'] }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">En mora</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100">En mora</p>
             <p class="text-base font-bold text-red-600 dark:text-red-400 mt-1">{{ $loanStats['defaultedLoans'] }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">Cuotas vencidas</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100">Cuotas vencidas</p>
             <p class="text-base font-bold text-red-600 dark:text-red-400 mt-1">{{ $collectionStats['overdueInstallments'] }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">Pagos procesando</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100">Pagos procesando</p>
             <p class="text-base font-bold text-blue-600 dark:text-blue-400 mt-1">{{ $collectionStats['processingPayments'] }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">Tasa interés prom.</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100">Tasa interés prom.</p>
             <p class="text-base font-bold text-gray-900 dark:text-white mt-1">{{ number_format($loanStats['avgInterestRate'], 1) }}%</p>
         </div>
     </div>
@@ -141,7 +141,7 @@
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Tendencia mensual</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Desembolsos vs cobranzas (6 meses)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Desembolsos vs cobranzas (6 meses)</p>
                 </div>
             </div>
             <div class="chart-container" style="height: 280px;">
@@ -153,7 +153,7 @@
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 md:p-6">
             <div class="mb-4">
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Distribución de préstamos</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Por estado actual</p>
+                <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Por estado actual</p>
             </div>
             <div class="chart-container flex items-center justify-center" style="height: 220px;">
                 <canvas id="loanStatusChart"></canvas>
@@ -163,7 +163,7 @@
                     <div class="flex items-center justify-between text-xs">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full {{ \Illuminate\Support\Arr::get(['approved' => 'bg-green-500', 'pending' => 'bg-amber-500', 'rejected' => 'bg-red-500', 'counter_offered' => 'bg-blue-500', 'disbursed' => 'bg-purple-500'], $status, 'bg-gray-400') }}"></span>
-                            <span class="text-gray-600 dark:text-gray-400 capitalize">{{ str_replace('_', ' ', $status) }}</span>
+                            <span class="text-gray-600 dark:text-gray-100 capitalize">{{ str_replace('_', ' ', $status) }}</span>
                         </div>
                         <span class="font-medium text-gray-900 dark:text-white">{{ $count }}</span>
                     </div>
@@ -179,7 +179,7 @@
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Ingresos por concepto</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Intereses, moras y comisiones</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Intereses, moras y comisiones</p>
                 </div>
             </div>
             <div class="chart-container" style="height: 260px;">
@@ -192,7 +192,7 @@
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Puntualidad de pagos</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Distribución del mes actual</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Distribución del mes actual</p>
                 </div>
             </div>
             <div class="chart-container flex items-center justify-center" style="height: 200px;">
@@ -201,15 +201,15 @@
             <div class="mt-4 grid grid-cols-3 gap-3">
                 <div class="text-center">
                     <p class="text-lg font-bold text-green-600 dark:text-green-400">{{ $paymentTimeliness['onTimePercent'] }}%</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">A tiempo</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100">A tiempo</p>
                 </div>
                 <div class="text-center">
                     <p class="text-lg font-bold text-blue-600 dark:text-blue-400">{{ $paymentTimeliness['gracePercent'] }}%</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">En gracia</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100">En gracia</p>
                 </div>
                 <div class="text-center">
                     <p class="text-lg font-bold text-red-600 dark:text-red-400">{{ $paymentTimeliness['latePercent'] }}%</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Con mora</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100">Con mora</p>
                 </div>
             </div>
         </div>
@@ -221,7 +221,7 @@
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 md:p-6">
             <div class="mb-4">
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Flujo de caja</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Ingresos vs egresos del mes</p>
+                <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Ingresos vs egresos del mes</p>
             </div>
             <div class="grid grid-cols-3 gap-3 mb-4">
                 <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center">
@@ -246,14 +246,14 @@
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 md:p-6">
             <div class="mb-4">
                 <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Rendimiento de inversiones</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Progreso de oportunidades activas</p>
+                <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Progreso de oportunidades activas</p>
             </div>
             <div class="space-y-3">
                 @forelse($investmentPerformance as $inv)
                     <div class="group">
                         <div class="flex items-center justify-between mb-1.5">
                             <p class="text-xs font-medium text-gray-900 dark:text-white truncate max-w-[60%]">{{ $inv['title'] }}</p>
-                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ $inv['progress'] }}%</span>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-100">{{ $inv['progress'] }}%</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
                             <div class="h-full rounded-full transition-all duration-700 ease-out {{ $inv['progress'] >= 75 ? 'bg-green-500' : ($inv['progress'] >= 50 ? 'bg-blue-500' : ($inv['progress'] >= 25 ? 'bg-amber-500' : 'bg-red-500')) }}"
@@ -270,11 +270,11 @@
             </div>
             <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 grid grid-cols-2 gap-3">
                 <div class="text-center">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Total recaudado</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100">Total recaudado</p>
                     <p class="text-sm font-bold text-gray-900 dark:text-white mt-0.5">S/ {{ number_format($investmentStats['totalRaised'], 0) }}</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Pagos pendientes</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-100">Pagos pendientes</p>
                     <p class="text-sm font-bold text-amber-600 dark:text-amber-400 mt-0.5">S/ {{ number_format($investmentStats['pendingPayouts'], 0) }}</p>
                 </div>
             </div>
@@ -285,25 +285,25 @@
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 md:p-6">
         <div class="mb-4">
             <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Principales deudores en mora</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Top 5 préstamos con mayor deuda vencida</p>
+            <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">Top 5 préstamos con mayor deuda vencida</p>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-xs">
                 <thead>
                     <tr class="border-b border-gray-100 dark:border-gray-800">
-                        <th class="text-left py-2.5 px-3 font-medium text-gray-500 dark:text-gray-400">Deudor</th>
-                        <th class="text-left py-2.5 px-3 font-medium text-gray-500 dark:text-gray-400">Código</th>
-                        <th class="text-right py-2.5 px-3 font-medium text-gray-500 dark:text-gray-400">Monto préstamo</th>
-                        <th class="text-right py-2.5 px-3 font-medium text-gray-500 dark:text-gray-400">Deuda vencida</th>
-                        <th class="text-right py-2.5 px-3 font-medium text-gray-500 dark:text-gray-400">% Vencido</th>
+                        <th class="text-left py-2.5 px-3 font-medium text-gray-500 dark:text-gray-100">Deudor</th>
+                        <th class="text-left py-2.5 px-3 font-medium text-gray-500 dark:text-gray-100">Código</th>
+                        <th class="text-right py-2.5 px-3 font-medium text-gray-500 dark:text-gray-100">Monto préstamo</th>
+                        <th class="text-right py-2.5 px-3 font-medium text-gray-500 dark:text-gray-100">Deuda vencida</th>
+                        <th class="text-right py-2.5 px-3 font-medium text-gray-500 dark:text-gray-100">% Vencido</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($topDebtors as $debtor)
                         <tr class="border-b border-gray-50 dark:border-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
                             <td class="py-2.5 px-3 font-medium text-gray-900 dark:text-white">{{ $debtor['name'] }}</td>
-                            <td class="py-2.5 px-3 text-gray-500 dark:text-gray-400 font-mono">{{ $debtor['code'] }}</td>
-                            <td class="py-2.5 px-3 text-right text-gray-600 dark:text-gray-300">S/ {{ number_format($debtor['total'], 0) }}</td>
+                            <td class="py-2.5 px-3 text-gray-500 dark:text-gray-100 font-mono">{{ $debtor['code'] }}</td>
+                            <td class="py-2.5 px-3 text-right text-gray-600 dark:text-gray-100">S/ {{ number_format($debtor['total'], 0) }}</td>
                             <td class="py-2.5 px-3 text-right font-medium text-red-600 dark:text-red-400">S/ {{ number_format($debtor['amount'], 0) }}</td>
                             <td class="py-2.5 px-3 text-right">
                                 @php $pct = $debtor['total'] > 0 ? round(($debtor['amount'] / $debtor['total']) * 100, 1) : 0; @endphp

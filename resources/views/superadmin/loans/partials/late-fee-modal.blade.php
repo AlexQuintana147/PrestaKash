@@ -25,7 +25,7 @@
                     <p class="text-[9px] text-gray-400 mt-0.5" id="lfm_subtitle"></p>
                 </div>
                 <button onclick="closeLateFeeModal()"
-                    class="text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0 mt-0.5">
+                    class="text-gray-400 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0 mt-0.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -91,7 +91,7 @@
                             <div class="relative">
                                 <input type="text" name="late_fee_daily_amount" id="lfm_daily" inputmode="numeric"
                                     readonly
-                                    class="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-500 dark:text-gray-400 cursor-not-allowed focus:outline-none transition-colors">
+                                    class="w-full bg-gray-100 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-500 dark:text-gray-100 cursor-not-allowed focus:outline-none transition-colors">
                                 <span
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-400 uppercase"
                                     id="lfm_daily_cur">S/</span>

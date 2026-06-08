@@ -52,7 +52,7 @@
             <p class="text-[11px] text-gray-400 mt-0.5">Préstamo completo</p>
         </div>
         <span class="flex-shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
-            {{ $loan->status === 'approved' ? 'bg-emerald-500 text-white' : ($loan->status === 'paid' ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300' : ($loan->status === 'counter_accepted' ? 'bg-amber-500 text-white' : 'bg-amber-500 text-white')) }}">
+            {{ $loan->status === 'approved' ? 'bg-emerald-500 text-white' : ($loan->status === 'paid' ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-100' : ($loan->status === 'counter_accepted' ? 'bg-amber-500 text-white' : 'bg-amber-500 text-white')) }}">
             {{ match($loan->status) { 'approved' => 'Activo', 'paid' => 'Pagado', 'pending' => 'Pendiente', 'counter_offered' => 'Contra-oferta', 'counter_accepted' => 'Aceptado', 'rejected' => 'Rechazado', default => $loan->status } }}
         </span>
     </div>
@@ -194,7 +194,7 @@
                                        ($inst->status === 'paid' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
                                        ($inst->status === 'processing' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400' :
                                        ($inst->status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' :
-                                       ($isOverdue ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'))))) }}">
+                                       ($isOverdue ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-100'))))) }}">
                                     @if($inst->status === 'approved')
                                         Pagado
                                     @elseif(isset($inst->is_interest_payment) && $inst->is_interest_payment && isset($inst->interest_payment) && $inst->interest_payment->paid_at)
@@ -211,8 +211,8 @@
                                 </span>
                             </div>
                             <div class="flex items-center gap-3 text-[10px]">
-                                <span class="text-gray-500 dark:text-gray-400">Capital: <strong class="text-gray-700 dark:text-gray-300 tabular-nums">{{ $cur }}{{ number_format($inst->capital ?? 0, 2) }}</strong></span>
-                                <span class="text-gray-500 dark:text-gray-400">Interés: <strong class="text-gray-700 dark:text-gray-300 tabular-nums">{{ $cur }}{{ number_format($inst->interest ?? 0, 2) }}</strong></span>
+                                <span class="text-gray-500 dark:text-gray-100">Capital: <strong class="text-gray-700 dark:text-gray-100 tabular-nums">{{ $cur }}{{ number_format($inst->capital ?? 0, 2) }}</strong></span>
+                                <span class="text-gray-500 dark:text-gray-100">Interés: <strong class="text-gray-700 dark:text-gray-100 tabular-nums">{{ $cur }}{{ number_format($inst->interest ?? 0, 2) }}</strong></span>
                                 @if($inst->late_fee > 0)
                                     <span class="font-bold text-orange-600 dark:text-orange-400 tabular-nums">+{{ $cur }}{{ number_format($inst->late_fee, 2) }} mora</span>
                                 @endif
@@ -235,7 +235,7 @@
     <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
         @if(!$userInstallments->onFirstPage())
             <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $userInstallments->currentPage() - 1 }}&source=modal"
-                class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 transition-colors">← Anterior</a>
+                class="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-100 transition-colors">← Anterior</a>
         @else
             <div></div>
         @endif
@@ -243,19 +243,19 @@
         <div class="flex items-center gap-1">
             @for($i = 1; $i <= $userInstallments->lastPage(); $i++)
                 @if($i == $userInstallments->currentPage())
-                    <span class="w-7 h-7 flex items-center justify-center rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold">{{ $i }}</span>
+                    <span class="w-7 h-7 flex items-center justify-center rounded-md bg-gray-900 dark:bg-white text-white dark:text-white text-[10px] font-bold">{{ $i }}</span>
                 @elseif(abs($i - $userInstallments->currentPage()) <= 2 || $i == 1 || $i == $userInstallments->lastPage())
                     <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $i }}&source=modal"
-                        class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-400 transition-colors">{{ $i }}</a>
+                        class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-100 transition-colors">{{ $i }}</a>
                 @elseif(abs($i - $userInstallments->currentPage()) == 3)
-                    <span class="text-gray-400 dark:text-gray-500 text-[10px]">...</span>
+                    <span class="text-gray-400 dark:text-gray-100 text-[10px]">...</span>
                 @endif
             @endfor
         </div>
 
         @if($userInstallments->hasMorePages())
             <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $userInstallments->currentPage() + 1 }}&source=modal"
-                class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg text-xs font-bold text-white dark:text-gray-900 transition-colors">Siguiente →</a>
+                class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg text-xs font-bold text-white dark:text-white transition-colors">Siguiente →</a>
         @else
             <div></div>
         @endif
@@ -283,16 +283,16 @@
                 <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-3">Abonos Realizados</p>
                 <div class="space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Abono a Capital</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Abono a Capital</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($paidCapital, 2) }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Abono Intereses</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Abono Intereses</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($paidInterest, 2) }}</span>
                     </div>
                     @if($paidLateFees > 0)
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Intereses por Mora pagados</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Intereses por Mora pagados</span>
                         <span class="text-xs font-bold text-orange-600 dark:text-orange-400 tabular-nums">{{ $cur }}{{ number_format($paidLateFees, 2) }}</span>
                     </div>
                     @endif
@@ -306,14 +306,14 @@
             </div>
 
             <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50">
-                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Balance Pendiente</p>
+                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-wider mb-3">Balance Pendiente</p>
                 <div class="space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Deuda de Capital</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Deuda de Capital</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($pendingCapital, 2) }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Intereses pendientes</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Intereses pendientes</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($pendingInterest, 2) }}</span>
                     </div>
                     @if($pendingLateFees > 0)
@@ -324,7 +324,7 @@
                     @endif
                     <div class="pt-2 mt-1 border-t border-gray-200 dark:border-gray-700/50">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-gray-700 dark:text-gray-300">Balance Total</span>
+                            <span class="text-[10px] font-bold text-gray-700 dark:text-gray-100">Balance Total</span>
                             <span class="text-sm font-black text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($balance, 2) }}</span>
                         </div>
                     </div>
@@ -335,15 +335,15 @@
                 <p class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-3">Resumen del Préstamo</p>
                 <div class="space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Capital prestado</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Capital prestado</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $cur }}{{ number_format($loan->amount, 2) }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Retorno esperado total</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Retorno esperado total</span>
                         <span class="text-xs font-bold text-blue-700 dark:text-blue-300 tabular-nums">{{ $cur }}{{ number_format($totalExpectedReturn, 2) }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">% Recuperado</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">% Recuperado</span>
                         <span class="text-xs font-bold {{ $totalPaidWithFees >= $totalExpectedReturn ? 'text-emerald-600' : 'text-blue-600' }} dark:text-blue-300 tabular-nums">{{ $totalExpectedReturn > 0 ? round($totalPaidWithFees / $totalExpectedReturn * 100, 1) : 0 }}%</span>
                     </div>
                 </div>
@@ -385,7 +385,7 @@
 
         <div class="px-5 py-2.5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
             <div class="relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-100 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" id="loans-search" placeholder="Buscar por código..." oninput="filterLoans()" class="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:border-gray-300 dark:focus:border-gray-500 transition-colors">
             </div>
         </div>
@@ -395,10 +395,10 @@
         <div id="loans-pagination" class="px-4 py-2.5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/30 flex-shrink-0 hidden">
             <div class="flex items-center justify-between gap-3">
                 <button onclick="loansPrevPage()" id="loans-prev-btn"
-                    class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-300 transition-colors disabled:opacity-30 disabled:pointer-events-none">← Anterior</button>
+                    class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-100 transition-colors disabled:opacity-30 disabled:pointer-events-none">← Anterior</button>
                 <div id="loans-page-dots" class="flex items-center gap-1"></div>
                 <button onclick="loansNextPage()" id="loans-next-btn"
-                    class="px-3 py-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-gray-200 rounded-lg text-[10px] font-bold text-white dark:text-gray-900 transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
+                    class="px-3 py-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-gray-200 rounded-lg text-[10px] font-bold text-white dark:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
             </div>
         </div>
     </div>
@@ -473,13 +473,13 @@ function renderLoansPage() {
                 <div class="flex items-center gap-1.5 mb-1">
                     <span class="text-sm font-bold ${codeColor}">${l.code}</span>${badges}
                 </div>
-                <div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-500 dark:text-gray-400">
-                    <span>${l.cur}<strong class="text-gray-600 dark:text-gray-300 tabular-nums ml-0.5">${Number(l.amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
+                <div class="flex items-center gap-x-4 gap-y-1 flex-wrap text-[11px] text-gray-500 dark:text-gray-100">
+                    <span>${l.cur}<strong class="text-gray-600 dark:text-gray-100 tabular-nums ml-0.5">${Number(l.amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
                     <span>Pagado: <strong class="text-emerald-600 dark:text-emerald-400 tabular-nums">${Number(l.paid).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
                     <span>Deuda: <strong class="${debtColor} tabular-nums">${Number(l.debt).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></span>
                 </div>
             </div>
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-100 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </a>`;
     });
     container.innerHTML = html;
@@ -495,7 +495,7 @@ function renderLoansPage() {
         for (let i = 1; i <= totalPages; i++) {
             const dot = document.createElement('button');
             dot.className = `w-7 h-7 flex items-center justify-center rounded-md text-[10px] font-bold transition-colors ${
-                i === loansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400'
+                i === loansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400'
             }`;
             dot.textContent = i;
             dot.onclick = function() { loansPage = i; renderLoansPage(); };
@@ -554,24 +554,24 @@ function closePaidModal() {
 
             @if($loan->disbursement_operation_number)
             <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50">
-                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Número de Operación</p>
+                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-wider mb-2">Número de Operación</p>
                 <p class="text-lg font-black text-gray-900 dark:text-white tabular-nums">{{ $loan->disbursement_operation_number }}</p>
             </div>
             @endif
 
             <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50">
-                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Cuenta del Cliente</p>
+                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-100 uppercase tracking-wider mb-2">Cuenta del Cliente</p>
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">Banco</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">Banco</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white">{{ $loan->bank_name ?? '-' }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">CTA</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">CTA</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $loan->account_number ?? '-' }}</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 dark:text-gray-400">CCI</span>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-100">CCI</span>
                         <span class="text-xs font-bold text-gray-900 dark:text-white tabular-nums">{{ $loan->cci ?? '-' }}</span>
                     </div>
                 </div>

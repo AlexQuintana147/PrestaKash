@@ -53,14 +53,14 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-[8px] text-center text-gray-400 dark:text-gray-500 py-2 font-medium">Click para ampliar</p>
+            <p class="text-[8px] text-center text-gray-400 dark:text-gray-100 py-2 font-medium">Click para ampliar</p>
         </div>
 
         <!-- Acciones (Derecha) -->
         <div id="vm_actions" class="w-full md:w-1/2 p-6 flex flex-col relative overflow-y-auto modal-scroll"
             style="scrollbar-width: thin; scrollbar-color: rgba(156,163,175,0.4) transparent;">
             <button onclick="closeValidateModal()"
-                class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                class="absolute top-4 right-4 text-gray-500 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -107,7 +107,7 @@
 
                 <div id="interest_voucher_notice"
                     class="hidden mt-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p class="text-[10px] text-gray-500 dark:text-gray-100 leading-relaxed">
                         El comprobante quedará archivado en el historial de pagos de interés de esta cuota (uno por cada pago de solo interés).
                     </p>
                 </div>
@@ -131,7 +131,7 @@
 
                 <div class="flex items-center gap-3">
                     <div class="flex-1 h-px bg-gray-100 dark:bg-gray-900"></div>
-                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase">o</span>
+                    <span class="text-[9px] font-black text-gray-400 dark:text-gray-100 uppercase">o</span>
                     <div class="flex-1 h-px bg-gray-100 dark:bg-gray-900"></div>
                 </div>
 
@@ -139,7 +139,7 @@
                     @csrf
                     <div class="text-left space-y-2">
                         <label
-                            class="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] block">Caja
+                            class="text-[9px] font-black text-gray-500 dark:text-gray-100 uppercase tracking-[0.2em] block">Caja
                             de Ingreso</label>
                         <div id="validate_cashbox_container">
                             <select name="cashbox_id" id="validate_cashbox_id" required

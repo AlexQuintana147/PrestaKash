@@ -116,7 +116,7 @@
             <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
         </a>
         <button onclick="toggleSidebar()"
-            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
+            class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors p-1">
             <svg id="menuOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -146,7 +146,7 @@
                 <a href="{{ route('superadmin.dashboard') }}" class="flex items-center">
                     <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
                 </a>
-                <button onclick="refreshSidebar(this)" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors" title="Refrescar">
+                <button onclick="refreshSidebar(this)" class="text-gray-500 hover:text-gray-700 dark:text-gray-100 dark:hover:text-gray-300 transition-colors" title="Refrescar">
                     <svg class="w-4 h-4 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -158,7 +158,7 @@
                 <a href="{{ route('superadmin.dashboard') }}" class="flex items-center">
                     <img src="/images/logo.webp" alt="PrestaKash" class="h-8 w-auto invert dark:invert-0">
                 </a>
-                <button onclick="refreshSidebar(this)" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors" title="Refrescar">
+                <button onclick="refreshSidebar(this)" class="text-gray-500 hover:text-gray-700 dark:text-gray-100 dark:hover:text-gray-300 transition-colors" title="Refrescar">
                     <svg class="w-4 h-4 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -171,12 +171,12 @@
                 <!-- Principal -->
                 <div>
                     <p
-                        class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-widest">
+                        class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-100 uppercase tracking-widest">
                         Principal</p>
                     <div class="space-y-1">
                         <a href="{{ route('superadmin.dashboard') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.dashboard') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.dashboard') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -186,7 +186,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('clients'))
                         <a href="{{ route('superadmin.users.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.users.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.users.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-3">
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -213,7 +213,7 @@
                         @if(auth()->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.workers.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.workers.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.workers.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -224,7 +224,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investors'))
                         <a href="{{ route('superadmin.investors.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.investors.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.investors.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-3">
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -246,7 +246,7 @@
                         @if(auth()->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.settings') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.settings*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.settings*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -259,7 +259,7 @@
                         @if(auth()->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.contracts.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.contracts*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.contracts*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
@@ -274,13 +274,13 @@
                 <!-- Finanzas -->
                 <div>
                     <p
-                        class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-widest">
+                        class="px-3 mb-1 text-xs font-semibold text-gray-600 dark:text-gray-100 uppercase tracking-widest">
                         Finanzas</p>
                     <div class="space-y-1">
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('loans'))
                         <a href="{{ route('superadmin.loans.index', ['filter' => 'pending']) }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.loans.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.loans.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-3">
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -303,7 +303,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investments'))
                         <a href="{{ route('superadmin.investments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ (request()->routeIs('superadmin.investments.*') && !request()->routeIs('superadmin.investments.payouts')) ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ (request()->routeIs('superadmin.investments.*') && !request()->routeIs('superadmin.investments.payouts')) ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-3">
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -335,7 +335,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('collections'))
                         <a href="{{ route('superadmin.installments.index') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.installments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.installments.index') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-3">
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -359,7 +359,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('investments'))
                         <a href="{{ route('superadmin.investments.payouts') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.investments.payouts') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.investments.payouts') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -370,7 +370,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('clients'))
                         <a href="{{ route('superadmin.referrals.payouts') }}" onclick="closeSidebar()"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.referrals.payouts') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.referrals.payouts') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <div class="flex items-center gap-3">
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -383,7 +383,7 @@
                         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('cashboxes'))
                         <a href="{{ route('superadmin.cashboxes.index') }}" onclick="closeSidebar()"
                             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                              {{ request()->routeIs('superadmin.cashboxes.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
+                              {{ request()->routeIs('superadmin.cashboxes.*') ? 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -401,7 +401,7 @@
 
                 <!-- Theme toggle -->
                 <button onclick="toggleTheme()" id="themeBtn"
-                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
                     <!-- Sun (light mode icon) -->
                     <svg id="iconSun" class="w-4 h-4 flex-shrink-0 hidden" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
@@ -447,7 +447,7 @@
                     <div class="min-w-0">
                         <p class="text-xs font-medium text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}
                         </p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">{{ Auth::user()->isSuperAdmin() ? 'Super Admin' : 'Trabajador' }}</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-100">{{ Auth::user()->isSuperAdmin() ? 'Super Admin' : 'Trabajador' }}</p>
                     </div>
                 </div>
 
@@ -455,7 +455,7 @@
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit"
-                        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
