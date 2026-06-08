@@ -17,7 +17,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            border-bottom: 1px solid #374151;
+            border-bottom: 1px solid #2a2a2a;
             color: white;
             padding: 10px 0;
             font-size: 0.875rem;
@@ -30,7 +30,7 @@
         }
 
         .input-field::placeholder {
-            color: #4b5563;
+            color: #6b7280;
         }
 
         .input-field:disabled {
@@ -40,7 +40,7 @@
         }
 
         select.input-field option {
-            background: #111827;
+            background: #111111;
             color: white;
         }
 
@@ -57,7 +57,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            border-bottom: 1px solid #374151;
+            border-bottom: 1px solid #2a2a2a;
             color: white;
             padding: 10px 24px 10px 0;
             font-size: 0.875rem;
@@ -85,7 +85,7 @@
         }
 
         .custom-select-trigger .placeholder {
-            color: #4b5563;
+            color: #6b7280;
         }
 
         .custom-select-dropdown {
@@ -93,8 +93,8 @@
             top: calc(100% + 4px);
             left: 0;
             right: 0;
-            background: #0f172a;
-            border: 1px solid #1f2937;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
             border-radius: 10px;
             max-height: 220px;
             overflow-y: auto;
@@ -109,10 +109,10 @@
 
         .custom-select-search {
             padding: 10px 14px;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #1a1a1a;
             position: sticky;
             top: 0;
-            background: #0f172a;
+            background: #0a0a0a;
         }
 
         .custom-select-search input {
@@ -125,19 +125,19 @@
         }
 
         .custom-select-search input::placeholder {
-            color: #4b5563;
+            color: #6b7280;
         }
 
         .custom-select-option {
             padding: 10px 14px;
             font-size: 0.8rem;
-            color: #d1d5db;
+            color: #e5e7eb;
             cursor: pointer;
             transition: background 0.1s, color 0.1s;
         }
 
         .custom-select-option:hover {
-            background: #1f2937;
+            background: #1a1a1a;
             color: white;
         }
 
@@ -154,20 +154,20 @@
         }
 
         .custom-select-dropdown::-webkit-scrollbar-thumb {
-            background: #374151;
+            background: #2a2a2a;
             border-radius: 4px;
         }
     </style>
 </head>
 
-<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-12" onload="noBack();"
+<body class="bg-black min-h-screen flex items-center justify-center px-4 py-12" onload="noBack();"
     onpageshow="if(event.persisted) noBack();">
     <div class="w-full max-w-xl">
 
         <div class="mb-10">
             <p class="text-xs font-semibold text-green-400 uppercase tracking-widest mb-1">PrestaKash</p>
             <h1 class="text-2xl font-bold text-white">Cuéntanos sobre ti</h1>
-            <p class="text-gray-500 text-sm mt-1">Paso 1 de 2 — Datos personales</p>
+            <p class="text-gray-400 text-sm mt-1">Paso 1 de 2 — Datos personales</p>
 
             <div class="mt-4 h-0.5 bg-gray-800 rounded-full">
                 <div class="h-0.5 bg-green-500 rounded-full w-1/2"></div>
@@ -190,46 +190,46 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Tipo de
+                    <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Tipo de
                         Persona</label>
                     <div class="flex gap-4 mt-2">
                         <label class="flex items-center gap-2 cursor-pointer group">
                             <input type="radio" name="person_type" value="natural"
-                                {{ (old('person_type', 'natural') == 'natural') ? 'checked' : '' }} class="hidden peer"
+                                {{ (old('person_type', Auth::user()->person_type ?? 'natural') == 'natural') ? 'checked' : '' }} class="hidden peer"
                                 onchange="togglePersonType(this.value)">
                             <div
                                 class="w-4 h-4 rounded-full border border-gray-700 peer-checked:border-green-500 peer-checked:bg-green-500 flex items-center justify-center transition-all">
                                 <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
                             </div>
-                            <span class="text-sm text-gray-400 peer-checked:text-white transition-colors">Natural</span>
+                            <span class="text-sm text-gray-300 peer-checked:text-white transition-colors">Natural</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer group">
                             <input type="radio" name="person_type" value="juridica"
-                                {{ (old('person_type') == 'juridica') ? 'checked' : '' }} class="hidden peer"
+                                {{ (old('person_type', Auth::user()->person_type ?? '') == 'juridica') ? 'checked' : '' }} class="hidden peer"
                                 onchange="togglePersonType(this.value)">
                             <div
                                 class="w-4 h-4 rounded-full border border-gray-700 peer-checked:border-green-500 peer-checked:bg-green-500 flex items-center justify-center transition-all">
                                 <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
                             </div>
-                            <span class="text-sm text-gray-400 peer-checked:text-white transition-colors">Jurídica</span>
+                            <span class="text-sm text-gray-300 peer-checked:text-white transition-colors">Jurídica</span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <div id="juridica-fields" class="{{ (old('person_type') == 'juridica') ? '' : 'hidden' }} space-y-8">
+            <div id="juridica-fields" class="{{ (old('person_type', Auth::user()->person_type ?? '') == 'juridica') ? '' : 'hidden' }} space-y-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">RUC</label>
-                        <input type="text" id="rucInput" name="ruc" value="{{ old('ruc') }}" maxlength="11"
+                        <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">RUC</label>
+                        <input type="text" id="rucInput" name="ruc" value="{{ old('ruc', Auth::user()->ruc ?? '') }}" maxlength="11"
                             oninput="this.value=this.value.replace(/\D/g,'')" class="input-field"
                             placeholder="20123456789">
                         <p id="rucError" class="text-red-500 text-[10px] mt-1 hidden">Este RUC ya está registrado</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Razón
+                        <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Razón
                             Social</label>
-                        <input type="text" name="business_name" value="{{ old('business_name') }}" class="input-field"
+                        <input type="text" name="business_name" value="{{ old('business_name', Auth::user()->business_name ?? '') }}" class="input-field"
                             oninput="this.value=this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.&,\-\(\)\'\"\/]/g,'')"
                             placeholder="Empresa S.A.C.">
                     </div>
@@ -237,40 +237,40 @@
             </div>
 
             <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Correo
+                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Correo
                     electrónico</label>
                 <input type="email" value="{{ Auth::user()->email }}" disabled class="input-field">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nombres</label>
-                    <input type="text" name="first_name" value="{{ old('first_name') }}" required
+                    <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Nombres</label>
+                    <input type="text" name="first_name" value="{{ old('first_name', Auth::user()->first_name ?? '') }}" required
                         placeholder="Mateo Pedro" oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                         class="input-field">
                 </div>
                 <div>
                     <label
-                        class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Apellidos</label>
-                    <input type="text" name="last_name" value="{{ old('last_name') }}" required
+                        class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Apellidos</label>
+                    <input type="text" name="last_name" value="{{ old('last_name', Auth::user()->last_name ?? '') }}" required
                         placeholder="Ej: Castillo Villa"
-                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')" class="input-field">
-                    <p class="text-[10px] text-gray-600 mt-1">Ingresa tus dos apellidos separados por un espacio.</p>
+                        oninput="this.value=this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'').replace(/(^|\s)\S/g,l=>l.toUpperCase())" class="input-field">
+                    <p class="text-[10px] text-gray-400 mt-1">Ingresa tus dos apellidos separados por un espacio.</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Nro.
+                    <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Nro.
                         DNI</label>
-                    <input type="text" id="dniInput" name="dni" value="{{ old('dni') }}" required placeholder="12345678"
+                    <input type="text" id="dniInput" name="dni" value="{{ old('dni', Auth::user()->dni ?? '') }}" required placeholder="12345678"
                         maxlength="8" inputmode="numeric" pattern="[0-9]{8}" class="input-field">
                     <p id="dniError" class="text-red-500 text-xs mt-1 hidden">Este DNI ya está registrado</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Teléfono
+                    <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Teléfono
                         celular</label>
-                    <input type="text" id="phoneInput" name="phone" value="{{ old('phone') }}" required
+                    <input type="text" id="phoneInput" name="phone" value="{{ old('phone', Auth::user()->phone ?? '') }}" required
                         placeholder="987654321" maxlength="9" oninput="this.value=this.value.replace(/\D/g,'')"
                         class="input-field">
                     <p id="phoneError" class="text-red-500 text-xs mt-1 hidden">Este celular ya está registrado</p>
@@ -281,11 +281,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
                 <div>
                     <label
-                        class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Departamento</label>
+                        class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Departamento</label>
                     <div class="custom-select" id="cs-department">
                         <button type="button" class="custom-select-trigger disabled" id="cs-department-trigger">
                             <span class="placeholder">Seleccionar</span>
-                            <svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor"
+                            <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
@@ -296,16 +296,16 @@
                                     id="cs-department-search"></div>
                             <div id="cs-department-options"></div>
                         </div>
-                        <input type="hidden" name="department" id="department" value="{{ old('department') }}">
+                        <input type="hidden" name="department" id="department" value="{{ old('department', Auth::user()->department ?? '') }}">
                     </div>
                 </div>
                 <div>
                     <label
-                        class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Provincia</label>
+                        class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Provincia</label>
                     <div class="custom-select" id="cs-province">
                         <button type="button" class="custom-select-trigger disabled" id="cs-province-trigger">
                             <span class="placeholder">Seleccionar</span>
-                            <svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor"
+                            <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
@@ -316,16 +316,16 @@
                                     id="cs-province-search"></div>
                             <div id="cs-province-options"></div>
                         </div>
-                        <input type="hidden" name="province" id="province" value="{{ old('province') }}">
+                        <input type="hidden" name="province" id="province" value="{{ old('province', Auth::user()->province ?? '') }}">
                     </div>
                 </div>
                 <div>
                     <label
-                        class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Distrito</label>
+                        class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Distrito</label>
                     <div class="custom-select" id="cs-district">
                         <button type="button" class="custom-select-trigger disabled" id="cs-district-trigger">
                             <span class="placeholder">Seleccionar</span>
-                            <svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor"
+                            <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
@@ -336,15 +336,15 @@
                                     id="cs-district-search"></div>
                             <div id="cs-district-options"></div>
                         </div>
-                        <input type="hidden" name="district" id="district" value="{{ old('district') }}">
+                        <input type="hidden" name="district" id="district" value="{{ old('district', Auth::user()->district ?? '') }}">
                     </div>
                 </div>
             </div>
 
             <!-- Dirección -->
             <div>
-                <label class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Dirección</label>
-                <input type="text" name="address" value="{{ old('address') }}" required
+                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Dirección</label>
+                <input type="text" name="address" value="{{ old('address', Auth::user()->address ?? '') }}" required
                     placeholder="Av. Arequipa 1234, Dpto 5B" class="input-field">
             </div>
 
@@ -400,7 +400,7 @@
                     div.dataset.id = item.id;
                     div.addEventListener('click', () => {
                         hidden.value = item.id;
-                        trigger.innerHTML = `<span>${item.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                        trigger.innerHTML = `<span>${item.name}</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
                         dropdown.classList.remove('open');
                         trigger.classList.remove('open');
                         if (onSelect) onSelect(item.id);
@@ -440,27 +440,18 @@
             onSelect: (id) => {
                 // Reset provincia y distrito
                 provCS.trigger._items = [];
-                provCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                provCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
                 provCS.hidden.value = '';
                 provCS.trigger.classList.add('disabled');
                 distCS.trigger._items = [];
-                distCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                distCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
                 distCS.hidden.value = '';
                 distCS.trigger.classList.add('disabled');
 
                 fetch(`/ubigeo/provinces/${id}`).then(r => r.json()).then(data => {
                     provCS.trigger._items = data;
                     provCS.trigger.classList.remove('disabled');
-                    @if(old('province'))
-                        const old = '{{ old('province') }}';
-                        const found = data.find(p => p.id == old);
-                        if (found) {
-                            provCS.hidden.value = found.id;
-                            provCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
-                            provCS.trigger._onSelect && provCS.trigger._onSelect(found.id);
-                        }
-                    @endif
-        });
+                });
             }
         });
 
@@ -470,22 +461,14 @@
             hiddenId: 'province',
             onSelect: (id) => {
                 distCS.trigger._items = [];
-                distCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                distCS.trigger.innerHTML = `<span class="placeholder">Seleccionar</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
                 distCS.hidden.value = '';
                 distCS.trigger.classList.add('disabled');
 
                 fetch(`/ubigeo/districts/${id}`).then(r => r.json()).then(data => {
                     distCS.trigger._items = data;
                     distCS.trigger.classList.remove('disabled');
-                    @if(old('district'))
-                        const old = '{{ old('district') }}';
-                        const found = data.find(d => d.id == old);
-                        if (found) {
-                            distCS.hidden.value = found.id;
-                            distCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
-                        }
-                    @endif
-        });
+                });
             }
         });
 
@@ -498,17 +481,40 @@
         fetch('/ubigeo/departments').then(r => r.json()).then(data => {
             deptCS.trigger._items = data;
             deptCS.trigger.classList.remove('disabled');
-            @if(old('department'))
-                const old = '{{ old('department') }}';
-                const found = data.find(d => d.id == old);
+            @php
+                $savedDept = old('department', Auth::user()->department ?? '');
+                $savedProv = old('province', Auth::user()->province ?? '');
+                $savedDist = old('district', Auth::user()->district ?? '');
+            @endphp
+            @if($savedDept)
+                const savedDept = '{{ $savedDept }}';
+                const found = data.find(d => d.id == savedDept);
                 if (found) {
                     deptCS.hidden.value = found.id;
-                    deptCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
-                    // Trigger cascade
-                    document.getElementById('cs-department-trigger').dispatchEvent(new CustomEvent('_select', { detail: found.id }));
+                    deptCS.trigger.innerHTML = `<span>${found.name}</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
                     fetch(`/ubigeo/provinces/${found.id}`).then(r => r.json()).then(provs => {
                         provCS.trigger._items = provs;
                         provCS.trigger.classList.remove('disabled');
+                        @if($savedProv)
+                            const savedProv = '{{ $savedProv }}';
+                            const provFound = provs.find(p => p.id == savedProv);
+                            if (provFound) {
+                                provCS.hidden.value = provFound.id;
+                                provCS.trigger.innerHTML = `<span>${provFound.name}</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                                fetch(`/ubigeo/districts/${provFound.id}`).then(r => r.json()).then(dists => {
+                                    distCS.trigger._items = dists;
+                                    distCS.trigger.classList.remove('disabled');
+                                    @if($savedDist)
+                                        const savedDist = '{{ $savedDist }}';
+                                        const distFound = dists.find(d => d.id == savedDist);
+                                        if (distFound) {
+                                            distCS.hidden.value = distFound.id;
+                                            distCS.trigger.innerHTML = `<span>${distFound.name}</span><svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
+                                        }
+                                    @endif
+                                });
+                            }
+                        @endif
                     });
                 }
             @endif
@@ -671,7 +677,7 @@
 
     <!-- Subtle loading overlay -->
     <div id="pk-loading" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-gray-950/60 backdrop-blur-sm absolute inset-0"></div>
+        <div class="bg-black/60 backdrop-blur-sm absolute inset-0"></div>
         <div class="relative flex flex-col items-center gap-3">
             <div class="w-8 h-8 border-2 border-gray-600 border-t-green-500 rounded-full animate-spin"></div>
             <p class="text-xs font-medium text-gray-400">Procesando...</p>

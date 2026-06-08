@@ -10,12 +10,12 @@
     <style>
         body { font-family: 'Roboto', sans-serif; }
         .doc-card {
-            background: #111827;
-            border: 1px solid #1f2937;
+            background: #111111;
+            border: 1px solid #1a1a1a;
             transition: all 0.2s;
         }
-        .doc-card:hover { border-color: #374151; }
-        .doc-card.captured { border-color: #10b981; background: linear-gradient(135deg, #064e3b 0%, #111827 100%); }
+        .doc-card:hover { border-color: #2a2a2a; }
+        .doc-card.captured { border-color: #10b981; background: linear-gradient(135deg, #064e3b 0%, #111111 100%); }
         .doc-card.captured:hover { border-color: #059669; }
         #cameraModal { display: none; }
         #cameraModal.active { display: flex !important; }
@@ -24,7 +24,7 @@
     </style>
 </head>
 
-<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-8" onload="noBack();"
+<body class="bg-black min-h-screen flex items-center justify-center px-4 py-8" onload="noBack();"
     onpageshow="if(event.persisted) noBack();">
     <div class="w-full max-w-lg">
 
@@ -32,12 +32,12 @@
         <div class="mb-8">
             <p class="text-xs font-semibold text-green-400 uppercase tracking-widest mb-1">PrestaKash</p>
             <h1 class="text-2xl font-bold text-white">Verifica tu identidad</h1>
-            <p class="text-gray-500 text-sm mt-1">Paso 2 de 2 — Documentos</p>
+            <p class="text-gray-400 text-sm mt-1">Paso 2 de 2 — Documentos</p>
 
             <!-- Barra de progreso -->
             <div class="mt-5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-[11px] font-medium text-gray-400">Progreso de Documentos</span>
+                    <span class="text-[11px] font-medium text-gray-300">Progreso de Documentos</span>
                     <span id="progressText" class="text-[11px] font-bold text-green-400 tabular-nums">0% (0 de 4)</span>
                 </div>
                 <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
@@ -61,7 +61,7 @@
             <!-- ══ Selfie Card ══ -->
             <div id="card-selfie" class="doc-card p-4 flex items-center gap-4">
                 <div class="flex-shrink-0 w-12 h-12 bg-gray-800/80 border border-gray-700/50 flex items-center justify-center">
-                    <svg id="icon-selfie" class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="icon-selfie" class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
                     </svg>
                 </div>
@@ -69,7 +69,7 @@
                     <div class="flex items-center gap-2 mb-0.5">
                         <span class="text-sm font-semibold text-white">Foto Selfie</span>
                     </div>
-                    <p class="text-[11px] text-gray-500 leading-relaxed">Captura tu rostro de frente con buena iluminación.</p>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">Captura tu rostro de frente con buena iluminación.</p>
                 </div>
                 <button type="button" onclick="openCamera()" id="btn-selfie"
                     class="flex-shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 transition-all">
@@ -82,13 +82,13 @@
             <!-- ══ DNI Frontal Card ══ -->
             <div id="card-dni-front" class="doc-card p-4 flex items-center gap-4">
                 <div class="flex-shrink-0 w-12 h-12 bg-gray-800/80 border border-gray-700/50 flex items-center justify-center">
-                    <svg id="icon-dni-front" class="w-6 h-6 text-gray-500" viewBox="0 0 32 32"><path fill="currentColor" d="M13.219,15.087l-0.049-0.024C13.681,14.524,14,13.801,14,13c0-1.657-1.343-3-3-3s-3,1.343-3,3c0,0.801,0.319,1.524,0.83,2.062l-0.049,0.024C7.668,15.829,7,17.078,7,18.415V21c0,0.552,0.448,1,1,1h6c0.552,0,1-0.448,1-1v-2.585C15,17.078,14.332,15.829,13.219,15.087z M11,11c1.103,0,2,0.897,2,2c0,1.103-0.897,2-2,2s-2-0.897-2-2C9,11.897,9.897,11,11,11z M14,21H8v-2.585c0-0.986,0.48-1.903,1.288-2.464l0.463-0.231C10.132,15.896,10.553,16,11,16s0.868-0.104,1.249-0.28l0.463,0.231C13.52,16.512,14,17.429,14,18.415V21z M28,5H4C2.343,5,1,6.343,1,8v16c0,1.657,1.343,3,3,3h24c1.657,0,3-1.343,3-3V8C31,6.343,29.657,5,28,5z M30,24c0,1.103-0.897,2-2,2H4c-1.103,0-2-0.897-2-2V8c0-1.103,0.897-2,2-2h24c1.103,0,2,0.897,2,2V24z M25,16.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,16,25,16.224,25,16.5z M25,18.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,18,25,16.224,25,18.5z M25,14.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,14,25,14.224,25,14.5z"/></svg>
+                    <svg id="icon-dni-front" class="w-6 h-6 text-gray-400" viewBox="0 0 32 32"><path fill="currentColor" d="M13.219,15.087l-0.049-0.024C13.681,14.524,14,13.801,14,13c0-1.657-1.343-3-3-3s-3,1.343-3,3c0,0.801,0.319,1.524,0.83,2.062l-0.049,0.024C7.668,15.829,7,17.078,7,18.415V21c0,0.552,0.448,1,1,1h6c0.552,0,1-0.448,1-1v-2.585C15,17.078,14.332,15.829,13.219,15.087z M11,11c1.103,0,2,0.897,2,2c0,1.103-0.897,2-2,2s-2-0.897-2-2C9,11.897,9.897,11,11,11z M14,21H8v-2.585c0-0.986,0.48-1.903,1.288-2.464l0.463-0.231C10.132,15.896,10.553,16,11,16s0.868-0.104,1.249-0.28l0.463,0.231C13.52,16.512,14,17.429,14,18.415V21z M28,5H4C2.343,5,1,6.343,1,8v16c0,1.657,1.343,3,3,3h24c1.657,0,3-1.343,3-3V8C31,6.343,29.657,5,28,5z M30,24c0,1.103-0.897,2-2,2H4c-1.103,0-2-0.897-2-2V8c0-1.103,0.897-2,2-2h24c1.103,0,2,0.897,2,2V24z M25,16.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,16,25,16.224,25,16.5z M25,18.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,18,25,16.224,25,18.5z M25,14.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,14,25,14.224,25,14.5z"/></svg>
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-0.5">
                         <span class="text-sm font-semibold text-white">DNI — Parte Frontal</span>
                     </div>
-                    <p class="text-[11px] text-gray-500 leading-relaxed">Enfoca el lado frontal del documento.</p>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">Enfoca el lado frontal del documento.</p>
                 </div>
                 <button type="button" onclick="openDniCamera('front')" id="btn-dni-front"
                     class="flex-shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 transition-all">
@@ -101,13 +101,13 @@
             <!-- ══ DNI Trasera Card ══ -->
             <div id="card-dni-back" class="doc-card p-4 flex items-center gap-4">
                 <div class="flex-shrink-0 w-12 h-12 bg-gray-800/80 border border-gray-700/50 flex items-center justify-center">
-                    <svg id="icon-dni-back" class="w-6 h-6 text-gray-500" viewBox="0 0 32 32"><path fill="currentColor" d="M13.219,15.087l-0.049-0.024C13.681,14.524,14,13.801,14,13c0-1.657-1.343-3-3-3s-3,1.343-3,3c0,0.801,0.319,1.524,0.83,2.062l-0.049,0.024C7.668,15.829,7,17.078,7,18.415V21c0,0.552,0.448,1,1,1h6c0.552,0,1-0.448,1-1v-2.585C15,17.078,14.332,15.829,13.219,15.087z M11,11c1.103,0,2,0.897,2,2c0,1.103-0.897,2-2,2s-2-0.897-2-2C9,11.897,9.897,11,11,11z M14,21H8v-2.585c0-0.986,0.48-1.903,1.288-2.464l0.463-0.231C10.132,15.896,10.553,16,11,16s0.868-0.104,1.249-0.28l0.463,0.231C13.52,16.512,14,17.429,14,18.415V21z M28,5H4C2.343,5,1,6.343,1,8v16c0,1.657,1.343,3,3,3h24c1.657,0,3-1.343,3-3V8C31,6.343,29.657,5,28,5z M30,24c0,1.103-0.897,2-2,2H4c-1.103,0-2-0.897-2-2V8c0-1.103,0.897-2,2-2h24c1.103,0,2,0.897,2,2V24z M25,16.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,16,25,16.224,25,16.5z M25,18.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,18,25,16.224,25,18.5z M25,14.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,14,25,14.224,25,14.5z"/></svg>
+                    <svg id="icon-dni-back" class="w-6 h-6 text-gray-400" viewBox="0 0 32 32"><path fill="currentColor" d="M13.219,15.087l-0.049-0.024C13.681,14.524,14,13.801,14,13c0-1.657-1.343-3-3-3s-3,1.343-3,3c0,0.801,0.319,1.524,0.83,2.062l-0.049,0.024C7.668,15.829,7,17.078,7,18.415V21c0,0.552,0.448,1,1,1h6c0.552,0,1-0.448,1-1v-2.585C15,17.078,14.332,15.829,13.219,15.087z M11,11c1.103,0,2,0.897,2,2c0,1.103-0.897,2-2,2s-2-0.897-2-2C9,11.897,9.897,11,11,11z M14,21H8v-2.585c0-0.986,0.48-1.903,1.288-2.464l0.463-0.231C10.132,15.896,10.553,16,11,16s0.868-0.104,1.249-0.28l0.463,0.231C13.52,16.512,14,17.429,14,18.415V21z M28,5H4C2.343,5,1,6.343,1,8v16c0,1.657,1.343,3,3,3h24c1.657,0,3-1.343,3-3V8C31,6.343,29.657,5,28,5z M30,24c0,1.103-0.897,2-2,2H4c-1.103,0-2-0.897-2-2V8c0-1.103,0.897-2,2-2h24c1.103,0,2,0.897,2,2V24z M25,16.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,16,25,16.224,25,16.5z M25,18.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,18,25,16.224,25,18.5z M25,14.5c0,0.276-0.224,0.5-0.5,0.5h-6c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5h6C24.776,14,25,14.224,25,14.5z"/></svg>
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-0.5">
                         <span class="text-sm font-semibold text-white">DNI — Parte Trasera</span>
                    </div>
-                    <p class="text-[11px] text-gray-500 leading-relaxed">Encuadra el reverso donde figura tu chip/firma.</p>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">Encuadra el reverso donde figura tu chip/firma.</p>
                 </div>
                 <button type="button" onclick="openDniCamera('back')" id="btn-dni-back"
                     class="flex-shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 transition-all">
@@ -120,7 +120,7 @@
             <!-- ══ Recibo Card ══ -->
             <div id="card-utility" class="doc-card p-4 flex items-center gap-4">
                 <div class="flex-shrink-0 w-12 h-12 bg-gray-800/80 border border-gray-700/50 flex items-center justify-center">
-                    <svg id="icon-utility" class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="icon-utility" class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
                     </svg>
                 </div>
@@ -128,7 +128,7 @@
                     <div class="flex items-center gap-2 mb-0.5">
                         <span class="text-sm font-semibold text-white">Recibo de Luz o Agua</span>
                     </div>
-                    <p class="text-[11px] text-gray-500 leading-relaxed">Recibo reciente de los últimos 3 meses.</p>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">Recibo reciente de los últimos 3 meses.</p>
                 </div>
                 <button type="button" onclick="openUtilityCamera()" id="btn-utility"
                     class="flex-shrink-0 flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 transition-all">
@@ -141,7 +141,7 @@
             <!-- Botones navegación -->
             <div class="pt-6 pb-2 flex items-center justify-between">
                 <a href="{{ route('onboarding.step1') }}"
-                    class="flex items-center gap-2 text-gray-400 hover:text-white font-medium text-sm px-4 py-2.5 hover:bg-gray-900/50 transition-colors">
+                    class="flex items-center gap-2 text-gray-300 hover:text-white font-medium text-sm px-4 py-2.5 hover:bg-gray-900/50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -160,12 +160,12 @@
 
     <!-- Modal cámara unificado -->
     <div id="cameraModal" class="fixed inset-0 bg-black hidden flex-col z-50">
-        <div id="cameraInner" class="max-w-md w-full flex flex-col h-full md:h-auto md:max-h-[92vh] md:my-auto md:mx-auto md:rounded-2xl overflow-hidden bg-black md:bg-gray-950">
+        <div id="cameraInner" class="max-w-md w-full flex flex-col h-full md:h-auto md:max-h-[92vh] md:my-auto md:mx-auto md:rounded-2xl overflow-hidden bg-black md:bg-black">
             <!-- Header -->
             <div class="flex items-center justify-between px-4 py-3 md:px-5 md:pt-5 md:pb-3 md:border-b md:border-gray-800/50">
                 <div>
                     <h3 class="text-sm md:text-base font-bold text-white" id="cameraTitle">Selfie</h3>
-                    <p class="text-[10px] md:text-[11px] text-gray-500" id="cameraHint">Centra tu rostro en el círculo</p>
+                    <p class="text-[10px] md:text-[11px] text-gray-400" id="cameraHint">Centra tu rostro en el círculo</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" id="switchCameraBtn" onclick="switchCamera()" class="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors" title="Cambiar cámara">
@@ -198,7 +198,7 @@
             </div>
 
             <!-- Botones -->
-            <div class="px-4 py-4 md:p-5 md:border-t md:border-gray-800/50 bg-black md:bg-gray-950">
+            <div class="px-4 py-4 md:p-5 md:border-t md:border-gray-800/50 bg-black md:bg-black">
                 <button type="button" id="captureBtn" onclick="capturePhoto()"
                     class="w-full bg-white hover:bg-gray-200 text-black font-bold py-4 md:py-3.5 transition-all flex items-center justify-center gap-2 text-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -482,7 +482,7 @@
 
     <!-- Subtle loading overlay -->
     <div id="pk-loading" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-gray-950/60 backdrop-blur-sm absolute inset-0"></div>
+        <div class="bg-black/60 backdrop-blur-sm absolute inset-0"></div>
         <div class="relative flex flex-col items-center gap-3">
             <div class="w-8 h-8 border-2 border-gray-600 border-t-green-500 rounded-full animate-spin"></div>
             <p class="text-xs font-medium text-gray-400">Subiendo documentos...</p>
