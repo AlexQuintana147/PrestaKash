@@ -42,6 +42,7 @@ class User extends Authenticatable
         'ghost_currency',
         'investor_rejection_reason',
         'investment_rejection_reason',
+        'dismissed_loan_notifications',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -55,6 +56,7 @@ class User extends Authenticatable
             'step1_completed' => 'boolean',
             'loan_interest_rate' => 'float',
             'credit_line' => 'decimal:2',
+            'dismissed_loan_notifications' => 'array',
         ];
     }
 

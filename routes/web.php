@@ -288,6 +288,7 @@ Route::middleware(['auth'])->prefix('panel')->name('client.')->group(function ()
     Route::get('/dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/sidebar-stats', [\App\Http\Controllers\Client\DashboardController::class, 'sidebarStats'])->name('sidebar-stats');
     Route::get('/loan-notifications', [\App\Http\Controllers\Client\DashboardController::class, 'loanNotifications'])->name('loan-notifications');
+    Route::post('/dismiss-notification', [\App\Http\Controllers\Client\DashboardController::class, 'dismissNotification'])->name('dismiss-notification');
     Route::get('/prestamos', [\App\Http\Controllers\Client\LoanController::class, 'index'])->name('loans');
     Route::get('/prestamos/pedir', [\App\Http\Controllers\Client\LoanController::class, 'create'])->name('loans.create');
     Route::post('/prestamos/pedir', [\App\Http\Controllers\Client\LoanController::class, 'store'])->name('loans.store');

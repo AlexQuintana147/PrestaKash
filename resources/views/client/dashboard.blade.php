@@ -205,52 +205,98 @@
         </button>
     </div>
 
-    @if($hasLoanNotifications)
-    <div id="loan-notifications" class="px-4 md:px-8 {{ $rejectedChange || $pendingChange || $hasPendingLoans ? 'pt-2' : 'pt-4' }}">
-        <div class="max-w-4xl mx-auto space-y-2">
-            @foreach($counterOfferLoans as $loan)
-            <a href="{{ route('client.loans') }}?open_counter={{ $loan->id }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-purple-500 animate-swing origin-top" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-900 dark:text-white">Tienes una contra-oferta</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">{{ $loan->code }} — {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
-                </div>
-                <span class="text-[9px] font-black text-purple-500 bg-purple-500/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Revisar</span>
-            </a>
-            @endforeach
+    @php
+        $notifCount = ($counterOfferLoans ?? collect())->count() + ($acceptedLoans ?? collect())->count() + ($rejectedLoans ?? collect())->count();
+    @endphp
 
-            @foreach($acceptedLoans as $loan)
-            <a href="{{ route('client.loans.history.show', $loan) }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {{-- Modal de notificaciones (siempre renderizado) --}}
+    <div id="notif-modal" class="fixed inset-0 z-[100] hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeNotifModal()"></div>
+        <!-- Modal content - bottom sheet en mobile, dropdown en desktop -->
+        <div class="absolute bottom-0 left-0 right-0 md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-md bg-white dark:bg-gray-900 rounded-t-2xl md:rounded-2xl shadow-2xl border-t border-gray-200/60 md:border border-gray-200/60 dark:border-gray-800 overflow-hidden transform transition-all duration-300 opacity-0 translate-y-full md:opacity-0 md:scale-95" id="notif-modal-content">
+            <!-- Handle para arrastrar en mobile -->
+            <div class="md:hidden flex justify-center pt-2 pb-1">
+                <div class="w-9 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+            </div>
+            <!-- Header -->
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                <div class="flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-[#006BFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Notificaciones</span>
+                    <span id="notif-count-label" class="text-xs text-gray-400 dark:text-gray-500">{{ $notifCount }} nueva{{ $notifCount != 1 ? 's' : '' }}</span>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-900 dark:text-white">¡Préstamo aprobado!</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">{{ $loan->code }} — {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
-                </div>
-                <span class="text-[9px] font-black text-[#00D26A] bg-[#00D26A]/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Aprobado</span>
-            </a>
-            @endforeach
+                <button onclick="closeNotifModal()" class="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <!-- Lista de notificaciones -->
+            <div id="notif-list" class="max-h-[360px] overflow-y-auto overscroll-contain divide-y divide-gray-100 dark:divide-gray-800/50">
 
-            @foreach($rejectedLoans as $loan)
-            <a href="{{ route('client.loans') }}" class="block pk-card px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {{-- Contra-ofertas --}}
+                @foreach($counterOfferLoans ?? [] as $loan)
+                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="group flex items-start gap-3 px-5 py-3.5 hover:bg-purple-50/50 dark:hover:bg-purple-900/5 transition-colors relative">
+                    <a href="javascript:void(0)" onclick="dismissAndGo({{ $loan->id }}, '{{ route('client.loans') }}?open_counter={{ $loan->id }}')" class="flex items-start gap-3 flex-1 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        </div>
+                        <div class="min-w-0 pt-0.5">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Contra-oferta recibida</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $loan->code }} · {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                        </div>
+                    </a>
+                    <button onclick="event.stopPropagation(); dismissNotif({{ $loan->id }})" title="Descartar"
+                            class="opacity-100 w-6 h-6 rounded-lg flex items-center justify-center text-gray-300 hover:text-gray-500 dark:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex-shrink-0 mt-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-900 dark:text-white">Préstamo rechazado</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-100 mt-0.5">{{ $loan->code }} — {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                @endforeach
+
+                {{-- Aprobados --}}
+                @foreach($acceptedLoans ?? [] as $loan)
+                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="group flex items-start gap-3 px-5 py-3.5 hover:bg-green-50/50 dark:hover:bg-green-900/5 transition-colors relative">
+                    <a href="javascript:void(0)" onclick="dismissAndGo({{ $loan->id }}, '{{ route('client.loans.history.show', $loan) }}')" class="flex items-start gap-3 flex-1 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="min-w-0 pt-0.5">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Préstamo aprobado</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $loan->code }} · {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                        </div>
+                    </a>
+                    <button onclick="event.stopPropagation(); dismissNotif({{ $loan->id }})" title="Descartar"
+                            class="opacity-100 w-6 h-6 rounded-lg flex items-center justify-center text-gray-300 hover:text-gray-500 dark:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex-shrink-0 mt-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <span class="text-[9px] font-black text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full uppercase flex-shrink-0">Rechazado</span>
-            </a>
-            @endforeach
+                @endforeach
+
+                {{-- Rechazados --}}
+                @foreach($rejectedLoans ?? [] as $loan)
+                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="group flex items-start gap-3 px-5 py-3.5 transition-colors relative">
+                    <div class="flex items-start gap-3 flex-1 min-w-0 cursor-default">
+                        <div class="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="min-w-0 pt-0.5">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Préstamo rechazado</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $loan->code }} · {{ $loan->currency === 'USD' ? '$' : 'S/' }}{{ number_format($loan->amount, 2) }}</p>
+                        </div>
+                    </div>
+                    <button onclick="event.stopPropagation(); dismissNotif({{ $loan->id }})" title="Descartar"
+                            class="opacity-100 w-6 h-6 rounded-lg flex items-center justify-center text-gray-300 hover:text-gray-500 dark:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex-shrink-0 mt-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                @endforeach
+            </div>
+            {{-- Estado vacío --}}
+            <div id="notif-empty" class="hidden px-5 py-10 text-center">
+                <svg class="w-10 h-10 mx-auto text-gray-200 dark:text-gray-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <p class="text-sm text-gray-400 dark:text-gray-500">No tienes notificaciones nuevas</p>
+            </div>
         </div>
     </div>
-    @else
-    <div id="loan-notifications"></div>
-    @endif
 
     {{-- Header + Title --}}
     <div class="px-4 md:px-8 pt-6 pb-5">
@@ -269,6 +315,16 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
+                    {{-- Botón notificaciones desktop - al lado del perfil --}}
+                    <button type="button" onclick="openNotifModal()" title="Notificaciones"
+                            class="hidden md:flex relative w-9 h-9 rounded-xl items-center justify-center text-gray-500 dark:text-gray-100 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/10 dark:hover:bg-[#4A90E2]/10 transition-colors duration-200">
+                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        @if($hasLoanNotifications)
+                        <span id="notif-badge" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{{ $notifCount > 9 ? '9+' : $notifCount }}</span>
+                        @else
+                        <span id="notif-badge" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center hidden"></span>
+                        @endif
+                    </button>
                     <button type="button" onclick="openProfileModal()" title="Ver perfil" class="w-9 h-9 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-100 hover:text-[#006BFF] dark:hover:text-[#4A90E2] hover:bg-[#006BFF]/10 dark:hover:bg-[#4A90E2]/10 transition-colors duration-200">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </button>
@@ -829,6 +885,106 @@
 
 <script>
     let accounts = [];
+
+    // ===== NOTIFICACIONES - MODAL =====
+    function openNotifModal() {
+        const modal = document.getElementById('notif-modal');
+        const content = document.getElementById('notif-modal-content');
+        if (!modal || !content) return;
+        // Resetear estilos inline (por si se setearon antes)
+        content.style.position = '';
+        content.style.top = '';
+        content.style.right = '';
+        content.style.left = '';
+        modal.classList.remove('hidden');
+        void content.offsetWidth;
+        content.classList.remove('opacity-0', 'translate-y-full', 'md:opacity-0', 'md:scale-95');
+        content.classList.add('opacity-100', 'translate-y-0', 'md:opacity-100', 'md:scale-100');
+    }
+
+    function closeNotifModal() {
+        const modal = document.getElementById('notif-modal');
+        const content = document.getElementById('notif-modal-content');
+        if (!modal || !content) return;
+        content.classList.add('opacity-0', 'translate-y-full', 'md:opacity-0', 'md:scale-95');
+        content.classList.remove('opacity-100', 'translate-y-0', 'md:opacity-100', 'md:scale-100');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function dismissNotif(loanId) {
+        const item = document.getElementById('notif-item-' + loanId);
+        if (!item) return;
+
+        // Animar salida del item
+        item.style.transition = 'all 0.25s ease';
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(20px)';
+        item.style.maxHeight = item.offsetHeight + 'px';
+
+        setTimeout(() => {
+            item.style.maxHeight = '0';
+            item.style.paddingTop = '0';
+            item.style.paddingBottom = '0';
+            item.style.marginBottom = '0';
+            item.style.overflow = 'hidden';
+            item.style.borderWidth = '0';
+        }, 150);
+
+        setTimeout(() => {
+            item.remove();
+            checkNotifEmpty();
+        }, 400);
+
+        // Enviar al servidor - usar navigator.sendBeacon para que sobreviva navegación
+        const formData = new FormData();
+        formData.append('loan_id', loanId);
+        formData.append('_token', '{{ csrf_token() }}');
+        navigator.sendBeacon('{{ route("client.dismiss-notification") }}', formData);
+    }
+
+    function dismissAndGo(loanId, url) {
+        // Solo navegar, NO descartar la notificación
+        window.location.href = url;
+    }
+
+    function checkNotifEmpty() {
+        const list = document.getElementById('notif-list');
+        const empty = document.getElementById('notif-empty');
+        const badge = document.getElementById('notif-badge');
+        const badgeHeader = document.getElementById('notif-badge-header');
+        const headerBtn = document.getElementById('notif-header-btn');
+        const countLabel = document.getElementById('notif-count-label');
+
+        if (list.children.length === 0) {
+            list.classList.add('hidden');
+            empty.classList.remove('hidden');
+            if (badge) badge.textContent = '';
+            if (badgeHeader) { badgeHeader.textContent = ''; badgeHeader.classList.add('hidden'); }
+            if (countLabel) countLabel.textContent = '0 nuevas';
+        } else {
+            const remaining = list.children.length;
+            const text = remaining > 9 ? '9+' : String(remaining);
+            if (badge) badge.textContent = text;
+            if (badgeHeader) { badgeHeader.textContent = text; badgeHeader.classList.remove('hidden'); }
+            if (countLabel) countLabel.textContent = remaining + ' nueva' + (remaining != 1 ? 's' : '');
+        }
+    }
+
+    // Inicializar badge del header al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+        const badgeHeader = document.getElementById('notif-badge-header');
+        const badge = document.getElementById('notif-badge');
+        const headerBtn = document.getElementById('notif-header-btn');
+        if (badge && badge.textContent.trim()) {
+            if (badgeHeader) { badgeHeader.textContent = badge.textContent; badgeHeader.classList.remove('hidden'); }
+            if (headerBtn) headerBtn.classList.remove('hidden');
+        }
+    });
+
+    // Cerrar modal con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeNotifModal();
+    });
 
     function openProfileModal() {
         document.getElementById('profileModal').classList.add('active');

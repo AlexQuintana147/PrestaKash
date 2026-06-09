@@ -11,6 +11,7 @@ use App\Models\UbigeoDistrict;
 use App\Models\UbigeoProvince;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -118,14 +119,14 @@ class DashboardController extends Controller
             ];
         })->values();
 
-        // Notificaciones de préstamos (solo las no vistas)
-        $loansLastVisited = session('loans_last_visited_at');
+        // Notificaciones de préstamos (solo las no descartadas)
+        $dismissedIds = $user->dismissed_loan_notifications ?? [];
         $counterOfferLoans = $user->loans->where('status', 'counter_offered')
-            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+            ->reject(fn($loan) => in_array((string)$loan->id, $dismissedIds));
         $acceptedLoans = $user->loans->whereIn('status', ['approved', 'counter_accepted'])
-            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+            ->reject(fn($loan) => in_array((string)$loan->id, $dismissedIds));
         $rejectedLoans = $user->loans->where('status', 'rejected')
-            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+            ->reject(fn($loan) => in_array((string)$loan->id, $dismissedIds));
 
         $hasLoanNotifications = $counterOfferLoans->isNotEmpty() || $acceptedLoans->isNotEmpty() || $rejectedLoans->isNotEmpty();
 
@@ -171,14 +172,14 @@ class DashboardController extends Controller
     public function loanNotifications()
     {
         $user = Auth::user()->load('loans');
-        $loansLastVisited = session('loans_last_visited_at');
+        $dismissedIds = $user->dismissed_loan_notifications ?? [];
 
         $counterOfferLoans = $user->loans->where('status', 'counter_offered')
-            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+            ->reject(fn($loan) => in_array((string)$loan->id, $dismissedIds));
         $acceptedLoans = $user->loans->whereIn('status', ['approved', 'counter_accepted'])
-            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+            ->reject(fn($loan) => in_array((string)$loan->id, $dismissedIds));
         $rejectedLoans = $user->loans->where('status', 'rejected')
-            ->when($loansLastVisited, fn($q) => $q->where('updated_at', '>', $loansLastVisited));
+            ->reject(fn($loan) => in_array((string)$loan->id, $dismissedIds));
 
         $notifications = [];
 
@@ -219,5 +220,21 @@ class DashboardController extends Controller
             'notifications' => $notifications,
             'pending_loans' => $user->loans->where('status', 'pending')->count(),
         ]);
+    }
+
+    public function dismissNotification(Request $request)
+    {
+        $loanId = $request->input('loan_id');
+        if (!$loanId) return response()->json(['error' => 'loan_id requerido'], 422);
+
+        $user = Auth::user();
+        $dismissed = $user->dismissed_loan_notifications ?? [];
+
+        if (!in_array((string) $loanId, $dismissed)) {
+            $dismissed[] = (string) $loanId;
+            $user->forceFill(['dismissed_loan_notifications' => $dismissed])->save();
+        }
+
+        return response()->json(['success' => true, 'remaining' => count($dismissed)]);
     }
 }
