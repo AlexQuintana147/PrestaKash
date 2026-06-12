@@ -96,6 +96,101 @@
             border-color: #ffffff;
         }
 
+        /* Step wizard */
+        .step-section {
+            display: none;
+            animation: stepFadeIn 0.35s ease;
+        }
+        .step-section.active {
+            display: block;
+        }
+        @keyframes stepFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.25s;
+            border: 2px solid #d1d5db;
+            color: #9ca3af;
+            background: transparent;
+            flex-shrink: 0;
+        }
+        .dark .step-dot {
+            border-color: #374151;
+            color: #6b7280;
+        }
+        .step-dot.active {
+            border-color: #111827;
+            color: #111827;
+            background: #111827;
+            color: #fff;
+        }
+        .dark .step-dot.active {
+            border-color: #fff;
+            background: #fff;
+            color: #111827;
+        }
+        .step-dot.completed {
+            border-color: #111827;
+            background: #111827;
+            color: #fff;
+        }
+        .dark .step-dot.completed {
+            border-color: #fff;
+            background: #fff;
+            color: #111827;
+        }
+        .step-line {
+            height: 2px;
+            flex: 1;
+            background: #d1d5db;
+            transition: background 0.25s;
+            min-width: 24px;
+        }
+        .dark .step-line {
+            background: #374151;
+        }
+        .step-line.completed {
+            background: #111827;
+        }
+        .dark .step-line.completed {
+            background: #fff;
+        }
+        .step-label {
+            font-size: 0.6rem;
+            text-align: center;
+            margin-top: 4px;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+        .step-label.active {
+            color: #111827;
+            font-weight: 600;
+        }
+        .dark .step-label.active {
+            color: #fff;
+        }
+        .step-label.completed {
+            color: #111827;
+        }
+        .dark .step-label.completed {
+            color: #fff;
+        }
+
         /* Custom scrollbar for dark mode compatibility */
         ::-webkit-scrollbar {
             width: 10px;
@@ -129,7 +224,7 @@
         }
     </style>
 
-    <div class="min-h-screen px-5 md:px-8 py-6">
+    <div class="min-h-screen px-5 md:px-8 py-6 max-w-2xl mx-auto">
 
         <div class="mb-6 flex items-center justify-between">
             <div>
@@ -148,6 +243,26 @@
                 Volver
             </a>
             @endif
+        </div>
+
+        {{-- Step indicator --}}
+        <div class="mb-8">
+            <div class="step-indicator">
+                <div class="flex flex-col items-center" style="flex:1">
+                    <div class="step-dot active" data-step="1">1</div>
+                    <div class="step-label active" data-step-label="1">Académico</div>
+                </div>
+                <div class="step-line" data-step-line="1"></div>
+                <div class="flex flex-col items-center" style="flex:1">
+                    <div class="step-dot" data-step="2">2</div>
+                    <div class="step-label" data-step-label="2">Social</div>
+                </div>
+                <div class="step-line" data-step-line="2"></div>
+                <div class="flex flex-col items-center" style="flex:1">
+                    <div class="step-dot" data-step="3">3</div>
+                    <div class="step-label" data-step-label="3">Laboral</div>
+                </div>
+            </div>
         </div>
 
         @if($errors->any())
@@ -169,163 +284,129 @@
         @endif
 
         <form action="{{ isset($editing) ? route('client.loans.profile.update') : route('client.loans.profile.store') }}"
-            method="POST">
+            method="POST" id="profileForm">
             @csrf
             @if(isset($editing)) @method('PUT') @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-0">
+            {{-- ==================== STEP 1: Académico ==================== --}}
+            <div class="step-section active" data-step-section="1">
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-5 pb-2 border-b border-gray-300 dark:border-gray-800">
+                    Información académica</p>
+                <div class="space-y-5">
 
-                <!-- Columna izquierda -->
-                <div>
-                    <p
-                        class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">
-                        Información académica</p>
-                    <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            @php
+                                $mainOptions = ['Secundaria completa', 'Educación superior', 'Ninguno de los anteriores'];
+                                $currentStatus = old('academic_status', $profile->academic_status ?? '');
 
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                @php
-                                    $mainOptions = ['Secundaria completa', 'Educación superior', 'Ninguno de los anteriores'];
-                                    $currentStatus = old('academic_status', $profile->academic_status ?? '');
-
-                                    // Determinar el valor principal si es educación superior
-                                    $mainValue = $currentStatus;
-                                    if (str_contains($currentStatus, 'Superior —')) {
-                                        $mainValue = 'Educación superior';
-                                    }
-                                @endphp
-                                @foreach($mainOptions as $opt)
-                                    <label class="option-card">
-                                        <input type="radio" name="main_academic_status" value="{{ $opt }}" {{ $mainValue === $opt ? 'checked' : '' }} required
-                                            onchange="syncCards(this); handleMainStatusChange(this.value)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span class="leading-tight">{{ $opt }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                            <input type="hidden" name="academic_status" id="academic_status_hidden" value="{{ $currentStatus }}">
+                                // Determinar el valor principal si es educación superior
+                                $mainValue = $currentStatus;
+                                if (str_contains($currentStatus, 'Superior —')) {
+                                    $mainValue = 'Educación superior';
+                                }
+                            @endphp
+                            @foreach($mainOptions as $opt)
+                                <label class="option-card">
+                                    <input type="radio" name="main_academic_status" value="{{ $opt }}" {{ $mainValue === $opt ? 'checked' : '' }} required
+                                        onchange="syncCards(this); handleMainStatusChange(this.value)">
+                                    <div class="check-box">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span class="leading-tight">{{ $opt }}</span>
+                                </label>
+                            @endforeach
                         </div>
-
-                        <!-- Sub-opciones Educación Superior -->
-                        <div id="education_superior_options" class="{{ $mainValue === 'Educación superior' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                            <div>
-                                <label class="block text-xs text-gray-600 mb-2">Tipo de educación</label>
-                                <div class="flex gap-2">
-                                    @php
-                                        $isTecnico = str_contains($currentStatus, 'Técnico');
-                                        $isUniversitario = str_contains($currentStatus, 'Universitario');
-                                    @endphp
-                                    <label class="option-card">
-                                        <input type="radio" name="education_type" value="Técnico" {{ $isTecnico ? 'checked' : '' }}
-                                            onchange="syncCards(this); handleEducationTypeChange(this.value)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>Técnico</span>
-                                    </label>
-                                    <label class="option-card">
-                                        <input type="radio" name="education_type" value="Universitario" {{ $isUniversitario ? 'checked' : '' }}
-                                            onchange="syncCards(this); handleEducationTypeChange(this.value)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>Universitario</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div id="education_level_container" class="{{ $isTecnico || $isUniversitario ? '' : 'hidden' }}">
-                                <label class="block text-xs text-gray-600 mb-2">Estado</label>
-                                <div id="level_options" class="grid grid-cols-2 gap-2">
-                                    <!-- Se llena por JS -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label id="label_institution" class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
-                            <input type="text" name="institution" id="input_institution"
-                                value="{{ old('institution', $profile->institution ?? '') }}" required
-                                placeholder="Ej: UNMSM"
-                                oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
-                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('institution') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
-                            @error('institution') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
-                            <input type="text" name="career" id="input_career"
-                                value="{{ old('career', $profile->career ?? '') }}" required
-                                placeholder="Ej: Ingeniería de Sistemas"
-                                oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
-                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('career') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
-                            @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                        </div>
-
+                        <input type="hidden" name="academic_status" id="academic_status_hidden" value="{{ $currentStatus }}">
                     </div>
+
+                    <!-- Sub-opciones Educación Superior -->
+                    <div id="education_superior_options" class="{{ $mainValue === 'Educación superior' ? '' : 'hidden' }} space-y-5 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">Tipo de educación</label>
+                            <div class="flex gap-2">
+                                @php
+                                    $isTecnico = str_contains($currentStatus, 'Técnico');
+                                    $isUniversitario = str_contains($currentStatus, 'Universitario');
+                                @endphp
+                                <label class="option-card">
+                                    <input type="radio" name="education_type" value="Técnico" {{ $isTecnico ? 'checked' : '' }}
+                                        onchange="syncCards(this); handleEducationTypeChange(this.value)">
+                                    <div class="check-box">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span>Técnico</span>
+                                </label>
+                                <label class="option-card">
+                                    <input type="radio" name="education_type" value="Universitario" {{ $isUniversitario ? 'checked' : '' }}
+                                        onchange="syncCards(this); handleEducationTypeChange(this.value)">
+                                    <div class="check-box">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                    <span>Universitario</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="education_level_container" class="{{ $isTecnico || $isUniversitario ? '' : 'hidden' }}">
+                            <label class="block text-xs text-gray-600 mb-2">Estado</label>
+                            <div id="level_options" class="grid grid-cols-2 gap-2">
+                                <!-- Se llena por JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label id="label_institution" class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
+                        <input type="text" name="institution" id="input_institution"
+                            value="{{ old('institution', $profile->institution ?? '') }}" required
+                            placeholder="Ej: UNMSM"
+                            oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
+                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('institution') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
+                        @error('institution') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
+                        <input type="text" name="career" id="input_career"
+                            value="{{ old('career', $profile->career ?? '') }}" required
+                            placeholder="Ej: Ingeniería de Sistemas"
+                            oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s\.]/g, '')"
+                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('career') border-red-500 @enderror disabled:opacity-30 disabled:cursor-not-allowed">
+                        @error('career') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
                 </div>
 
-                <!-- Columna derecha -->
-                <div class="mt-8 md:mt-0">
-                    <p
-                        class="text-xs text-gray-600 uppercase tracking-widest mb-4 pb-2 border-b border-gray-300 dark:border-gray-800">
-                        Situación social</p>
-                    <div class="space-y-4">
+                <div class="mt-8 flex justify-end">
+                    <button type="button" onclick="goToStep(2)" class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors text-gray-900 dark:text-white border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400">
+                        Siguiente →
+                    </button>
+                </div>
+            </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
-                                <div class="flex gap-2">
-                                    <label class="option-card">
-                                        <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleChildrenCount(this.value)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>Sí</span>
-                                    </label>
-                                    <label class="option-card">
-                                        <input type="radio" name="has_children" value="0" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleChildrenCount(this.value)">
-                                        <div class="check-box">
-                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </div>
-                                        <span>No</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div id="childrenCountField" class="{{ old('has_children', $profile->has_children ?? false) ? '' : 'hidden' }}">
-                                <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
-                                <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '') }}"
-                                    placeholder="0" min="1" max="20"
-                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                                    oninput="if(this.value && this.value < 1) this.value = 1; if(this.value > 20) this.value = 20;"
-                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
-                                @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                            </div>
-                        </div>
+            {{-- ==================== STEP 2: Social ==================== --}}
+            <div class="step-section" data-step-section="2">
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-5 pb-2 border-b border-gray-300 dark:border-gray-800">
+                    Situación social</p>
+                <div class="space-y-5">
 
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
+                            <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
                             <div class="flex gap-2">
                                 <label class="option-card">
-                                    <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
+                                    <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleChildrenCount(this.value)">
                                     <div class="check-box">
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                             <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
@@ -335,7 +416,7 @@
                                     <span>Sí</span>
                                 </label>
                                 <label class="option-card">
-                                    <input type="radio" name="is_employed" value="0" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
+                                    <input type="radio" name="has_children" value="0" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleChildrenCount(this.value)">
                                     <div class="check-box">
                                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                             <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
@@ -346,99 +427,135 @@
                                 </label>
                             </div>
                         </div>
+                        <div id="childrenCountField" class="{{ old('has_children', $profile->has_children ?? false) ? '' : 'hidden' }}">
+                            <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
+                            <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '') }}"
+                                placeholder="0" min="1" max="20"
+                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                oninput="if(this.value && this.value < 1) this.value = 1; if(this.value > 20) this.value = 20;"
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
+                            @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
 
-                        <!-- Detalle Empleo -->
-                        <div id="employmentDetailField" class="space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-
-                            <!-- Tipo de empleo (solo si trabaja) -->
-                            <div id="employmentTypeField" class="{{ old('is_employed', $profile->is_employed ?? false) ? '' : 'hidden' }}">
-                                <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
-                                <div class="flex gap-2">
-                                    @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
-                                        <label class="option-card">
-                                            <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }}
-                                                onchange="syncCards(this); toggleEmploymentSubFields(this.value)">
-                                            <div class="check-box">
-                                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                    <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                        stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                            <span>{{ $label }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                                @error('employment_type') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
-                            </div>
-
-                            <!-- Campos Dependiente -->
-                            <div id="dependiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'dependiente' ? '' : 'hidden' }} space-y-4">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs text-gray-600 mb-1">Empresa / Lugar</label>
-                                        <input type="text" name="workplace" value="{{ old('workplace', $profile->workplace ?? '') }}"
-                                            placeholder="Nombre de empresa"
-                                            oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-2">Estado civil</label>
+                        <div class="space-y-1.5">
+                            @foreach(['soltero' => 'Soltero/a', 'casado_separado' => 'Casado/a — bienes separados', 'casado_compartido' => 'Casado/a — bienes compartidos'] as $val => $label)
+                                <label class="option-card w-full">
+                                    <input type="radio" name="marital_status" value="{{ $val }}" {{ old('marital_status', $profile->marital_status ?? '') === $val ? 'checked' : '' }} required
+                                        onchange="syncCards(this); toggleSpouse()">
+                                    <div class="check-box">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs text-gray-600 mb-1">Cargo</label>
-                                        <input type="text" name="job_title" value="{{ old('job_title', $profile->job_title ?? '') }}"
-                                            placeholder="Puesto que ocupa"
-                                            oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
-                                    </div>
-                                </div>
-                            </div>
+                                    <span>{{ $label }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
 
-                            <!-- Campos Independiente -->
-                            <div id="independiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'independiente' ? '' : 'hidden' }}">
-                                <label class="block text-xs text-gray-600 mb-2">Usted es:</label>
-                                <div class="grid grid-cols-3 gap-2">
-                                    @foreach(['comerciante' => 'Comerciante', 'empresario' => 'Empresario', 'emprendedor' => 'Emprendedor'] as $val => $label)
-                                        <label class="option-card">
-                                            <input type="radio" name="independent_type" value="{{ $val }}" {{ old('independent_type', $profile->independent_type ?? '') === $val ? 'checked' : '' }}
-                                                onchange="syncCards(this)">
-                                            <div class="check-box">
-                                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                                    <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
-                                                        stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                            <span class="leading-tight text-[10px]">{{ $label }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
+                    <!-- Campos cónyuge -->
+                    <div id="spouseFields"
+                        class="{{ old('marital_status', $profile->marital_status ?? '') === 'casado_compartido' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
+                                <input type="text" name="spouse_first_name"
+                                    value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}"
+                                    placeholder="Nombres"
+                                    oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_first_name') border-red-500 @enderror">
+                                @error('spouse_first_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
-
-                            <!-- Ingreso Mensual (Siempre visible si se llega aquí, sea trabajando o no) -->
-                            <div id="incomeField">
-                                <label class="block text-xs text-gray-600 mb-1">Ingreso mensual aproximado (S/)</label>
-                                <input type="hidden" name="monthly_income" value="{{ old('monthly_income', isset($profile) ? $profile->monthly_income : '') }}">
-                                <input type="text" id="monthly_income_display" value="{{ old('monthly_income', isset($profile) ? number_format($profile->monthly_income, 2, '.', ',') : '') }}"
-                                    placeholder="100.00" step="0.01" min="100"
-                                    oninput="formatCurrency(this)"
-                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
-                                @error('monthly_income') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
+                                <input type="text" name="spouse_last_name"
+                                    value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}"
+                                    placeholder="Apellidos"
+                                    oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
+                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_last_name') border-red-500 @enderror">
+                                @error('spouse_last_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
-
                         <div>
-                            <label class="block text-xs text-gray-600 mb-1">Instagram <span
-                                    class="text-gray-500 dark:text-gray-100">(opcional)</span></label>
-                            <input type="text" name="instagram" value="{{ old('instagram', $profile->instagram ?? '') }}"
-                                placeholder="@usuario"
-                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('instagram') border-red-500 @enderror">
-                            @error('instagram') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                            <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
+                            <input type="text" name="spouse_dni"
+                                value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678"
+                                maxlength="8" oninput="this.value=this.value.replace(/\D/g,'')"
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_dni') border-red-500 @enderror">
+                            @error('spouse_dni') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
+                    </div>
 
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-2">Estado civil</label>
-                            <div class="space-y-1.5">
-                                @foreach(['soltero' => 'Soltero/a', 'casado_separado' => 'Casado/a — bienes separados', 'casado_compartido' => 'Casado/a — bienes compartidos'] as $val => $label)
-                                    <label class="option-card w-full">
-                                        <input type="radio" name="marital_status" value="{{ $val }}" {{ old('marital_status', $profile->marital_status ?? '') === $val ? 'checked' : '' }} required
-                                            onchange="syncCards(this); toggleSpouse()">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Instagram <span
+                                class="text-gray-500 dark:text-gray-100">(opcional)</span></label>
+                        <input type="text" name="instagram" value="{{ old('instagram', $profile->instagram ?? '') }}"
+                            placeholder="@usuario"
+                            class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('instagram') border-red-500 @enderror">
+                        @error('instagram') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                </div>
+
+                <div class="mt-8 flex items-center justify-between">
+                    <button type="button" onclick="goToStep(1)" class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors text-gray-500 dark:text-gray-400 border-gray-500 dark:border-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-900 dark:hover:border-white">
+                        ← Anterior
+                    </button>
+                    <button type="button" onclick="goToStep(3)" class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors text-gray-900 dark:text-white border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400">
+                        Siguiente →
+                    </button>
+                </div>
+            </div>
+
+            {{-- ==================== STEP 3: Laboral ==================== --}}
+            <div class="step-section" data-step-section="3">
+                <p class="text-xs text-gray-600 uppercase tracking-widest mb-5 pb-2 border-b border-gray-300 dark:border-gray-800">
+                    Situación laboral</p>
+                <div class="space-y-5">
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
+                        <div class="flex gap-2">
+                            <label class="option-card">
+                                <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
+                                <div class="check-box">
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                        <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <span>Sí</span>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="is_employed" value="0" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '0' ? 'checked' : '' }} onchange="syncCards(this); toggleEmployment()">
+                                <div class="check-box">
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                        <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Detalle Empleo -->
+                    <div id="employmentDetailField" class="space-y-5 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
+
+                        <!-- Tipo de empleo (solo si trabaja) -->
+                        <div id="employmentTypeField" class="{{ old('is_employed', $profile->is_employed ?? false) ? '' : 'hidden' }}">
+                            <label class="block text-xs text-gray-600 mb-2">Tipo de trabajo</label>
+                            <div class="flex gap-2">
+                                @foreach(['dependiente' => 'Dependiente', 'independiente' => 'Independiente'] as $val => $label)
+                                    <label class="option-card">
+                                        <input type="radio" name="employment_type" value="{{ $val }}" {{ old('employment_type', $profile->employment_type ?? '') === $val ? 'checked' : '' }}
+                                            onchange="syncCards(this); toggleEmploymentSubFields(this.value)">
                                         <div class="check-box">
                                             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                                 <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
@@ -449,59 +566,178 @@
                                     </label>
                                 @endforeach
                             </div>
+                            @error('employment_type') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                        <!-- Campos cónyuge -->
-                        <div id="spouseFields"
-                            class="{{ old('marital_status', $profile->marital_status ?? '') === 'casado_compartido' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
-                            <div class="grid grid-cols-2 gap-3">
+                        <!-- Campos Dependiente -->
+                        <div id="dependiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'dependiente' ? '' : 'hidden' }} space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
-                                    <input type="text" name="spouse_first_name"
-                                        value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}"
-                                        placeholder="Nombres"
+                                    <label class="block text-xs text-gray-600 mb-1">Empresa / Lugar</label>
+                                    <input type="text" name="workplace" value="{{ old('workplace', $profile->workplace ?? '') }}"
+                                        placeholder="Nombre de empresa"
                                         oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_first_name') border-red-500 @enderror">
-                                    @error('spouse_first_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
-                                    @enderror
+                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
-                                    <input type="text" name="spouse_last_name"
-                                        value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}"
-                                        placeholder="Apellidos"
+                                    <label class="block text-xs text-gray-600 mb-1">Cargo</label>
+                                    <input type="text" name="job_title" value="{{ old('job_title', $profile->job_title ?? '') }}"
+                                        placeholder="Puesto que ocupa"
                                         oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
-                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_last_name') border-red-500 @enderror">
-                                    @error('spouse_last_name') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
-                                    @enderror
+                                        class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                 </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
-                                <input type="text" name="spouse_dni"
-                                    value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678"
-                                    maxlength="8" oninput="this.value=this.value.replace(/\D/g,'')"
-                                    class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-xs py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100 @error('spouse_dni') border-red-500 @enderror">
-                                @error('spouse_dni') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
+                        <!-- Campos Independiente -->
+                        <div id="independiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'independiente' ? '' : 'hidden' }}">
+                            <label class="block text-xs text-gray-600 mb-2">Usted es:</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                @foreach(['comerciante' => 'Comerciante', 'empresario' => 'Empresario', 'emprendedor' => 'Emprendedor'] as $val => $label)
+                                    <label class="option-card">
+                                        <input type="radio" name="independent_type" value="{{ $val }}" {{ old('independent_type', $profile->independent_type ?? '') === $val ? 'checked' : '' }}
+                                            onchange="syncCards(this)">
+                                        <div class="check-box">
+                                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <span class="leading-tight text-[10px]">{{ $label }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- Ingreso Mensual -->
+                        <div id="incomeField">
+                            <label class="block text-xs text-gray-600 mb-1">Ingreso mensual aproximado (S/)</label>
+                            <input type="hidden" name="monthly_income" value="{{ old('monthly_income', isset($profile) ? $profile->monthly_income : '') }}">
+                            <input type="text" id="monthly_income_display" value="{{ old('monthly_income', isset($profile) ? number_format($profile->monthly_income, 2, '.', ',') : '') }}"
+                                placeholder="100.00" step="0.01" min="100"
+                                oninput="formatCurrency(this)"
+                                class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
+                            @error('monthly_income') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <button type="submit" id="profileSubmitBtn"
-                    class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-900 dark:disabled:hover:text-white disabled:hover:border-gray-900 dark:disabled:hover:border-white text-gray-900 dark:text-white border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400">
-                    {{ isset($editing) ? 'Enviar solicitud de cambio →' : 'Guardar perfil →' }}
-                </button>
+                <div class="mt-8 flex items-center justify-between">
+                    <button type="button" onclick="goToStep(2)" class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors text-gray-500 dark:text-gray-400 border-gray-500 dark:border-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-900 dark:hover:border-white">
+                        ← Anterior
+                    </button>
+                    <button type="submit" id="profileSubmitBtn"
+                        class="text-sm font-medium border-b pb-0.5 bg-transparent transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-900 dark:disabled:hover:text-white disabled:hover:border-gray-900 dark:disabled:hover:border-white text-gray-900 dark:text-white border-gray-900 dark:border-white hover:text-gray-500 dark:hover:text-gray-400 hover:border-gray-500 dark:hover:border-gray-400">
+                        {{ isset($editing) ? 'Enviar solicitud de cambio →' : 'Guardar perfil →' }}
+                    </button>
+                </div>
             </div>
 
         </form>
     </div>
 
     <script>
+        // ===== Step navigation =====
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function goToStep(step) {
+            if (step < 1 || step > totalSteps) return;
+
+            // Only validate when going forward
+            if (step > currentStep) {
+                const section = document.querySelector(`.step-section[data-step-section="${currentStep}"]`);
+                const requiredFields = section.querySelectorAll('input[required]:not(:disabled), select[required]:not(:disabled)');
+                let firstInvalid = null;
+
+                requiredFields.forEach(field => {
+                    if (field.type === 'radio') {
+                        const name = field.name;
+                        const checked = section.querySelector(`input[name="${name}"]:checked`);
+                        if (!checked) {
+                            if (!firstInvalid) firstInvalid = field;
+                            // Highlight all radios in group
+                            section.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                                r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400');
+                            });
+                        } else {
+                            section.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                                r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400');
+                            });
+                        }
+                    } else {
+                        if (!field.value.trim()) {
+                            if (!firstInvalid) firstInvalid = field;
+                            field.classList.add('border-red-500');
+                        } else {
+                            field.classList.remove('border-red-500');
+                        }
+                    }
+                });
+
+                // Also validate hidden academic_status for step 1
+                if (currentStep === 1) {
+                    const hiddenStatus = document.getElementById('academic_status_hidden');
+                    if (hiddenStatus && !hiddenStatus.value) {
+                        if (!firstInvalid) firstInvalid = hiddenStatus;
+                    }
+                }
+
+                if (firstInvalid) {
+                    // Show inline message
+                    let msg = section.querySelector('.step-validation-msg');
+                    if (!msg) {
+                        msg = document.createElement('p');
+                        msg.className = 'step-validation-msg text-red-500 text-xs mt-2 mb-0';
+                        msg.textContent = 'Completa todos los campos requeridos para continuar.';
+                        const navDiv = section.querySelector('.mt-8');
+                        if (navDiv) navDiv.before(msg);
+                    }
+                    if (firstInvalid.focus) firstInvalid.focus();
+                    return;
+                }
+
+                // Remove validation message if exists
+                const section2 = document.querySelector(`.step-section[data-step-section="${currentStep}"]`);
+                const msg2 = section2?.querySelector('.step-validation-msg');
+                if (msg2) msg2.remove();
+            }
+
+            // Hide current
+            document.querySelector(`.step-section[data-step-section="${currentStep}"]`).classList.remove('active');
+            // Show target
+            document.querySelector(`.step-section[data-step-section="${step}"]`).classList.add('active');
+
+            currentStep = step;
+            updateStepIndicator();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateStepIndicator() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const dot = document.querySelector(`.step-dot[data-step="${i}"]`);
+                const label = document.querySelector(`.step-label[data-step-label="${i}"]`);
+                const line = document.querySelector(`.step-line[data-step-line="${i}"]`);
+
+                dot.classList.remove('active', 'completed');
+                label.classList.remove('active', 'completed');
+                if (line) line.classList.remove('completed');
+
+                if (i < currentStep) {
+                    dot.classList.add('completed');
+                    label.classList.add('completed');
+                    if (line) line.classList.add('completed');
+                } else if (i === currentStep) {
+                    dot.classList.add('active');
+                    label.classList.add('active');
+                }
+            }
+        }
+
+        // ===== Original logic =====
         document.addEventListener('DOMContentLoaded', function () {
             // Inicializar estado de las tarjetas
             document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
@@ -520,6 +756,11 @@
                     }
                 }
             }
+
+            // If editing with existing data, determine initial step
+            @if(isset($editing))
+            // Start at step 1 for editing
+            @endif
         });
 
         function syncCards(input) {
