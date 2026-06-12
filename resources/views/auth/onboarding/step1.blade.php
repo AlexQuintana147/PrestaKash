@@ -276,6 +276,21 @@
         <form action="{{ route('onboarding.step1.store') }}" method="POST" id="onboarding-form" novalidate>
             @csrf
 
+            <script>
+            // Prevenir que ENTER envíe el formulario desde campos de texto
+            document.getElementById('onboarding-form').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+                    e.preventDefault();
+                    // Simular clic en el botón "Continuar" del paso actual
+                    var currentSection = document.getElementById('step-section-' + currentStep);
+                    if (currentSection) {
+                        var continueBtn = currentSection.querySelector('.nav-btn-primary');
+                        if (continueBtn) continueBtn.click();
+                    }
+                }
+            });
+            </script>
+
             <!-- ========== SECCIÓN 1: Identidad ========== -->
             <div class="step-section active" id="step-section-1">
 
@@ -386,7 +401,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         Anterior
                     </button>
-                    <button type="button" onclick="goToStep(3)" class="nav-btn nav-btn-primary">
+                    <button type="button" id="step2ContinueBtn" onclick="goToStep(3)" class="nav-btn nav-btn-primary">
                         Continuar
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </button>
@@ -498,7 +513,7 @@
         let currentStep = 1;
         const totalSteps = 4;
 
-        function goToStep(step) {
+        function goToStep(step, keepErrors) {
             if (step < 1 || step > totalSteps) return;
 
             // Si vamos hacia adelante, validar el paso actual primero
@@ -511,8 +526,8 @@
                 }
             }
 
-            // Limpiar errores al cambiar de paso
-            clearAllErrors();
+            // Limpiar errores al cambiar de paso (a menos que se indique lo contrario)
+            if (!keepErrors) clearAllErrors();
 
             // Ocultar sección actual
             const currentSection = document.getElementById('step-section-' + currentStep);
@@ -649,6 +664,24 @@
                     isValid = false;
                     return;
                 }
+                if (name === 'last_name') {
+                    const words = value.split(/\s+/).filter(w => w.length > 0);
+                    if (words.length < 2) {
+                        showFieldError(field, 'Debes ingresar al menos dos apellidos');
+                        if (!firstInvalid) firstInvalid = field;
+                        isValid = false;
+                        return;
+                    }
+                }
+                if (name === 'address') {
+                    const words = value.split(/\s+/).filter(w => w.length > 0);
+                    if (words.length < 2) {
+                        showFieldError(field, 'La dirección debe tener al menos dos palabras');
+                        if (!firstInvalid) firstInvalid = field;
+                        isValid = false;
+                        return;
+                    }
+                }
                 if (name === 'ruc' && value !== '' && !/^(10|20)\d{9}$/.test(value)) {
                     showFieldError(field, label + ' debe tener 11 dígitos y comenzar con 10 o 20');
                     if (!firstInvalid) firstInvalid = field;
@@ -656,6 +689,22 @@
                     return;
                 }
             });
+
+            // Validar que teléfono/DNI no estén duplicados (solo en paso 2)
+            if (stepNum === 2) {
+                const phoneField = section.querySelector('[name="phone"]');
+                if (phoneField && !phoneValid && phoneField.value.trim().length === 9) {
+                    showFieldError(phoneField, 'Este celular ya está registrado');
+                    if (!firstInvalid) firstInvalid = phoneField;
+                    isValid = false;
+                }
+                const dniField = section.querySelector('[name="dni"]');
+                if (dniField && !dniValid && dniField.value.trim().length === 8) {
+                    showFieldError(dniField, 'Este DNI ya está registrado');
+                    if (!firstInvalid) firstInvalid = dniField;
+                    isValid = false;
+                }
+            }
 
             return { valid: isValid, firstInvalid };
         }
@@ -667,13 +716,20 @@
                 const result = validateStep(s);
                 if (!result.valid) {
                     e.preventDefault();
-                    goToStep(s);
+                    goToStep(s, true); // true = no borrar los errores recién mostrados
                     setTimeout(() => {
                         result.firstInvalid?.focus();
                         result.firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 350);
                     return;
                 }
+            }
+            // Validación OK — mostrar overlay de "Procesando..."
+            var overlay = document.getElementById('pk-loading');
+            if (overlay) {
+                overlay.classList.remove('opacity-0');
+                overlay.classList.add('opacity-100');
+                overlay.classList.add('pointer-events-auto');
             }
         });
 
@@ -895,12 +951,25 @@
         let rucValid = true;
 
         function updateSubmitButton() {
-            if (!dniValid || !phoneValid || !rucValid) {
+            const blocked = !dniValid || !phoneValid || !rucValid;
+            if (blocked) {
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
             } else {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            // También bloquear el botón "Continuar" del paso 2 si el teléfono o DNI están duplicados
+            const step2Btn = document.getElementById('step2ContinueBtn');
+            if (step2Btn) {
+                const step2Blocked = !dniValid || !phoneValid;
+                if (step2Blocked) {
+                    step2Btn.disabled = true;
+                    step2Btn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    step2Btn.disabled = false;
+                    step2Btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
             }
         }
 
@@ -919,13 +988,19 @@
                 rucCheckTimeout = setTimeout(() => {
                     fetch('/check-ruc', {
                         method: 'POST',
+                        redirect: 'error',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
                         body: JSON.stringify({ ruc: ruc })
                     })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) throw new Error('Server error');
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.exists) {
                                 rucError.classList.remove('hidden');
@@ -951,6 +1026,7 @@
 
                 if (dni.length !== 8) {
                     dniError.classList.add('hidden');
+                    dniInput.classList.remove('field-error');
                     dniValid = true;
                     updateSubmitButton();
                     return;
@@ -959,19 +1035,27 @@
                 dniCheckTimeout = setTimeout(() => {
                     fetch('/check-dni', {
                         method: 'POST',
+                        redirect: 'error',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
                         body: JSON.stringify({ dni: dni })
                     })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) throw new Error('Server error');
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.exists) {
                                 dniError.classList.remove('hidden');
+                                dniInput.classList.add('field-error');
                                 dniValid = false;
                             } else {
                                 dniError.classList.add('hidden');
+                                dniInput.classList.remove('field-error');
                                 dniValid = true;
                             }
                             updateSubmitButton();
@@ -990,6 +1074,7 @@
 
                 if (phone.length !== 9) {
                     phoneError.classList.add('hidden');
+                    phoneInput.classList.remove('field-error');
                     phoneValid = true;
                     updateSubmitButton();
                     return;
@@ -998,19 +1083,27 @@
                 phoneCheckTimeout = setTimeout(() => {
                     fetch('/check-phone', {
                         method: 'POST',
+                        redirect: 'error',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
                         body: JSON.stringify({ phone: phone })
                     })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) throw new Error('Server error');
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.exists) {
                                 phoneError.classList.remove('hidden');
+                                phoneInput.classList.add('field-error');
                                 phoneValid = false;
                             } else {
                                 phoneError.classList.add('hidden');
+                                phoneInput.classList.remove('field-error');
                                 phoneValid = true;
                             }
                             updateSubmitButton();
@@ -1021,6 +1114,91 @@
                 }, 500);
             });
         }
+
+        // Verificar campos precargados al cargar la página
+        function checkPrefilledFields() {
+            // Verificar DNI
+            if (dniInput && dniInput.value.length === 8) {
+                fetch('/check-dni', {
+                    method: 'POST',
+                    redirect: 'error',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ dni: dniInput.value })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Server error');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.exists) {
+                            document.getElementById('dniError').classList.remove('hidden');
+                            dniInput.classList.add('field-error');
+                            dniValid = false;
+                        }
+                        updateSubmitButton();
+                    })
+                    .catch(() => {});
+            }
+            // Verificar teléfono
+            if (phoneInput && phoneInput.value.length === 9) {
+                fetch('/check-phone', {
+                    method: 'POST',
+                    redirect: 'error',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ phone: phoneInput.value })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Server error');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.exists) {
+                            phoneError.classList.remove('hidden');
+                            phoneInput.classList.add('field-error');
+                            phoneValid = false;
+                        }
+                        updateSubmitButton();
+                    })
+                    .catch(() => {});
+            }
+            // Verificar RUC
+            if (rucInput && rucInput.value.length === 11) {
+                fetch('/check-ruc', {
+                    method: 'POST',
+                    redirect: 'error',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ ruc: rucInput.value })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Server error');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.exists) {
+                            document.getElementById('rucError').classList.remove('hidden');
+                            rucValid = false;
+                        }
+                        updateSubmitButton();
+                    })
+                    .catch(() => {});
+            }
+        }
+        checkPrefilledFields();
     </script>
 
     @include('partials.global-scripts')
@@ -1033,19 +1211,6 @@
             <p class="text-xs font-medium text-gray-400">Procesando...</p>
         </div>
     </div>
-    <script>
-        document.addEventListener('submit', function(e) {
-            var form = e.target;
-            if (form.tagName === 'FORM' && !form.dataset.noLoading) {
-                var overlay = document.getElementById('pk-loading');
-                if (overlay) {
-                    overlay.classList.remove('opacity-0');
-                    overlay.classList.add('opacity-100');
-                    overlay.classList.add('pointer-events-auto');
-                }
-            }
-        });
-    </script>
 
 </body>
 

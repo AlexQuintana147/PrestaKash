@@ -46,7 +46,17 @@ class OnboardingController extends Controller
             'department' => ['required', 'string', 'max:100'],
             'province' => ['required', 'string', 'max:100'],
             'district' => ['required', 'string', 'max:100'],
-            'address' => ['required', 'string', 'max:200'],
+            'address' => [
+                'required',
+                'string',
+                'max:200',
+                function ($attribute, $value, $fail) {
+                    $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+                    if (count($words) < 2) {
+                        $fail('La dirección debe tener al menos dos palabras.');
+                    }
+                },
+            ],
         ], [
             'first_name.regex' => 'El nombre solo debe contener letras.',
             'last_name.regex' => 'Los apellidos solo deben contener letras.',
