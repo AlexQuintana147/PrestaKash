@@ -8,7 +8,7 @@
     <title>PrestaKash — @yield('title', 'Panel')</title>
     <script>
         (function () {
-            const theme = localStorage.getItem('client-theme') || 'light';
+            const theme = localStorage.getItem('client-theme') || 'dark';
             document.documentElement.classList.toggle('dark', theme === 'dark');
         })();
     </script>

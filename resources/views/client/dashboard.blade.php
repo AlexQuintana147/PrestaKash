@@ -235,7 +235,7 @@
 
                 {{-- Contra-ofertas --}}
                 @foreach($counterOfferLoans ?? [] as $loan)
-                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="group flex items-start gap-3 px-5 py-3.5 hover:bg-purple-50/50 dark:hover:bg-purple-900/5 transition-colors relative">
+                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="notif-item group flex items-start gap-3 px-5 py-3.5 hover:bg-purple-50/50 dark:hover:bg-purple-900/5 transition-colors relative">
                     <a href="javascript:void(0)" onclick="dismissAndGo({{ $loan->id }}, '{{ route('client.loans') }}?open_counter={{ $loan->id }}')" class="flex items-start gap-3 flex-1 min-w-0">
                         <div class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                             <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
@@ -254,7 +254,7 @@
 
                 {{-- Aprobados --}}
                 @foreach($acceptedLoans ?? [] as $loan)
-                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="group flex items-start gap-3 px-5 py-3.5 hover:bg-green-50/50 dark:hover:bg-green-900/5 transition-colors relative">
+                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="notif-item group flex items-start gap-3 px-5 py-3.5 hover:bg-green-50/50 dark:hover:bg-green-900/5 transition-colors relative">
                     <a href="javascript:void(0)" onclick="dismissAndGo({{ $loan->id }}, '{{ route('client.loans.history.show', $loan) }}')" class="flex items-start gap-3 flex-1 min-w-0">
                         <div class="w-9 h-9 rounded-xl bg-green-50 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                             <svg class="w-4 h-4 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -273,7 +273,7 @@
 
                 {{-- Rechazados --}}
                 @foreach($rejectedLoans ?? [] as $loan)
-                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="group flex items-start gap-3 px-5 py-3.5 transition-colors relative">
+                <div id="notif-item-{{ $loan->id }}" data-loan-id="{{ $loan->id }}" class="notif-item group flex items-start gap-3 px-5 py-3.5 transition-colors relative">
                     <div class="flex items-start gap-3 flex-1 min-w-0 cursor-default">
                         <div class="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                             <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -289,6 +289,12 @@
                     </button>
                 </div>
                 @endforeach
+            </div>
+            {{-- Paginación notificaciones --}}
+            <div id="notif-pagination" class="hidden flex items-center justify-between px-5 py-3 border-t border-gray-100 dark:border-gray-800">
+                <button type="button" id="notif-prev" onclick="changeNotifPage(-1)" class="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Anterior</button>
+                <span id="notif-page-info" class="text-xs text-gray-400 dark:text-gray-500"></span>
+                <button type="button" id="notif-next" onclick="changeNotifPage(1)" class="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Siguiente</button>
             </div>
             {{-- Estado vacío --}}
             <div id="notif-empty" class="hidden px-5 py-10 text-center">
@@ -887,6 +893,49 @@
     let accounts = [];
 
     // ===== NOTIFICACIONES - MODAL =====
+    const NOTIF_PER_PAGE = 5;
+    let notifCurrentPage = 1;
+
+    function getNotifItems() {
+        return Array.from(document.querySelectorAll('#notif-list .notif-item'));
+    }
+
+    function renderNotifPage(page) {
+        const items = getNotifItems();
+        const total = items.length;
+        const pagination = document.getElementById('notif-pagination');
+
+        if (total === 0) {
+            if (pagination) pagination.classList.add('hidden');
+            return;
+        }
+
+        const totalPages = Math.ceil(total / NOTIF_PER_PAGE);
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+        notifCurrentPage = page;
+
+        items.forEach((item, idx) => {
+            const start = (page - 1) * NOTIF_PER_PAGE;
+            const end = start + NOTIF_PER_PAGE;
+            item.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
+
+        if (pagination) pagination.classList.remove('hidden');
+
+        const prevBtn = document.getElementById('notif-prev');
+        const nextBtn = document.getElementById('notif-next');
+        const info = document.getElementById('notif-page-info');
+
+        if (prevBtn) prevBtn.disabled = page === 1;
+        if (nextBtn) nextBtn.disabled = page === totalPages || totalPages === 0;
+        if (info) info.textContent = totalPages > 0 ? page + ' / ' + totalPages : '';
+    }
+
+    function changeNotifPage(delta) {
+        renderNotifPage(notifCurrentPage + delta);
+    }
+
     function openNotifModal() {
         const modal = document.getElementById('notif-modal');
         const content = document.getElementById('notif-modal-content');
@@ -900,6 +949,7 @@
         void content.offsetWidth;
         content.classList.remove('opacity-0', 'translate-y-full', 'md:opacity-0', 'md:scale-95');
         content.classList.add('opacity-100', 'translate-y-0', 'md:opacity-100', 'md:scale-100');
+        renderNotifPage(1);
     }
 
     function closeNotifModal() {
@@ -954,19 +1004,25 @@
         const badgeHeader = document.getElementById('notif-badge-header');
         const headerBtn = document.getElementById('notif-header-btn');
         const countLabel = document.getElementById('notif-count-label');
+        const pagination = document.getElementById('notif-pagination');
+        const items = getNotifItems();
 
-        if (list.children.length === 0) {
+        if (items.length === 0) {
             list.classList.add('hidden');
             empty.classList.remove('hidden');
+            if (pagination) pagination.classList.add('hidden');
             if (badge) badge.textContent = '';
             if (badgeHeader) { badgeHeader.textContent = ''; badgeHeader.classList.add('hidden'); }
             if (countLabel) countLabel.textContent = '0 nuevas';
         } else {
-            const remaining = list.children.length;
+            list.classList.remove('hidden');
+            empty.classList.add('hidden');
+            const remaining = items.length;
             const text = remaining > 9 ? '9+' : String(remaining);
             if (badge) badge.textContent = text;
             if (badgeHeader) { badgeHeader.textContent = text; badgeHeader.classList.remove('hidden'); }
             if (countLabel) countLabel.textContent = remaining + ' nueva' + (remaining != 1 ? 's' : '');
+            renderNotifPage(notifCurrentPage);
         }
     }
 
