@@ -273,6 +273,10 @@
             </div>
         @endif
 
+        <form action="{{ route('logout') }}" method="POST" id="logout-form" class="hidden">
+            @csrf
+        </form>
+
         <form action="{{ route('onboarding.step1.store') }}" method="POST" id="onboarding-form" novalidate>
             @csrf
 
@@ -356,7 +360,11 @@
                 </div>
 
                 <!-- Nav sección 1 -->
-                <div class="flex justify-end mt-6">
+                <div class="flex items-center justify-between mt-6">
+                    <button type="submit" form="logout-form" class="nav-btn nav-btn-secondary">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        Volver
+                    </button>
                     <button type="button" onclick="goToStep(2)" class="nav-btn nav-btn-primary">
                         Continuar
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
