@@ -429,10 +429,10 @@
                         </div>
                         <div id="childrenCountField" class="{{ old('has_children', $profile->has_children ?? false) ? '' : 'hidden' }}">
                             <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
-                            <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '') }}"
-                                placeholder="0" min="1" max="20"
+                            <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '1') }}"
+                                placeholder="1" min="1" max="20"
                                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                                oninput="if(this.value && this.value < 1) this.value = 1; if(this.value > 20) this.value = 20;"
+                                oninput="if(this.value && this.value < 1) this.value = ''; if(this.value > 20) this.value = 20;"
                                 class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                             @error('children_count') <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -648,44 +648,169 @@
             // Only validate when going forward
             if (step > currentStep) {
                 const section = document.querySelector(`.step-section[data-step-section="${currentStep}"]`);
-                const requiredFields = section.querySelectorAll('input[required]:not(:disabled), select[required]:not(:disabled)');
                 let firstInvalid = null;
 
-                requiredFields.forEach(field => {
-                    if (field.type === 'radio') {
-                        const name = field.name;
-                        const checked = section.querySelector(`input[name="${name}"]:checked`);
-                        if (!checked) {
-                            if (!firstInvalid) firstInvalid = field;
-                            // Highlight all radios in group
-                            section.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                                r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400');
-                            });
-                        } else {
-                            section.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                                r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400');
-                            });
-                        }
+                // Helper: check if element is visible (not inside a hidden parent)
+                function isVisible(el) {
+                    return el && el.offsetParent !== null && !el.closest('.hidden');
+                }
+
+                // === STEP 1 VALIDATION ===
+                if (currentStep === 1) {
+                    // main_academic_status radio
+                    const mainStatus = section.querySelector('input[name="main_academic_status"]:checked');
+                    if (!mainStatus) {
+                        firstInvalid = section.querySelector('input[name="main_academic_status"]');
+                        section.querySelectorAll('input[name="main_academic_status"]').forEach(r =>
+                            r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400'));
                     } else {
-                        if (!field.value.trim()) {
-                            if (!firstInvalid) firstInvalid = field;
-                            field.classList.add('border-red-500');
+                        section.querySelectorAll('input[name="main_academic_status"]').forEach(r =>
+                            r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400'));
+                    }
+
+                    // If Educación superior: education_type + education_level must be selected
+                    if (mainStatus && mainStatus.value === 'Educación superior' && !firstInvalid) {
+                        const eduType = section.querySelector('input[name="education_type"]:checked');
+                        if (!eduType) {
+                            firstInvalid = section.querySelector('input[name="education_type"]');
+                            section.querySelectorAll('input[name="education_type"]').forEach(r =>
+                                r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400'));
                         } else {
-                            field.classList.remove('border-red-500');
+                            section.querySelectorAll('input[name="education_type"]').forEach(r =>
+                                r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400'));
+
+                            const eduLevel = section.querySelector('input[name="education_level"]:checked');
+                            if (!eduLevel && isVisible(document.getElementById('education_level_container'))) {
+                                firstInvalid = section.querySelector('input[name="education_level"]');
+                            }
                         }
                     }
-                });
 
-                // Also validate hidden academic_status for step 1
-                if (currentStep === 1) {
-                    const hiddenStatus = document.getElementById('academic_status_hidden');
-                    if (hiddenStatus && !hiddenStatus.value) {
-                        if (!firstInvalid) firstInvalid = hiddenStatus;
+                    // institution (always required unless "Ninguno")
+                    if (!firstInvalid) {
+                        const inst = document.getElementById('input_institution');
+                        if (inst && !inst.disabled && !inst.value.trim()) {
+                            firstInvalid = inst;
+                            inst.classList.add('border-red-500');
+                        } else if (inst) {
+                            inst.classList.remove('border-red-500');
+                        }
+                    }
+
+                    // career (only required when not disabled)
+                    if (!firstInvalid) {
+                        const career = document.getElementById('input_career');
+                        if (career && !career.disabled && !career.value.trim()) {
+                            firstInvalid = career;
+                            career.classList.add('border-red-500');
+                        } else if (career) {
+                            career.classList.remove('border-red-500');
+                        }
+                    }
+
+                    // academic_status_hidden must have value
+                    if (!firstInvalid) {
+                        const hiddenStatus = document.getElementById('academic_status_hidden');
+                        if (hiddenStatus && !hiddenStatus.value) firstInvalid = hiddenStatus;
+                    }
+                }
+
+                // === STEP 2 VALIDATION ===
+                if (currentStep === 2) {
+                    // has_children radio
+                    const hasChildren = section.querySelector('input[name="has_children"]:checked');
+                    if (!hasChildren) {
+                        firstInvalid = section.querySelector('input[name="has_children"]');
+                        section.querySelectorAll('input[name="has_children"]').forEach(r =>
+                            r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400'));
+                    } else {
+                        section.querySelectorAll('input[name="has_children"]').forEach(r =>
+                            r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400'));
+
+                        // If Sí: children_count >= 1
+                        if (hasChildren.value === '1' && !firstInvalid) {
+                            const ccField = document.getElementById('childrenCountField');
+                            if (isVisible(ccField)) {
+                                const cc = section.querySelector('input[name="children_count"]');
+                                if (!cc || !cc.value || parseInt(cc.value) < 1) {
+                                    firstInvalid = cc;
+                                    cc?.classList.add('border-red-500');
+                                } else {
+                                    cc.classList.remove('border-red-500');
+                                }
+                            }
+                        }
+                    }
+
+                    // marital_status radio
+                    if (!firstInvalid) {
+                        const marital = section.querySelector('input[name="marital_status"]:checked');
+                        if (!marital) {
+                            firstInvalid = section.querySelector('input[name="marital_status"]');
+                            section.querySelectorAll('input[name="marital_status"]').forEach(r =>
+                                r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400'));
+                        } else {
+                            section.querySelectorAll('input[name="marital_status"]').forEach(r =>
+                                r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400'));
+
+                            // If casado_compartido: spouse fields required
+                            if (marital.value === 'casado_compartido') {
+                                const spouseFieldsDiv = document.getElementById('spouseFields');
+                                if (isVisible(spouseFieldsDiv)) {
+                                    ['spouse_first_name', 'spouse_last_name', 'spouse_dni'].forEach(name => {
+                                        if (firstInvalid) return;
+                                        const f = section.querySelector(`input[name="${name}"]`);
+                                        if (f && !f.value.trim()) {
+                                            firstInvalid = f;
+                                            f.classList.add('border-red-500');
+                                        } else if (f) {
+                                            f.classList.remove('border-red-500');
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // === STEP 3 VALIDATION ===
+                if (currentStep === 3) {
+                    // is_employed radio
+                    const employed = section.querySelector('input[name="is_employed"]:checked');
+                    if (!employed) {
+                        firstInvalid = section.querySelector('input[name="is_employed"]');
+                        section.querySelectorAll('input[name="is_employed"]').forEach(r =>
+                            r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400'));
+                    } else {
+                        section.querySelectorAll('input[name="is_employed"]').forEach(r =>
+                            r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400'));
+
+                        if (employed.value === '1' && !firstInvalid) {
+                            // employment_type radio
+                            const empType = section.querySelector('input[name="employment_type"]:checked');
+                            if (!empType) {
+                                firstInvalid = section.querySelector('input[name="employment_type"]');
+                                section.querySelectorAll('input[name="employment_type"]').forEach(r =>
+                                    r.closest('.option-card')?.classList.add('ring-2', 'ring-red-400'));
+                            } else {
+                                section.querySelectorAll('input[name="employment_type"]').forEach(r =>
+                                    r.closest('.option-card')?.classList.remove('ring-2', 'ring-red-400'));
+
+                                // monthly_income always required when employed
+                                const incomeHidden = section.querySelector('input[name="monthly_income"]');
+                                if (incomeHidden && !incomeHidden.value) {
+                                    const incomeDisplay = document.getElementById('monthly_income_display');
+                                    firstInvalid = incomeDisplay;
+                                    incomeDisplay?.classList.add('border-red-500');
+                                } else {
+                                    document.getElementById('monthly_income_display')?.classList.remove('border-red-500');
+                                }
+                            }
+                        }
                     }
                 }
 
                 if (firstInvalid) {
-                    // Show inline message
                     let msg = section.querySelector('.step-validation-msg');
                     if (!msg) {
                         msg = document.createElement('p');
@@ -699,8 +824,7 @@
                 }
 
                 // Remove validation message if exists
-                const section2 = document.querySelector(`.step-section[data-step-section="${currentStep}"]`);
-                const msg2 = section2?.querySelector('.step-validation-msg');
+                const msg2 = section?.querySelector('.step-validation-msg');
                 if (msg2) msg2.remove();
             }
 

@@ -417,6 +417,7 @@
 
     <div class="px-4 md:px-8 pb-2">
         <div class="max-w-4xl mx-auto">
+            @if($hasProfile)
             <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF] to-[#8247f5] p-5 md:p-6">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
                 <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
@@ -434,6 +435,25 @@
                     </div>
                 </div>
             </div>
+            @else
+            <a href="{{ route('client.loans') }}" class="block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006BFF] to-[#8247f5] p-5 md:p-6 group hover:shadow-lg hover:shadow-[#006BFF]/20 transition-shadow">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/5 rounded-tr-full pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span class="text-xs font-medium text-white/70 uppercase tracking-wider">Línea de crédito</span>
+                    </div>
+                    <p class="text-xl md:text-2xl font-bold text-white tracking-tight">Solicitar Línea de Crédito</p>
+                    <div class="mt-3 flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-white/80 group-hover:text-white transition-colors">
+                            Completa tu perfil para comenzar
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            @endif
         </div>
     </div>
 
