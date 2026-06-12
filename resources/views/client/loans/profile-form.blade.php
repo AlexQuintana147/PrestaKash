@@ -586,7 +586,7 @@
             if (type === 'Universitario') {
                 levels = ['Estudiante activo', 'Egresado', 'Bachiller'];
             } else if (type === 'Técnico') {
-                levels = ['Egresado', 'Titulado'];
+                levels = ['Estudiante en curso', 'Egresado', 'Titulado'];
             }
 
             const currentStatus = document.getElementById('academic_status_hidden').value;
