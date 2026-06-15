@@ -106,13 +106,13 @@
         border-color: #4A90E2;
     }
     .pk-input::placeholder {
-        color: transparent;
+        color: #9ca3af;
     }
     .pk-input:focus::placeholder {
         color: #d1d5db;
     }
     .dark .pk-input::placeholder {
-        color: transparent;
+        color: #6b7280;
     }
     .dark .pk-input:focus::placeholder {
         color: #374151;
@@ -850,12 +850,12 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Nro. Cuenta</label>
-                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100">
+                            <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
                         </div>
                     </div>
                     <div>
                         <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">CCI</label>
-                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100">
+                        <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
                     <div class="flex gap-3 pt-3">
                         <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">Guardar</button>
@@ -1117,6 +1117,9 @@
     }
 
     function showForm() {
+        document.getElementById('actualForm').reset();
+        document.getElementById('editingId').value = '';
+        document.getElementById('formTitle').textContent = 'Nueva Cuenta';
         document.getElementById('bankAccountForm').classList.remove('hidden');
         document.getElementById('addBtnContainer').classList.add('hidden');
     }
