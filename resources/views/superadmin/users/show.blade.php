@@ -7,9 +7,10 @@
 
     <!-- Header -->
     <div class="flex items-center gap-3 mb-8">
-        <a href="{{ route('superadmin.users.index') }}"
-           class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="{{ route('superadmin.users.index') }}" id="back-link"
+           onclick="event.preventDefault(); const ref = document.referrer; console.log('Back to:', ref); if (ref && ref.includes('gestion-interna/usuarios')) { window.location.href = ref; } else { window.location.href = this.href; } return false;"
+           class="text-gray-600 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0 cursor-pointer">
+            <svg class="w-4 h-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
         </a>
@@ -343,7 +344,7 @@
                                 if (seconds <= 0) {
                                     clearInterval(timer);
                                     el.textContent = 'Eliminado';
-                                    setTimeout(() => window.location.href = '{{ route('superadmin.users.index') }}', 1500);
+                                    setTimeout(() => window.location.href = (window._backUrl || '{{ route('superadmin.users.index') }}'), 1500);
                                 } else {
                                     el.textContent = seconds + 's';
                                 }
@@ -887,9 +888,12 @@ function closeReqDetailModal() {
     document.getElementById('reqDetailModal').classList.add('hidden');
     document.body.style.overflow = '';
 }
-document.getElementById('reqDetailModal').addEventListener('keydown', function(e) {
+const reqDetailModal = document.getElementById('reqDetailModal');
+if (reqDetailModal) {
+    reqDetailModal.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeReqDetailModal();
-});
+    });
+}
 </script>
 @endif
 
@@ -1168,9 +1172,12 @@ function closeBlockModal() {
     document.body.style.overflow = '';
 }
 
-document.getElementById('blockModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('blockModal')) closeBlockModal();
-});
+const blockModal = document.getElementById('blockModal');
+if (blockModal) {
+    blockModal.addEventListener('click', e => {
+        if (e.target === blockModal) closeBlockModal();
+    });
+}
 
 function openRejectModal() {
     document.getElementById('rejectModal').classList.remove('hidden');
@@ -1210,9 +1217,12 @@ function setCustomReason() {
     return true;
 }
 
-document.getElementById('rejectModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('rejectModal')) closeRejectModal();
-});
+const rejectModal = document.getElementById('rejectModal');
+if (rejectModal) {
+    rejectModal.addEventListener('click', e => {
+        if (e.target === rejectModal) closeRejectModal();
+    });
+}
 
     function openEditWarningModal() {
         document.getElementById('editWarningModal').classList.remove('hidden');
@@ -1362,9 +1372,12 @@ function closeApproveModal() {
     document.body.style.overflow = '';
 }
 
-document.getElementById('approveModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('approveModal')) closeApproveModal();
-});
+const approveModal = document.getElementById('approveModal');
+if (approveModal) {
+    approveModal.addEventListener('click', e => {
+        if (e.target === approveModal) closeApproveModal();
+    });
+}
 
 let currentScale = 1;
 let panX = 0;
@@ -1808,48 +1821,55 @@ async function downloadContractPDF() {
     }
 }
 
-document.getElementById('emitContractModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('emitContractModal')) closeEmitContractModal();
-});
+const emitContractModal = document.getElementById('emitContractModal');
+if (emitContractModal) {
+    emitContractModal.addEventListener('click', e => {
+        if (e.target === emitContractModal) closeEmitContractModal();
+    });
+}
 
 // Zoom con rueda del mouse — en TODO el lightbox
 const lb = document.getElementById('lightbox');
-
-lb.addEventListener('wheel', function(e) {
-    if (lb.classList.contains('hidden')) return;
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    zoom(e.deltaY < 0 ? 0.15 : -0.15);
-}, { passive: false, capture: true });
+if (lb) {
+    lb.addEventListener('wheel', function(e) {
+        if (lb.classList.contains('hidden')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        zoom(e.deltaY < 0 ? 0.15 : -0.15);
+    }, { passive: false, capture: true });
+}
 
 // Drag/Pan con mouse
 const imgContainer = document.getElementById('lightboxImgContainer');
+const lbImg = document.getElementById('lightboxImg');
 
-imgContainer.addEventListener('mousedown', e => {
-    if (currentScale <= 1) return;
-    isPanning = true;
-    startX = e.clientX - panX;
-    startY = e.clientY - panY;
-    imgContainer.style.cursor = 'grabbing';
-});
+if (imgContainer && lbImg) {
+    imgContainer.addEventListener('mousedown', e => {
+        if (currentScale <= 1) return;
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        imgContainer.style.cursor = 'grabbing';
+    });
 
-document.addEventListener('mousemove', e => {
-    if (!isPanning) return;
-    panX = e.clientX - startX;
-    panY = e.clientY - startY;
-    applyTransform();
-});
+    document.addEventListener('mousemove', e => {
+        if (!isPanning) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyTransform();
+    });
 
-document.addEventListener('mouseup', () => {
-    isPanning = false;
-    imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
-});
+    document.addEventListener('mouseup', () => {
+        isPanning = false;
+        imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
+    });
 
-lbImg.addEventListener('mouseleave', () => {
-    isPanning = false;
-    imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
-});
+    lbImg.addEventListener('mouseleave', () => {
+        isPanning = false;
+        imgContainer.style.cursor = currentScale > 1 ? 'grab' : 'default';
+    });
+}
 
 function openDeleteGhostModal() {
     document.getElementById('deleteGhostModal').classList.remove('hidden');
@@ -2907,5 +2927,23 @@ function closeRejectChangeModal() {
 </div>
 
 @include('partials.global-scripts')
+<script>
+(function() {
+    // Preserve filter/search from referrer for delete redirect fallback
+    var ref = document.referrer;
+    if (ref && ref.indexOf('superadmin/users') !== -1) {
+        try {
+            var u = new URL(ref);
+            var params = new URLSearchParams();
+            var f = u.searchParams.get('filter');
+            var s = u.searchParams.get('search');
+            if (f) params.set('filter', f);
+            if (s) params.set('search', s);
+            var qs = params.toString();
+            window._backUrl = '{{ route("superadmin.users.index") }}' + (qs ? '?' + qs : '');
+        } catch(e) {}
+    }
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 @endsection
