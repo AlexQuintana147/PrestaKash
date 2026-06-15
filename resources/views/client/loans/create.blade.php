@@ -108,7 +108,7 @@
                                         <input type="radio" name="type" value="cuotas" class="hidden peer" {{ old('type', 'cuotas') === 'cuotas' ? 'checked' : '' }}>
                                         <div
                                             class="text-center py-2.5 text-xs font-medium text-gray-500 dark:text-gray-100 border-b-2 border-transparent peer-checked:border-green-500 peer-checked:text-green-600 dark:peer-checked:text-green-400 transition-all">
-                                            Cuotas mensuales
+                                            Cuotas
                                         </div>
                                     </label>
                                     <label class="cursor-pointer flex-1">
@@ -372,7 +372,7 @@
                         <p class="text-[10px] text-gray-500 dark:text-gray-100 uppercase tracking-widest mb-4">Motivo</p>
 
                         <label for="reason" class="block text-xs text-gray-500 dark:text-gray-100 mb-1.5">¿Por qué necesitas
-                            este préstamo?</label>
+                            este préstamo? <span class="text-red-500">*</span></label>
                         <textarea name="reason" id="reason" rows="3" placeholder="Describe brevemente el motivo..."
                             class="w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100 focus:outline-none focus:border-green-500 transition-colors resize-none">{{ old('reason') }}</textarea>
                         <p class="text-[10px] text-gray-400 dark:text-gray-100 mt-1 text-right tabular-nums"><span
