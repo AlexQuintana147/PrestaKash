@@ -229,10 +229,11 @@
             @forelse($users as $user)
                 @php $status = $user->documents?->status @endphp
                 @php $hasPendingChanges = $user->profileChangeRequests()->where('status', 'pending')->exists() @endphp
-                <div class="user-row flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group"
+                <div class="user-row flex md:grid items-center py-4 border-b border-gray-200 dark:border-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900/30 -mx-2 px-2 rounded-lg transition-colors group cursor-pointer"
+                    data-show-url="{{ route('superadmin.users.show', $user) }}"
                     style="grid-template-columns: {{ $user->is_ghost ? '1fr 100px 110px 120px 130px 120px 100px 24px' : '1fr 100px 100px 110px 110px 80px 100px 90px 90px 24px' }};">
 
-                    <a href="{{ route('superadmin.users.show', $user) }}" class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
                         <div class="w-9 h-9 flex-shrink-0">
                             @if($user->documents && $user->documents->selfie)
                                 <img src="{{ asset('storage/' . $user->documents->selfie) }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover ring-2 ring-offset-1 {{ $status === 'approved' ? 'ring-green-500' : ($status === 'pending' ? 'ring-yellow-500' : ($status === 'rejected' ? 'ring-red-500' : 'ring-gray-300 dark:ring-gray-700')) }} ring-offset-white dark:ring-offset-gray-950">
@@ -259,7 +260,7 @@
                             </div>
                             <p class="text-xs text-gray-600 dark:text-gray-100 truncate">{{ $user->email }}</p>
                         </div>
-                    </a>
+                    </div>
 
                     <div class="hidden md:flex justify-center">
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ $user->person_type === 'juridica' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-100' }}">
@@ -311,7 +312,7 @@
 
                     <!-- Tasa % -->
                     @if(!$user->is_ghost)
-                        <div class="hidden md:flex items-center justify-center">
+                        <div class="hidden md:flex items-center justify-center" onclick="event.stopPropagation()">
                             @if($status === 'approved')
                                 <form action="{{ route('superadmin.users.update-field', $user) }}" method="POST"
                                     class="flex items-center gap-1">
@@ -385,13 +386,6 @@
                         </div>
                     @endif
 
-                    <a href="{{ route('superadmin.users.show', $user) }}" class="flex justify-end">
-                        <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-100 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors hidden md:block"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </a>
-
                 </div>
             @empty
                 <div class="py-20 text-center">
@@ -445,6 +439,15 @@
 
     <script>
     (function() {
+        // Row click → navigate to show (except tasa column which stops propagation)
+        document.querySelectorAll('.user-row[data-show-url]').forEach(function(row) {
+            row.addEventListener('click', function(e) {
+                // Don't navigate if clicking on a form, input, button, or link inside the row
+                if (e.target.closest('form, input, button, a')) return;
+                window.location.href = this.dataset.showUrl;
+            });
+        });
+
         const searchInput = document.getElementById('users-search');
         const clearBtn = document.getElementById('users-search-clear');
         const spinner = document.getElementById('users-search-spinner');
