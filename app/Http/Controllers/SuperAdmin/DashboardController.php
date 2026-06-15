@@ -27,6 +27,7 @@ class DashboardController extends Controller
 
         $recentUsers = User::with(['documents'])
             ->whereHas('role', fn($q) => $q->where('name', 'usuario'))
+            ->whereHas('documents', fn($q) => $q->where('status', 'pending'))
             ->latest()
             ->take(5)
             ->get();

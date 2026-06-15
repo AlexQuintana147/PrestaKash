@@ -124,22 +124,6 @@
             @endif
             <p id="cashbox-balance" class="text-3xl md:text-4xl font-bold text-white tracking-tight">{{ $cashboxes->first()->currency === 'USD' ? '$' : 'S/' }}{{ number_format($cashboxes->first()->balance, 2) }}</p>
             <p id="cashbox-info" class="text-[10px] text-white/50 mt-1">{{ $cashboxes->first()->bank_name }} · {{ $cashboxes->first()->name }}</p>
-            <div class="mt-3 flex items-center gap-3 flex-wrap">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-medium text-white/90">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#00D26A]"></span>
-                    {{ $loanStats['active'] }} préstamos activos
-                </span>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-medium text-white/90">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#006BFF]"></span>
-                    {{ $stats['total'] }} clientes
-                </span>
-                @if($loanStats['in_default'] > 0)
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/30 text-[10px] font-bold text-white pk-pulse">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                    {{ $loanStats['in_default'] }} en mora
-                </span>
-                @endif
-            </div>
         </div>
     </div>
     @else
@@ -526,12 +510,12 @@
             </div>
         </div>
 
-        {{-- USUARIOS RECIENTES --}}
+        {{-- USUARIOS PENDIENTES --}}
         <div class="pk-fade lg:col-span-2 pk-card overflow-hidden">
             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
                 <div>
-                    <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Usuarios recientes</h3>
-                    <p class="text-[9px] text-gray-500 dark:text-gray-100 font-bold">Últimos 5 registros</p>
+                    <h3 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">Usuarios pendientes de aprobación</h3>
+                    <p class="text-[9px] text-gray-500 dark:text-gray-100 font-bold">Usuarios con documentos pendientes de revisar</p>
                 </div>
                 <a href="{{ route('superadmin.users.index') }}" class="text-[10px] font-bold text-[#006BFF] dark:text-[#4A90E2] hover:underline">Ver todos</a>
             </div>
@@ -548,24 +532,21 @@
                             <p class="text-[9px] text-gray-500 dark:text-gray-100 truncate">{{ $user->email }}</p>
                         </div>
                         <div class="flex items-center gap-3 flex-shrink-0">
-                            @if($user->profile_completed)
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#00D26A]/10 dark:bg-[#00D26A]/20 text-[#00D26A]">
-                                    <span class="w-1 h-1 rounded-full bg-[#00D26A]"></span>Completo
-                                </span>
-                            @elseif($user->documents && $user->documents->status === 'pending')
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 dark:bg-amber-500/20 text-amber-500">
-                                    <span class="w-1 h-1 rounded-full bg-amber-500"></span>Pendiente
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-100">
-                                    <span class="w-1 h-1 rounded-full bg-gray-400"></span>Incompleto
-                                </span>
-                            @endif
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/10 dark:bg-amber-500/20 text-amber-500">
+                                <span class="w-1 h-1 rounded-full bg-amber-500"></span>Pendiente
+                            </span>
                             <span class="text-[9px] text-gray-500 dark:text-gray-100 hidden sm:inline">{{ $user->created_at->diffForHumans() }}</span>
                             <svg class="w-4 h-4 text-gray-500 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </a>
                 @endforeach
+                @if($recentUsers->isEmpty())
+                    <div class="flex flex-col items-center justify-center py-10 gap-2">
+                        <svg class="w-12 h-12 text-[#00D26A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-xs font-medium text-[#00D26A]">Sin usuarios pendientes</p>
+                        <p class="text-[9px] text-gray-500 dark:text-gray-100">Todos los usuarios han sido revisados</p>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
