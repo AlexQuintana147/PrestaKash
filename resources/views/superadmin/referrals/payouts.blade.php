@@ -348,7 +348,7 @@
                                            class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 transition-colors placeholder-gray-400 dark:placeholder-gray-100">
                                 </div>
                                 <button type="submit"
-                                        class="w-full text-[11px] font-semibold text-white bg-gray-900 dark:bg-white dark:text-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg px-4 py-2.5 transition-colors">
+                                        class="w-full text-[11px] font-semibold text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg px-4 py-2.5 transition-colors">
                                     {{ $referral->payout ? 'Actualizar' : 'Guardar' }}
                                 </button>
                             </form>

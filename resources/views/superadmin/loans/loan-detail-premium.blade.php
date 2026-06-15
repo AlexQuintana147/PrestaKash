@@ -243,7 +243,7 @@
         <div class="flex items-center gap-1">
             @for($i = 1; $i <= $userInstallments->lastPage(); $i++)
                 @if($i == $userInstallments->currentPage())
-                    <span class="w-7 h-7 flex items-center justify-center rounded-md bg-gray-900 dark:bg-white text-white dark:text-white text-[10px] font-bold">{{ $i }}</span>
+                    <span class="w-7 h-7 flex items-center justify-center rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-bold">{{ $i }}</span>
                 @elseif(abs($i - $userInstallments->currentPage()) <= 2 || $i == 1 || $i == $userInstallments->lastPage())
                     <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $i }}&source=modal"
                         class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-[10px] font-bold text-gray-500 dark:text-gray-100 transition-colors">{{ $i }}</a>
@@ -255,7 +255,7 @@
 
         @if($userInstallments->hasMorePages())
             <a href="{{ route('superadmin.installments.group', $loan) }}?page={{ $userInstallments->currentPage() + 1 }}&source=modal"
-                class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg text-xs font-bold text-white dark:text-white transition-colors">Siguiente →</a>
+                class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 rounded-lg text-xs font-bold text-white dark:text-gray-900 transition-colors">Siguiente →</a>
         @else
             <div></div>
         @endif
@@ -398,7 +398,7 @@
                     class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-[10px] font-bold text-gray-600 dark:text-gray-100 transition-colors disabled:opacity-30 disabled:pointer-events-none">← Anterior</button>
                 <div id="loans-page-dots" class="flex items-center gap-1"></div>
                 <button onclick="loansNextPage()" id="loans-next-btn"
-                    class="px-3 py-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-gray-200 rounded-lg text-[10px] font-bold text-white dark:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
+                    class="px-3 py-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-gray-200 rounded-lg text-[10px] font-bold text-white dark:text-gray-900 transition-colors disabled:opacity-30 disabled:pointer-events-none">Siguiente →</button>
             </div>
         </div>
     </div>
@@ -495,7 +495,7 @@ function renderLoansPage() {
         for (let i = 1; i <= totalPages; i++) {
             const dot = document.createElement('button');
             dot.className = `w-7 h-7 flex items-center justify-center rounded-md text-[10px] font-bold transition-colors ${
-                i === loansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400'
+                i === loansPage ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400'
             }`;
             dot.textContent = i;
             dot.onclick = function() { loansPage = i; renderLoansPage(); };

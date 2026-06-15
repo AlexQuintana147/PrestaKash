@@ -1269,7 +1269,7 @@
                         <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
                     <div class="flex gap-3 pt-3">
-                        <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-white text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">Guardar</button>
+                        <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">Guardar</button>
                         <button type="button" onclick="hideBankForm()" class="px-5 py-2.5 rounded-xl text-gray-500 dark:text-gray-100 text-sm font-medium hover:text-gray-600 dark:hover:text-gray-300 transition-colors">Cancelar</button>
                     </div>
                 </form>

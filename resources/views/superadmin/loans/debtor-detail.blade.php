@@ -159,7 +159,7 @@
             </div>
 
             <!-- Total final desktop -->
-            <div class="grid grid-cols-12 gap-4 px-4 py-4 bg-gray-100 dark:bg-white text-gray-900 dark:text-white items-center">
+            <div class="grid grid-cols-12 gap-4 px-4 py-4 bg-gray-100 dark:bg-white text-gray-900 dark:text-gray-900 items-center">
                 <div class="col-span-8 text-right pr-4">
                     <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-100">Total a cobrar</span>
                 </div>
@@ -461,7 +461,7 @@
                     Ver préstamo completo
                     <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
-                <button onclick="closeInstallmentModal()" class="text-[9px] sm:text-[10px] font-bold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-white uppercase tracking-widest px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-colors">
+                <button onclick="closeInstallmentModal()" class="text-[9px] sm:text-[10px] font-bold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 uppercase tracking-widest px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-colors">
                     Cerrar
                 </button>
             </div>

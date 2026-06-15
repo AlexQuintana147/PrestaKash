@@ -285,7 +285,7 @@
                 <div id="filterBar" class="mb-6 space-y-3">
                     <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
                         <button onclick="setFilter('type','all')" data-filter-type="all"
-                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-white flex-shrink-0">
+                            class="filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex-shrink-0">
                             Todos
                         </button>
                         <button onclick="setFilter('type','income')" data-filter-type="income"
@@ -300,7 +300,7 @@
                         <div class="w-px h-5 bg-gray-200 dark:bg-gray-800 flex-shrink-0"></div>
 
                         <button onclick="setFilter('ref','all')" data-filter-ref="all"
-                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-white flex-shrink-0">
+                            class="filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex-shrink-0">
                             Todo
                         </button>
                         <button onclick="setFilter('ref','loan')" data-filter-ref="loan"
@@ -1138,7 +1138,7 @@
                 document.querySelectorAll('.filter-type-btn').forEach(btn => {
                     const isActive = btn.dataset.filterType === value;
                     btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
                     }`;
                 });
             } else if (group === 'ref') {
@@ -1146,7 +1146,7 @@
                 document.querySelectorAll('.filter-ref-btn').forEach(btn => {
                     const isActive = btn.dataset.filterRef === value;
                     btn.className = `filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        isActive ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
                     }`;
                 });
             }
@@ -1228,12 +1228,12 @@
                 recentCurrentPage = 1;
                 document.querySelectorAll('.filter-type-btn').forEach(btn => {
                     btn.className = `filter-type-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        btn.dataset.filterType === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+                        btn.dataset.filterType === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
                     }`;
                 });
                 document.querySelectorAll('.filter-ref-btn').forEach(btn => {
                     btn.className = `filter-ref-btn px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ${
-                        btn.dataset.filterRef === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        btn.dataset.filterRef === 'all' ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
                     }`;
                 });
                 renderMovements();
@@ -1928,7 +1928,7 @@
 
             for (let i = startPage; i <= endPage; i++) {
                 const isActive = i === codesCurrentPage;
-                html += `<button onclick="changeCodesPage(${i})" class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-white' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">${i}</button>`;
+                html += `<button onclick="changeCodesPage(${i})" class="w-8 h-8 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}">${i}</button>`;
             }
 
             html += `<button onclick="changeCodesPage(${codesCurrentPage + 1})" ${codesCurrentPage === totalPages ? 'disabled' : ''} class="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-0 transition-all"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>`;

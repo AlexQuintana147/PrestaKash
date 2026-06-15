@@ -95,7 +95,7 @@
                     <span
                         class="text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all cursor-pointer">Solicitar
                         ahora</span>
-                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-white text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/self-start:opacity-100 group-hover/self-start:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
+                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/self-start:opacity-100 group-hover/self-start:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
                         Completa el formulario de solicitud
                         <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
                     </div>
@@ -120,7 +120,7 @@
                     <span
                         class="text-xs font-semibold text-green-600 dark:text-green-400 hover:underline transition-all cursor-pointer">Ver
                         historial</span>
-                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-white text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/history:opacity-100 group-hover/history:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
+                    <div class="absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] font-semibold rounded-lg opacity-0 invisible group-hover/history:opacity-100 group-hover/history:visible transition-all duration-200 whitespace-nowrap z-10 shadow-lg">
                         Revisa tus préstamos y pagos
                         <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
                     </div>
@@ -267,7 +267,7 @@
                 <h3 id="loanStatusTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-2"></h3>
                 <p id="loanStatusDesc" class="text-sm text-gray-500 dark:text-gray-100 leading-relaxed mb-6"></p>
                 <button onclick="closeLoanStatusModal()"
-                    class="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:opacity-80 transition-opacity">
+                    class="px-6 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold uppercase tracking-widest rounded-lg hover:opacity-80 transition-opacity">
                     Entendido
                 </button>
             </div>
