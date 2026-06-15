@@ -64,10 +64,10 @@
         <div class="md:hidden mb-6">
             <div class="grid grid-cols-3 gap-2">
                 @foreach([
-                    'all'      => ['label' => 'Todos',      'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'pending'  => ['label' => 'Pendientes', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'approved' => ['label' => 'Aprobados',  'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'rejected' => ['label' => 'Rechazados', 'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
+                    'all'      => ['label' => 'Todos',      'active' => 'bg-gray-900 text-white dark:bg-white dark:text-black', 'inactive' => 'bg-transparent text-gray-400 border-gray-200 dark:border-gray-800'],
                     'profile-changes' => ['label' => 'Cambios', 'active' => 'bg-amber-500 text-white', 'inactive' => 'bg-transparent text-amber-500/50 border-amber-200 dark:border-amber-900/30'],
                     'ghosts'   => ['label' => 'Fantasmas',  'active' => 'bg-purple-600 text-white', 'inactive' => 'bg-transparent text-purple-500/50 border-purple-200 dark:border-purple-900/30'],
                     'blocked'  => ['label' => 'Bloqueados', 'active' => 'bg-red-600 text-white',    'inactive' => 'bg-transparent text-red-500/50 border-red-200 dark:border-red-900/30'],
@@ -94,10 +94,10 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
                     @foreach([
-                        'all'      => 'Todos', 
-                        'pending'  => 'Pendientes', 
-                        'approved' => 'Aprobados', 
+                        'pending'  => 'Pendientes',
+                        'approved' => 'Aprobados',
                         'rejected' => 'Rechazados',
+                        'all'      => 'Todos',
                         'profile-changes' => 'Cambios perfil',
                         'ghosts'   => 'Fantasmas',
                         'blocked'  => 'Bloqueados'

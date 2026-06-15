@@ -20,7 +20,7 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
-        $filter = $request->get('filter', 'all');
+        $filter = $request->get('filter', 'pending');
         $search = $request->get('search');
         $fromDate = $request->get('from_date');
         $toDate = $request->get('to_date');
