@@ -295,7 +295,7 @@
                 <div class="space-y-5">
 
                     <div>
-                        <label class="block text-xs text-gray-600 mb-2">Situación académica</label>
+                        <label class="block text-xs text-gray-600 mb-2">Situación académica <span class="text-red-500">*</span></label>
                         <div class="grid grid-cols-2 gap-2">
                             @php
                                 $mainOptions = ['Secundaria completa', 'Educación superior', 'Ninguno de los anteriores'];
@@ -367,7 +367,7 @@
                     </div>
 
                     <div>
-                        <label id="label_institution" class="block text-xs text-gray-600 mb-1">Universidad o instituto</label>
+                        <label id="label_institution" class="block text-xs text-gray-600 mb-1">Universidad o instituto <span class="text-red-500">*</span></label>
                         <input type="text" name="institution" id="input_institution"
                             value="{{ old('institution', $profile->institution ?? '') }}" required
                             placeholder="Ej: UNMSM"
@@ -377,7 +377,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-600 mb-1">Carrera profesional</label>
+                        <label class="block text-xs text-gray-600 mb-1">Carrera profesional <span class="text-red-500">*</span></label>
                         <input type="text" name="career" id="input_career"
                             value="{{ old('career', $profile->career ?? '') }}" required
                             placeholder="Ej: Ingeniería de Sistemas"
@@ -403,7 +403,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos?</label>
+                            <label class="block text-xs text-gray-600 mb-2">¿Tiene hijos? <span class="text-red-500">*</span></label>
                             <div class="flex gap-2">
                                 <label class="option-card">
                                     <input type="radio" name="has_children" value="1" {{ old('has_children', isset($profile) ? ($profile->has_children ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleChildrenCount(this.value)">
@@ -428,7 +428,7 @@
                             </div>
                         </div>
                         <div id="childrenCountField" class="{{ old('has_children', $profile->has_children ?? false) ? '' : 'hidden' }}">
-                            <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene?</label>
+                            <label class="block text-xs text-gray-600 mb-1">¿Cuántos hijos tiene? <span class="text-red-500">*</span></label>
                             <input type="number" name="children_count" value="{{ old('children_count', $profile->children_count ?? '1') }}"
                                 placeholder="1" min="1" max="20"
                                 onkeypress="return event.charCode >= 48 && event.charCode <= 57"
@@ -439,7 +439,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-600 mb-2">Estado civil</label>
+                        <label class="block text-xs text-gray-600 mb-2">Estado civil <span class="text-red-500">*</span></label>
                         <div class="space-y-1.5">
                             @foreach(['soltero' => 'Soltero/a', 'casado_separado' => 'Casado/a — bienes separados', 'casado_compartido' => 'Casado/a — bienes compartidos'] as $val => $label)
                                 <label class="option-card w-full">
@@ -462,7 +462,7 @@
                         class="{{ old('marital_status', $profile->marital_status ?? '') === 'casado_compartido' ? '' : 'hidden' }} space-y-4 pl-3 border-l-2 border-gray-300 dark:border-gray-700">
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge</label>
+                                <label class="block text-xs text-gray-600 mb-1">Nombres del cónyuge <span class="text-red-500">*</span></label>
                                 <input type="text" name="spouse_first_name"
                                     value="{{ old('spouse_first_name', $profile->spouse_first_name ?? '') }}"
                                     placeholder="Nombres"
@@ -472,7 +472,7 @@
                                 @enderror
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge</label>
+                                <label class="block text-xs text-gray-600 mb-1">Apellidos del cónyuge <span class="text-red-500">*</span></label>
                                 <input type="text" name="spouse_last_name"
                                     value="{{ old('spouse_last_name', $profile->spouse_last_name ?? '') }}"
                                     placeholder="Apellidos"
@@ -483,7 +483,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge</label>
+                            <label class="block text-xs text-gray-600 mb-1">DNI del cónyuge <span class="text-red-500">*</span></label>
                             <input type="text" name="spouse_dni"
                                 value="{{ old('spouse_dni', $profile->spouse_dni ?? '') }}" placeholder="12345678"
                                 maxlength="8" oninput="this.value=this.value.replace(/\D/g,'')"
@@ -520,7 +520,7 @@
                 <div class="space-y-5">
 
                     <div>
-                        <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente?</label>
+                        <label class="block text-xs text-gray-600 mb-2">¿Trabaja actualmente? <span class="text-red-500">*</span></label>
                         <div class="flex gap-2">
                             <label class="option-card">
                                 <input type="radio" name="is_employed" value="1" {{ old('is_employed', isset($profile) ? ($profile->is_employed ? '1' : '0') : '') == '1' ? 'checked' : '' }} required onchange="syncCards(this); toggleEmployment()">
@@ -573,14 +573,14 @@
                         <div id="dependiente_fields" class="{{ old('employment_type', $profile->employment_type ?? '') === 'dependiente' ? '' : 'hidden' }} space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Empresa / Lugar</label>
+                                    <label class="block text-xs text-gray-600 mb-1">Empresa / Lugar <span class="text-red-500">*</span></label>
                                     <input type="text" name="workplace" value="{{ old('workplace', $profile->workplace ?? '') }}"
                                         placeholder="Nombre de empresa"
                                         oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
                                         class="w-full bg-transparent border-b border-gray-400 dark:border-gray-700 text-gray-900 dark:text-white text-sm py-1.5 focus:outline-none focus:border-gray-900 dark:focus:border-white transition-colors placeholder-gray-500 dark:placeholder-gray-100">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Cargo</label>
+                                    <label class="block text-xs text-gray-600 mb-1">Cargo <span class="text-red-500">*</span></label>
                                     <input type="text" name="job_title" value="{{ old('job_title', $profile->job_title ?? '') }}"
                                         placeholder="Puesto que ocupa"
                                         oninput="this.value = this.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '')"
@@ -611,7 +611,7 @@
 
                         <!-- Ingreso Mensual -->
                         <div id="incomeField">
-                            <label class="block text-xs text-gray-600 mb-1">Ingreso mensual aproximado (S/)</label>
+                            <label class="block text-xs text-gray-600 mb-1">Ingreso mensual aproximado (S/) <span class="text-red-500">*</span></label>
                             <input type="hidden" name="monthly_income" value="{{ old('monthly_income', isset($profile) ? $profile->monthly_income : '') }}">
                             <input type="text" id="monthly_income_display" value="{{ old('monthly_income', isset($profile) ? number_format($profile->monthly_income, 2, '.', ',') : '') }}"
                                 placeholder="100.00" step="0.01" min="100"

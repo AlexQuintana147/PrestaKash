@@ -1232,12 +1232,12 @@
                 <form id="actualBankForm" onsubmit="saveBankAccount(event)" data-no-loading class="space-y-4">
                     <input type="hidden" id="editingId" value="">
                     <div>
-                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Alias</label>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Alias <span class="text-red-500">*</span></label>
                         <input type="text" id="f_alias" placeholder="Ej: Mi cuenta BCP" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-100">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Banco</label>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Banco <span class="text-red-500">*</span></label>
                             <select id="f_bank_name" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
                                 <option value="" class="dark:bg-gray-900">Seleccionar</option>
                                 @foreach(['BCP', 'Interbank', 'BBVA', 'Scotiabank', 'BanBif', 'Banco de la Nación', 'Caja Piura', 'Caja Huancayo', 'Caja Arequipa'] as $bank)
@@ -1246,26 +1246,26 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Tipo</label>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Tipo <span class="text-red-500">*</span></label>
                             <select id="f_account_type" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
                                 <option value="ahorros" class="dark:bg-gray-900">Ahorros</option>
                                 <option value="corriente" class="dark:bg-gray-900">Corriente</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Moneda</label>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Moneda <span class="text-red-500">*</span></label>
                             <select id="f_currency" required class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors text-gray-900 dark:text-white">
                                 <option value="PEN" class="dark:bg-gray-900">Soles (S/)</option>
                                 <option value="USD" class="dark:bg-gray-900">Dólares ($)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Nro. Cuenta</label>
+                            <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">Nro. Cuenta <span class="text-red-500">*</span></label>
                             <input type="text" id="f_account_number" required placeholder="19134567890123" maxlength="14" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">CCI</label>
+                        <label class="block text-[11px] font-medium text-gray-500 dark:text-gray-100 mb-1.5 uppercase tracking-wider">CCI <span class="text-red-500">*</span></label>
                         <input type="text" id="f_cci" required placeholder="00219100123456789012" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="pk-input w-full bg-transparent border-b border-gray-200 dark:border-gray-800 text-sm px-0 py-2.5 focus:outline-none focus:border-[#006BFF] dark:focus:border-[#4A90E2] transition-colors tabular-nums text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600">
                     </div>
                     <div class="flex gap-3 pt-3">
@@ -1401,14 +1401,40 @@
     async function saveBankAccount(e) {
         e.preventDefault();
         e.stopPropagation();
+        
+        // Limpiar errores anteriores
+        document.querySelectorAll('.bank-error').forEach(el => el.remove());
+        
+        // Validación frontend
+        const errors = [];
+        const alias = document.getElementById('f_alias').value.trim();
+        const bank_name = document.getElementById('f_bank_name').value;
+        const account_type = document.getElementById('f_account_type').value;
+        const currency = document.getElementById('f_currency').value;
+        const account_number = document.getElementById('f_account_number').value.trim();
+        const cci = document.getElementById('f_cci').value.trim();
+        
+        if (!alias) errors.push('Alias');
+        if (!bank_name) errors.push('Banco');
+        if (!account_type) errors.push('Tipo de cuenta');
+        if (!currency) errors.push('Moneda');
+        if (!account_number) errors.push('Nro. Cuenta');
+        if (!cci) errors.push('CCI');
+        
+        if (errors.length > 0) {
+            alert('Por favor, completa los siguientes campos obligatorios:\n\n' + errors.join('\n'));
+            pkHideLoading();
+            return;
+        }
+        
         const id = document.getElementById('editingId').value;
         const data = {
-            alias: document.getElementById('f_alias').value,
-            bank_name: document.getElementById('f_bank_name').value,
-            account_type: document.getElementById('f_account_type').value,
-            currency: document.getElementById('f_currency').value,
-            account_number: document.getElementById('f_account_number').value,
-            cci: document.getElementById('f_cci').value,
+            alias: alias,
+            bank_name: bank_name,
+            account_type: account_type,
+            currency: currency,
+            account_number: account_number,
+            cci: cci,
             _token: '{{ csrf_token() }}'
         };
         const url = id ? '/panel/cuentas-bancarias/' + id : '{{ route("client.bank-accounts.store") }}';
