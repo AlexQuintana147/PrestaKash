@@ -236,7 +236,7 @@
                                             </div>
                                             <div data-freq-tooltip="{{ $val }}"
                                                 class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center z-[100] pointer-events-none opacity-0 scale-95 -translate-y-1 group-hover/freq:opacity-100 group-hover/freq:scale-100 group-hover/freq:translate-y-0 transition-all duration-200 ease-out">
-                                                <div class="px-3 py-1.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-white text-[9px] font-bold rounded-lg shadow-2xl whitespace-nowrap">
+                                                <div class="px-3 py-1.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[9px] font-bold rounded-lg shadow-2xl whitespace-nowrap">
                                                     Cuota: <span class="text-green-400 dark:text-green-600 tabular-nums freq-cuota-value"></span>
                                                 </div>
                                                 <div class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-100 transition-opacity duration-200"></div>
