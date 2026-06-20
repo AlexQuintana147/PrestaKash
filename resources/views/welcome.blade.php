@@ -14,6 +14,16 @@
                         'primary-dark': '#059669',
                         'primary-light': '#34d399',
                         accent: '#ec4899',
+                        white: '#F7F7F4',
+                        gray: {
+                            50: '#F2F1ED',
+                            100: '#F2F1ED',
+                            500: '#7A7974',
+                            600: '#7A7974',
+                            800: '#232018',
+                            900: '#1B1913',
+                            950: '#14120B',
+                        }
                     },
                     fontFamily: { sans: ['Roboto', 'sans-serif'] }
                 }

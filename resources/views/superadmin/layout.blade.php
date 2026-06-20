@@ -15,7 +15,25 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class' }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        white: '#F7F7F4',
+                        gray: {
+                            50: '#F2F1ED',
+                            100: '#F2F1ED',
+                            500: '#7A7974',
+                            600: '#7A7974',
+                            800: '#232018',
+                            900: '#1B1913',
+                            950: '#14120B',
+                        }
+                    }
+                }
+            }
+        }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -111,7 +129,7 @@
 
     <!-- Mobile topbar -->
     <header
-        class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
+        class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
         <a href="{{ route('superadmin.dashboard') }}" class="flex items-center">
             <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
         </a>
@@ -133,7 +151,7 @@
 
         <!-- Sidebar -->
             <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40
-                  w-60 bg-white dark:bg-black
+                  w-60 bg-white dark:bg-gray-950
                   border-r border-gray-200 dark:border-gray-900
                   flex flex-col
                   transform -translate-x-full md:translate-x-0

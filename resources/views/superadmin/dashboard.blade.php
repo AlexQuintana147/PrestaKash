@@ -5,17 +5,17 @@
 @push('styles')
 <style>
     .pk-card {
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: #F2F1ED;
+        border: 1px solid #e5e5e0;
         border-radius: 20px;
         transition: border-color 0.2s ease;
     }
     .dark .pk-card {
-        background: #030712;
-        border-color: #1f2937;
+        background: #1B1913;
+        border-color: #232018;
     }
-    .pk-card:hover { border-color: #d1d5db; }
-    .dark .pk-card:hover { border-color: #374151; }
+    .pk-card:hover { border-color: #d5d5d0; }
+    .dark .pk-card:hover { border-color: #2a261c; }
 
     @keyframes pkPulse {
         0%, 100% { opacity: 1; }

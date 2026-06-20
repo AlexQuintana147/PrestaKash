@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse — PrestaKash</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { white: '#F7F7F4', gray: { 50: '#F2F1ED', 100: '#F2F1ED', 500: '#7A7974', 600: '#7A7974', 800: '#232018', 900: '#1B1913', 950: '#14120B' } } } } }</script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>body { font-family: 'Roboto', sans-serif; }</style>
 </head>
-<body class="min-h-screen bg-black flex items-center justify-center p-4">
-    <div class="w-full max-w-sm">
+<body class="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-gray-900 border border-gray-800 rounded-2xl p-8">
         <div class="text-center mb-8">
             <img src="/images/logo.webp" alt="PrestaKash" class="h-12 w-auto mx-auto mb-4">
             <p class="text-xs font-semibold text-green-400 uppercase tracking-widest mb-1">PrestaKash</p>
@@ -51,7 +51,7 @@
                 <div class="w-full border-t border-gray-800"></div>
             </div>
             <div class="relative flex justify-center text-xs">
-                <span class="px-2 bg-black text-gray-600 uppercase tracking-wider">O</span>
+                <span class="px-2 bg-gray-950 text-gray-600 uppercase tracking-wider">O</span>
             </div>
         </div>
 

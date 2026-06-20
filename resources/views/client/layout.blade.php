@@ -13,7 +13,7 @@
         })();
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'] } } } }</script>
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'] }, colors: { white: '#F7F7F4', gray: { 50: '#F2F1ED', 100: '#F2F1ED', 500: '#7A7974', 600: '#7A7974', 800: '#232018', 900: '#1B1913', 950: '#14120B' } } } } }</script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -35,7 +35,7 @@
         .dark nav::-webkit-scrollbar-track,
         .dark main::-webkit-scrollbar-track,
         .dark body::-webkit-scrollbar-track {
-            background: #0f172a;
+            background: #14120B;
         }
 
         nav::-webkit-scrollbar-thumb,
@@ -49,8 +49,8 @@
         .dark nav::-webkit-scrollbar-thumb,
         .dark main::-webkit-scrollbar-thumb,
         .dark body::-webkit-scrollbar-thumb {
-            background: #334155;
-            border: 2px solid #0f172a;
+            background: #1B1913;
+            border: 2px solid #14120B;
         }
 
         nav::-webkit-scrollbar-thumb:hover,
@@ -62,7 +62,7 @@
         .dark nav::-webkit-scrollbar-thumb:hover,
         .dark main::-webkit-scrollbar-thumb:hover,
         .dark body::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+            background: #232018;
         }
 
         @keyframes swing {
@@ -101,13 +101,13 @@
 
     <div id="app-loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .2s">
         <div style="width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:#E94560;border-radius:50%;animation:pk-spin .6s linear infinite"></div>
-        <style>#app-loader{background:#fff}.dark #app-loader{background:#030712}.dark #app-loader>div{border-color:#374151;border-top-color:#E94560}@keyframes pk-spin{to{transform:rotate(360deg)}}</style>
+        <style>#app-loader{background:#F7F7F4}.dark #app-loader{background:#14120B}.dark #app-loader>div{border-color:#1B1913;border-top-color:#E94560}@keyframes pk-spin{to{transform:rotate(360deg)}}</style>
     </div>
     <script>document.addEventListener('DOMContentLoaded',function(){var l=document.getElementById('app-loader');l.style.opacity='0';setTimeout(function(){l.remove()},200)})</script>
 
     <!-- Mobile topbar -->
     <header
-        class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
+        class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-900 flex items-center justify-between px-5 h-14 transition-colors duration-200">
         <a href="{{ route('client.dashboard') }}" class="flex items-center">
             <img src="/images/logo.webp" alt="PrestaKash" class="h-7 w-auto invert dark:invert-0">
         </a>
@@ -138,7 +138,7 @@
 
         <!-- Sidebar -->
         <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40
-                  w-64 bg-white dark:bg-black
+                  w-64 bg-white dark:bg-gray-950
                   border-r border-gray-100 dark:border-gray-900
                   flex flex-col
                   transform -translate-x-full md:translate-x-0

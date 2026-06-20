@@ -6,16 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrestaKash — Sube tus documentos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { white: '#F7F7F4', gray: { 50: '#F2F1ED', 100: '#F2F1ED', 500: '#7A7974', 600: '#7A7974', 800: '#232018', 900: '#1B1913', 950: '#14120B' } } } } }</script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Roboto', sans-serif; }
         .doc-card {
-            background: #111111;
-            border: 1px solid #1a1a1a;
+            background: #1B1913;
+            border: 1px solid #232018;
             transition: all 0.2s;
         }
-        .doc-card:hover { border-color: #2a2a2a; }
-        .doc-card.captured { border-color: #10b981; background: linear-gradient(135deg, #064e3b 0%, #111111 100%); }
+        .doc-card:hover { border-color: #2a261c; }
+        .doc-card.captured { border-color: #10b981; background: linear-gradient(135deg, #064e3b 0%, #1B1913 100%); }
         .doc-card.captured:hover { border-color: #059669; }
         #cameraModal { display: none; }
         #cameraModal.active { display: flex !important; }
@@ -24,9 +25,9 @@
     </style>
 </head>
 
-<body class="bg-black min-h-screen flex items-center justify-center px-4 py-8" onload="noBack();"
+<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-8" onload="noBack();"
     onpageshow="if(event.persisted) noBack();">
-    <div class="w-full max-w-lg">
+    <div class="w-full max-w-lg bg-gray-900 border border-gray-800 rounded-2xl p-8">
 
         <!-- Header -->
         <div class="mb-8">

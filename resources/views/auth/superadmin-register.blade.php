@@ -6,10 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Acceso restringido</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { white: '#F7F7F4', gray: { 50: '#F2F1ED', 100: '#F2F1ED', 500: '#7A7974', 600: '#7A7974', 800: '#232018', 900: '#1B1913', 950: '#14120B' } } } } }</script>
 </head>
-<body class="min-h-full bg-black flex items-center justify-center p-4">
+<body class="min-h-full bg-gray-950 flex items-center justify-center p-4">
 
-    <div class="w-full max-w-sm">
+    <div class="w-full max-w-sm bg-gray-900 border border-gray-800 rounded-2xl p-8">
 
         @if($unavailable)
             {{-- Enlace ya usado --}}
@@ -56,7 +57,7 @@
                     <div class="w-full border-t border-gray-800"></div>
                 </div>
                 <div class="relative flex justify-center text-xs">
-                    <span class="px-2 bg-black text-gray-600 uppercase tracking-wider">O</span>
+                    <span class="px-2 bg-gray-950 text-gray-600 uppercase tracking-wider">O</span>
                 </div>
             </div>
 

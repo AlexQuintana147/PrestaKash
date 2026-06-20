@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>PrestaKash — Completa tu perfil</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { white: '#F7F7F4', gray: { 50: '#F2F1ED', 100: '#F2F1ED', 500: '#7A7974', 600: '#7A7974', 800: '#232018', 900: '#1B1913', 950: '#14120B' } } } } }</script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -16,7 +17,7 @@
         .input-field {
             width: 100%;
             background: rgba(255,255,255,0.04);
-            border: 1px solid #2a2a2a;
+            border: 1px solid #232018;
             border-radius: 10px;
             color: white;
             padding: 12px 16px;
@@ -43,7 +44,7 @@
         }
 
         select.input-field option {
-            background: #111111;
+            background: #1B1913;
             color: white;
         }
 
@@ -57,7 +58,7 @@
         .custom-select-trigger {
             width: 100%;
             background: rgba(255,255,255,0.04);
-            border: 1px solid #2a2a2a;
+            border: 1px solid #232018;
             border-radius: 10px;
             color: white;
             padding: 12px 40px 12px 16px;
@@ -88,8 +89,8 @@
             position: absolute;
             top: calc(100% + 6px);
             left: 0; right: 0;
-            background: #0f0f0f;
-            border: 1px solid #222;
+            background: #1B1913;
+            border: 1px solid #232018;
             border-radius: 12px;
             max-height: 220px;
             overflow-y: auto;
@@ -101,12 +102,12 @@
 
         .custom-select-search {
             padding: 12px 14px;
-            border-bottom: 1px solid #1a1a1a;
-            position: sticky; top: 0; background: #0f0f0f;
+            border-bottom: 1px solid #232018;
+            position: sticky; top: 0; background: #1B1913;
             border-radius: 12px 12px 0 0;
         }
         .custom-select-search input {
-            width: 100%; background: rgba(255,255,255,0.04); border: 1px solid #222; border-radius: 8px;
+            width: 100%; background: rgba(255,255,255,0.04); border: 1px solid #232018; border-radius: 8px;
             color: white; font-size: 0.82rem; outline: none; padding: 8px 10px;
         }
         .custom-select-search input:focus { border-color: #10b981; }
@@ -142,7 +143,7 @@
             border-color: #10b981; color: #10b981;
             box-shadow: 0 0 16px rgba(16,185,129,0.3), inset 0 0 8px rgba(16,185,129,0.1);
         }
-        .stepper-line { height: 2px; flex: 1; background: #252525; transition: background 0.35s ease; min-width: 24px; }
+        .stepper-line { height: 2px; flex: 1; background: #232018; transition: background 0.35s ease; min-width: 24px; }
         .stepper-line.completed { background: linear-gradient(90deg, #10b981, #34d399); }
 
         .stepper-label {
@@ -155,7 +156,7 @@
         /* Field group card */
         .field-group {
             background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid #232018;
             border-radius: 14px;
             padding: 22px 20px;
             margin-bottom: 18px;
@@ -170,11 +171,11 @@
 
         /* Radio cards */
         .radio-card {
-            flex: 1; padding: 14px 18px; border: 1px solid #252525; border-radius: 12px;
+            flex: 1; padding: 14px 18px; border: 1px solid #232018; border-radius: 12px;
             cursor: pointer; transition: all 0.2s; text-align: center;
             background: rgba(255,255,255,0.01);
         }
-        .radio-card:hover { border-color: #333; background: rgba(255,255,255,0.03); }
+        .radio-card:hover { border-color: #2a261c; background: rgba(255,255,255,0.03); }
         .radio-card.selected { border-color: #10b981; background: rgba(16,185,129,0.06); }
         .radio-card-text { font-size: 13px; font-weight: 500; color: #9ca3af; transition: color 0.2s; }
         .radio-card.selected .radio-card-text { color: #10b981; }
@@ -191,9 +192,9 @@
         }
         .nav-btn-primary:hover { background: #059669; box-shadow: 0 4px 16px rgba(16,185,129,0.25); }
         .nav-btn-secondary {
-            background: rgba(255,255,255,0.05); color: #9ca3af; border: 1px solid #252525;
+            background: rgba(255,255,255,0.05); color: #9ca3af; border: 1px solid #232018;
         }
-        .nav-btn-secondary:hover { background: rgba(255,255,255,0.08); color: #d1d5db; border-color: #333; }
+        .nav-btn-secondary:hover { background: rgba(255,255,255,0.08); color: #d1d5db; border-color: #2a261c; }
         .nav-btn-submit {
             background: linear-gradient(135deg, #10b981, #059669); color: #000;
             font-weight: 700; letter-spacing: 0.02em;
@@ -222,9 +223,9 @@
     </style>
 </head>
 
-<body class="bg-black min-h-screen flex items-center justify-center px-4 py-10" onload="noBack();"
+<body class="bg-gray-950 min-h-screen flex items-center justify-center px-4 py-10" onload="noBack();"
     onpageshow="if(event.persisted) noBack();">
-    <div class="w-full max-w-lg">
+    <div class="w-full max-w-lg bg-gray-900 border border-gray-800 rounded-2xl p-8">
 
         <!-- Header -->
         <div class="mb-8 text-center">
