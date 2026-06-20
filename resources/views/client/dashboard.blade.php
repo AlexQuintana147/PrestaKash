@@ -14,30 +14,30 @@
 
 <style>
     .pk-card {
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: #F2F1ED;
+        border: 1px solid #e5e5e0;
         border-radius: 20px;
         transition: border-color 0.2s ease;
     }
     .dark .pk-card {
-        background: #111827;
-        border-color: #1f2937;
+        background: #1B1913;
+        border-color: #232018;
     }
-    .pk-card:hover { border-color: #d1d5db; }
-    .dark .pk-card:hover { border-color: #374151; }
+    .pk-card:hover { border-color: #d5d5d0; }
+    .dark .pk-card:hover { border-color: #2a261c; }
 
     .pk-card-cta {
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: #F2F1ED;
+        border: 1px solid #e5e5e0;
         border-radius: 20px;
         transition: all 0.2s ease;
     }
     .dark .pk-card-cta {
-        background: #111827;
-        border-color: #1f2937;
+        background: #1B1913;
+        border-color: #232018;
     }
     .pk-card-cta:hover { border-color: #006BFF; background: #f9fafb; }
-    .dark .pk-card-cta:hover { background: #111827; border-color: #4A90E2; }
+    .dark .pk-card-cta:hover { background: #1B1913; border-color: #4A90E2; }
     .pk-card-cta.purple:hover { border-color: #8247f5; }
     .dark .pk-card-cta.purple:hover { border-color: #9B59B6; }
 
@@ -137,8 +137,8 @@
     .pk-modal-content {
         position: relative;
         z-index: 10;
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: #F2F1ED;
+        border: 1px solid #e5e5e0;
         border-radius: 24px 24px 0 0;
         width: 100%;
         max-height: 85vh;
@@ -147,8 +147,8 @@
         flex-direction: column;
     }
     .dark .pk-modal-content {
-        background: #111827;
-        border-color: #1f2937;
+        background: #1B1913;
+        border-color: #232018;
     }
     @media (min-width: 768px) {
         .pk-modal-content {
